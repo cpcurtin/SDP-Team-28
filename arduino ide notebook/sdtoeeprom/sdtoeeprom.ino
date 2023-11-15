@@ -1,16 +1,8 @@
-// https://www.circuitbasics.com/build-a-great-sounding-audio-amplifier-with-bass-boost-from-the-lm386/
+/*
+ TESTING TIME TO SAVE SD WAV TO EEPROM 
+ */
 #include <SD.h>
-#include <Audio.h>
-#include <SPI.h>
-
-
-// Audio connections
-AudioPlaySdWav playWav1;
-AudioOutputAnalog audioOutput;  // Use the built-in DAC
-AudioControlSGTL5000 sgtl5000_1;
-
-
-
+#include <EEPROM.h>
 // change this to match your SD shield or module;
 // Teensy 2.0: pin 0
 // Teensy++ 2.0: pin 20
@@ -18,9 +10,7 @@ AudioControlSGTL5000 sgtl5000_1;
 // Teensy audio board: pin 10
 // Teensy 3.5 & 3.6 & 4.1 on-board: BUILTIN_SDCARD
 const int chipSelect = BUILTIN_SDCARD;
-const int audioOutPin = A0; // Analog output pin for audio
-
-
+const int eepromStartAddress = 0; // Start address in EEPROM
 
 void setup()
 {
@@ -30,14 +20,11 @@ void setup()
   
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
+
+  int address = eepromStartAddress; // Declare 'address' here
    while (!Serial) {
     ; // wait for serial port to connect.
   }
-
-   // Audio connections require memory to work.  For more
-  // detailed information, see the MemoryAndCpuUsage example
-  AudioMemory(8);
-
 
   Serial.print("Initializing SD card...");
 
@@ -47,39 +34,75 @@ void setup()
   }
   Serial.println("initialization done.");
 
+  // File root = SD.open("/");
+  
+  // printDirectory(root, 0);
+  // sdToEeprom(root, 0);
 
-  // Open the .wav file for playback
-  File audioFile = SD.open("/heart-on-my-sleave-ai.wav");
-  if (!audioFile) {
-    while (1) {
-      // If the file doesn't open, halt the program
-      Serial.println("Error opening audio file!");
-      delay(1000);
-    }
+    // Record the start time
+  unsigned long startTime = millis();
+  
+// Open the input .wav file for reading
+  File inputFile = SD.open("freesound.wav", FILE_READ);
+  if (!inputFile) {
+    Serial.println("Failed to open input.wav!");
+    return;
   }
 
- // Initialize audio playback
-  playWav1.play(audioFile.name());
- // playWav1.setDestination(audioOutput); // Route audio to analog output
-  sgtl5000_1.enable();
-  sgtl5000_1.volume(1.0); // Adjust the volume as needed (0.0 to 1.0)
-  Serial.println("Audio playback initiated.");
 
-  // Setup the analog output pin
-  analogWriteResolution(12); // Set DAC resolution to 12 bits
+  // Write the file to EEPROM
+  while (inputFile.available() && address < EEPROM.length()) {
+    char data = inputFile.read();
+    EEPROM.write(address, data);
+    address++;
+  }
 
-  Serial.println("done!");
+// Record the end time
+  unsigned long endTime = millis();
+
+  Serial.println("File copied to EEPROM successfully!");
+
+  // Calculate and print the elapsed time
+  unsigned long transferTime = endTime - startTime;
+  Serial.print("Transfer time (ms): ");
+  Serial.println(transferTime);
+  Serial.println("File copied to EEPROM successfully!");
+
+// Read and print the first 44 bytes from EEPROM
+// int headerSize = 44; // .wav file header size
+address = eepromStartAddress; // Reset 'address' to the start
+while (address < EEPROM.length()) {
+  char data = EEPROM.read(address);
+  Serial.write(data); // Print the data to the serial monitor
+  address++;
 }
 
 
+  Serial.println("\nPROGRAM COMPLETE");
 
+}
 
 void loop()
 {
- // Check if the audio file has finished playing
-  if (!playWav1.isPlaying()) {
-    // The file has finished playing, you can add additional logic here
-  }
+  // nothing happens after setup finishes.
+}
+
+void sdToEeprom(File dir, int numSpaces){
+  const char *findName="heart-on-my-sleave-ai.wav";
+  // Serial.print(findName);  
+   while(true) {
+    File entry = dir.openNextFile();
+     if (! entry) {
+       //Serial.println("** no more files **");
+       break;
+     }
+     if (entry.name()==findName){
+    Serial.print("\nHELLO\n");  
+     }
+    Serial.print(entry.name());
+    entry.close();
+   
+}
 }
 
 void printDirectory(File dir, int numSpaces) {
@@ -135,26 +158,4 @@ void printTime(const DateTimeFields tm) {
   Serial.print(tm.mday);
   Serial.print(", ");
   Serial.print(tm.year + 1900);
-}
-
-void playFile(const char *filename)
-{
-  Serial.print("Playing file: ");
-  Serial.println(filename);
-
-  // Start playing the file.  This sketch continues to
-  // run while the file plays.
-  playWav1.play(filename);
-
-  // A brief delay for the library read WAV info
-  delay(25);
-
-  // Simply wait for the file to finish playing.
-  while (playWav1.isPlaying()) {
-    // uncomment these lines if you audio shield
-    // has the optional volume pot soldered
-    //float vol = analogRead(15);
-    //vol = vol / 1024;
-    // sgtl5000_1.volume(vol);
-  }
 }
