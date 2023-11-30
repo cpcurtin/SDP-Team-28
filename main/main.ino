@@ -143,8 +143,8 @@ void setup()
   for (size_t i=0; i <sounds.size; i++ ){
     Serial.println(sounds.arr[i]);
   }
-lcd_state = array_scroll(sounds, 0,0);
-  lcd_display(lcd, lcd_state);
+// lcd_state = array_scroll(sounds, 0,0);
+  lcd_display(lcd, sounds.lcd_state );
 
   Serial.println("PROGRAM LOOP BEGINS");
 

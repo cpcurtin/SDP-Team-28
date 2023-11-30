@@ -78,7 +78,12 @@ struct array_with_size parsefiles(void)
   // Serial.print(filenames[2]);
   //       Serial.println(); // Print a newline after each filename
   //   }
-  struct array_with_size sound_list = {filenames, numFiles, 0};
+  char** state = new char*[2];
+  struct array_with_size sound_list;
+  sound_list.arr= filenames;
+  sound_list.size = numFiles;
+  sound_list.lcd_state= state;
+  sound_list.index = 0;
   return sound_list;
 }
 

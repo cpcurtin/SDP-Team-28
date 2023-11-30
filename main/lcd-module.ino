@@ -30,14 +30,14 @@ void lcd_display(LiquidCrystal *lcd, char **print_arr)
   
 }
 
-char **array_scroll(struct array_with_size full_array, size_t index, size_t direction){
-char** result = new char*[2];
-if (full_array.size>0){
-  full_array.state=full_array.state+1;
-  result[0]=full_array.arr[full_array.state];
+char **array_scroll(struct array_with_size full_array, size_t direction){
+// char** result = new char*[2];
+// if (full_array.size>0){
+//   full_array.state=full_array.state+1;
+//   result[0]=full_array.arr[full_array.state];
 
-
-}
+// return full_array.lcd_state;
+// }
   
   // Serial.println("1");
   // char** result = new char*[2];
@@ -58,7 +58,7 @@ if (full_array.size>0){
   //   Serial.println("8");
   // }
   // Serial.println("9");
-  return result;
+  return full_array.lcd_state;
   
 
 }

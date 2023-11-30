@@ -6,7 +6,8 @@
 struct array_with_size {
     char** arr;
     size_t size;
-    int state;
+    char** lcd_state;
+    int index;
 };
 
 void sd_init(void);
