@@ -6,10 +6,11 @@
 struct array_with_size {
     char** arr;
     size_t size;
+    int state;
 };
 
 void sd_init(void);
-const struct array_with_size parsefiles(void);
+struct array_with_size parsefiles(void);
 void freeArrayOfStrings(char **stringArray, size_t numStrings);
 void listfiles(void);
 void printDirectory(File dir, int numSpaces);

@@ -25,7 +25,7 @@ void sd_init(void)
   // File root = SD.open("/");
 }
 
-const struct array_with_size parsefiles(void)
+struct array_with_size parsefiles(void)
 {
   File root = SD.open("/sounds");
 
@@ -78,7 +78,7 @@ const struct array_with_size parsefiles(void)
   // Serial.print(filenames[2]);
   //       Serial.println(); // Print a newline after each filename
   //   }
-  const struct array_with_size sound_list = {filenames, numFiles};
+  struct array_with_size sound_list = {filenames, numFiles, 0};
   return sound_list;
 }
 

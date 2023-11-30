@@ -21,9 +21,7 @@
 
 LiquidCrystal* lcd_init(const struct lcd_pin_config &cfg);
 void lcd_display(LiquidCrystal *lcd, char **print_arr);
-// char **array_scroll(char** full_array,int state, int direction);
-void dpad_init(void);
-int read_dpad(void);
+char **array_scroll(char** full_array,int state, int direction);
 
 
 #endif // LCD_MODULE_H

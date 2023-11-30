@@ -26,22 +26,12 @@
  *    PIN21:   DAC - BCK
  *    PIN22:
  *    PIN23:
- *    PIN24:
- *    PIN25:
- *    PIN26:
- *    PIN27:
+ *    PIN24:   DPAD - LEFT
+ *    PIN25:   DPAD - DOWN
+ *    PIN26:   DPAD - UP
+ *    PIN27:   DPAD - RIGHT
  *    PIN28:
  *    PIN29:
- *    PIN30:
- *    PIN1:
- *    PIN2:
- *    PIN3:
- *    PIN4:
- *    PIN5:
- *    PIN6:
- *    PIN7:
- *    PIN8:
- *    PIN9:
  *    PIN30:
  *    PIN31:
  *    PIN32:
@@ -91,6 +81,12 @@
 #define LCD_ROWS 2
 #define LCD_COLUMNS 16
 
+// BUTTONS
+#define BUTTON_DPAD_UP 26
+#define BUTTON_DPAD_DOWN 25
+#define BUTTON_DPAD_LEFT 24
+#define BUTTON_DPAD_RIGHT 27 
+
 
 struct lcd_pin_config
 {
@@ -111,55 +107,60 @@ struct dac_pin_config
   const int bck;
 };
 
+struct dpad_pin_config
+{
+  const int up;
+  const int down;
+  const int left;
+  const int right;
+};
 
 
 LiquidCrystal *lcd;
 
 char** lcd_state = new char*[2];
+int lcd_index = 0;
+struct array_with_size sounds;
 
-
-// LiquidCrystal lcd;
-// LiquidCrystal lcd(2, 3, 4, 5, 6, 8);
-
-// LiquidCrystal lcd;
-// #include <SD.h>
-void setup()
-{
   const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
   const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
+  const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT};
 
+void setup()
+{
+
+/* Intialize hardware */
   serial_init();
   sd_init();
+  dpad_init(dpad_cfg);
+
   lcd = lcd_init(lcd_cfg);
   
   
 
-  const struct array_with_size test = parsefiles();
-  Serial.println(test.size);
-  for (size_t i=0; i <test.size; i++ ){
-    Serial.println(test.arr[i]);
+  const struct array_with_size sounds = parsefiles();
+  Serial.println(sounds.size);
+  for (size_t i=0; i <sounds.size; i++ ){
+    Serial.println(sounds.arr[i]);
   }
-
-  
-  lcd_state = array_scroll(test, 0,1);
+lcd_state = array_scroll(sounds, 0,0);
   lcd_display(lcd, lcd_state);
 
-  // char**test=parsefiles();
+  Serial.println("PROGRAM LOOP BEGINS");
+
+  
+  
 }
 
+
+/* Main subroutine: follow software block diagram */ 
 void loop()
 {
+  /* play music config no matter what */
 
-// Serial.println("testpls");
-  
-  // Print a message to the LCD.
-  // lcd.print(" Hello world!");
+  /* on input */
+  // check input - beat matrix, palette, dpad 
 
-  // // set the cursor to column 0, line 1
-  // // (note: line 1 is the second row, since counting begins with 0):
-  // lcd.setCursor(0, 1);
-  // // Print a message to the LCD.
-  // lcd.print(" LCD Tutorial");
 }
 
 void serial_init(void)

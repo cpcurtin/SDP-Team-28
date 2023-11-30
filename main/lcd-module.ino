@@ -30,16 +30,34 @@ void lcd_display(LiquidCrystal *lcd, char **print_arr)
   
 }
 
-char **array_scroll(const struct array_with_size &full_array, size_t index, size_t direction){
-  char** result = new char*[2];
-  result[0] = full_array.arr[index];
-  result[1] = full_array.arr[index + 1];
-  index=index+direction;
-  if ((index>=0)&&(index<full_array.size+1)){
-    result[0] = full_array.arr[index];
-    result[1] = full_array.arr[index + 1];
-    
-  }
+char **array_scroll(struct array_with_size full_array, size_t index, size_t direction){
+char** result = new char*[2];
+if (full_array.size>0){
+  full_array.state=full_array.state+1;
+  result[0]=full_array.arr[full_array.state];
+
+
+}
+  
+  // Serial.println("1");
+  // char** result = new char*[2];
+  // Serial.println("2");
+  // Serial.printf("%d %d",index, full_array.size);
+  // Serial.println("XXX");
+  // result[0] = full_array.arr[full_array.state];
+  // Serial.println("3");
+  // result[1] = full_array.arr[full_array.state + 1];
+  // Serial.println("4");
+  // index=index+direction;
+  // Serial.println("5");
+  // if ((index>=0)&&(index<full_array.size+1)){
+  //   Serial.println("6");
+  //   result[0] = full_array.arr[index];
+  //   Serial.println("7");
+  //   result[1] = full_array.arr[index + 1];
+  //   Serial.println("8");
+  // }
+  // Serial.println("9");
   return result;
   
 
@@ -47,11 +65,3 @@ char **array_scroll(const struct array_with_size &full_array, size_t index, size
 
 
 
-void dpad_init(void)
-{
-}
-
-int read_dpad(void)
-{
-  return 0;
-}
