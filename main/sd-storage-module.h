@@ -11,7 +11,7 @@ struct array_with_size {
 };
 
 void sd_init(void);
-struct array_with_size parsefiles(void);
+struct array_with_size *parsefiles(void);
 void freeArrayOfStrings(char **stringArray, size_t numStrings);
 void listfiles(void);
 void printDirectory(File dir, int numSpaces);

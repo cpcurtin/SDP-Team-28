@@ -138,16 +138,16 @@ void setup()
   
   
 
-  const struct array_with_size sounds = parsefiles();
-  Serial.println(sounds.size);
-  for (size_t i=0; i <sounds.size; i++ ){
-    Serial.println(sounds.arr[i]);
+  struct array_with_size *sounds = parsefiles();
+  Serial.println(sounds->size);
+  for (size_t i=0; i <sounds->size; i++ ){
+    Serial.println(sounds->arr[i]);
   }
-// lcd_state = array_scroll(sounds, 0,0);
-  lcd_display(lcd, sounds.lcd_state );
+
 
   Serial.println("PROGRAM LOOP BEGINS");
-
+  array_scroll(sounds,0);
+lcd_display(lcd, sounds->lcd_state );
   
   
 }
@@ -170,5 +170,5 @@ void serial_init(void)
   {
     ; // wait for serial port to connect.
   }
-  Serial.println("Serial Initialized");
+  Serial.println("\n\n\n\n\nSerial Initialized");
 }

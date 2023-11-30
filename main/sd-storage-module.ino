@@ -25,7 +25,7 @@ void sd_init(void)
   // File root = SD.open("/");
 }
 
-struct array_with_size parsefiles(void)
+struct array_with_size *parsefiles(void)
 {
   File root = SD.open("/sounds");
 
@@ -79,11 +79,11 @@ struct array_with_size parsefiles(void)
   //       Serial.println(); // Print a newline after each filename
   //   }
   char** state = new char*[2];
-  struct array_with_size sound_list;
-  sound_list.arr= filenames;
-  sound_list.size = numFiles;
-  sound_list.lcd_state= state;
-  sound_list.index = 0;
+  struct array_with_size* sound_list = new struct array_with_size;
+  sound_list->arr = filenames;
+  sound_list->size = numFiles;
+  sound_list->lcd_state= state;
+  sound_list->index = 0;
   return sound_list;
 }
 
