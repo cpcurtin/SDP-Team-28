@@ -85,8 +85,7 @@
 #define BUTTON_DPAD_UP 26
 #define BUTTON_DPAD_DOWN 25
 #define BUTTON_DPAD_LEFT 24
-#define BUTTON_DPAD_RIGHT 27 
-
+#define BUTTON_DPAD_RIGHT 27
 
 struct lcd_pin_config
 {
@@ -115,52 +114,70 @@ struct dpad_pin_config
   const int right;
 };
 
-
 LiquidCrystal *lcd;
 
-char** lcd_state = new char*[2];
+char **lcd_state = new char *[2];
 int lcd_index = 0;
-struct array_with_size sounds;
+struct array_with_size *sounds;
 
-  const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
-  const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
-  const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT};
+const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
+const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
+const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT};
 
 void setup()
 {
 
-/* Intialize hardware */
+  /* Intialize hardware */
   serial_init();
   sd_init();
   dpad_init(dpad_cfg);
 
   lcd = lcd_init(lcd_cfg);
-  
-  
 
-  struct array_with_size *sounds = parsefiles();
+  sounds = parsefiles();
   Serial.println(sounds->size);
-  for (size_t i=0; i <sounds->size; i++ ){
+  for (size_t i = 0; i < sounds->size; i++)
+  {
     Serial.println(sounds->arr[i]);
   }
 
-
   Serial.println("PROGRAM LOOP BEGINS");
-  array_scroll(sounds,0);
-lcd_display(lcd, sounds->lcd_state );
-  
-  
+  array_scroll(sounds, 0);
+  lcd_display(lcd, sounds->lcd_state);
+  // lcd->cursor();
 }
 
-
-/* Main subroutine: follow software block diagram */ 
+/* Main subroutine: follow software block diagram */
 void loop()
 {
+
   /* play music config no matter what */
 
   /* on input */
-  // check input - beat matrix, palette, dpad 
+  // check input - beat matrix, palette, dpad
+  //  if(check_ninput(dpad_cfg)){
 
+  //   }
+  if (button_pressed(BUTTON_DPAD_LEFT))
+  {
+  }
+  if (button_pressed(BUTTON_DPAD_DOWN))
+  {
+    array_scroll(sounds, 1);
+     Serial.printf("%d %s\n",sounds->index,sounds->arr[sounds->index]);
+  lcd_display(lcd, sounds->lcd_state);
+  }
+  if (button_pressed(BUTTON_DPAD_UP))
+  {
+    array_scroll(sounds, -1);
+     Serial.printf("%d %s\n",sounds->index,sounds->arr[sounds->index]);
+  lcd_display(lcd, sounds->lcd_state);
+  }
+  if (button_pressed(BUTTON_DPAD_RIGHT))
+  {
+  }
+ 
+  // delay(1000);
 }
 
 void serial_init(void)

@@ -11,7 +11,6 @@
 void sd_init(void)
 {
   const int chipSelect = BUILTIN_SDCARD;
- 
 
   Serial.print("Initializing SD card...");
 
@@ -50,7 +49,8 @@ struct array_with_size *parsefiles(void)
     }
 
     // Allocate memory for the new filename
-    if (!strncmp(entry.name(), "._", 2)){
+    if (!strncmp(entry.name(), "._", 2))
+    {
       continue;
     }
     char *filename = strdup(entry.name());
@@ -78,11 +78,11 @@ struct array_with_size *parsefiles(void)
   // Serial.print(filenames[2]);
   //       Serial.println(); // Print a newline after each filename
   //   }
-  char** state = new char*[2];
-  struct array_with_size* sound_list = new struct array_with_size;
+  char **state = new char *[2];
+  struct array_with_size *sound_list = new struct array_with_size;
   sound_list->arr = filenames;
   sound_list->size = numFiles;
-  sound_list->lcd_state= state;
+  sound_list->lcd_state = state;
   sound_list->index = 0;
   return sound_list;
 }
