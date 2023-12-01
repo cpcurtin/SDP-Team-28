@@ -39,3 +39,41 @@ module.c: // example c file
     {
     ...
     }
+
+
+
+how to implement navigation:
+navigation states are constant
+scroll arrays are constant
+
+binary tree for navigation states
+  >leaf node points to scroll array?
+
+
+###### LCD NAVIGATION ###########
+lcd navigation:
+# < comment
+>option
+  >child option
+
+scroll is looping values through string array
+#################################
+initialized: 
+
+-welcome state
+
+3 second delay
+
+-base nav state
+  >Sounds
+    >custom sounds
+      >scroll custom sounds
+        >select for sound palette
+    >midi sounds
+      >scroll midi sounds
+        >select for sound palette
+  >Effects
+    #all digital??
+    >scroll digital effects
+      >select for effect palette
+

@@ -10,15 +10,17 @@ int lcd_rows;
 
 LiquidCrystal *lcd_init(const struct lcd_pin_config &cfg)
 {
+  // welcome message
+  char **lcd_init_message = new char *[2];
+  lcd_init_message[0] = strdup("   Welcome to   ");
+  lcd_init_message[1] = strdup("    Moduloop    ");
+
   // Creates an LCD object. Parameters: (rs, enable, d4, d5, d6, d7)
-  // LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
   LiquidCrystal *lcd = new LiquidCrystal(cfg.rs, cfg.en, cfg.dig4, cfg.dig5, cfg.dig6, cfg.dig7);
   lcd_rows = cfg.rows;
-  // set up the LCD's number of columns and rows:
-  // lcd.begin(cfg.columns, cfg.rows);
   lcd->begin(cfg.columns, cfg.rows);
-  // Clears the LCD scree
   lcd->clear();
+  lcd_display(lcd, lcd_init_message);
 
   return lcd;
 }
@@ -37,6 +39,7 @@ void lcd_display(LiquidCrystal *lcd, char **print_arr)
 
 void array_scroll(struct array_with_size *full_array, int direction)
 {
+  // Serial.println(enumerate);
 
   int new_index;
   if (full_array->index + direction < 0)

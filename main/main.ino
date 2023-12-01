@@ -114,10 +114,20 @@ struct dpad_pin_config
   const int left;
   const int right;
 };
+struct lcd_nav
+{
+  char **lcd_state;
+  char ***menu_nav;
+  int state;
+  // 0 - select sounds or effects
+  // 1 - select custom or midi sounds
+  // 2 -
+  // 3 -
+};
 
 LiquidCrystal *lcd;
 
-char **lcd_state = new char *[2];
+char **lcd_state = new char *[LCD_ROWS];
 int lcd_index = 0;
 struct array_with_size *sounds;
 
@@ -127,6 +137,18 @@ const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUT
 
 void setup()
 {
+
+  char **lcd_menu_general = new char *[2];
+  lcd_menu_general[0] = strdup("Sounds");
+  lcd_menu_general[1] = strdup("Effects");
+
+  char **lcd_menu_sounds = new char *[2];
+  lcd_menu_sounds[0] = strdup("Custom Sounds");
+  lcd_menu_sounds[1] = strdup("MIDI Sounds");
+  char ***nav_states = new char **[2];
+  nav_states[0] = lcd_menu_general;
+  nav_states[1] = lcd_menu_sounds;
+  struct lcd_nav nav = {lcd_menu_general, nav_states, 0};
 
   /* Intialize hardware */
   serial_init();
@@ -144,9 +166,10 @@ void setup()
   }
 
   Serial.println("PROGRAM LOOP BEGINS");
-  array_scroll(sounds, 0);
-  lcd_display(lcd, sounds->lcd_state);
+  // array_scroll(sounds, 0);
+  // lcd_display(lcd, sounds->lcd_state);
   // lcd->cursor();
+  delay(3000);
 }
 
 /* Main subroutine: follow software block diagram */
@@ -162,24 +185,25 @@ void loop()
   //   }
   if (button_pressed(BUTTON_DPAD_LEFT))
   {
-    playFile(sounds->arr[sounds->index]);
+    // playFile(sounds->arr[sounds->index]);
   }
   if (button_pressed(BUTTON_DPAD_DOWN))
   {
     array_scroll(sounds, 1);
-     Serial.printf("%d %s\n",sounds->index,sounds->arr[sounds->index]);
-  lcd_display(lcd, sounds->lcd_state);
+    Serial.printf("%d %s\n", sounds->index, sounds->arr[sounds->index]);
+    lcd_display(lcd, sounds->lcd_state);
   }
   if (button_pressed(BUTTON_DPAD_UP))
   {
     array_scroll(sounds, -1);
-     Serial.printf("%d %s\n",sounds->index,sounds->arr[sounds->index]);
-  lcd_display(lcd, sounds->lcd_state);
+    Serial.printf("%d %s\n", sounds->index, sounds->arr[sounds->index]);
+    lcd_display(lcd, sounds->lcd_state);
   }
   if (button_pressed(BUTTON_DPAD_RIGHT))
   {
+    
   }
- 
+
   // delay(1000);
 }
 
