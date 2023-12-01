@@ -4,8 +4,8 @@
  *
  *
  */
-#ifndef EXAMPLE_MODULE_H
-#define EXAMPLE_MODULE_H
+#ifndef BUTTON_UI__MODULE_H
+#define BUTTON_UI_MODULE_H
 
 
 // functions, extern variables, structs go here

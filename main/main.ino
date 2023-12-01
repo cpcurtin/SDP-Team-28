@@ -132,6 +132,7 @@ void setup()
   serial_init();
   sd_init();
   dpad_init(dpad_cfg);
+  onboard_dac_init();
 
   lcd = lcd_init(lcd_cfg);
 
@@ -161,6 +162,7 @@ void loop()
   //   }
   if (button_pressed(BUTTON_DPAD_LEFT))
   {
+    playFile(sounds->arr[sounds->index]);
   }
   if (button_pressed(BUTTON_DPAD_DOWN))
   {
