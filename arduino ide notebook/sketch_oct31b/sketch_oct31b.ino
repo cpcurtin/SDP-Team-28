@@ -7,7 +7,7 @@
 #include <sdios.h>
 
 void setup() {
-  // put your setup code here, to run once:
+  // put your s88etup code here, to run once:
 
 }
 
