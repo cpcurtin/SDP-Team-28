@@ -63,6 +63,7 @@
 #include "lcd-module.h"
 #include "sd-storage-module.h"
 #include "button-ui-module.h"
+#include "custom-sound-module.h"
 // #include <LiquidCrystal.h>
 
 /* PIN MACROS */

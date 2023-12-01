@@ -49,7 +49,7 @@ void setup()
 
 
   // Open the .wav file for playback
-  File audioFile = SD.open("/heart-on-my-sleave-ai.wav");
+  File audioFile = SD.open("/sounds/heart-on-my-sleave-ai.wav");
   if (!audioFile) {
     while (1) {
       // If the file doesn't open, halt the program
@@ -157,24 +157,24 @@ void printTime(const DateTimeFields tm) {
   Serial.print(tm.year + 1900);
 }
 
-void playFile(const char *filename)
-{
-  Serial.print("Playing file: ");
-  Serial.println(filename);
+// void playFile(const char *filename)
+// {
+//   Serial.print("Playing file: ");
+//   Serial.println(filename);
 
-  // Start playing the file.  This sketch continues to
-  // run while the file plays.
-  playWav1.play(filename);
+//   // Start playing the file.  This sketch continues to
+//   // run while the file plays.
+//   playWav1.play(filename);
 
-  // A brief delay for the library read WAV info
-  delay(25);
+//   // A brief delay for the library read WAV info
+//   delay(25);
 
-  // Simply wait for the file to finish playing.
-  while (playWav1.isPlaying()) {
-    // uncomment these lines if you audio shield
-    // has the optional volume pot soldered
-    //float vol = analogRead(15);
-    //vol = vol / 1024;
-    // sgtl5000_1.volume(vol);
-  }
-}
+//   // Simply wait for the file to finish playing.
+//   while (playWav1.isPlaying()) {
+//     // uncomment these lines if you audio shield
+//     // has the optional volume pot soldered
+//     //float vol = analogRead(15);
+//     //vol = vol / 1024;
+//     // sgtl5000_1.volume(vol);
+//   }
+// }
