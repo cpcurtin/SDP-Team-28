@@ -1,20 +1,20 @@
 
-byte rows[] = {4,5};
+byte rows[] = {6,7,8,9};
 const int rowCount = sizeof(rows)/sizeof(rows[0]);
 
 // JP2 and JP3 are outputs
-byte cols[] = {2,3};
+byte cols[] = {2,3,4};
 const int colCount = sizeof(cols)/sizeof(cols[0]);
 
 byte keys[colCount][rowCount];
 
 
-byte LED_rows[] = {10,9};
-const int LED_rowCount = sizeof(rows)/sizeof(rows[0]);
+byte LED_rows[] = {13,14,15,16};
+const int LED_rowCount = sizeof(LED_rows)/sizeof(LED_rows[0]);
 
 // JP2 and JP3 are outputs
-byte LED_cols[] = {6,7};
-const int LED_colCount = sizeof(cols)/sizeof(cols[0]);
+byte LED_cols[] = {10,11,12};
+const int LED_colCount = sizeof(LED_cols)/sizeof(LED_cols[0]);
 
 void setup() {
   // put your setup code here, to run once:
@@ -23,7 +23,9 @@ void setup() {
 	for(int x=0; x<rowCount; x++) {
 		//Serial.print(rows[x]); Serial.println(" as input");
 		pinMode(rows[x], INPUT_PULLUP);
+    Serial.println(rows[x]);
 	}
+  //pinMode(6,INPUT_PULLUP);
 
 	for (int x=0; x<colCount; x++) {
 	//	Serial.print(cols[x]); Serial.println(" as input-pullup");
@@ -42,8 +44,6 @@ void setup() {
 	//	Serial.print(cols[x]); Serial.println(" as input-pullup");
 		pinMode(LED_cols[x], OUTPUT);
     digitalWrite(LED_cols[x], LOW);
-  
-
 	}
     
 }
