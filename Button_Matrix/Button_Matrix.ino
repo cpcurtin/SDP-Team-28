@@ -1,19 +1,19 @@
 
-byte rows[] = {4,5};
+byte rows[] = {0,1,2,3};
 const int rowCount = sizeof(rows)/sizeof(rows[0]);
 
 // JP2 and JP3 are outputs
-byte cols[] = {2,3};
+byte cols[] = {4,5,6,7,8,9};
 const int colCount = sizeof(cols)/sizeof(cols[0]);
 
 byte keys[colCount][rowCount];
 
 
-byte LED_rows[] = {10,9};
+byte LED_rows[] = {22,21,20,19};
 const int LED_rowCount = sizeof(rows)/sizeof(rows[0]);
 
 // JP2 and JP3 are outputs
-byte LED_cols[] = {6,7};
+byte LED_cols[] = {18,17,16,15,14,10};
 const int LED_colCount = sizeof(cols)/sizeof(cols[0]);
 
 void setup() {
