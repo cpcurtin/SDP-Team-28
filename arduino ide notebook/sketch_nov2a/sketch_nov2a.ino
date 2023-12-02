@@ -40,7 +40,7 @@ void setup() {
 void loop() {
   if (playSdWav1.isPlaying() == false) {
     Serial.println("Start playing");
-    playSdWav1.play("heart-on-my-sleave-ai.wav");
+    playSdWav1.play("/sounds/heart-on-my-sleave-ai.wav");
     delay(10); // wait for library to parse WAV info
   }
   // do nothing while playing...
