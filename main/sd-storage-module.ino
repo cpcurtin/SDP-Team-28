@@ -78,12 +78,28 @@ struct array_with_size *parsefiles(void)
   // Serial.print(filenames[2]);
   //       Serial.println(); // Print a newline after each filename
   //   }
-  char **state = new char *[2];
+  // char **state = new char *[2];
   struct array_with_size *sound_list = new struct array_with_size;
-  sound_list->arr = filenames;
+
+  sound_list->array = filenames;
   sound_list->size = numFiles;
-  sound_list->lcd_state = state;
-  sound_list->index = 0;
+  // sound_list->lcd_state = state;
+  // sound_list->index = 0;
+
+  // char *name;
+  //  char **ptr_str_array;
+  //  struct lcd_nav **parent;
+  //  struct lcd_nav **child;
+  //  size_t size;
+  //  char **lcd_state;
+  //  int index;
+  //  int depth;
+  // struct lcd_nav *custom_sounds = new struct lcd_nav;
+  // custom_sounds->ptr_str_array = filenames;
+  // custom_sounds->size = numFiles;
+  // custom_sounds->lcd_state = state;
+  // custom_sounds->index = 0;
+
   return sound_list;
 }
 
