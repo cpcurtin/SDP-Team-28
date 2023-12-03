@@ -247,6 +247,36 @@ void loop()
     lcd_display(lcd, nav_state->lcd_state);
   }
 
+
+
+
+  /* RIGHT SECTION OF TEST BUTTONS (3 LEFTMOST BUTTONS) */
+  if (button_pressed(28)) // left button
+  {
+
+    // example playing a sd file at current leaf string array index
+    if (nav_state->name==strdup("custom_sounds")){
+      // makes sure custom sound leaf node
+playFile(nav_state->ptr_str_array[nav_state->index]);
+    }
+    
+    
+    // Serial.printf("forward, %s\n",selection);
+    lcd_display(lcd, nav_state->lcd_state);
+  }
+  if (button_pressed(29)) // middle button
+  {
+    
+    // Serial.printf("forward, %s\n",selection);
+    lcd_display(lcd, nav_state->lcd_state);
+  }
+  if (button_pressed(30)) // right button
+  {
+    
+    // Serial.printf("forward, %s\n",selection);
+    lcd_display(lcd, nav_state->lcd_state);
+  }
+
   // delay(1000);
 }
 
