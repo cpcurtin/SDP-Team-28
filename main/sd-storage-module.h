@@ -1,14 +1,15 @@
 #ifndef SD_STORAGE_MODULE_H
-#define SD_STORAGE_MODULE_H 
+#define SD_STORAGE_MODULE_H
 #include <Arduino.h>
 #include <SD.h>
 
-struct array_with_size {
-    char** arr;
-    size_t size;
-    char** lcd_state;
-    int index;
+struct array_with_size
+{
+  char **array;
+  size_t size;
 };
+
+
 
 void sd_init(void);
 struct array_with_size *parsefiles(void);
