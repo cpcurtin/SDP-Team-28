@@ -21,24 +21,27 @@
 */
 
 /* VS1053b Setup */
-#include <SoftwareSerial.h>
 #define VS1053 1
 #define VS1053_RST 2
+
 #define DEFAULT 0x00
 #define Melody 0x79
 #define Drums1 0x78 // Appears as if Drums1 & Drums2 are the same bank at separate addresses
 #define Drums2 0x7F
+
+
 #define NoteOn 0x90
 #define NoteOff 0x80
 #define MESSAGE 0xB0
 #define BANK 0x00
 #define VOLUME 0x07
 #define PROGRAM 0xC0
+
 #define OFF1 0x7B
 #define OFF2 0x7C
 #define OFF3 0x7D
+
 //Start Channel, MIDI doesn't use rx pin
-//SoftwareSerial MIDI(0, 1);
 #define MIDI Serial1
 
 // Define Midi Sound Addresses
@@ -64,8 +67,8 @@ void setup()
   pinMode(LED6,OUTPUT); 
   pinMode(LED7,OUTPUT); 
   pinMode(LED8,OUTPUT);
-*/
-
+  */
+  Serial.begin(9600);
   MIDI.begin(31250); // Midi serial
 
   pinMode(VS1053_RST, OUTPUT);
@@ -75,103 +78,109 @@ void setup()
   delay(10);
 
   midiSetChannelVolume(0, 127); // Default Volume Select
+  midiSetChannelBank(0, Drums1); // Percussive Bank Select
+  //delay(10000);
 }
 
 void loop()
 {
-  midiSetChannelBank(0, Drums2); // Percussive Bank Select
-  midiNoteOn(0, 38, 127);
+  /***************************************** 
+  PUT THIS LINE AT THE TOP OF ALL PERCUSSIVE SOUND BLOCKS SO IT WILL 
+  START AS A PERCUSION SOUND:
+  midiSetInstrument(0,128); 
+  *****************************************/
+  midiSetInstrument(0,128); 
 
   if (ledMetro.check() == 1) {
     if (count == 0){
       //digitalWrite(LED12,LOW);
-      midiNoteOff(0, 38, 127);
+      //midiNoteOff(0, 38, 127);
       //digitalWrite(LED1,HIGH);
-      midiNoteOn(0, 38, 127);
-      //midiNoteOn(0, Kick, 127);
-      //midiNoteOn(0, Crash, 127);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, Crash, 127);
     }
     if (count == 1){
       //digitalWrite(LED1,LOW);
-      midiNoteOff(0, Kick, 127);
+      //midiNoteOff(0, Kick, 127);
       //digitalWrite(LED2,HIGH);
-      midiNoteOn(0, 38, 127);
-      //midiNoteOn(0, HiHat, 127);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, HiHat, 127);
     }
     if (count == 2){
       //digitalWrite(LED2,LOW);
-      midiNoteOff(0, 38, 127);
+      //midiNoteOff(0, 38, 127);
       //digitalWrite(LED3,HIGH);
-      midiNoteOn(0, 38, 127);
-      //midiNoteOn(0, Kick, 127);
-      //midiNoteOn(0, HiHat, 127);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, HiHat, 127);
     }
     if (count == 3){
       //digitalWrite(LED3,LOW);
-      midiNoteOff(0, 38, 127);
+      //midiNoteOff(0, 38, 127);
       //digitalWrite(LED4,HIGH);
-      midiNoteOn(0, 38, 127);
-      //midiNoteOn(0, HiHat, 127);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, HiHat, 127);
     }
     if (count == 4){
       //digitalWrite(LED4,LOW);
-      midiNoteOff(0, 38, 127);
+      //midiNoteOff(0, 38, 127);
       //digitalWrite(LED5,HIGH);
-      midiNoteOn(0, 38, 127);
-      //midiNoteOn(0, Snare, 127);
-      //midiNoteOn(0, HiHat, 127);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, Snare, 127);
+      midiNoteOn(0, HiHat, 127);
     }
     if (count == 5){
       //digitalWrite(LED5,LOW);
-      midiNoteOff(0, 38, 127);
+      //midiNoteOff(0, 38, 127);
       //digitalWrite(LED6,HIGH);
-      midiNoteOn(0, 38, 127);
-      //midiNoteOn(0, HiHat, 127);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, HiHat, 127);
     }
     if (count == 6){
       //digitalWrite(LED6,LOW);
-      midiNoteOff(0, 38, 127);
+      //midiNoteOff(0, 38, 127);
       //digitalWrite(LED7,HIGH);
-      midiNoteOn(0, 38, 127);
-      //midiNoteOn(0, Kick, 127);
-      //midiNoteOn(0, HiHat, 127);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, HiHat, 127);
     }
     if (count == 7){
       //digitalWrite(LED7,LOW);
-      midiNoteOff(0, 38, 127);
+      //midiNoteOff(0, 38, 127);
       //digitalWrite(LED8,HIGH);
-      midiNoteOn(0, 38, 127);
-      //midiNoteOn(0, HiHat, 127);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, HiHat, 127);
     }
     if (count == 8){
       //digitalWrite(LED8,LOW);
-      midiNoteOff(0, 38, 127);
+      //midiNoteOff(0, 38, 127);
       //digitalWrite(LED9,HIGH);
-      midiNoteOn(0, 38, 127);
-      //midiNoteOn(0, Kick, 127);
-      //midiNoteOn(0, HiHat, 127);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, HiHat, 127);
     }
     if (count == 9){
       //digitalWrite(LED9,LOW);
-      midiNoteOff(0, 38, 127);
+      //midiNoteOff(0, 38, 127);
       //digitalWrite(LED10,HIGH);
-      midiNoteOn(0, 38, 127);
-      //midiNoteOn(0, HiHat, 127);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, HiHat, 127);
     }
     if (count == 10){
       //digitalWrite(LED10,LOW);
-      midiNoteOff(0, 38, 127);
+      //midiNoteOff(0, 38, 127);
       //digitalWrite(LED11,HIGH);
-      midiNoteOn(0, 38, 127);
-      //midiNoteOn(0, Snare, 127);
-      //midiNoteOn(0, HiHat, 127);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, Snare, 127);
+      midiNoteOn(0, HiHat, 127);
     }
     if (count == 11){
       //digitalWrite(LED11,LOW);
-      midiNoteOff(0, 38, 127);
+      //midiNoteOff(0, 38, 127);
       //digitalWrite(LED12,HIGH);
-      midiNoteOn(0, 38, 127);
-      //midiNoteOn(0, HiHat, 127);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, HiHat, 127);
     }
     count++;
     if (count == 12){
@@ -239,6 +248,8 @@ void midiSetChannelBank(uint8_t chan, uint8_t bank) {
   MIDI.write(MESSAGE | chan);
   MIDI.write((uint8_t)BANK);
   MIDI.write(bank);
+  Serial.println("Bank change");
+  Serial.println(bank);
 }
 
 void midiNoteOn(uint8_t chan, uint8_t n, uint8_t vel) {
@@ -260,3 +271,4 @@ void midiNoteOff(uint8_t chan, uint8_t n, uint8_t vel) {
   MIDI.write(n);
   MIDI.write(vel);
 }
+
