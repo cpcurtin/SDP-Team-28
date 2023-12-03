@@ -2,8 +2,8 @@
  *       MODULOOP main
  *
  *    PINOUT:
- *    PIN0:
- *    PIN1:
+ *    PIN0:   MIDI RX (not used)
+ *    PIN1:   MIDI TX - Serial1
  *    PIN2:   LCD - Register Select
  *    PIN3:   LCD - Enable display
  *    PIN4:   LCD - Digital 4
@@ -11,7 +11,7 @@
  *    PIN6:   LCD - Digital 6
  *    PIN7:   DAC - DIN
  *    PIN8:   LCD - Digital 7
- *    PIN9:
+ *    PIN9:   MIDI Reset
  *    PIN10:
  *    PIN11:
  *    PIN12:
@@ -93,6 +93,35 @@
 #define BUTTON_PALETTE_2 29
 #define BUTTON_PALETTE_3 30
 
+/**************************
+Midi Definitions 
+**************************/
+// Pins
+#define VS1053 1
+#define VS1053_RST 9
+// Sound Banks
+#define DEFAULT 0x00
+#define Melody 0x79
+#define Drums1 0x78
+#define Drums2 0x7F
+// Commands
+#define NoteOn 0x90
+#define NoteOff 0x80
+#define MESSAGE 0xB0
+#define BANK 0x00
+#define VOLUME 0x07
+#define PROGRAM 0xC0
+#define OFF1 0x7B
+#define OFF2 0x7C
+#define OFF3 0x7D
+// Define Serial Bus
+#define MIDI Serial1
+// Sound Addresses
+#define Snare 38
+#define Kick 35
+#define HiHat 42
+#define Crash 49
+
 struct lcd_pin_config
 {
   const int rs;
@@ -118,6 +147,7 @@ struct dpad_pin_config
   const int down;
   const int left;
   const int right;
+  const int select;
 };
 struct lcd_nav
 {
@@ -161,7 +191,7 @@ char *selection;
 
 const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
 const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
-const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT};
+const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT, BUTTON_PALETTE_1};
 
 void setup()
 {
@@ -208,6 +238,18 @@ void setup()
 
   Serial.println("PROGRAM LOOP BEGINS");
   delay(3000);
+
+  // Midi Init
+  MIDI.begin(31250);
+  pinMode(VS1053_RST, OUTPUT);
+  digitalWrite(VS1053_RST, LOW);
+  delay(10);
+  digitalWrite(VS1053_RST, HIGH);
+  delay(10);
+  midiSetChannelVolume(0, 127);
+  midiSetChannelBank(0, Drums1);
+  midiSetInstrument(0, 128);
+
 }
 
 /* Main subroutine: follow software block diagram */
@@ -221,6 +263,8 @@ void loop()
   //  if(check_ninput(dpad_cfg)){
 
   //   }
+
+
   if (button_pressed(BUTTON_DPAD_LEFT))
   {
     nav_state = nav_selection(nav_state, -1);
@@ -247,17 +291,15 @@ void loop()
     lcd_display(lcd, nav_state->lcd_state);
   }
 
-
-
-
   /* RIGHT SECTION OF TEST BUTTONS (3 LEFTMOST BUTTONS) */
   if (button_pressed(28)) // left button
   {
-
+    Serial.println("Button 28");
     // example playing a sd file at current leaf string array index
     if (nav_state->name==strdup("custom_sounds")){
       // makes sure custom sound leaf node
-playFile(nav_state->ptr_str_array[nav_state->index]);
+      Serial.println("Custom Sounds");
+      playFile(nav_state->ptr_str_array[nav_state->index]);
     }
     
     
@@ -288,4 +330,54 @@ void serial_init(void)
     ; // wait for serial port to connect.
   }
   Serial.println("\n\n\n\n\nSerial Initialized<<<<<<<<<<<<<<");
+}
+
+void midiSetInstrument(uint8_t chan, uint8_t inst) {
+  if (chan > 15) return;
+  inst --; // page 32 has instruments starting with 1 not 0 :(
+  if (inst > 127) return;
+  
+  MIDI.write(PROGRAM | chan);  
+  MIDI.write(inst);
+}
+
+
+void midiSetChannelVolume(uint8_t chan, uint8_t vol) {
+  if (chan > 15) return;
+  if (vol > 127) return;
+  
+  MIDI.write(MESSAGE | chan);
+  MIDI.write(VOLUME);
+  MIDI.write(vol);
+}
+
+void midiSetChannelBank(uint8_t chan, uint8_t bank) {
+  if (chan > 15) return;
+  if (bank > 127) return;
+  
+  MIDI.write(MESSAGE | chan);
+  MIDI.write((uint8_t)BANK);
+  MIDI.write(bank);
+  Serial.println("Bank change");
+  Serial.println(bank);
+}
+
+void midiNoteOn(uint8_t chan, uint8_t n, uint8_t vel) {
+  if (chan > 15) return;
+  if (n > 127) return;
+  if (vel > 127) return;
+  
+  MIDI.write(NoteOn | chan);
+  MIDI.write(n);
+  MIDI.write(vel);
+}
+
+void midiNoteOff(uint8_t chan, uint8_t n, uint8_t vel) {
+  if (chan > 15) return;
+  if (n > 127) return;
+  if (vel > 127) return;
+  
+  MIDI.write(NoteOff | chan);
+  MIDI.write(n);
+  MIDI.write(vel);
 }

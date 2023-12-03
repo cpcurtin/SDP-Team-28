@@ -14,6 +14,7 @@ void dpad_init(const struct dpad_pin_config &cfg)
     pinMode(cfg.down, INPUT);
     pinMode(cfg.up, INPUT);
     pinMode(cfg.right, INPUT);
+    pinMode(cfg.select, INPUT);
 }
 
 void dpad_read(const struct dpad_pin_config &cfg)
