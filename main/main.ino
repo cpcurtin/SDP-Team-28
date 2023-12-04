@@ -404,7 +404,7 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, Crash, 127);
       midiNoteOn(0, Kick, 127);
-      playFile((nav_cfg->sounds_custom)->array[0]);
+      playFile((nav_cfg->sounds_custom)->array[1]);
     }
 
     if (count == 1)

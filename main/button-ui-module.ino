@@ -50,7 +50,7 @@ int check_ninput(const struct dpad_pin_config &cfg)
 int button_pressed(int pin)
 {
     int buttonState = digitalRead(pin);
-    if (buttonState == LOW)
+    if (buttonState == HIGH)
     {
         Serial.printf("pressed - %d\n", pin);
         while (buttonState == HIGH)

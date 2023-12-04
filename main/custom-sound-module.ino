@@ -42,16 +42,16 @@ void playFile(const char *filename)
   // Start playing the file.  This sketch continues to
   // run while the file plays.
 
-  if(!playSdWav1.isPlaying()){
+  //if(!playSdWav1.isPlaying()){
   playSdWav1.play(strdup(temp_str));
-  }
-  else{
-    playSdWav2.play(strdup(temp_str));
-  }
+  //}
+  //else{
+  //  playSdWav2.play(strdup(temp_str));
+  //}
   
 
   // A brief delay for the library read WAV info
-  // delay(25);
+   delay(25);
 
   // Simply wait for the file to finish playing.
   // while (playSdWav1.isPlaying()) {
