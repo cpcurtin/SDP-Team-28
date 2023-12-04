@@ -53,7 +53,7 @@ int button_pressed(int pin)
     if (buttonState == LOW)
     {
         Serial.printf("pressed - %d\n", pin);
-        while (buttonState == LOW)
+        while (buttonState == HIGH)
         {
             buttonState = digitalRead(pin);
         }
