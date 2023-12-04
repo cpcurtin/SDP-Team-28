@@ -51,7 +51,7 @@ void playFile(const char *filename)
   
 
   // A brief delay for the library read WAV info
-  delay(25);
+  // delay(25);
 
   // Simply wait for the file to finish playing.
   // while (playSdWav1.isPlaying()) {

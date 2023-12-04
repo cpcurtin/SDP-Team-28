@@ -248,6 +248,7 @@ struct lcd_nav *nav_state;
 struct palette_matrix *palette;
 struct button_maxtrix_pin_config *measure_matrix_button;
 struct button_maxtrix_pin_config *measure_matrix_led;
+struct nav_config *nav_cfg;
 
 char *selection;
 
@@ -320,7 +321,7 @@ void setup()
   button_matrix_init(matrix_cfg);
   measure_matrix_init(measure_matrix_button, measure_matrix_led);
 
-  struct nav_config *nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
+  nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
   nav_cfg->effects = (struct array_with_size *)malloc(sizeof(struct array_with_size));
   nav_cfg->sounds_custom = (struct array_with_size *)malloc(sizeof(struct array_with_size));
   nav_cfg->sounds_midi = (struct array_with_size *)malloc(sizeof(struct array_with_size));
@@ -414,183 +415,136 @@ void loop()
       midiNoteOn(0, HiHat, 127);
     }
 
-<<<<<<< HEAD
     if (count == 2)
     {
-=======
-    if (count == 2){
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
->>>>>>> c99f25afd17dc0780a5fc37e8e1ef8f35e5fd75e
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
     }
 
-<<<<<<< HEAD
     if (count == 3)
     {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, HiHat, 127);
     }
 
     if (count == 4)
     {
-=======
-    if (count == 3){
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-      midiNoteOn(0, HiHat, 127);
-    }
-
-    if (count == 4){
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
->>>>>>> c99f25afd17dc0780a5fc37e8e1ef8f35e5fd75e
+
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
-<<<<<<< HEAD
     if (count == 5)
     {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
       midiNoteOn(0, HiHat, 127);
     }
 
     if (count == 6)
     {
-=======
-    if (count == 5){
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
-      midiNoteOn(0, HiHat, 127);
-    }
-
-    if (count == 6){
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
->>>>>>> c99f25afd17dc0780a5fc37e8e1ef8f35e5fd75e
+
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
     }
 
-<<<<<<< HEAD
     if (count == 7)
     {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
       midiNoteOn(0, HiHat, 127);
     }
 
     if (count == 8)
     {
-=======
-    if (count == 7){
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
-      midiNoteOn(0, HiHat, 127);
-    }
-
-    if (count == 8){
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
       digitalWrite(LED_MEASURE_MATRIX_ROW_2, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
->>>>>>> c99f25afd17dc0780a5fc37e8e1ef8f35e5fd75e
+
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
-<<<<<<< HEAD
     if (count == 9)
     {
-=======
-    if (count == 9){
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
->>>>>>> c99f25afd17dc0780a5fc37e8e1ef8f35e5fd75e
+
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
-<<<<<<< HEAD
     if (count == 10)
     {
-=======
-    if (count == 10){
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
->>>>>>> c99f25afd17dc0780a5fc37e8e1ef8f35e5fd75e
+
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
     }
 
-<<<<<<< HEAD
     if (count == 11)
     {
-=======
-    if (count == 11){
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
->>>>>>> c99f25afd17dc0780a5fc37e8e1ef8f35e5fd75e
+
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
-<<<<<<< HEAD
     if (count == 12)
     {
-=======
-    if (count == 12){
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
       digitalWrite(LED_MEASURE_MATRIX_ROW_3, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
->>>>>>> c99f25afd17dc0780a5fc37e8e1ef8f35e5fd75e
+
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
-<<<<<<< HEAD
     if (count == 13)
     {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
       midiNoteOn(0, HiHat, 127);
     }
 
     if (count == 14)
     {
-=======
-    if (count == 13){
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
-      midiNoteOn(0, HiHat, 127);
-    }
-
-    if (count == 14){
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
->>>>>>> c99f25afd17dc0780a5fc37e8e1ef8f35e5fd75e
+
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
     }
 
-<<<<<<< HEAD
     if (count == 15)
     {
-=======
-    if (count == 15){
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
->>>>>>> c99f25afd17dc0780a5fc37e8e1ef8f35e5fd75e
+
       midiNoteOn(0, HiHat, 127);
     }
 
@@ -651,7 +605,7 @@ void loop()
     }
   }
 
-  //readMatrix(measure_matrix_button, measure_matrix_led);
+  // readMatrix(measure_matrix_button, measure_matrix_led);
 
   /* RIGHT SECTION OF TEST BUTTONS (3 LEFTMOST BUTTONS) */
   // if (button_pressed(28)) // left button
