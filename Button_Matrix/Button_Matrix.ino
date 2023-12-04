@@ -1,37 +1,24 @@
 
-<<<<<<< HEAD
-byte rows[] = {0,1,2,3};
-const int rowCount = sizeof(rows)/sizeof(rows[0]);
 
-// JP2 and JP3 are outputs
-byte cols[] = {4,5,6,7,8,9};
-=======
+
 byte rows[] = {6,7,8,9};
 const int rowCount = sizeof(rows)/sizeof(rows[0]);
 
 // JP2 and JP3 are outputs
 byte cols[] = {2,3,4};
->>>>>>> f9bc5c13b27fcd2051b2e45829de4113078678b4
 const int colCount = sizeof(cols)/sizeof(cols[0]);
 
 byte keys[colCount][rowCount];
 
 
-<<<<<<< HEAD
+
 byte LED_rows[] = {22,21,20,19};
 const int LED_rowCount = sizeof(rows)/sizeof(rows[0]);
 
 // JP2 and JP3 are outputs
 byte LED_cols[] = {18,17,16,15,14,10};
 const int LED_colCount = sizeof(cols)/sizeof(cols[0]);
-=======
-byte LED_rows[] = {13,14,15,16};
-const int LED_rowCount = sizeof(LED_rows)/sizeof(LED_rows[0]);
 
-// JP2 and JP3 are outputs
-byte LED_cols[] = {10,11,12};
-const int LED_colCount = sizeof(LED_cols)/sizeof(LED_cols[0]);
->>>>>>> f9bc5c13b27fcd2051b2e45829de4113078678b4
 
 void setup() {
   // put your setup code here, to run once:
