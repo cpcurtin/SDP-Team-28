@@ -9,10 +9,7 @@
 
 // functions, extern variables, structs go here
 
-// struct matrix_coordinate{
-//   int row;
-//   int column;
-// };
+
 
 
 

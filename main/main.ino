@@ -620,7 +620,7 @@ void loop()
   
 
   readMatrix(measure_matrix_button, measure_matrix_led);
-  delay(5000);
+  // delay(5000);
   /* RIGHT SECTION OF TEST BUTTONS (3 LEFTMOST BUTTONS) */
   // if (button_pressed(28)) // left button
   // {
