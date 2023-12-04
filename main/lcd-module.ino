@@ -84,7 +84,7 @@ void array_scroll(struct lcd_nav *nav, int direction)
     free(temp_str);
     free(temp_str2);
   }
-  Serial.println("##############END SCROLL##############");
+  
 }
 
 struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction)
