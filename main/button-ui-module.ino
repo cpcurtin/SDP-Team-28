@@ -117,7 +117,7 @@ void measure_matrix_init(struct button_maxtrix_pin_config *button_cfg, struct bu
     for (size_t i = 0; i < led_cfg->width; i++)
     {
         pinMode(led_cfg->columns[i], OUTPUT);
-        digitalWrite(led_cfg->columns[i], HIGH);
+        digitalWrite(led_cfg->columns[i], LOW);
     }
     for (size_t i = 0; i < led_cfg->length; i++)
     {

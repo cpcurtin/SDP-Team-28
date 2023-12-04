@@ -395,6 +395,8 @@ void loop()
   if (ledMetro.check() == 1){
     if (count == 0){
       Serial.println("Hit");
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, Crash, 127);
@@ -403,74 +405,118 @@ void loop()
 
     if (count == 1){
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_1, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, HiHat, 127);
     }
 
     if (count == 2){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
     }
 
     if (count == 3){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, HiHat, 127);
     }
 
     if (count == 4){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
     if (count == 5){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
       midiNoteOn(0, HiHat, 127);
     }
 
     if (count == 6){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
     }
 
     if (count == 7){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
       midiNoteOn(0, HiHat, 127);
     }
 
     if (count == 8){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
     if (count == 9){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
     if (count == 10){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
     }
 
     if (count == 11){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
     if (count == 12){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
     if (count == 13){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
       midiNoteOn(0, HiHat, 127);
     }
 
     if (count == 14){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
     }
 
     if (count == 15){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
       midiNoteOn(0, HiHat, 127);
     }
 
@@ -530,7 +576,7 @@ void loop()
     }
   }
 
-  readMatrix(measure_matrix_button, measure_matrix_led);
+  //readMatrix(measure_matrix_button, measure_matrix_led);
 
   /* RIGHT SECTION OF TEST BUTTONS (3 LEFTMOST BUTTONS) */
   // if (button_pressed(28)) // left button
