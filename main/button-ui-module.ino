@@ -62,3 +62,51 @@ int button_pressed(int pin)
     }
     return 0;
 }
+// void palette_init(const struct button_maxtrix_pin_config *cfg)
+void button_matrix_init(struct button_maxtrix_pin_config *cfg)
+
+{
+    pinMode(28, INPUT);
+    pinMode(29, INPUT);
+    pinMode(30, INPUT);
+}
+
+void palette_assign(struct palette_matrix *palette, char *sound)
+{
+    // ACTUAL
+
+    // TEMPORARY
+    int cell_assigned = 0;
+
+    while ((!cell_assigned))
+    {
+        if (button_pressed(24))
+        {
+            break;
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (button_pressed(i + 28))
+            {
+              Serial.println(i+28);
+                (palette->cells[0][i])->sound = sound;
+                (palette->cells[0][i])->available = 0;
+                cell_assigned = 1;
+            }
+        }
+    }
+}
+void measure_matrix_led_init(struct button_maxtrix_pin_config *button_cfg,struct button_maxtrix_pin_config *led_cfg){
+  //  size_t width;  // The length of the array
+  // size_t length; // The length of the array
+  // int *rows;     // Flexible array member
+  // int *columns;  // Flexible array member
+  
+  for (size_t i=0;i<button_cfg->width;i++){
+    for (size_t i=0;i<led_cfg->length;i++){
+
+  }
+  }
+
+}

@@ -12,7 +12,7 @@
  *    PIN7:   DAC - DIN
  *    PIN8:   LCD - Digital 7
  *    PIN9:   MIDI Reset
- *    PIN10:
+ *    PIN10:  
  *    PIN11:
  *    PIN12:
  *    PIN13:
@@ -65,7 +65,7 @@
 #include "button-ui-module.h"
 #include "custom-sound-module.h"
 #include "test-module.h"
-// #include <LiquidCrystal.h>
+#include "midi-sound-module.h"
 
 /* PIN MACROS */
 // DAC
@@ -80,8 +80,6 @@
 #define LCD_DIGITAL_5 5
 #define LCD_DIGITAL_6 6
 #define LCD_DIGITAL_7 8
-#define LCD_ROWS 2
-#define LCD_COLUMNS 16
 
 // BUTTONS
 #define BUTTON_DPAD_UP 26
@@ -89,12 +87,48 @@
 #define BUTTON_DPAD_LEFT 24
 #define BUTTON_DPAD_RIGHT 27
 
-#define BUTTON_PALETTE_1 28
-#define BUTTON_PALETTE_2 29
-#define BUTTON_PALETTE_3 30
+#define BUTTON_MATRIX_ROW_1 999
+#define BUTTON_MATRIX_ROW_2 999
+#define BUTTON_MATRIX_ROW_3 999
+#define BUTTON_MATRIX_ROW_4 999
+
+#define BUTTON_MATRIX_COLUMN_1 28
+#define BUTTON_MATRIX_COLUMN_2 29
+#define BUTTON_MATRIX_COLUMN_3 30
+#define BUTTON_MATRIX_COLUMN_4 999
+#define BUTTON_MATRIX_COLUMN_5 999
+#define BUTTON_MATRIX_COLUMN_6 999
+#define BUTTON_MATRIX_COLUMN_7 999
+#define BUTTON_MATRIX_COLUMN_8 999
+#define BUTTON_MATRIX_COLUMN_9 999
+
+
+// MEASURE MATRIX BUTTONS
+#define BUTTON_MEASURE_MATRIX_ROW_1 41
+#define BUTTON_MEASURE_MATRIX_ROW_2 13
+#define BUTTON_MEASURE_MATRIX_ROW_3 14
+#define BUTTON_MEASURE_MATRIX_ROW_4 15
+#define BUTTON_MEASURE_MATRIX_COLUMN_1 23
+#define BUTTON_MEASURE_MATRIX_COLUMN_2 22
+#define BUTTON_MEASURE_MATRIX_COLUMN_3 19
+#define BUTTON_MEASURE_MATRIX_COLUMN_4 18
+#define BUTTON_MEASURE_MATRIX_COLUMN_5 17
+#define BUTTON_MEASURE_MATRIX_COLUMN_6 16
+
+// MEASURE MATRIX LEDS
+#define LED_MEASURE_MATRIX_ROW_1 32
+#define LED_MEASURE_MATRIX_ROW_2 31
+#define LED_MEASURE_MATRIX_ROW_3 33
+#define LED_MEASURE_MATRIX_ROW_4 34
+#define LED_MEASURE_MATRIX_COLUMN_1 40
+#define LED_MEASURE_MATRIX_COLUMN_2 39
+#define LED_MEASURE_MATRIX_COLUMN_3 38
+#define LED_MEASURE_MATRIX_COLUMN_4 37
+#define LED_MEASURE_MATRIX_COLUMN_5 36
+#define LED_MEASURE_MATRIX_COLUMN_6 35
 
 /**************************
-Midi Definitions 
+Midi Definitions
 **************************/
 // Pins
 #define VS1053 1
@@ -121,6 +155,18 @@ Midi Definitions
 #define Kick 35
 #define HiHat 42
 #define Crash 49
+
+// DYNAMIC OPTIONS
+#define LCD_ROWS 2
+#define LCD_COLUMNS 16
+#define MATRIX_ROWS 4
+#define MATRIX_COLUMNS 9
+
+#define MEASURE_MATRIX_ROWS 4
+#define MEASURE_MATRIX_COLUMNS 6
+
+#define PALETTE_MATRIX_ROWS 4
+#define PALETTE_MATRIX_COLUMNS 3
 
 struct lcd_pin_config
 {
@@ -167,17 +213,27 @@ struct nav_config
   struct array_with_size *sounds_midi;
   struct array_with_size *effects;
 };
-// struct lcd_nav
-// {
-//   char *name;
-//   char **ptr_str_array;
-//   struct lcd_nav **parent;
-//   struct lcd_nav **child;
-//   size_t size;
-//   char **lcd_state;
-//   int index;
-//   int depth;
-// };
+
+struct button_maxtrix_pin_config
+{
+  size_t width;  // The length of the array
+  size_t length; // The length of the array
+  int *rows;     // Flexible array member
+  int *columns;  // Flexible array member
+};
+
+struct palette_cell
+{
+  char *sound;
+  int available;
+};
+
+struct palette_matrix
+{
+  struct palette_cell ***cells;
+  int rows;
+  int columns;
+};
 
 LiquidCrystal *lcd;
 
@@ -186,15 +242,69 @@ int lcd_index = 0;
 struct lcd_nav *sounds;
 struct lcd_nav *nav_data_structure;
 struct lcd_nav *nav_state;
+struct palette_matrix *palette;
+struct button_maxtrix_pin_config *measure_matrix_button;
+struct button_maxtrix_pin_config *measure_matrix_led;
 
 char *selection;
 
 const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
 const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
-const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT, BUTTON_PALETTE_1};
+const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT};
+// create 2D array of palette_cell structs
 
 void setup()
 {
+  /* create hardware configuration objects */
+  struct button_maxtrix_pin_config *matrix_cfg = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
+  int matrix_rows[MATRIX_ROWS] = {BUTTON_MATRIX_ROW_1, BUTTON_MATRIX_ROW_2, BUTTON_MATRIX_ROW_3, BUTTON_MATRIX_ROW_4};
+  int matrix_columms[MATRIX_COLUMNS] = {BUTTON_MATRIX_COLUMN_1, BUTTON_MATRIX_COLUMN_2, BUTTON_MATRIX_COLUMN_3, BUTTON_MATRIX_COLUMN_4, BUTTON_MATRIX_COLUMN_5, BUTTON_MATRIX_COLUMN_6, BUTTON_MATRIX_COLUMN_7, BUTTON_MATRIX_COLUMN_8, BUTTON_MATRIX_COLUMN_9};
+  matrix_cfg->width = MATRIX_COLUMNS;
+  matrix_cfg->length = MATRIX_ROWS;
+  matrix_cfg->rows = matrix_rows;
+  matrix_cfg->columns = matrix_columms;
+
+
+// 
+// 
+// button & led measure matrix 
+// 
+// 
+struct button_maxtrix_pin_config *measure_matrix_button = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
+  int button_matrix_rows[MEASURE_MATRIX_ROWS] = {BUTTON_MEASURE_MATRIX_ROW_1,BUTTON_MEASURE_MATRIX_ROW_2,BUTTON_MEASURE_MATRIX_ROW_3,BUTTON_MEASURE_MATRIX_ROW_4};
+  int button_matrix_columms[MEASURE_MATRIX_COLUMNS] = {BUTTON_MEASURE_MATRIX_COLUMN_1,BUTTON_MEASURE_MATRIX_COLUMN_2,BUTTON_MEASURE_MATRIX_COLUMN_3,BUTTON_MEASURE_MATRIX_COLUMN_4,BUTTON_MEASURE_MATRIX_COLUMN_5,BUTTON_MEASURE_MATRIX_COLUMN_6};
+  measure_matrix_button->width = MATRIX_COLUMNS;
+  measure_matrix_button->length = MATRIX_ROWS;
+  measure_matrix_button->rows = button_matrix_rows;
+  measure_matrix_button->columns = button_matrix_columms;
+
+struct button_maxtrix_pin_config *measure_matrix_led = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
+  int led_matrix_rows[MEASURE_MATRIX_ROWS] = {LED_MEASURE_MATRIX_ROW_1,LED_MEASURE_MATRIX_ROW_2,LED_MEASURE_MATRIX_ROW_3,LED_MEASURE_MATRIX_ROW_4};
+  int led_matrix_columms[MEASURE_MATRIX_COLUMNS] = {LED_MEASURE_MATRIX_COLUMN_1,LED_MEASURE_MATRIX_COLUMN_2,LED_MEASURE_MATRIX_COLUMN_3,LED_MEASURE_MATRIX_COLUMN_4,LED_MEASURE_MATRIX_COLUMN_5,LED_MEASURE_MATRIX_COLUMN_6};
+  measure_matrix_led->width = MATRIX_COLUMNS;
+  measure_matrix_led->length = MATRIX_ROWS;
+  measure_matrix_led->rows = led_matrix_rows;
+  measure_matrix_led->columns = led_matrix_columms;
+// 
+// 
+// 
+// 
+// 
+
+
+
+  palette = (struct palette_matrix *)malloc(sizeof(struct palette_matrix));
+  palette->cells = (struct palette_cell ***)malloc(PALETTE_MATRIX_ROWS * sizeof(struct palette_cell *));
+  for (int m = 0; m < PALETTE_MATRIX_ROWS; m++)
+  {
+    palette->cells[m] = (struct palette_cell **)malloc(PALETTE_MATRIX_COLUMNS * sizeof(struct palette_cell));
+    for (int n = 0; n < PALETTE_MATRIX_COLUMNS; n++)
+    {
+      palette->cells[m][n] = (struct palette_cell *)malloc( sizeof(struct palette_cell));
+      (palette->cells[m][n])->sound = NULL;
+      (palette->cells[m][n])->available = 1;
+    }
+  }
 
   /* Intialize hardware */
   serial_init();
@@ -202,6 +312,9 @@ void setup()
   dpad_init(dpad_cfg);
   test_init();
   onboard_dac_init();
+  button_matrix_init(matrix_cfg);
+  button_matrix_init(matrix_cfg);
+  measure_matrix_led_init(measure_matrix_button,measure_matrix_led);
 
   struct nav_config *nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
   nav_cfg->effects = (struct array_with_size *)malloc(sizeof(struct array_with_size));
@@ -227,29 +340,34 @@ void setup()
   Serial.println("made it here3");
 
   (nav_cfg->sounds_custom = parsefiles());
-  Serial.println("made it here");
+  Serial.println("parsed files size");
+  Serial.println((nav_cfg->sounds_custom)->size);
+  playFile((nav_cfg->sounds_custom)->array[1]);
 
   lcd = lcd_init(lcd_cfg);
   nav_data_structure = nav_init(nav_cfg);
   nav_state = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
+  // Serial.println(((nav_state->child[0])->child[0])->size);
   nav_state = nav_data_structure;
 
+  Serial.println("PROGRAM LOOP BEGINS");
+  for (size_t i = 0; i < (nav_cfg->sounds_custom)->size; i++)
+  {
+    Serial.println((nav_cfg->sounds_custom)->array[i]);
+  }
+  delay(3000);
   lcd_display(lcd, nav_state->lcd_state);
 
-  Serial.println("PROGRAM LOOP BEGINS");
-  delay(3000);
-
   // Midi Init
-  MIDI.begin(31250);
-  pinMode(VS1053_RST, OUTPUT);
-  digitalWrite(VS1053_RST, LOW);
-  delay(10);
-  digitalWrite(VS1053_RST, HIGH);
-  delay(10);
-  midiSetChannelVolume(0, 127);
-  midiSetChannelBank(0, Drums1);
-  midiSetInstrument(0, 128);
-
+  // MIDI.begin(31250);
+  // pinMode(VS1053_RST, OUTPUT);
+  // digitalWrite(VS1053_RST, LOW);
+  // delay(10);
+  // digitalWrite(VS1053_RST, HIGH);
+  // delay(10);
+  // midiSetChannelVolume(0, 127);
+  // midiSetChannelBank(0, Drums1);
+  // midiSetInstrument(0, 128);
 }
 
 /* Main subroutine: follow software block diagram */
@@ -264,62 +382,83 @@ void loop()
 
   //   }
 
-
-  if (button_pressed(BUTTON_DPAD_LEFT))
+  if (button_pressed(BUTTON_DPAD_LEFT)) // return / exit
   {
     nav_state = nav_selection(nav_state, -1);
 
-    Serial.println("got here?");
     lcd_display(lcd, nav_state->lcd_state);
   }
-  if (button_pressed(BUTTON_DPAD_DOWN))
+  if (button_pressed(BUTTON_DPAD_DOWN)) // scroll down
   {
     array_scroll(nav_state, 1);
-    Serial.printf("%d %s\n", nav_state->index, nav_state->ptr_str_array[nav_state->index]);
     lcd_display(lcd, nav_state->lcd_state);
   }
-  if (button_pressed(BUTTON_DPAD_UP))
+  if (button_pressed(BUTTON_DPAD_UP)) // scroll up
   {
     array_scroll(nav_state, -1);
-    Serial.printf("%d %s\n", nav_state->index, nav_state->ptr_str_array[nav_state->index]);
     lcd_display(lcd, nav_state->lcd_state);
   }
-  if (button_pressed(BUTTON_DPAD_RIGHT))
+  if (button_pressed(BUTTON_DPAD_RIGHT)) // select
   {
-    nav_state = nav_selection(nav_state, 1);
-    // Serial.printf("forward, %s\n",selection);
-    lcd_display(lcd, nav_state->lcd_state);
+    if (strcmp(nav_state->name, "custom_sounds")==0)
+    {
+      Serial.println("made it here");
+      palette_assign(palette, nav_state->ptr_str_array[nav_state->index]);
+      for (int m = 0; m < PALETTE_MATRIX_ROWS; m++)
+      {
+
+        for (int n = 0; n < PALETTE_MATRIX_COLUMNS; n++)
+        {
+          Serial.println((palette->cells[m][n])->sound);
+        }
+      }
+    }
+    else
+    {
+      nav_state = nav_selection(nav_state, 1);
+      // Serial.printf("forward, %s\n",selection);
+      lcd_display(lcd, nav_state->lcd_state);
+    }
   }
+   for (int i = 0; i < 3; i++)
+        {
+            if (!(palette->cells[0][i])->available)
+            {
+              if(button_pressed(28+i)){
+            
+              playFile((palette->cells[0][i])->sound);}
+            }
+        }
 
   /* RIGHT SECTION OF TEST BUTTONS (3 LEFTMOST BUTTONS) */
-  if (button_pressed(28)) // left button
-  {
-    Serial.println("Button 28");
-    // example playing a sd file at current leaf string array index
-    if (nav_state->name==strdup("custom_sounds")){
-      // makes sure custom sound leaf node
-      Serial.println("Custom Sounds");
-      playFile(nav_state->ptr_str_array[nav_state->index]);
-    }
-    
-    
-    // Serial.printf("forward, %s\n",selection);
-    lcd_display(lcd, nav_state->lcd_state);
-  }
-  if (button_pressed(29)) // middle button
-  {
-    
-    // Serial.printf("forward, %s\n",selection);
-    lcd_display(lcd, nav_state->lcd_state);
-  }
-  if (button_pressed(30)) // right button
-  {
-    
-    // Serial.printf("forward, %s\n",selection);
-    lcd_display(lcd, nav_state->lcd_state);
-  }
+  // if (button_pressed(28)) // left button
+  // {
+  //   Serial.println("Button 28");
+  //   // example playing a sd file at current leaf string array index
+  //   if (strcmp(nav_state->name,"custom_sounds")){
+  //     // makes sure custom sound leaf node
+  //     Serial.println("Custom Sounds");
+  //     playFile(nav_state->ptr_str_array[nav_state->index]);
+  //   }
+
+  // //   // Serial.printf("forward, %s\n",selection);
+  // //   lcd_display(lcd, nav_state->lcd_state);
+  // }
+  // if (button_pressed(29)) // middle button
+  // {
+
+  //   // Serial.printf("forward, %s\n",selection);
+  //   lcd_display(lcd, nav_state->lcd_state);
+  // }
+  // if (button_pressed(30)) // right button
+  // {
+
+  //   // Serial.printf("forward, %s\n",selection);
+  //   lcd_display(lcd, nav_state->lcd_state);
+  // }
 
   // delay(1000);
+  // Serial.printf("CURRENT ARRAY SIZE: %s\n\n",nav_state->size);
 }
 
 void serial_init(void)
@@ -330,54 +469,4 @@ void serial_init(void)
     ; // wait for serial port to connect.
   }
   Serial.println("\n\n\n\n\nSerial Initialized<<<<<<<<<<<<<<");
-}
-
-void midiSetInstrument(uint8_t chan, uint8_t inst) {
-  if (chan > 15) return;
-  inst --; // page 32 has instruments starting with 1 not 0 :(
-  if (inst > 127) return;
-  
-  MIDI.write(PROGRAM | chan);  
-  MIDI.write(inst);
-}
-
-
-void midiSetChannelVolume(uint8_t chan, uint8_t vol) {
-  if (chan > 15) return;
-  if (vol > 127) return;
-  
-  MIDI.write(MESSAGE | chan);
-  MIDI.write(VOLUME);
-  MIDI.write(vol);
-}
-
-void midiSetChannelBank(uint8_t chan, uint8_t bank) {
-  if (chan > 15) return;
-  if (bank > 127) return;
-  
-  MIDI.write(MESSAGE | chan);
-  MIDI.write((uint8_t)BANK);
-  MIDI.write(bank);
-  Serial.println("Bank change");
-  Serial.println(bank);
-}
-
-void midiNoteOn(uint8_t chan, uint8_t n, uint8_t vel) {
-  if (chan > 15) return;
-  if (n > 127) return;
-  if (vel > 127) return;
-  
-  MIDI.write(NoteOn | chan);
-  MIDI.write(n);
-  MIDI.write(vel);
-}
-
-void midiNoteOff(uint8_t chan, uint8_t n, uint8_t vel) {
-  if (chan > 15) return;
-  if (n > 127) return;
-  if (vel > 127) return;
-  
-  MIDI.write(NoteOff | chan);
-  MIDI.write(n);
-  MIDI.write(vel);
 }
