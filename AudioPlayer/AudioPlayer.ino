@@ -182,8 +182,99 @@ void loop()
       //midiNoteOn(0, 38, 127);
       midiNoteOn(0, HiHat, 127);
     }
-    count++;
     if (count == 12){
+      //digitalWrite(LED12,LOW);
+      //midiNoteOff(0, 38, 127);
+      //digitalWrite(LED1,HIGH);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, Kick, 127);
+      //midiNoteOn(0, Crash, 127);
+    }
+    if (count == 13){
+      //digitalWrite(LED1,LOW);
+      //midiNoteOff(0, Kick, 127);
+      //digitalWrite(LED2,HIGH);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, HiHat, 127);
+    }
+    if (count == 14){
+      //digitalWrite(LED2,LOW);
+      //midiNoteOff(0, 38, 127);
+      //digitalWrite(LED3,HIGH);
+      //midiNoteOn(0, 38, 127);
+      //midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, HiHat, 127);
+    }
+    if (count == 15){
+      //digitalWrite(LED3,LOW);
+      //midiNoteOff(0, 38, 127);
+      //digitalWrite(LED4,HIGH);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, HiHat, 127);
+    }
+    if (count == 16){
+      //digitalWrite(LED4,LOW);
+      //midiNoteOff(0, 38, 127);
+      //digitalWrite(LED5,HIGH);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, Snare, 127);
+      midiNoteOn(0, HiHat, 127);
+    }
+    if (count == 17){
+      //digitalWrite(LED5,LOW);
+      //midiNoteOff(0, 38, 127);
+      //digitalWrite(LED6,HIGH);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, HiHat, 127);
+    }
+    if (count == 18){
+      //digitalWrite(LED6,LOW);
+      //midiNoteOff(0, 38, 127);
+      //digitalWrite(LED7,HIGH);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, HiHat, 127);
+    }
+    if (count == 19){
+      //digitalWrite(LED7,LOW);
+      //midiNoteOff(0, 38, 127);
+      //digitalWrite(LED8,HIGH);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, HiHat, 127);
+    }
+    if (count == 20){
+      //digitalWrite(LED8,LOW);
+      //midiNoteOff(0, 38, 127);
+      //digitalWrite(LED9,HIGH);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, HiHat, 127);
+    }
+    if (count == 21){
+      //digitalWrite(LED9,LOW);
+      //midiNoteOff(0, 38, 127);
+      //digitalWrite(LED10,HIGH);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, HiHat, 127);
+    }
+    if (count == 22){
+      //digitalWrite(LED10,LOW);
+      //midiNoteOff(0, 38, 127);
+      //digitalWrite(LED11,HIGH);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, Snare, 127);
+      midiNoteOn(0, HiHat, 127);
+    }
+    if (count == 23){
+      //digitalWrite(LED11,LOW);
+      //midiNoteOff(0, 38, 127);
+      //digitalWrite(LED12,HIGH);
+      //midiNoteOn(0, 38, 127);
+      midiNoteOn(0, HiHat, 127);
+    }
+    count++;
+    if (count == 24){
       count = 0;
     }
   }
