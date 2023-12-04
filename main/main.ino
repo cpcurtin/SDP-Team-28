@@ -264,6 +264,35 @@ void setup()
   matrix_cfg->rows = matrix_rows;
   matrix_cfg->columns = matrix_columms;
 
+
+// 
+// 
+// button & led measure matrix 
+// 
+// 
+struct button_maxtrix_pin_config *measure_matrix_button = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
+  int button_matrix_rows[MEASURE_MATRIX_ROWS] = {BUTTON_MEASURE_MATRIX_ROW_1,BUTTON_MEASURE_MATRIX_ROW_2,BUTTON_MEASURE_MATRIX_ROW_3,BUTTON_MEASURE_MATRIX_ROW_4};
+  int button_matrix_columms[MEASURE_MATRIX_COLUMNS] = {BUTTON_MEASURE_MATRIX_COLUMN_1,BUTTON_MEASURE_MATRIX_COLUMN_2,BUTTON_MEASURE_MATRIX_COLUMN_3,BUTTON_MEASURE_MATRIX_COLUMN_4,BUTTON_MEASURE_MATRIX_COLUMN_5,BUTTON_MEASURE_MATRIX_COLUMN_6};
+  measure_matrix_button->width = MATRIX_COLUMNS;
+  measure_matrix_button->length = MATRIX_ROWS;
+  measure_matrix_button->rows = button_matrix_rows;
+  measure_matrix_button->columns = button_matrix_columms;
+
+struct button_maxtrix_pin_config *measure_matrix_led = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
+  int led_matrix_rows[MEASURE_MATRIX_ROWS] = {LED_MEASURE_MATRIX_ROW_1,LED_MEASURE_MATRIX_ROW_2,LED_MEASURE_MATRIX_ROW_3,LED_MEASURE_MATRIX_ROW_4};
+  int led_matrix_columms[MEASURE_MATRIX_COLUMNS] = {LED_MEASURE_MATRIX_COLUMN_1,LED_MEASURE_MATRIX_COLUMN_2,LED_MEASURE_MATRIX_COLUMN_3,LED_MEASURE_MATRIX_COLUMN_4,LED_MEASURE_MATRIX_COLUMN_5,LED_MEASURE_MATRIX_COLUMN_6};
+  measure_matrix_led->width = MATRIX_COLUMNS;
+  measure_matrix_led->length = MATRIX_ROWS;
+  measure_matrix_led->rows = led_matrix_rows;
+  measure_matrix_led->columns = led_matrix_columms;
+// 
+// 
+// 
+// 
+// 
+
+
+
   palette = (struct palette_matrix *)malloc(sizeof(struct palette_matrix));
   palette->cells = (struct palette_cell ***)malloc(PALETTE_MATRIX_ROWS * sizeof(struct palette_cell *));
   for (int m = 0; m < PALETTE_MATRIX_ROWS; m++)
@@ -284,6 +313,8 @@ void setup()
   test_init();
   onboard_dac_init();
   button_matrix_init(matrix_cfg);
+  button_matrix_init(matrix_cfg);
+  measure_matrix_led_init(measure_matrix_button,measure_matrix_led);
 
   struct nav_config *nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
   nav_cfg->effects = (struct array_with_size *)malloc(sizeof(struct array_with_size));

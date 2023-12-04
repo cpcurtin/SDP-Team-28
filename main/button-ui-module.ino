@@ -98,5 +98,15 @@ void palette_assign(struct palette_matrix *palette, char *sound)
     }
 }
 void measure_matrix_led_init(struct button_maxtrix_pin_config *button_cfg,struct button_maxtrix_pin_config *led_cfg){
+  //  size_t width;  // The length of the array
+  // size_t length; // The length of the array
+  // int *rows;     // Flexible array member
+  // int *columns;  // Flexible array member
   
+  for (size_t i=0;i<button_cfg->width;i++){
+    for (size_t i=0;i<led_cfg->length;i++){
+
+  }
+  }
+
 }
