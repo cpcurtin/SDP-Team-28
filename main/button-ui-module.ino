@@ -105,27 +105,26 @@ void measure_matrix_init(struct button_maxtrix_pin_config &button_cfg, struct bu
     // int *columns;  // Flexible array member
     // init buttons
 
-for (size_t i = 0; i < button_cfg.width; i++)
+    for (size_t i = 0; i < button_cfg.width; i++)
     {
-        Serial.printf("%d ",button_cfg.columns[i]);
+        Serial.printf("%d ", button_cfg.columns[i]);
     }
     Serial.println("\tBUTTON COLUMNS");
     for (size_t i = 0; i < button_cfg.length; i++)
     {
-      Serial.printf("%d ",button_cfg.rows[i]);
-        
+        Serial.printf("%d ", button_cfg.rows[i]);
     }
     Serial.println("\tBUTTON ROWS");
 
     // init LED
     for (size_t i = 0; i < led_cfg.width; i++)
     {
-      Serial.printf("%d ",led_cfg.columns[i]);
+        Serial.printf("%d ", led_cfg.columns[i]);
     }
     Serial.println("\tBUTTON COLUMNS");
     for (size_t i = 0; i < led_cfg.length; i++)
     {
-      Serial.printf("%d ",led_cfg.rows[i]);
+        Serial.printf("%d ", led_cfg.rows[i]);
     }
     Serial.println("\tBUTTON ROWS");
 
@@ -152,25 +151,24 @@ for (size_t i = 0; i < button_cfg.width; i++)
 
     for (size_t i = 0; i < button_cfg.width; i++)
     {
-        Serial.printf("%d ",button_cfg.columns[i]);
+        Serial.printf("%d ", button_cfg.columns[i]);
     }
     Serial.println("\tBUTTON COLUMNS");
     for (size_t i = 0; i < button_cfg.length; i++)
     {
-      Serial.printf("%d ",button_cfg.rows[i]);
-        
+        Serial.printf("%d ", button_cfg.rows[i]);
     }
     Serial.println("\tBUTTON ROWS");
 
     // init LED
     for (size_t i = 0; i < led_cfg.width; i++)
     {
-      Serial.printf("%d ",led_cfg.columns[i]);
+        Serial.printf("%d ", led_cfg.columns[i]);
     }
     Serial.println("\tBUTTON COLUMNS");
     for (size_t i = 0; i < led_cfg.length; i++)
     {
-      Serial.printf("%d ",led_cfg.rows[i]);
+        Serial.printf("%d ", led_cfg.rows[i]);
     }
     Serial.println("\tBUTTON ROWS");
 }
@@ -178,46 +176,41 @@ for (size_t i = 0; i < button_cfg.width; i++)
 void readMatrix(struct button_maxtrix_pin_config &button_cfg, struct button_maxtrix_pin_config &led_cfg)
 {
 
-Serial.println("\n\n\n\n\n\n");
-  for (size_t i = 0; i < button_cfg.width; i++)
+    Serial.println("\n\n\n\n\n\n");
+    for (size_t i = 0; i < button_cfg.width; i++)
     {
-        Serial.printf("%d ",button_cfg.columns[i]);
+        Serial.printf("%d-%d ",i, button_cfg.columns[i]);
     }
     Serial.println("\tBUTTON COLUMNS");
     for (size_t i = 0; i < button_cfg.length; i++)
     {
-      Serial.printf("%d ",button_cfg.rows[i]);
-        
+        Serial.printf("%d-%d ",i,button_cfg.rows[i]);
     }
     Serial.println("\tBUTTON ROWS");
 
     // init LED
     for (size_t i = 0; i < led_cfg.width; i++)
     {
-      Serial.printf("%d ",led_cfg.columns[i]);
+        Serial.printf("%d-%d ",i, led_cfg.columns[i]);
     }
     Serial.println("\tBUTTON COLUMNS");
     for (size_t i = 0; i < led_cfg.length; i++)
     {
-      Serial.printf("%d ",led_cfg.rows[i]);
+        Serial.printf("%d-%d ",i, led_cfg.rows[i]);
     }
     Serial.println("\tBUTTON ROWS");
 
-
-
-    for (size_t column = 0; column<button_cfg.width;column++)
+    for (size_t column = 0; column < button_cfg.width; column++)
     {
         // col: set to output to low
         // byte curCol = cols[colIndex];
         // pinMode(curCol, OUTPUT);
         // digitalWrite(curCol, LOW);
-        pinMode(button_cfg.columns[column],OUTPUT);
-      digitalWrite(button_cfg.columns[column], LOW);
-        
-
+        pinMode(button_cfg.columns[column], OUTPUT);
+        digitalWrite(button_cfg.columns[column], LOW);
 
         // row: interate through the rows
-        for (size_t row= 0; row<button_cfg.length;row++)
+        for (size_t row = 0; row < button_cfg.length; row++)
         {
             // byte rowCol = rows[rowIndex];
             if (digitalRead(button_cfg.rows[row]) == 0)
@@ -238,7 +231,7 @@ Serial.println("\n\n\n\n\n\n");
 
         // disable the column
         // delay(1000);
-        pinMode(button_cfg.columns[column],INPUT_PULLUP);
+        pinMode(button_cfg.columns[column], INPUT_PULLUP);
     }
 }
 // void set_matrix_led(struct button_maxtrix_pin_config *led_cfg,struct matrix_coordinate coordinate, int state){
@@ -251,8 +244,6 @@ Serial.println("\n\n\n\n\n\n");
 //     digitalWrite(led_cfg->columns[coordinate.column], LOW);
 //                 digitalWrite(led_cfg->rows[coordinate.row], HIGH);
 //   }
-
-
 
 // }
 

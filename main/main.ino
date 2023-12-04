@@ -219,10 +219,10 @@ struct nav_config
 
 struct button_maxtrix_pin_config
 {
-  size_t width;  // The length of the array
-  size_t length; // The length of the array
-  int rows[4];     // Flexible array member
-  int columns[6];  // Flexible array member
+  size_t width;   // The length of the array
+  size_t length;  // The length of the array
+  int rows[5];    // Flexible array member
+  int columns[7]; // Flexible array member
 };
 
 struct palette_cell
@@ -278,21 +278,29 @@ void setup()
   //
   //
   // measure_matrix_button = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int button_matrix_rows[MEASURE_MATRIX_ROWS] = {BUTTON_MEASURE_MATRIX_ROW_1, BUTTON_MEASURE_MATRIX_ROW_2, BUTTON_MEASURE_MATRIX_ROW_3, BUTTON_MEASURE_MATRIX_ROW_4};
-  int button_matrix_columms[MEASURE_MATRIX_COLUMNS] = {BUTTON_MEASURE_MATRIX_COLUMN_1, BUTTON_MEASURE_MATRIX_COLUMN_2, BUTTON_MEASURE_MATRIX_COLUMN_3, BUTTON_MEASURE_MATRIX_COLUMN_4, BUTTON_MEASURE_MATRIX_COLUMN_5, BUTTON_MEASURE_MATRIX_COLUMN_6};
+  int button_matrix_rows[MEASURE_MATRIX_ROWS+1] = {BUTTON_MEASURE_MATRIX_ROW_1, BUTTON_MEASURE_MATRIX_ROW_2, BUTTON_MEASURE_MATRIX_ROW_3, BUTTON_MEASURE_MATRIX_ROW_4};
+  int button_matrix_columms[MEASURE_MATRIX_COLUMNS+1] = {BUTTON_MEASURE_MATRIX_COLUMN_1, BUTTON_MEASURE_MATRIX_COLUMN_2, BUTTON_MEASURE_MATRIX_COLUMN_3, BUTTON_MEASURE_MATRIX_COLUMN_4, BUTTON_MEASURE_MATRIX_COLUMN_5, BUTTON_MEASURE_MATRIX_COLUMN_6};
   measure_matrix_button.width = MEASURE_MATRIX_COLUMNS;
   measure_matrix_button.length = MEASURE_MATRIX_ROWS;
-  measure_matrix_button.rows = button_matrix_rows;
-  measure_matrix_button.columns = button_matrix_columms;
+
+ for (size_t i = 0; i < MEASURE_MATRIX_ROWS; ++i) {
+  measure_matrix_button.rows[i] = button_matrix_rows[i];
+}
+for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i) {
+  measure_matrix_button.columns[i] = button_matrix_columms[i];
+}
 
   // measure_matrix_led = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int led_matrix_rows[MEASURE_MATRIX_ROWS] = {LED_MEASURE_MATRIX_ROW_1, LED_MEASURE_MATRIX_ROW_2, LED_MEASURE_MATRIX_ROW_3, LED_MEASURE_MATRIX_ROW_4};
-  int led_matrix_columms[MEASURE_MATRIX_COLUMNS] = {LED_MEASURE_MATRIX_COLUMN_1, LED_MEASURE_MATRIX_COLUMN_2, LED_MEASURE_MATRIX_COLUMN_3, LED_MEASURE_MATRIX_COLUMN_4, LED_MEASURE_MATRIX_COLUMN_5, LED_MEASURE_MATRIX_COLUMN_6};
+  int led_matrix_rows[MEASURE_MATRIX_ROWS+1] = {LED_MEASURE_MATRIX_ROW_1, LED_MEASURE_MATRIX_ROW_2, LED_MEASURE_MATRIX_ROW_3, LED_MEASURE_MATRIX_ROW_4};
+  int led_matrix_columms[MEASURE_MATRIX_COLUMNS+1] = {LED_MEASURE_MATRIX_COLUMN_1, LED_MEASURE_MATRIX_COLUMN_2, LED_MEASURE_MATRIX_COLUMN_3, LED_MEASURE_MATRIX_COLUMN_4, LED_MEASURE_MATRIX_COLUMN_5, LED_MEASURE_MATRIX_COLUMN_6};
   measure_matrix_led.width = MEASURE_MATRIX_COLUMNS;
   measure_matrix_led.length = MEASURE_MATRIX_ROWS;
-  measure_matrix_led.rows = led_matrix_rows;
-  measure_matrix_led.columns = led_matrix_columms;
-
+  for (size_t i = 0; i < MEASURE_MATRIX_ROWS; ++i) {
+  measure_matrix_led.rows[i] = led_matrix_rows[i];
+}
+for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i) {
+  measure_matrix_led.columns[i] = led_matrix_columms[i];
+}
 
   // struct button_matrix_pin led_temp = measure_matrix_led;
   // struct button_matrix_pin button_temp = measure_matrix_button;
@@ -609,36 +617,10 @@ void loop()
     }
   }
 
-
-
-Serial.println("\n\n\n\n\n\n");
-  for (size_t i = 0; i < measure_matrix_button.width; i++)
-    {
-        Serial.printf("%d ",measure_matrix_button.columns[i]);
-    }
-    Serial.println("\tBUTTON COLUMNS");
-    for (size_t i = 0; i < measure_matrix_button.length; i++)
-    {
-      Serial.printf("%d ",measure_matrix_button.rows[i]);
-        
-    }
-    Serial.println("\tBUTTON ROWS");
-
-    // init LED
-    for (size_t i = 0; i < measure_matrix_led.width; i++)
-    {
-      Serial.printf("%d ",measure_matrix_led.columns[i]);
-    }
-    Serial.println("\tBUTTON COLUMNS");
-    for (size_t i = 0; i < measure_matrix_led.length; i++)
-    {
-      Serial.printf("%d ",measure_matrix_led.rows[i]);
-    }
-    Serial.println("\tBUTTON ROWS");
-
+  
 
   readMatrix(measure_matrix_button, measure_matrix_led);
-delay(5000);
+  delay(5000);
   /* RIGHT SECTION OF TEST BUTTONS (3 LEFTMOST BUTTONS) */
   // if (button_pressed(28)) // left button
   // {
