@@ -66,6 +66,7 @@
 #include "custom-sound-module.h"
 #include "test-module.h"
 #include "midi-sound-module.h"
+#include <Metro.h>
 
 /* PIN MACROS */
 // DAC
@@ -253,6 +254,10 @@ const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
 const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT};
 // create 2D array of palette_cell structs
 
+// Metronome Definition
+Metro ledMetro = Metro(250);
+int count = 0;
+
 void setup()
 {
   /* create hardware configuration objects */
@@ -359,15 +364,21 @@ struct button_maxtrix_pin_config *measure_matrix_led = (struct button_maxtrix_pi
   lcd_display(lcd, nav_state->lcd_state);
 
   // Midi Init
-  // MIDI.begin(31250);
-  // pinMode(VS1053_RST, OUTPUT);
-  // digitalWrite(VS1053_RST, LOW);
-  // delay(10);
-  // digitalWrite(VS1053_RST, HIGH);
-  // delay(10);
-  // midiSetChannelVolume(0, 127);
-  // midiSetChannelBank(0, Drums1);
-  // midiSetInstrument(0, 128);
+  MIDI.begin(31250);
+  pinMode(VS1053_RST, OUTPUT);
+  digitalWrite(VS1053_RST, LOW);
+  delay(10);
+  digitalWrite(VS1053_RST, HIGH);
+  delay(10);
+  midiSetChannelVolume(0, 127);
+  midiSetChannelBank(0, Drums1);
+
+  midiSetInstrument(0, 128);
+  /***************************************** 
+  PUT THIS LINE AT THE TOP OF ALL PERCUSSIVE SOUND BLOCKS SO IT WILL 
+  START AS A PERCUSION SOUND:
+  midiSetInstrument(0,128); 
+  *****************************************/
 }
 
 /* Main subroutine: follow software block diagram */
@@ -381,6 +392,94 @@ void loop()
   //  if(check_ninput(dpad_cfg)){
 
   //   }
+  // Main Timing Loop for 4x4 Measure Matrix
+  if (ledMetro.check() == 1){
+    if (count == 0){
+      Serial.println("Hit");
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+      midiNoteOn(0, Crash, 127);
+      midiNoteOn(0, Kick, 127);
+    }
+
+    if (count == 1){
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+      midiNoteOn(0, HiHat, 127);
+    }
+
+    if (count == 2){
+      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, Snare, 127);
+    }
+
+    if (count == 3){
+      midiNoteOn(0, HiHat, 127);
+    }
+
+    if (count == 4){
+      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, Kick, 127);
+    }
+
+    if (count == 5){
+      midiNoteOn(0, HiHat, 127);
+    }
+
+    if (count == 6){
+      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, Snare, 127);
+    }
+
+    if (count == 7){
+      midiNoteOn(0, HiHat, 127);
+    }
+
+    if (count == 8){
+      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, Kick, 127);
+    }
+
+    if (count == 9){
+      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, Kick, 127);
+    }
+
+    if (count == 10){
+      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, Snare, 127);
+    }
+
+    if (count == 11){
+      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, Kick, 127);
+    }
+
+    if (count == 12){
+      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, Kick, 127);
+    }
+
+    if (count == 13){
+      midiNoteOn(0, HiHat, 127);
+    }
+
+    if (count == 14){
+      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, Snare, 127);
+    }
+
+    if (count == 15){
+      midiNoteOn(0, HiHat, 127);
+    }
+
+    count++;
+    if (count == 16){
+      count = 0;
+    }
+  }
 
   if (button_pressed(BUTTON_DPAD_LEFT)) // return / exit
   {
