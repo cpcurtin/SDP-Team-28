@@ -89,7 +89,7 @@ void palette_assign(struct palette_matrix *palette, char *sound)
         {
             if (button_pressed(i + 28))
             {
-              Serial.println(i+28);
+                Serial.println(i + 28);
                 (palette->cells[0][i])->sound = sound;
                 (palette->cells[0][i])->available = 0;
                 cell_assigned = 1;
@@ -97,16 +97,108 @@ void palette_assign(struct palette_matrix *palette, char *sound)
         }
     }
 }
-void measure_matrix_led_init(struct button_maxtrix_pin_config *button_cfg,struct button_maxtrix_pin_config *led_cfg){
-  //  size_t width;  // The length of the array
-  // size_t length; // The length of the array
-  // int *rows;     // Flexible array member
-  // int *columns;  // Flexible array member
-  
-  for (size_t i=0;i<button_cfg->width;i++){
-    for (size_t i=0;i<led_cfg->length;i++){
+void measure_matrix_init(struct button_maxtrix_pin_config *button_cfg, struct button_maxtrix_pin_config *led_cfg)
+{
+    //  size_t width;  // The length of the array
+    // size_t length; // The length of the array
+    // int *rows;     // Flexible array member
+    // int *columns;  // Flexible array member
+    // init buttons
+    for (size_t i = 0; i < button_cfg->width; i++)
+    {
+        pinMode(button_cfg->columns[i], INPUT_PULLUP);
+    }
+    for (size_t i = 0; i < button_cfg->length; i++)
+    {
+        pinMode(button_cfg->rows[i], INPUT_PULLUP);
+    }
 
-  }
-  }
-
+    // init LED
+    for (size_t i = 0; i < led_cfg->width; i++)
+    {
+        pinMode(led_cfg->columns[i], OUTPUT);
+        digitalWrite(led_cfg->columns[i], HIGH);
+    }
+    for (size_t i = 0; i < led_cfg->length; i++)
+    {
+        pinMode(led_cfg->rows[i], OUTPUT);
+        digitalWrite(led_cfg->rows[i], HIGH);
+    }
 }
+
+void readMatrix(struct button_maxtrix_pin_config *button_cfg, struct button_maxtrix_pin_config *led_cfg)
+{
+    for (size_t column = 0; column<button_cfg->width;column++)
+    {
+        // col: set to output to low
+        // byte curCol = cols[colIndex];
+        // pinMode(curCol, OUTPUT);
+        // digitalWrite(curCol, LOW);
+        pinMode(button_cfg->columns[column],OUTPUT);
+      digitalWrite(button_cfg->columns[column], LOW);
+        
+
+
+        // row: interate through the rows
+        for (size_t row= 0; row<button_cfg->length;row++)
+        {
+            // byte rowCol = rows[rowIndex];
+            if (digitalRead(button_cfg->rows[row]) == 0)
+            {
+                Serial.println("Push");
+                Serial.print(row);
+                Serial.print(column);
+                digitalWrite(led_cfg->columns[column], HIGH);
+                digitalWrite(led_cfg->rows[row], LOW);
+            }
+
+            else
+            {
+                digitalWrite(led_cfg->columns[column], LOW);
+                digitalWrite(led_cfg->rows[row], HIGH);
+            }
+        }
+
+        // disable the column
+        // delay(1000);
+        pinMode(column, INPUT_PULLUP);
+    }
+}
+
+// void readMatrix() {
+// 	// iterate the columns
+// 	for (int colIndex=0; colIndex < colCount; colIndex++) {
+// 		// col: set to output to low
+// 		byte curCol = cols[colIndex];
+// 		pinMode(curCol, OUTPUT);
+// 		digitalWrite(curCol, LOW);
+
+// 		// row: interate through the rows
+// 		for (int rowIndex=0; rowIndex < rowCount; rowIndex++) {
+// 			byte rowCol = rows[rowIndex];
+// 			//pinMode(rowCol, INPUT_PULLUP);
+// 			//keys[colIndex][rowIndex] = digitalRead(rowCol);
+// 		//	pinMode(rowCol, INPUT);
+//       if (digitalRead(rows[rowIndex])==0){
+//         Serial.println("Push");
+//         Serial.print(rowIndex);
+//         Serial.print(colIndex);
+//         digitalWrite(LED_cols[colIndex], HIGH);
+//         digitalWrite(LED_rows[rowIndex], LOW);
+
+//       }
+
+//       else{
+//         digitalWrite(LED_cols[colIndex], LOW);
+//         digitalWrite(LED_rows[rowIndex], HIGH);
+
+//       }
+
+// 		}
+
+// 		// disable the column
+//     //delay(1000);
+// 		pinMode(curCol, INPUT_PULLUP);
+
+// 	}
+// }

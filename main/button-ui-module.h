@@ -8,6 +8,14 @@
 #define BUTTON_UI_MODULE_H
 
 // functions, extern variables, structs go here
+
+// struct matrix_coordinate{
+//   int x;
+//   int y;
+// };
+
+
+
 void dpad_init(const struct dpad_pin_config &cfg);
 void dpad_read(const struct dpad_pin_config &cfg);
 
@@ -20,7 +28,8 @@ int button_pressed(int pin);
 void button_matrix_init(struct button_maxtrix_pin_config *cfg);
 // void measure_matrix_init(struct)
 void palette_assign(struct palette_matrix *palette, char *sound);
-void measure_matrix_led_init(struct button_maxtrix_pin_config *button_cfg,struct button_maxtrix_pin_config *led_cfg);
+void measure_matrix_init(struct button_maxtrix_pin_config *button_cfg,struct button_maxtrix_pin_config *led_cfg);
+void readMatrix(struct button_maxtrix_pin_config *button_cfg, struct button_maxtrix_pin_config *led_cfg);
 
 
 #endif // EXAMPLE_MODULE_H

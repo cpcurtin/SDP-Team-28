@@ -12,7 +12,7 @@
  *    PIN7:   DAC - DIN
  *    PIN8:   LCD - Digital 7
  *    PIN9:   MIDI Reset
- *    PIN10:  
+ *    PIN10:
  *    PIN11:
  *    PIN12:
  *    PIN13:
@@ -102,13 +102,13 @@
 #define BUTTON_MATRIX_COLUMN_8 999
 #define BUTTON_MATRIX_COLUMN_9 999
 
-
 // MEASURE MATRIX BUTTONS
-#define BUTTON_MEASURE_MATRIX_ROW_1 41
-#define BUTTON_MEASURE_MATRIX_ROW_2 13
-#define BUTTON_MEASURE_MATRIX_ROW_3 14
-#define BUTTON_MEASURE_MATRIX_ROW_4 15
-#define BUTTON_MEASURE_MATRIX_COLUMN_1 23
+#define BUTTON_MEASURE_MATRIX_ROW_1 32 
+#define BUTTON_MEASURE_MATRIX_ROW_2 31 
+#define BUTTON_MEASURE_MATRIX_ROW_3 34
+#define BUTTON_MEASURE_MATRIX_ROW_4 33
+
+#define BUTTON_MEASURE_MATRIX_COLUMN_1 23 
 #define BUTTON_MEASURE_MATRIX_COLUMN_2 22
 #define BUTTON_MEASURE_MATRIX_COLUMN_3 19
 #define BUTTON_MEASURE_MATRIX_COLUMN_4 18
@@ -116,16 +116,18 @@
 #define BUTTON_MEASURE_MATRIX_COLUMN_6 16
 
 // MEASURE MATRIX LEDS
-#define LED_MEASURE_MATRIX_ROW_1 32
-#define LED_MEASURE_MATRIX_ROW_2 31
-#define LED_MEASURE_MATRIX_ROW_3 33
-#define LED_MEASURE_MATRIX_ROW_4 34
-#define LED_MEASURE_MATRIX_COLUMN_1 40
-#define LED_MEASURE_MATRIX_COLUMN_2 39
-#define LED_MEASURE_MATRIX_COLUMN_3 38
-#define LED_MEASURE_MATRIX_COLUMN_4 37
-#define LED_MEASURE_MATRIX_COLUMN_5 36
-#define LED_MEASURE_MATRIX_COLUMN_6 35
+
+#define LED_MEASURE_MATRIX_ROW_1 38
+#define LED_MEASURE_MATRIX_ROW_2 37
+#define LED_MEASURE_MATRIX_ROW_3 36
+#define LED_MEASURE_MATRIX_ROW_4 35
+
+#define LED_MEASURE_MATRIX_COLUMN_1 15
+#define LED_MEASURE_MATRIX_COLUMN_2 14
+#define LED_MEASURE_MATRIX_COLUMN_3 13
+#define LED_MEASURE_MATRIX_COLUMN_4 41
+#define LED_MEASURE_MATRIX_COLUMN_5 40
+#define LED_MEASURE_MATRIX_COLUMN_6 39
 
 /**************************
 Midi Definitions
@@ -264,34 +266,31 @@ void setup()
   matrix_cfg->rows = matrix_rows;
   matrix_cfg->columns = matrix_columms;
 
-
-// 
-// 
-// button & led measure matrix 
-// 
-// 
-struct button_maxtrix_pin_config *measure_matrix_button = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int button_matrix_rows[MEASURE_MATRIX_ROWS] = {BUTTON_MEASURE_MATRIX_ROW_1,BUTTON_MEASURE_MATRIX_ROW_2,BUTTON_MEASURE_MATRIX_ROW_3,BUTTON_MEASURE_MATRIX_ROW_4};
-  int button_matrix_columms[MEASURE_MATRIX_COLUMNS] = {BUTTON_MEASURE_MATRIX_COLUMN_1,BUTTON_MEASURE_MATRIX_COLUMN_2,BUTTON_MEASURE_MATRIX_COLUMN_3,BUTTON_MEASURE_MATRIX_COLUMN_4,BUTTON_MEASURE_MATRIX_COLUMN_5,BUTTON_MEASURE_MATRIX_COLUMN_6};
-  measure_matrix_button->width = MATRIX_COLUMNS;
-  measure_matrix_button->length = MATRIX_ROWS;
+  //
+  //
+  // button & led measure matrix
+  //
+  //
+  struct button_maxtrix_pin_config *measure_matrix_button = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
+  int button_matrix_rows[MEASURE_MATRIX_ROWS] = {BUTTON_MEASURE_MATRIX_ROW_1, BUTTON_MEASURE_MATRIX_ROW_2, BUTTON_MEASURE_MATRIX_ROW_3, BUTTON_MEASURE_MATRIX_ROW_4};
+  int button_matrix_columms[MEASURE_MATRIX_COLUMNS] = {BUTTON_MEASURE_MATRIX_COLUMN_1, BUTTON_MEASURE_MATRIX_COLUMN_2, BUTTON_MEASURE_MATRIX_COLUMN_3, BUTTON_MEASURE_MATRIX_COLUMN_4, BUTTON_MEASURE_MATRIX_COLUMN_5, BUTTON_MEASURE_MATRIX_COLUMN_6};
+  measure_matrix_button->width = MEASURE_MATRIX_COLUMNS;
+  measure_matrix_button->length = MEASURE_MATRIX_ROWS;
   measure_matrix_button->rows = button_matrix_rows;
   measure_matrix_button->columns = button_matrix_columms;
 
-struct button_maxtrix_pin_config *measure_matrix_led = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int led_matrix_rows[MEASURE_MATRIX_ROWS] = {LED_MEASURE_MATRIX_ROW_1,LED_MEASURE_MATRIX_ROW_2,LED_MEASURE_MATRIX_ROW_3,LED_MEASURE_MATRIX_ROW_4};
-  int led_matrix_columms[MEASURE_MATRIX_COLUMNS] = {LED_MEASURE_MATRIX_COLUMN_1,LED_MEASURE_MATRIX_COLUMN_2,LED_MEASURE_MATRIX_COLUMN_3,LED_MEASURE_MATRIX_COLUMN_4,LED_MEASURE_MATRIX_COLUMN_5,LED_MEASURE_MATRIX_COLUMN_6};
-  measure_matrix_led->width = MATRIX_COLUMNS;
-  measure_matrix_led->length = MATRIX_ROWS;
+  struct button_maxtrix_pin_config *measure_matrix_led = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
+  int led_matrix_rows[MEASURE_MATRIX_ROWS] = {LED_MEASURE_MATRIX_ROW_1, LED_MEASURE_MATRIX_ROW_2, LED_MEASURE_MATRIX_ROW_3, LED_MEASURE_MATRIX_ROW_4};
+  int led_matrix_columms[MEASURE_MATRIX_COLUMNS] = {LED_MEASURE_MATRIX_COLUMN_1, LED_MEASURE_MATRIX_COLUMN_2, LED_MEASURE_MATRIX_COLUMN_3, LED_MEASURE_MATRIX_COLUMN_4, LED_MEASURE_MATRIX_COLUMN_5, LED_MEASURE_MATRIX_COLUMN_6};
+  measure_matrix_led->width = MEASURE_MATRIX_COLUMNS;
+  measure_matrix_led->length = MEASURE_MATRIX_ROWS;
   measure_matrix_led->rows = led_matrix_rows;
   measure_matrix_led->columns = led_matrix_columms;
-// 
-// 
-// 
-// 
-// 
-
-
+  //
+  //
+  //
+  //
+  //
 
   palette = (struct palette_matrix *)malloc(sizeof(struct palette_matrix));
   palette->cells = (struct palette_cell ***)malloc(PALETTE_MATRIX_ROWS * sizeof(struct palette_cell *));
@@ -300,7 +299,7 @@ struct button_maxtrix_pin_config *measure_matrix_led = (struct button_maxtrix_pi
     palette->cells[m] = (struct palette_cell **)malloc(PALETTE_MATRIX_COLUMNS * sizeof(struct palette_cell));
     for (int n = 0; n < PALETTE_MATRIX_COLUMNS; n++)
     {
-      palette->cells[m][n] = (struct palette_cell *)malloc( sizeof(struct palette_cell));
+      palette->cells[m][n] = (struct palette_cell *)malloc(sizeof(struct palette_cell));
       (palette->cells[m][n])->sound = NULL;
       (palette->cells[m][n])->available = 1;
     }
@@ -314,7 +313,7 @@ struct button_maxtrix_pin_config *measure_matrix_led = (struct button_maxtrix_pi
   onboard_dac_init();
   button_matrix_init(matrix_cfg);
   button_matrix_init(matrix_cfg);
-  measure_matrix_led_init(measure_matrix_button,measure_matrix_led);
+  measure_matrix_init(measure_matrix_button, measure_matrix_led);
 
   struct nav_config *nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
   nav_cfg->effects = (struct array_with_size *)malloc(sizeof(struct array_with_size));
@@ -400,7 +399,7 @@ void loop()
   }
   if (button_pressed(BUTTON_DPAD_RIGHT)) // select
   {
-    if (strcmp(nav_state->name, "custom_sounds")==0)
+    if (strcmp(nav_state->name, "custom_sounds") == 0)
     {
       Serial.println("made it here");
       palette_assign(palette, nav_state->ptr_str_array[nav_state->index]);
@@ -420,15 +419,19 @@ void loop()
       lcd_display(lcd, nav_state->lcd_state);
     }
   }
-   for (int i = 0; i < 3; i++)
-        {
-            if (!(palette->cells[0][i])->available)
-            {
-              if(button_pressed(28+i)){
-            
-              playFile((palette->cells[0][i])->sound);}
-            }
-        }
+  for (int i = 0; i < 3; i++)
+  {
+    if (!(palette->cells[0][i])->available)
+    {
+      if (button_pressed(28 + i))
+      {
+
+        playFile((palette->cells[0][i])->sound);
+      }
+    }
+  }
+
+  readMatrix(measure_matrix_button, measure_matrix_led);
 
   /* RIGHT SECTION OF TEST BUTTONS (3 LEFTMOST BUTTONS) */
   // if (button_pressed(28)) // left button
