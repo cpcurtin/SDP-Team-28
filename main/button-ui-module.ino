@@ -26,19 +26,19 @@ int check_ninput(const struct dpad_pin_config &cfg)
     {
         int pressedCount = 0;
 
-        if (digitalRead(cfg.left) == HIGH)
+        if (digitalRead(cfg.left) == LOW)
         {
             pressedCount++;
         }
-        if (digitalRead(cfg.down) == HIGH)
+        if (digitalRead(cfg.down) == LOW)
         {
             pressedCount++;
         }
-        if (digitalRead(cfg.up) == HIGH)
+        if (digitalRead(cfg.up) == LOW)
         {
             pressedCount++;
         }
-        if (digitalRead(cfg.right) == HIGH)
+        if (digitalRead(cfg.right) == LOW)
         {
             pressedCount++;
         }
@@ -50,10 +50,10 @@ int check_ninput(const struct dpad_pin_config &cfg)
 int button_pressed(int pin)
 {
     int buttonState = digitalRead(pin);
-    if (buttonState == HIGH)
+    if (buttonState == LOW)
     {
         Serial.printf("pressed - %d\n", pin);
-        while (buttonState == HIGH)
+        while (buttonState == LOW)
         {
             buttonState = digitalRead(pin);
         }
@@ -117,12 +117,12 @@ void measure_matrix_init(struct button_maxtrix_pin_config *button_cfg, struct bu
     for (size_t i = 0; i < led_cfg->width; i++)
     {
         pinMode(led_cfg->columns[i], OUTPUT);
-        digitalWrite(led_cfg->columns[i], HIGH);
+        digitalWrite(led_cfg->columns[i], LOW);
     }
     for (size_t i = 0; i < led_cfg->length; i++)
     {
         pinMode(led_cfg->rows[i], OUTPUT);
-        digitalWrite(led_cfg->rows[i], HIGH);
+        digitalWrite(led_cfg->rows[i], LOW);
     }
 }
 
@@ -148,14 +148,14 @@ void readMatrix(struct button_maxtrix_pin_config *button_cfg, struct button_maxt
                 Serial.println("Push");
                 Serial.print(row);
                 Serial.print(column);
-                digitalWrite(led_cfg->columns[column], HIGH);
+                digitalWrite(led_cfg->columns[column], LOW);
                 digitalWrite(led_cfg->rows[row], LOW);
             }
 
             else
             {
                 digitalWrite(led_cfg->columns[column], LOW);
-                digitalWrite(led_cfg->rows[row], HIGH);
+                digitalWrite(led_cfg->rows[row], LOW);
             }
         }
 
@@ -164,6 +164,20 @@ void readMatrix(struct button_maxtrix_pin_config *button_cfg, struct button_maxt
         pinMode(column, INPUT_PULLUP);
     }
 }
+// void set_matrix_led(struct button_maxtrix_pin_config *led_cfg,struct matrix_coordinate coordinate, int state){
+
+//   if (state){
+//     digitalWrite(led_cfg->columns[coordinate.column], LOW);
+//                 digitalWrite(led_cfg->rows[coordinate.row], LOW);
+//   }
+//   else{
+//     digitalWrite(led_cfg->columns[coordinate.column], LOW);
+//                 digitalWrite(led_cfg->rows[coordinate.row], HIGH);
+//   }
+
+
+
+// }
 
 // void readMatrix() {
 // 	// iterate the columns
@@ -183,14 +197,14 @@ void readMatrix(struct button_maxtrix_pin_config *button_cfg, struct button_maxt
 //         Serial.println("Push");
 //         Serial.print(rowIndex);
 //         Serial.print(colIndex);
-//         digitalWrite(LED_cols[colIndex], HIGH);
+//         digitalWrite(LED_cols[colIndex], LOW);
 //         digitalWrite(LED_rows[rowIndex], LOW);
 
 //       }
 
 //       else{
 //         digitalWrite(LED_cols[colIndex], LOW);
-//         digitalWrite(LED_rows[rowIndex], HIGH);
+//         digitalWrite(LED_rows[rowIndex], LOW);
 
 //       }
 

@@ -10,8 +10,8 @@
 // functions, extern variables, structs go here
 
 // struct matrix_coordinate{
-//   int x;
-//   int y;
+//   int row;
+//   int column;
 // };
 
 
@@ -30,6 +30,8 @@ void button_matrix_init(struct button_maxtrix_pin_config *cfg);
 void palette_assign(struct palette_matrix *palette, char *sound);
 void measure_matrix_init(struct button_maxtrix_pin_config *button_cfg,struct button_maxtrix_pin_config *led_cfg);
 void readMatrix(struct button_maxtrix_pin_config *button_cfg, struct button_maxtrix_pin_config *led_cfg);
+
+// void set_matrix_led(struct matrix_coordinate, int state);
 
 
 #endif // EXAMPLE_MODULE_H

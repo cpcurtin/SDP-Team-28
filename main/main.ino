@@ -104,12 +104,12 @@
 #define BUTTON_MATRIX_COLUMN_9 999
 
 // MEASURE MATRIX BUTTONS
-#define BUTTON_MEASURE_MATRIX_ROW_1 32 
-#define BUTTON_MEASURE_MATRIX_ROW_2 31 
+#define BUTTON_MEASURE_MATRIX_ROW_1 32
+#define BUTTON_MEASURE_MATRIX_ROW_2 31
 #define BUTTON_MEASURE_MATRIX_ROW_3 34
 #define BUTTON_MEASURE_MATRIX_ROW_4 33
 
-#define BUTTON_MEASURE_MATRIX_COLUMN_1 23 
+#define BUTTON_MEASURE_MATRIX_COLUMN_1 23
 #define BUTTON_MEASURE_MATRIX_COLUMN_2 22
 #define BUTTON_MEASURE_MATRIX_COLUMN_3 19
 #define BUTTON_MEASURE_MATRIX_COLUMN_4 18
@@ -346,7 +346,7 @@ void setup()
   (nav_cfg->sounds_custom = parsefiles());
   Serial.println("parsed files size");
   Serial.println((nav_cfg->sounds_custom)->size);
-  playFile((nav_cfg->sounds_custom)->array[1]);
+  // playFile((nav_cfg->sounds_custom)->array[1]);
 
   lcd = lcd_init(lcd_cfg);
   nav_data_structure = nav_init(nav_cfg);
@@ -373,10 +373,10 @@ void setup()
   midiSetChannelBank(0, Drums1);
 
   midiSetInstrument(0, 128);
-  /***************************************** 
-  PUT THIS LINE AT THE TOP OF ALL PERCUSSIVE SOUND BLOCKS SO IT WILL 
+  /*****************************************
+  PUT THIS LINE AT THE TOP OF ALL PERCUSSIVE SOUND BLOCKS SO IT WILL
   START AS A PERCUSION SOUND:
-  midiSetInstrument(0,128); 
+  midiSetInstrument(0,128);
   *****************************************/
 }
 
@@ -392,16 +392,20 @@ void loop()
 
   //   }
   // Main Timing Loop for 4x4 Measure Matrix
-  if (ledMetro.check() == 1){
-    if (count == 0){
+  if (ledMetro.check() == 1)
+  {
+    if (count == 0)
+    {
       Serial.println("Hit");
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, Crash, 127);
       midiNoteOn(0, Kick, 127);
+      playFile((nav_cfg->sounds_custom)->array[0]);
     }
 
-    if (count == 1){
+    if (count == 1)
+    {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
@@ -409,73 +413,88 @@ void loop()
       midiNoteOn(0, HiHat, 127);
     }
 
-    if (count == 2){
+    if (count == 2)
+    {
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
     }
 
-    if (count == 3){
+    if (count == 3)
+    {
       midiNoteOn(0, HiHat, 127);
     }
 
-    if (count == 4){
+    if (count == 4)
+    {
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
-    if (count == 5){
+    if (count == 5)
+    {
       midiNoteOn(0, HiHat, 127);
     }
 
-    if (count == 6){
+    if (count == 6)
+    {
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
     }
 
-    if (count == 7){
+    if (count == 7)
+    {
       midiNoteOn(0, HiHat, 127);
     }
 
-    if (count == 8){
-      midiNoteOn(0, HiHat, 127);
-      midiNoteOn(0, Kick, 127);
-    }
-
-    if (count == 9){
+    if (count == 8)
+    {
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
-    if (count == 10){
+    if (count == 9)
+    {
+      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, Kick, 127);
+    }
+
+    if (count == 10)
+    {
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
     }
 
-    if (count == 11){
+    if (count == 11)
+    {
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
-    if (count == 12){
+    if (count == 12)
+    {
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
     }
 
-    if (count == 13){
+    if (count == 13)
+    {
       midiNoteOn(0, HiHat, 127);
     }
 
-    if (count == 14){
+    if (count == 14)
+    {
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
     }
 
-    if (count == 15){
+    if (count == 15)
+    {
       midiNoteOn(0, HiHat, 127);
     }
 
     count++;
-    if (count == 16){
+    if (count == 16)
+    {
       count = 0;
     }
   }
