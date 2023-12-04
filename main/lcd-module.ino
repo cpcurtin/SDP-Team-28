@@ -31,7 +31,7 @@ void lcd_display(LiquidCrystal *lcd, char **print_arr)
   for (int row = 0; row < lcd_rows; row++)
   {
     lcd->setCursor(0, row); // set cursor to row 0
-    
+
     lcd->print(print_arr[row]); // print to row 0
   }
   lcd->home();
@@ -39,7 +39,6 @@ void lcd_display(LiquidCrystal *lcd, char **print_arr)
 
 void array_scroll(struct lcd_nav *nav, int direction)
 {
- 
 
   int new_index;
   if (nav->index + direction < 0)
@@ -50,34 +49,46 @@ void array_scroll(struct lcd_nav *nav, int direction)
   {
     new_index = (nav->index + direction) % nav->size;
   }
-  
+
   nav->index = new_index;
-  char *temp_str = (char *)malloc(strlen(nav->ptr_str_array[new_index]) + 3);
-  char *temp_str2 = (char *)malloc(strlen(nav->ptr_str_array[new_index]));
+  char *temp_row1_str = (char *)malloc(strlen(nav->ptr_str_array[new_index]) + 3);
+  char *temp_row1_str2 = (char *)malloc(strlen(nav->ptr_str_array[new_index]));
 
-  strcpy(temp_str, ">");
+  strcpy(temp_row1_str, ">");
 
-  strcpy(temp_str2, nav->ptr_str_array[new_index]);
+  strcpy(temp_row1_str2, nav->ptr_str_array[new_index]);
 
-  strcat(temp_str, temp_str2);
+  strcat(temp_row1_str, temp_row1_str2);
 
-  
-  nav->lcd_state[0] = strdup(temp_str);
-  
-  free(temp_str);
-  free(temp_str2);
-  
+  nav->lcd_state[0] = strdup(temp_row1_str);
+
+  free(temp_row1_str);
+  free(temp_row1_str2);
+
   for (int row = 1; row < lcd_rows; row++)
   {
     int temp_index = (new_index + row) % nav->size;
-    nav->lcd_state[row] = (nav->ptr_str_array[temp_index]);
+    // nav->lcd_state[row] = (nav->ptr_str_array[temp_index]);
+
+    char *temp_str = (char *)malloc(strlen(nav->ptr_str_array[temp_index]) + 3);
+    char *temp_str2 = (char *)malloc(strlen(nav->ptr_str_array[temp_index]));
+
+    strcpy(temp_str, " ");
+
+    strcpy(temp_str2, nav->ptr_str_array[temp_index]);
+
+    strcat(temp_str, temp_str2);
+
+    nav->lcd_state[row] = strdup(temp_str);
+
+    free(temp_str);
+    free(temp_str2);
   }
   Serial.println("##############END SCROLL##############");
 }
 
 struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction)
 {
-  
 
   if (direction > 0)
   {
@@ -95,7 +106,7 @@ struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction)
       return nav->parent;
     }
   }
-  
+
   return nav;
 }
 
@@ -184,7 +195,6 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   sounds_custom->depth = 2;
   sounds_custom->index = 0;
   array_scroll(sounds_custom, 0);
-
 
   // sounds_midi
   sounds_midi->name = strdup("sounds_midi");
