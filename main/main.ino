@@ -219,10 +219,10 @@ struct nav_config
 
 struct button_maxtrix_pin_config
 {
-  size_t width;  // The length of the array
-  size_t length; // The length of the array
-  int *rows;     // Flexible array member
-  int *columns;  // Flexible array member
+  size_t width;   // The length of the array
+  size_t length;  // The length of the array
+  int rows[5];    // Flexible array member
+  int columns[7]; // Flexible array member
 };
 
 struct palette_cell
@@ -246,8 +246,8 @@ struct lcd_nav *sounds;
 struct lcd_nav *nav_data_structure;
 struct lcd_nav *nav_state;
 struct palette_matrix *palette;
-struct button_maxtrix_pin_config *measure_matrix_button;
-struct button_maxtrix_pin_config *measure_matrix_led;
+struct button_maxtrix_pin_config measure_matrix_button;
+struct button_maxtrix_pin_config measure_matrix_led;
 struct nav_config *nav_cfg;
 
 char *selection;
@@ -264,34 +264,43 @@ int count = 0;
 void setup()
 {
   /* create hardware configuration objects */
-  struct button_maxtrix_pin_config *matrix_cfg = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int matrix_rows[MATRIX_ROWS] = {BUTTON_MATRIX_ROW_1, BUTTON_MATRIX_ROW_2, BUTTON_MATRIX_ROW_3, BUTTON_MATRIX_ROW_4};
-  int matrix_columms[MATRIX_COLUMNS] = {BUTTON_MATRIX_COLUMN_1, BUTTON_MATRIX_COLUMN_2, BUTTON_MATRIX_COLUMN_3, BUTTON_MATRIX_COLUMN_4, BUTTON_MATRIX_COLUMN_5, BUTTON_MATRIX_COLUMN_6, BUTTON_MATRIX_COLUMN_7, BUTTON_MATRIX_COLUMN_8, BUTTON_MATRIX_COLUMN_9};
-  matrix_cfg->width = MATRIX_COLUMNS;
-  matrix_cfg->length = MATRIX_ROWS;
-  matrix_cfg->rows = matrix_rows;
-  matrix_cfg->columns = matrix_columms;
+  // struct button_maxtrix_pin_config *matrix_cfg = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
+  // int matrix_rows[MATRIX_ROWS] = {BUTTON_MATRIX_ROW_1, BUTTON_MATRIX_ROW_2, BUTTON_MATRIX_ROW_3, BUTTON_MATRIX_ROW_4};
+  // int matrix_columms[MATRIX_COLUMNS] = {BUTTON_MATRIX_COLUMN_1, BUTTON_MATRIX_COLUMN_2, BUTTON_MATRIX_COLUMN_3, BUTTON_MATRIX_COLUMN_4, BUTTON_MATRIX_COLUMN_5, BUTTON_MATRIX_COLUMN_6, BUTTON_MATRIX_COLUMN_7, BUTTON_MATRIX_COLUMN_8, BUTTON_MATRIX_COLUMN_9};
+  // matrix_cfg->width = MATRIX_COLUMNS;
+  // matrix_cfg->length = MATRIX_ROWS;
+  // matrix_cfg->rows = matrix_rows;
+  // matrix_cfg->columns = matrix_columms;
 
   //
   //
   // button & led measure matrix
   //
   //
-  struct button_maxtrix_pin_config *measure_matrix_button = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int button_matrix_rows[MEASURE_MATRIX_ROWS] = {BUTTON_MEASURE_MATRIX_ROW_1, BUTTON_MEASURE_MATRIX_ROW_2, BUTTON_MEASURE_MATRIX_ROW_3, BUTTON_MEASURE_MATRIX_ROW_4};
-  int button_matrix_columms[MEASURE_MATRIX_COLUMNS] = {BUTTON_MEASURE_MATRIX_COLUMN_1, BUTTON_MEASURE_MATRIX_COLUMN_2, BUTTON_MEASURE_MATRIX_COLUMN_3, BUTTON_MEASURE_MATRIX_COLUMN_4, BUTTON_MEASURE_MATRIX_COLUMN_5, BUTTON_MEASURE_MATRIX_COLUMN_6};
-  measure_matrix_button->width = MEASURE_MATRIX_COLUMNS;
-  measure_matrix_button->length = MEASURE_MATRIX_ROWS;
-  measure_matrix_button->rows = button_matrix_rows;
-  measure_matrix_button->columns = button_matrix_columms;
+   // measure_matrix_button = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
+  int button_matrix_rows[MEASURE_MATRIX_ROWS+1] = {BUTTON_MEASURE_MATRIX_ROW_1, BUTTON_MEASURE_MATRIX_ROW_2, BUTTON_MEASURE_MATRIX_ROW_3, BUTTON_MEASURE_MATRIX_ROW_4};
+  int button_matrix_columms[MEASURE_MATRIX_COLUMNS+1] = {BUTTON_MEASURE_MATRIX_COLUMN_1, BUTTON_MEASURE_MATRIX_COLUMN_2, BUTTON_MEASURE_MATRIX_COLUMN_3, BUTTON_MEASURE_MATRIX_COLUMN_4, BUTTON_MEASURE_MATRIX_COLUMN_5, BUTTON_MEASURE_MATRIX_COLUMN_6};
+  measure_matrix_button.width = MEASURE_MATRIX_COLUMNS;
+  measure_matrix_button.length = MEASURE_MATRIX_ROWS;
 
-  struct button_maxtrix_pin_config *measure_matrix_led = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int led_matrix_rows[MEASURE_MATRIX_ROWS] = {LED_MEASURE_MATRIX_ROW_1, LED_MEASURE_MATRIX_ROW_2, LED_MEASURE_MATRIX_ROW_3, LED_MEASURE_MATRIX_ROW_4};
-  int led_matrix_columms[MEASURE_MATRIX_COLUMNS] = {LED_MEASURE_MATRIX_COLUMN_1, LED_MEASURE_MATRIX_COLUMN_2, LED_MEASURE_MATRIX_COLUMN_3, LED_MEASURE_MATRIX_COLUMN_4, LED_MEASURE_MATRIX_COLUMN_5, LED_MEASURE_MATRIX_COLUMN_6};
-  measure_matrix_led->width = MEASURE_MATRIX_COLUMNS;
-  measure_matrix_led->length = MEASURE_MATRIX_ROWS;
-  measure_matrix_led->rows = led_matrix_rows;
-  measure_matrix_led->columns = led_matrix_columms;
+ for (size_t i = 0; i < MEASURE_MATRIX_ROWS; ++i) {
+  measure_matrix_button.rows[i] = button_matrix_rows[i];
+}
+for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i) {
+  measure_matrix_button.columns[i] = button_matrix_columms[i];
+}
+
+  // measure_matrix_led = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
+  int led_matrix_rows[MEASURE_MATRIX_ROWS+1] = {LED_MEASURE_MATRIX_ROW_1, LED_MEASURE_MATRIX_ROW_2, LED_MEASURE_MATRIX_ROW_3, LED_MEASURE_MATRIX_ROW_4};
+  int led_matrix_columms[MEASURE_MATRIX_COLUMNS+1] = {LED_MEASURE_MATRIX_COLUMN_1, LED_MEASURE_MATRIX_COLUMN_2, LED_MEASURE_MATRIX_COLUMN_3, LED_MEASURE_MATRIX_COLUMN_4, LED_MEASURE_MATRIX_COLUMN_5, LED_MEASURE_MATRIX_COLUMN_6};
+  measure_matrix_led.width = MEASURE_MATRIX_COLUMNS;
+  measure_matrix_led.length = MEASURE_MATRIX_ROWS;
+  for (size_t i = 0; i < MEASURE_MATRIX_ROWS; ++i) {
+  measure_matrix_led.rows[i] = led_matrix_rows[i];
+}
+for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i) {
+  measure_matrix_led.columns[i] = led_matrix_columms[i];
+}
   //
   //
   //
@@ -317,8 +326,8 @@ void setup()
   dpad_init(dpad_cfg);
   test_init();
   onboard_dac_init();
-  button_matrix_init(matrix_cfg);
-  button_matrix_init(matrix_cfg);
+  // button_matrix_init(matrix_cfg);
+  // button_matrix_init(matrix_cfg);
   measure_matrix_init(measure_matrix_button, measure_matrix_led);
 
   nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
