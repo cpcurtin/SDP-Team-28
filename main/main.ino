@@ -243,6 +243,8 @@ struct lcd_nav *sounds;
 struct lcd_nav *nav_data_structure;
 struct lcd_nav *nav_state;
 struct palette_matrix *palette;
+struct button_maxtrix_pin_config *measure_matrix_button;
+struct button_maxtrix_pin_config *measure_matrix_led;
 
 char *selection;
 
