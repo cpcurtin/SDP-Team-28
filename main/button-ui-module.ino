@@ -104,26 +104,28 @@ void measure_matrix_init(struct button_maxtrix_pin_config *button_cfg, struct bu
     // int *rows;     // Flexible array member
     // int *columns;  // Flexible array member
     // init buttons
-    for (size_t i = 0; i < button_cfg->width; i++)
-    {
-        pinMode(button_cfg->columns[i], INPUT_PULLUP);
-    }
     for (size_t i = 0; i < button_cfg->length; i++)
     {
         pinMode(button_cfg->rows[i], INPUT_PULLUP);
     }
+    for (size_t i = 0; i < button_cfg->width; i++)
+    {
+        pinMode(button_cfg->columns[i], INPUT_PULLUP);
+    }
+    
 
     // init LED
+     for (size_t i = 0; i < led_cfg->length; i++)
+    {
+        pinMode(led_cfg->rows[i], OUTPUT);
+        digitalWrite(led_cfg->rows[i], HIGH);
+    }
     for (size_t i = 0; i < led_cfg->width; i++)
     {
         pinMode(led_cfg->columns[i], OUTPUT);
-        digitalWrite(led_cfg->columns[i], HIGH);
+        digitalWrite(led_cfg->columns[i], LOW);
     }
-    for (size_t i = 0; i < led_cfg->length; i++)
-    {
-        pinMode(led_cfg->rows[i], OUTPUT);
-        digitalWrite(led_cfg->rows[i], LOW);
-    }
+   
 }
 
 void readMatrix(struct button_maxtrix_pin_config *button_cfg, struct button_maxtrix_pin_config *led_cfg)
