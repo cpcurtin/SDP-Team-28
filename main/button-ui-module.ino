@@ -117,7 +117,7 @@ void measure_matrix_init(struct button_maxtrix_pin_config *button_cfg, struct bu
     for (size_t i = 0; i < led_cfg->width; i++)
     {
         pinMode(led_cfg->columns[i], OUTPUT);
-        digitalWrite(led_cfg->columns[i], LOW);
+        digitalWrite(led_cfg->columns[i], HIGH);
     }
     for (size_t i = 0; i < led_cfg->length; i++)
     {
@@ -148,20 +148,20 @@ void readMatrix(struct button_maxtrix_pin_config *button_cfg, struct button_maxt
                 Serial.println("Push");
                 Serial.print(row);
                 Serial.print(column);
-                digitalWrite(led_cfg->columns[column], LOW);
+                digitalWrite(led_cfg->columns[column], HIGH);
                 digitalWrite(led_cfg->rows[row], LOW);
             }
 
             else
             {
                 digitalWrite(led_cfg->columns[column], LOW);
-                digitalWrite(led_cfg->rows[row], LOW);
+                digitalWrite(led_cfg->rows[row], HIGH);
             }
         }
 
         // disable the column
         // delay(1000);
-        pinMode(column, INPUT_PULLUP);
+        pinMode(button_cfg->columns[column],INPUT_PULLUP);
     }
 }
 // void set_matrix_led(struct button_maxtrix_pin_config *led_cfg,struct matrix_coordinate coordinate, int state){
