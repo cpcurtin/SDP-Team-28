@@ -225,10 +225,19 @@ struct button_maxtrix_pin_config
   int columns[7]; // Flexible array member
 };
 
+struct temp_matrix_config
+{
+  size_t width;  // The length of the array
+  size_t length; // The length of the array
+  int *rows;     // Flexible array member
+  int *columns;  // Flexible array member
+};
+
 struct palette_cell
 {
   char *sound;
   int available;
+  int steps[16];
 };
 
 struct palette_matrix
@@ -251,7 +260,7 @@ struct button_maxtrix_pin_config measure_matrix_led;
 struct nav_config *nav_cfg;
 
 char *selection;
-
+int palette_1[16];
 const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
 const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
 const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT};
@@ -264,43 +273,47 @@ int count = 0;
 void setup()
 {
   /* create hardware configuration objects */
-  // struct button_maxtrix_pin_config *matrix_cfg = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  // int matrix_rows[MATRIX_ROWS] = {BUTTON_MATRIX_ROW_1, BUTTON_MATRIX_ROW_2, BUTTON_MATRIX_ROW_3, BUTTON_MATRIX_ROW_4};
-  // int matrix_columms[MATRIX_COLUMNS] = {BUTTON_MATRIX_COLUMN_1, BUTTON_MATRIX_COLUMN_2, BUTTON_MATRIX_COLUMN_3, BUTTON_MATRIX_COLUMN_4, BUTTON_MATRIX_COLUMN_5, BUTTON_MATRIX_COLUMN_6, BUTTON_MATRIX_COLUMN_7, BUTTON_MATRIX_COLUMN_8, BUTTON_MATRIX_COLUMN_9};
-  // matrix_cfg->width = MATRIX_COLUMNS;
-  // matrix_cfg->length = MATRIX_ROWS;
-  // matrix_cfg->rows = matrix_rows;
-  // matrix_cfg->columns = matrix_columms;
+  struct temp_matrix_config *matrix_cfg = (struct temp_matrix_config *)malloc(sizeof(struct temp_matrix_config));
+  int matrix_rows[MATRIX_ROWS] = {BUTTON_MATRIX_ROW_1, BUTTON_MATRIX_ROW_2, BUTTON_MATRIX_ROW_3, BUTTON_MATRIX_ROW_4};
+  int matrix_columms[MATRIX_COLUMNS] = {BUTTON_MATRIX_COLUMN_1, BUTTON_MATRIX_COLUMN_2, BUTTON_MATRIX_COLUMN_3, BUTTON_MATRIX_COLUMN_4, BUTTON_MATRIX_COLUMN_5, BUTTON_MATRIX_COLUMN_6, BUTTON_MATRIX_COLUMN_7, BUTTON_MATRIX_COLUMN_8, BUTTON_MATRIX_COLUMN_9};
+  matrix_cfg->width = MATRIX_COLUMNS;
+  matrix_cfg->length = MATRIX_ROWS;
+  matrix_cfg->rows = matrix_rows;
+  matrix_cfg->columns = matrix_columms;
 
   //
   //
   // button & led measure matrix
   //
   //
-   // measure_matrix_button = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int button_matrix_rows[MEASURE_MATRIX_ROWS+1] = {BUTTON_MEASURE_MATRIX_ROW_1, BUTTON_MEASURE_MATRIX_ROW_2, BUTTON_MEASURE_MATRIX_ROW_3, BUTTON_MEASURE_MATRIX_ROW_4};
-  int button_matrix_columms[MEASURE_MATRIX_COLUMNS+1] = {BUTTON_MEASURE_MATRIX_COLUMN_1, BUTTON_MEASURE_MATRIX_COLUMN_2, BUTTON_MEASURE_MATRIX_COLUMN_3, BUTTON_MEASURE_MATRIX_COLUMN_4, BUTTON_MEASURE_MATRIX_COLUMN_5, BUTTON_MEASURE_MATRIX_COLUMN_6};
+  // measure_matrix_button = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
+  int button_matrix_rows[MEASURE_MATRIX_ROWS + 1] = {BUTTON_MEASURE_MATRIX_ROW_1, BUTTON_MEASURE_MATRIX_ROW_2, BUTTON_MEASURE_MATRIX_ROW_3, BUTTON_MEASURE_MATRIX_ROW_4};
+  int button_matrix_columms[MEASURE_MATRIX_COLUMNS + 1] = {BUTTON_MEASURE_MATRIX_COLUMN_1, BUTTON_MEASURE_MATRIX_COLUMN_2, BUTTON_MEASURE_MATRIX_COLUMN_3, BUTTON_MEASURE_MATRIX_COLUMN_4, BUTTON_MEASURE_MATRIX_COLUMN_5, BUTTON_MEASURE_MATRIX_COLUMN_6};
   measure_matrix_button.width = MEASURE_MATRIX_COLUMNS;
   measure_matrix_button.length = MEASURE_MATRIX_ROWS;
 
- for (size_t i = 0; i < MEASURE_MATRIX_ROWS; ++i) {
-  measure_matrix_button.rows[i] = button_matrix_rows[i];
-}
-for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i) {
-  measure_matrix_button.columns[i] = button_matrix_columms[i];
-}
+  for (size_t i = 0; i < MEASURE_MATRIX_ROWS; ++i)
+  {
+    measure_matrix_button.rows[i] = button_matrix_rows[i];
+  }
+  for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i)
+  {
+    measure_matrix_button.columns[i] = button_matrix_columms[i];
+  }
 
   // measure_matrix_led = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int led_matrix_rows[MEASURE_MATRIX_ROWS+1] = {LED_MEASURE_MATRIX_ROW_1, LED_MEASURE_MATRIX_ROW_2, LED_MEASURE_MATRIX_ROW_3, LED_MEASURE_MATRIX_ROW_4};
-  int led_matrix_columms[MEASURE_MATRIX_COLUMNS+1] = {LED_MEASURE_MATRIX_COLUMN_1, LED_MEASURE_MATRIX_COLUMN_2, LED_MEASURE_MATRIX_COLUMN_3, LED_MEASURE_MATRIX_COLUMN_4, LED_MEASURE_MATRIX_COLUMN_5, LED_MEASURE_MATRIX_COLUMN_6};
+  int led_matrix_rows[MEASURE_MATRIX_ROWS + 1] = {LED_MEASURE_MATRIX_ROW_1, LED_MEASURE_MATRIX_ROW_2, LED_MEASURE_MATRIX_ROW_3, LED_MEASURE_MATRIX_ROW_4};
+  int led_matrix_columms[MEASURE_MATRIX_COLUMNS + 1] = {LED_MEASURE_MATRIX_COLUMN_1, LED_MEASURE_MATRIX_COLUMN_2, LED_MEASURE_MATRIX_COLUMN_3, LED_MEASURE_MATRIX_COLUMN_4, LED_MEASURE_MATRIX_COLUMN_5, LED_MEASURE_MATRIX_COLUMN_6};
   measure_matrix_led.width = MEASURE_MATRIX_COLUMNS;
   measure_matrix_led.length = MEASURE_MATRIX_ROWS;
-  for (size_t i = 0; i < MEASURE_MATRIX_ROWS; ++i) {
-  measure_matrix_led.rows[i] = led_matrix_rows[i];
-}
-for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i) {
-  measure_matrix_led.columns[i] = led_matrix_columms[i];
-}
+  for (size_t i = 0; i < MEASURE_MATRIX_ROWS; ++i)
+  {
+    measure_matrix_led.rows[i] = led_matrix_rows[i];
+  }
+  for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i)
+  {
+    measure_matrix_led.columns[i] = led_matrix_columms[i];
+  }
   //
   //
   //
@@ -317,6 +330,10 @@ for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i) {
       palette->cells[m][n] = (struct palette_cell *)malloc(sizeof(struct palette_cell));
       (palette->cells[m][n])->sound = NULL;
       (palette->cells[m][n])->available = 1;
+      for (int x = 0; x < 16; x++)
+      {
+        (palette->cells[m][n])->steps[x] = 0;
+      }
     }
   }
 
@@ -326,7 +343,7 @@ for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i) {
   dpad_init(dpad_cfg);
   test_init();
   onboard_dac_init();
-  // button_matrix_init(matrix_cfg);
+  button_matrix_init(matrix_cfg);
   // button_matrix_init(matrix_cfg);
   measure_matrix_init(measure_matrix_button, measure_matrix_led);
 
@@ -413,7 +430,12 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, Crash, 127);
       midiNoteOn(0, Kick, 127);
-      playFile((nav_cfg->sounds_custom)->array[1]);
+      playFile((nav_cfg->sounds_custom)->array[6]);
+
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 1)
@@ -422,6 +444,10 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, HiHat, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 2)
@@ -431,6 +457,10 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 3)
@@ -439,6 +469,10 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, HiHat, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 4)
@@ -450,6 +484,10 @@ void loop()
 
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 5)
@@ -458,6 +496,10 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
       midiNoteOn(0, HiHat, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 6)
@@ -468,6 +510,10 @@ void loop()
 
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 7)
@@ -476,6 +522,10 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
       midiNoteOn(0, HiHat, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 8)
@@ -487,8 +537,11 @@ void loop()
 
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
-
     if (count == 9)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
@@ -497,6 +550,10 @@ void loop()
 
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 10)
@@ -507,6 +564,10 @@ void loop()
 
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 11)
@@ -517,6 +578,10 @@ void loop()
 
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 12)
@@ -528,6 +593,10 @@ void loop()
 
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Kick, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 13)
@@ -536,6 +605,10 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
       midiNoteOn(0, HiHat, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 14)
@@ -546,6 +619,10 @@ void loop()
 
       midiNoteOn(0, HiHat, 127);
       midiNoteOn(0, Snare, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     if (count == 15)
@@ -555,6 +632,10 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
       midiNoteOn(0, HiHat, 127);
+      if ((palette->cells[0][0])->steps[count])
+      {
+        playFile((palette->cells[0][0])->sound);
+      }
     }
 
     count++;
@@ -602,18 +683,40 @@ void loop()
       lcd_display(lcd, nav_state->lcd_state);
     }
   }
-  for (int i = 0; i < 3; i++)
+  for (int i = 0; i < 2; i++)
   {
     if (!(palette->cells[0][i])->available)
     {
       if (button_pressed(28 + i))
       {
+        while (!button_pressed(28 + i))
+        {
+          int palette_1 = readMatrix(measure_matrix_button, measure_matrix_led);
+          if (palette_1 != 17)
+          {
+            (palette->cells[0][i])->steps[palette_1] = 1;
+          }
+          if (button_pressed(28 + i))
+          {
+            for (int x = 0; x < 16; x++)
+            {
+              Serial.printf("INDEX: %d, VAL: %d\n", x, (palette->cells[0][i])->steps[x]);
+            }
+            break;
+          }
 
-        playFile((palette->cells[0][i])->sound);
+          // playFile((palette->cells[0][i])->sound);
+        }
       }
     }
   }
-
+  if (button_pressed(30)) // scroll up
+  {
+    for (int x = 0; x < 16; x++)
+    {
+      (palette->cells[0][0])->steps[x] = 0;
+    }
+  }
   // readMatrix(measure_matrix_button, measure_matrix_led);
 
   /* RIGHT SECTION OF TEST BUTTONS (3 LEFTMOST BUTTONS) */

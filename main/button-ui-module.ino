@@ -63,7 +63,7 @@ int button_pressed(int pin)
     return 0;
 }
 // void palette_init(const struct button_maxtrix_pin_config *cfg)
-void button_matrix_init(struct button_maxtrix_pin_config *cfg)
+void button_matrix_init(struct temp_matrix_config *cfg)
 
 {
     pinMode(28, INPUT);
@@ -105,7 +105,6 @@ void measure_matrix_init(struct button_maxtrix_pin_config &button_cfg, struct bu
     // int *columns;  // Flexible array member
     // init buttons
 
-
     for (size_t i = 0; i < button_cfg.width; i++)
     {
         pinMode(button_cfg.columns[i], INPUT_PULLUP);
@@ -126,13 +125,12 @@ void measure_matrix_init(struct button_maxtrix_pin_config &button_cfg, struct bu
         pinMode(led_cfg.rows[i], OUTPUT);
         digitalWrite(led_cfg.rows[i], HIGH);
     }
-
-   
 }
 
-void readMatrix(struct button_maxtrix_pin_config &button_cfg, struct button_maxtrix_pin_config &led_cfg)
+int readMatrix(struct button_maxtrix_pin_config &button_cfg, struct button_maxtrix_pin_config &led_cfg)
 {
-
+    // struct matrix_button coordinate;
+    int rt = 17;
 
     for (size_t column = 0; column < button_cfg.width; column++)
     {
@@ -154,6 +152,7 @@ void readMatrix(struct button_maxtrix_pin_config &button_cfg, struct button_maxt
                 // Serial.print(column);
                 digitalWrite(led_cfg.columns[column], HIGH);
                 digitalWrite(led_cfg.rows[row], LOW);
+                rt = (button_cfg.width * row) + column;
             }
 
             else
@@ -167,6 +166,7 @@ void readMatrix(struct button_maxtrix_pin_config &button_cfg, struct button_maxt
         // delay(1000);
         pinMode(button_cfg.columns[column], INPUT_PULLUP);
     }
+    return rt;
 }
 // void set_matrix_led(struct button_maxtrix_pin_config *led_cfg,struct matrix_coordinate coordinate, int state){
 
@@ -178,8 +178,6 @@ void readMatrix(struct button_maxtrix_pin_config &button_cfg, struct button_maxt
 //     digitalWrite(led_cfg->columns[coordinate.column], LOW);
 //                 digitalWrite(led_cfg->rows[coordinate.row], HIGH);
 //   }
-
-
 
 // }
 
