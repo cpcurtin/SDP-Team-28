@@ -51,40 +51,64 @@ void array_scroll(struct lcd_nav *nav, int direction)
   }
 
   nav->index = new_index;
-  char *temp_row1_str = (char *)malloc(strlen(nav->ptr_str_array[new_index]) + 3);
-  char *temp_row1_str2 = (char *)malloc(strlen(nav->ptr_str_array[new_index]));
+  // char *temp_row1_str = (char *)malloc(strlen(nav->ptr_str_array[new_index]) + 3);
+  // char *temp_row1_str2 = (char *)malloc(strlen(nav->ptr_str_array[new_index]));
 
-  strcpy(temp_row1_str, ">");
+  // strcpy(temp_row1_str, ">");
 
-  strcpy(temp_row1_str2, nav->ptr_str_array[new_index]);
+  // strcpy(temp_row1_str2, nav->ptr_str_array[new_index]);
 
-  strcat(temp_row1_str, temp_row1_str2);
+  // strcat(temp_row1_str, temp_row1_str2);
 
-  nav->lcd_state[0] = strdup(temp_row1_str);
+  // nav->lcd_state[0] = strdup(temp_row1_str);
 
-  free(temp_row1_str);
-  free(temp_row1_str2);
+  // free(temp_row1_str);
+  // free(temp_row1_str2);
+  nav->lcd_state[0] = format_row(nav->ptr_str_array,new_index, 1);
 
   for (int row = 1; row < lcd_rows; row++)
   {
     int temp_index = (new_index + row) % nav->size;
+    nav->lcd_state[row] = format_row(nav->ptr_str_array,temp_index, 0);
     // nav->lcd_state[row] = (nav->ptr_str_array[temp_index]);
 
-    char *temp_str = (char *)malloc(strlen(nav->ptr_str_array[temp_index]) + 3);
-    char *temp_str2 = (char *)malloc(strlen(nav->ptr_str_array[temp_index]));
+    // char *temp_str = (char *)malloc(strlen(nav->ptr_str_array[temp_index]) + 3);
+    // char *temp_str2 = (char *)malloc(strlen(nav->ptr_str_array[temp_index]));
 
-    strcpy(temp_str, " ");
+    // strcpy(temp_str, " ");
 
-    strcpy(temp_str2, nav->ptr_str_array[temp_index]);
+    // strcpy(temp_str2, nav->ptr_str_array[temp_index]);
 
+    // strcat(temp_str, temp_str2);
+
+    // nav->lcd_state[row] = strdup(temp_str);
+
+    // free(temp_str);
+    // free(temp_str2);
+  }
+  // Serial.println("##############END SCROLL##############");
+}
+
+char* format_row(char**ptr_str_array,int index, int format){
+  char *temp_str;
+    char *temp_str2;
+   
+    temp_str = (char *)malloc(strlen(ptr_str_array[index]) + 7);
+    temp_str2 = (char *)malloc(strlen(ptr_str_array[index]));
+    // spacing, enumerated
+    if (format==0){
+ sprintf(temp_str, " %d ", index+1);
+    
+    }
+    if(format==1){
+sprintf(temp_str, ">%d ", index+1);
+    }
+   strcpy(temp_str2, ptr_str_array[index]);
     strcat(temp_str, temp_str2);
 
-    nav->lcd_state[row] = strdup(temp_str);
-
-    free(temp_str);
     free(temp_str2);
-  }
-  Serial.println("##############END SCROLL##############");
+
+    return temp_str;
 }
 
 struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction)
