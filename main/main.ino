@@ -602,8 +602,8 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_ROW_4, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-      midiNoteOn(0, Crash, 127);
-      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, Crash1, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
       playFile((nav_cfg->sounds_custom)->array[6]);
     }
 
@@ -612,7 +612,7 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
     }
 
     if (count == 2)
@@ -620,8 +620,8 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-      midiNoteOn(0, HiHat, 127);
-      midiNoteOn(0, Snare, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticSnare, 127);
     }
 
     if (count == 3)
@@ -629,7 +629,7 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
     }
 
     if (count == 4)
@@ -639,8 +639,8 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
 
-      midiNoteOn(0, HiHat, 127);
-      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
     }
 
     if (count == 5)
@@ -648,7 +648,7 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
-      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
     }
 
     if (count == 6)
@@ -657,8 +657,8 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
 
-      midiNoteOn(0, HiHat, 127);
-      midiNoteOn(0, Snare, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticSnare, 127);
     }
 
     if (count == 7)
@@ -666,7 +666,7 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
-      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
     }
 
     if (count == 8)
@@ -676,8 +676,8 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-      midiNoteOn(0, HiHat, 127);
-      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
     }
 
     if (count == 9)
@@ -686,8 +686,8 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-      midiNoteOn(0, HiHat, 127);
-      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
     }
 
     if (count == 10)
@@ -696,8 +696,8 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-      midiNoteOn(0, HiHat, 127);
-      midiNoteOn(0, Snare, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticSnare, 127);
     }
 
     if (count == 11)
@@ -706,8 +706,8 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-      midiNoteOn(0, HiHat, 127);
-      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
     }
 
     if (count == 12)
@@ -717,8 +717,8 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
-      midiNoteOn(0, HiHat, 127);
-      midiNoteOn(0, Kick, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
     }
 
     if (count == 13)
@@ -726,7 +726,7 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
-      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
     }
 
     if (count == 14)
@@ -735,8 +735,8 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
-      midiNoteOn(0, HiHat, 127);
-      midiNoteOn(0, Snare, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticSnare, 127);
     }
 
     if (count == 15)
@@ -745,7 +745,7 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
-      midiNoteOn(0, HiHat, 127);
+      midiNoteOn(0, ClosedHiHat, 127);
     }
 
     count++;
