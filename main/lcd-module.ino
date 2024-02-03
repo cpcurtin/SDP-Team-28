@@ -27,7 +27,7 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config &cfg)
   // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   // LiquidCrystal_I2C lcd(0x27, 20, 4); // I2C address 0x27, 20 column and 4 rows
   // LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(0x27, 20, 4);
-  LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg.i2c,cfg.columns,cfg.rows);
+  LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg.i2c, cfg.columns, cfg.rows);
 
   lcd->init(); // initialize the lcd
   lcd->backlight();
