@@ -1,10 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
-
-
-
 /*
- *       MODULOOP main
+ *       MODULOOP MAIN CONFIGURATIONS
  *
  *    PINOUT:
  *    PIN0:   MIDI RX (not used)
@@ -62,9 +59,9 @@
  *    PIN52:
  *
  */
-
-/* MODULE LINKING */
-// #include "example-module.h"
+/**************************
+MODULE LINKING
+**************************/
 
 #include "lcd-module.h"
 #include "sd-storage-module.h"
@@ -74,13 +71,17 @@
 #include "midi-sound-module.h"
 #include <Metro.h>
 
-/* PIN MACROS */
-// DAC
+/**************************
+DAC PIN ASSIGNMENTS
+**************************/
 #define DAC_DIN 7
 #define DAC_WS 20
 #define DAC_BCK 21
 
-// LCD
+
+/**************************
+LCD PIN ASSIGNMENTS
+**************************/
 #define LCD_RS 2
 #define LCD_EN 3
 #define LCD_DIGITAL_4 4
@@ -89,12 +90,21 @@
 #define LCD_DIGITAL_7 8
 #define LCD_I2C 0x27
 
-// BUTTONS
+
+
+/**************************
+DPAD BUTTONS
+**************************/
 #define BUTTON_DPAD_UP 26
 #define BUTTON_DPAD_DOWN 25
 #define BUTTON_DPAD_LEFT 24
 #define BUTTON_DPAD_RIGHT 27
 
+
+
+/**************************
+MATRIX BUTTONS
+**************************/
 #define BUTTON_MATRIX_ROW_1 999
 #define BUTTON_MATRIX_ROW_2 999
 #define BUTTON_MATRIX_ROW_3 999
@@ -110,7 +120,12 @@
 #define BUTTON_MATRIX_COLUMN_8 999
 #define BUTTON_MATRIX_COLUMN_9 999
 
-// MEASURE MATRIX BUTTONS
+
+
+
+/**************************
+MEASURE MATRIX BUTTONS
+**************************/
 #define BUTTON_MEASURE_MATRIX_ROW_1 32
 #define BUTTON_MEASURE_MATRIX_ROW_2 31
 #define BUTTON_MEASURE_MATRIX_ROW_3 34
@@ -123,8 +138,10 @@
 #define BUTTON_MEASURE_MATRIX_COLUMN_5 17
 #define BUTTON_MEASURE_MATRIX_COLUMN_6 16
 
-// MEASURE MATRIX LEDS
 
+/**************************
+MEASURE MATRIX LEDS
+**************************/
 #define LED_MEASURE_MATRIX_ROW_1 38
 #define LED_MEASURE_MATRIX_ROW_2 37
 #define LED_MEASURE_MATRIX_ROW_3 36
@@ -368,4 +385,72 @@ Percussive Sounds
 
 #define PALETTE_MATRIX_ROWS 4
 #define PALETTE_MATRIX_COLUMNS 3
+
+
+/**************************
+PROGRAM STRUCTS
+**************************/
+
+struct lcd_pin_config
+{
+  const int i2c;
+  const int rows;
+  const int columns;
+};
+
+struct dac_pin_config
+{
+  const int din;
+  const int ws;
+  const int bck;
+};
+
+struct dpad_pin_config
+{
+  const int up;
+  const int down;
+  const int left;
+  const int right;
+  const int select;
+};
+struct lcd_nav
+{
+  char *name;
+  char **ptr_str_array;
+  struct lcd_nav *parent;
+  struct lcd_nav **child;
+  size_t size;
+  char **lcd_state;
+  int index;
+  int depth;
+};
+
+struct nav_config
+{
+  struct array_with_size *sounds_custom;
+  struct array_with_size *sounds_midi;
+  struct array_with_size *effects;
+};
+
+struct button_maxtrix_pin_config
+{
+  size_t width;   // The length of the array
+  size_t length;  // The length of the array
+  int rows[5];    // Flexible array member
+  int columns[7]; // Flexible array member
+};
+
+struct palette_cell
+{
+  char *sound;
+  int available;
+};
+
+struct palette_matrix
+{
+  struct palette_cell ***cells;
+  int rows;
+  int columns;
+};
+
 #endif // MAIN_H
