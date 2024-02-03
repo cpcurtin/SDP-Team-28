@@ -7,6 +7,7 @@
 #ifndef LCD_MODULE_H
 #define LCD_MODULE_H
 #include <LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
 
 // struct lcd_pin_config {
 //  const int rs;

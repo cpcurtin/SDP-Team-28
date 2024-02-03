@@ -22,6 +22,27 @@ LiquidCrystal *lcd_init(const struct lcd_pin_config &cfg)
   lcd->clear();
   lcd_display(lcd, lcd_init_message);
 
+
+  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  // LiquidCrystal_I2C lcd(0x27, 20, 4); // I2C address 0x27, 20 column and 4 rows
+  LiquidCrystal_I2C *test_lcd = new LiquidCrystal_I2C(0x27, 20, 4);
+
+  test_lcd->init(); // initialize the lcd
+  test_lcd->backlight();
+
+  test_lcd->setCursor(0, 0);            // move cursor the first row
+  test_lcd->print("LCD 20x4");          // print message at the first row
+  test_lcd->setCursor(0, 1);            // move cursor to the second row
+  test_lcd->print("I2C Address: 0x27"); // print message at the second row
+  test_lcd->setCursor(0, 2);            // move cursor to the third row
+  test_lcd->print("TEEEEEEST");          // print message at the third row
+  test_lcd->setCursor(0, 3);            // move cursor to the fourth row
+  test_lcd->print("www.diyables.io");   // print message the fourth row
+
+  
+
+
+
   return lcd;
 }
 
