@@ -81,6 +81,7 @@
 #define LCD_DIGITAL_5 5
 #define LCD_DIGITAL_6 6
 #define LCD_DIGITAL_7 8
+#define LCD_I2C 0x27
 
 // BUTTONS
 #define BUTTON_DPAD_UP 26
@@ -351,8 +352,8 @@ Percussive Sounds
 #define Surdo 87
 
 // DYNAMIC OPTIONS
-#define LCD_ROWS 2
-#define LCD_COLUMNS 16
+#define LCD_ROWS 4
+#define LCD_COLUMNS 20
 #define MATRIX_ROWS 4
 #define MATRIX_COLUMNS 9
 
@@ -362,14 +363,20 @@ Percussive Sounds
 #define PALETTE_MATRIX_ROWS 4
 #define PALETTE_MATRIX_COLUMNS 3
 
+// struct lcd_pin_config
+// {
+//   const int rs;
+//   const int en;
+//   const int dig4;
+//   const int dig5;
+//   const int dig6;
+//   const int dig7;
+//   const int rows;
+//   const int columns;
+// };
 struct lcd_pin_config
 {
-  const int rs;
-  const int en;
-  const int dig4;
-  const int dig5;
-  const int dig6;
-  const int dig7;
+  const int i2c;
   const int rows;
   const int columns;
 };
@@ -429,7 +436,8 @@ struct palette_matrix
   int columns;
 };
 
-LiquidCrystal *lcd;
+LiquidCrystal_I2C *lcd;
+
 
 char **lcd_state = new char *[LCD_ROWS];
 int lcd_index = 0;
@@ -443,7 +451,8 @@ struct nav_config *nav_cfg;
 
 char *selection;
 
-const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
+// const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
+const struct lcd_pin_config lcd_cfg = {LCD_I2C, LCD_ROWS, LCD_COLUMNS};
 const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
 const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT};
 // create 2D array of palette_cell structs
@@ -492,11 +501,11 @@ for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i) {
 for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i) {
   measure_matrix_led.columns[i] = led_matrix_columms[i];
 }
-  //
-  //
-  //
-  //
-  //
+//   //
+//   //
+//   //
+//   //
+//   //
 
   palette = (struct palette_matrix *)malloc(sizeof(struct palette_matrix));
   palette->cells = (struct palette_cell ***)malloc(PALETTE_MATRIX_ROWS * sizeof(struct palette_cell *));
@@ -547,7 +556,7 @@ for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i) {
   (nav_cfg->sounds_custom = parsefiles());
   Serial.println("parsed files size");
   Serial.println((nav_cfg->sounds_custom)->size);
-  // playFile((nav_cfg->sounds_custom)->array[1]);
+  playFile((nav_cfg->sounds_custom)->array[1]);
 
   lcd = lcd_init(lcd_cfg);
   nav_data_structure = nav_init(nav_cfg);
@@ -593,167 +602,167 @@ void loop()
 
   //   }
   // Main Timing Loop for 4x4 Measure Matrix
-  if (ledMetro.check() == 1)
-  {
-    if (count == 0)
-    {
-      Serial.println("Hit");
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_4, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-      midiNoteOn(0, Crash1, 127);
-      midiNoteOn(0, AcousticBassDrum, 127);
-      playFile((nav_cfg->sounds_custom)->array[6]);
-    }
+  // if (ledMetro.check() == 1)
+  // {
+  //   if (count == 0)
+  //   {
+  //     Serial.println("Hit");
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+  //     midiNoteOn(0, Crash1, 127);
+  //     midiNoteOn(0, AcousticBassDrum, 127);
+  //     playFile((nav_cfg->sounds_custom)->array[6]);
+  //   }
 
-    if (count == 1)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-      midiNoteOn(0, ClosedHiHat, 127);
-    }
+  //   if (count == 1)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //   }
 
-    if (count == 2)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-      midiNoteOn(0, ClosedHiHat, 127);
-      midiNoteOn(0, AcousticSnare, 127);
-    }
+  //   if (count == 2)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //     midiNoteOn(0, AcousticSnare, 127);
+  //   }
 
-    if (count == 3)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-      midiNoteOn(0, ClosedHiHat, 127);
-    }
+  //   if (count == 3)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //   }
 
-    if (count == 4)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_1, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+  //   if (count == 4)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
 
-      midiNoteOn(0, ClosedHiHat, 127);
-      midiNoteOn(0, AcousticBassDrum, 127);
-    }
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //     midiNoteOn(0, AcousticBassDrum, 127);
+  //   }
 
-    if (count == 5)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
-      midiNoteOn(0, ClosedHiHat, 127);
-    }
+  //   if (count == 5)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //   }
 
-    if (count == 6)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+  //   if (count == 6)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
 
-      midiNoteOn(0, ClosedHiHat, 127);
-      midiNoteOn(0, AcousticSnare, 127);
-    }
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //     midiNoteOn(0, AcousticSnare, 127);
+  //   }
 
-    if (count == 7)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
-      midiNoteOn(0, ClosedHiHat, 127);
-    }
+  //   if (count == 7)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //   }
 
-    if (count == 8)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_2, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
+  //   if (count == 8)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-      midiNoteOn(0, ClosedHiHat, 127);
-      midiNoteOn(0, AcousticBassDrum, 127);
-    }
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //     midiNoteOn(0, AcousticBassDrum, 127);
+  //   }
 
-    if (count == 9)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
+  //   if (count == 9)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-      midiNoteOn(0, ClosedHiHat, 127);
-      midiNoteOn(0, AcousticBassDrum, 127);
-    }
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //     midiNoteOn(0, AcousticBassDrum, 127);
+  //   }
 
-    if (count == 10)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
+  //   if (count == 10)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-      midiNoteOn(0, ClosedHiHat, 127);
-      midiNoteOn(0, AcousticSnare, 127);
-    }
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //     midiNoteOn(0, AcousticSnare, 127);
+  //   }
 
-    if (count == 11)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
+  //   if (count == 11)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-      midiNoteOn(0, ClosedHiHat, 127);
-      midiNoteOn(0, AcousticBassDrum, 127);
-    }
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //     midiNoteOn(0, AcousticBassDrum, 127);
+  //   }
 
-    if (count == 12)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_3, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
+  //   if (count == 12)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
-      midiNoteOn(0, ClosedHiHat, 127);
-      midiNoteOn(0, AcousticBassDrum, 127);
-    }
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //     midiNoteOn(0, AcousticBassDrum, 127);
+  //   }
 
-    if (count == 13)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
-      midiNoteOn(0, ClosedHiHat, 127);
-    }
+  //   if (count == 13)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //   }
 
-    if (count == 14)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
+  //   if (count == 14)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
-      midiNoteOn(0, ClosedHiHat, 127);
-      midiNoteOn(0, AcousticSnare, 127);
-    }
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //     midiNoteOn(0, AcousticSnare, 127);
+  //   }
 
-    if (count == 15)
-    {
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
+  //   if (count == 15)
+  //   {
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
-      midiNoteOn(0, ClosedHiHat, 127);
-    }
+  //     midiNoteOn(0, ClosedHiHat, 127);
+  //   }
 
-    count++;
-    if (count == 16)
-    {
-      count = 0;
-    }
-  }
+  //   count++;
+  //   if (count == 16)
+  //   {
+  //     count = 0;
+  //   }
+  // }
 
   if (button_pressed(BUTTON_DPAD_LEFT)) // return / exit
   {
@@ -793,17 +802,17 @@ void loop()
       lcd_display(lcd, nav_state->lcd_state);
     }
   }
-  for (int i = 0; i < 3; i++)
-  {
-    if (!(palette->cells[0][i])->available)
-    {
-      if (button_pressed(28 + i))
-      {
+  // for (int i = 0; i < 3; i++)
+  // {
+  //   if (!(palette->cells[0][i])->available)
+  //   {
+  //     if (button_pressed(28 + i))
+  //     {
 
-        playFile((palette->cells[0][i])->sound);
-      }
-    }
-  }
+  //       playFile((palette->cells[0][i])->sound);
+  //     }
+  //   }
+  // }
 
   // readMatrix(measure_matrix_button, measure_matrix_led);
 

@@ -8,45 +8,48 @@
 // #include <LiquidCrystal.h>
 int lcd_rows;
 
-LiquidCrystal *lcd_init(const struct lcd_pin_config &cfg)
+LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config &cfg)
 {
   // welcome message
-  char **lcd_init_message = new char *[2];
+  char **lcd_init_message = new char *[4];
   lcd_init_message[0] = strdup("   Welcome to   ");
   lcd_init_message[1] = strdup("    Moduloop    ");
+  lcd_init_message[2] = strdup("    Moduloop    ");
+  lcd_init_message[3] = strdup("    Moduloop    ");
 
   // Creates an LCD object. Parameters: (rs, enable, d4, d5, d6, d7)
-  LiquidCrystal *lcd = new LiquidCrystal(cfg.rs, cfg.en, cfg.dig4, cfg.dig5, cfg.dig6, cfg.dig7);
+  // LiquidCrystal *lcd = new LiquidCrystal(cfg.rs, cfg.en, cfg.dig4, cfg.dig5, cfg.dig6, cfg.dig7);
+  // lcd_rows = cfg.rows;
+  // lcd->begin(cfg.columns, cfg.rows);
+  // lcd->clear();
+  // lcd_display(lcd, lcd_init_message);
+
+  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  // LiquidCrystal_I2C lcd(0x27, 20, 4); // I2C address 0x27, 20 column and 4 rows
+  // LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(0x27, 20, 4);
+  LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg.i2c,cfg.columns,cfg.rows);
+
+  lcd->init(); // initialize the lcd
+  lcd->backlight();
   lcd_rows = cfg.rows;
   lcd->begin(cfg.columns, cfg.rows);
   lcd->clear();
   lcd_display(lcd, lcd_init_message);
 
-
-  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  // LiquidCrystal_I2C lcd(0x27, 20, 4); // I2C address 0x27, 20 column and 4 rows
-  LiquidCrystal_I2C *test_lcd = new LiquidCrystal_I2C(0x27, 20, 4);
-
-  test_lcd->init(); // initialize the lcd
-  test_lcd->backlight();
-
-  test_lcd->setCursor(0, 0);            // move cursor the first row
-  test_lcd->print("LCD 20x4");          // print message at the first row
-  test_lcd->setCursor(0, 1);            // move cursor to the second row
-  test_lcd->print("I2C Address: 0x27"); // print message at the second row
-  test_lcd->setCursor(0, 2);            // move cursor to the third row
-  test_lcd->print("TEEEEEEST");          // print message at the third row
-  test_lcd->setCursor(0, 3);            // move cursor to the fourth row
-  test_lcd->print("www.diyables.io");   // print message the fourth row
-
-  
-
-
+  // test_lcd->setCursor(0, 0);            // move cursor the first row
+  // test_lcd->print("LCD 20x4");          // print message at the first row
+  // test_lcd->setCursor(0, 1);            // move cursor to the second row
+  // test_lcd->print("I2C Address: 0x27"); // print message at the second row
+  // test_lcd->setCursor(0, 2);            // move cursor to the third row
+  // test_lcd->print("TEEEEEEST");          // print message at the third row
+  // test_lcd->setCursor(0, 3);            // move cursor to the fourth row
+  // test_lcd->print("www.diyables.io");   // print message the fourth row
+  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
   return lcd;
 }
 
-void lcd_display(LiquidCrystal *lcd, char **print_arr)
+void lcd_display(LiquidCrystal_I2C *lcd, char **print_arr)
 {
   lcd->clear();
   for (int row = 0; row < lcd_rows; row++)
@@ -85,12 +88,12 @@ void array_scroll(struct lcd_nav *nav, int direction)
 
   // free(temp_row1_str);
   // free(temp_row1_str2);
-  nav->lcd_state[0] = format_row(nav->ptr_str_array,new_index, 1);
+  nav->lcd_state[0] = format_row(nav->ptr_str_array, new_index, 1);
 
   for (int row = 1; row < lcd_rows; row++)
   {
     int temp_index = (new_index + row) % nav->size;
-    nav->lcd_state[row] = format_row(nav->ptr_str_array,temp_index, 0);
+    nav->lcd_state[row] = format_row(nav->ptr_str_array, temp_index, 0);
     // nav->lcd_state[row] = (nav->ptr_str_array[temp_index]);
 
     // char *temp_str = (char *)malloc(strlen(nav->ptr_str_array[temp_index]) + 3);
@@ -110,26 +113,28 @@ void array_scroll(struct lcd_nav *nav, int direction)
   // Serial.println("##############END SCROLL##############");
 }
 
-char* format_row(char**ptr_str_array,int index, int format){
+char *format_row(char **ptr_str_array, int index, int format)
+{
   char *temp_str;
-    char *temp_str2;
-   
-    temp_str = (char *)malloc(strlen(ptr_str_array[index]) + 7);
-    temp_str2 = (char *)malloc(strlen(ptr_str_array[index]));
-    // spacing, enumerated
-    if (format==0){
- sprintf(temp_str, " %d ", index+1);
-    
-    }
-    if(format==1){
-sprintf(temp_str, ">%d ", index+1);
-    }
-   strcpy(temp_str2, ptr_str_array[index]);
-    strcat(temp_str, temp_str2);
+  char *temp_str2;
 
-    free(temp_str2);
+  temp_str = (char *)malloc(strlen(ptr_str_array[index]) + 7);
+  temp_str2 = (char *)malloc(strlen(ptr_str_array[index]));
+  // spacing, enumerated
+  if (format == 0)
+  {
+    sprintf(temp_str, " %d ", index + 1);
+  }
+  if (format == 1)
+  {
+    sprintf(temp_str, ">%d ", index + 1);
+  }
+  strcpy(temp_str2, ptr_str_array[index]);
+  strcat(temp_str, temp_str2);
 
-    return temp_str;
+  free(temp_str2);
+
+  return temp_str;
 }
 
 struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction)
