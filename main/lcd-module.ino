@@ -82,7 +82,7 @@ void array_scroll(struct lcd_nav *nav, int direction)
   // THIS IS WHERE IT REPEATS
   for (int row = 1; row < lcd_rows; row++)
   {
-    if (row < nav->size)
+    if (row < (int) nav->size)
     {
       int temp_index = (new_index + row) % nav->size;
       nav->lcd_state[row] = format_row(nav->ptr_str_array, temp_index, 0);
@@ -146,9 +146,10 @@ struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction)
 struct lcd_nav *nav_init(struct nav_config *cfg)
 {
 
-  char **nav_main = new char *[2];
+  char **nav_main = new char *[3];
   nav_main[0] = strdup("Sounds");
   nav_main[1] = strdup("Effects");
+  nav_main[2] = strdup("Tracks");
 
   char **nav_sounds = new char *[2];
   nav_sounds[0] = strdup("Custom Sounds");
@@ -158,39 +159,33 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   struct lcd_nav *main = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *sounds = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *effects = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
+  struct lcd_nav *tracks = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *sounds_custom = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *sounds_midi = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   char **state_main = (char **)malloc(2 * sizeof(char *));
   char **state_sounds = (char **)malloc(2 * sizeof(char *));
   char **state_effects = (char **)malloc(2 * sizeof(char *));
+  char **state_tracks = (char **)malloc(2 * sizeof(char *));
   char **state_sounds_custom = (char **)malloc(2 * sizeof(char *));
   char **state_sounds_midi = (char **)malloc(2 * sizeof(char *));
   // char **state = new char *[2];
 
   // ptr arrays
-  struct lcd_nav **main_child = new struct lcd_nav *[2];
+  struct lcd_nav **main_child = new struct lcd_nav *[3];
   main_child[0] = sounds;
   main_child[1] = effects;
+  main_child[2] = tracks;
 
   struct lcd_nav **sounds_child = new struct lcd_nav *[2];
   sounds_child[0] = sounds_custom;
   sounds_child[1] = sounds_midi;
-
-  //   char *name;
-  //   char **ptr_str_array;
-  //   struct lcd_nav **parent;
-  //   struct lcd_nav **child;
-  //   size_t size;
-  //   char **lcd_state;
-  //   int index;
-  //   int depth;
 
   // main
   main->name = strdup("main");
   main->ptr_str_array = nav_main;
   main->parent = NULL;
   main->child = main_child;
-  main->size = 2;
+  main->size = 3;
   main->lcd_state = state_main;
   main->index = 0;
   main->depth = 0;
@@ -217,6 +212,17 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   effects->depth = 1;
   effects->index = 0;
   array_scroll(effects, 0);
+
+  // tracks
+  tracks->name = strdup("tracks");
+  tracks->ptr_str_array = (cfg->tracks)->array;
+  tracks->parent = main;
+  tracks->child = NULL;
+  tracks->size = (cfg->tracks)->size;
+  tracks->lcd_state = state_tracks;
+  tracks->depth = 1;
+  tracks->index = 0;
+  array_scroll(tracks, 0);
 
   // custom_sounds
   sounds_custom->name = strdup("custom_sounds");

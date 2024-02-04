@@ -99,6 +99,7 @@ void setup()
 
   nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
   nav_cfg->effects = (struct array_with_size *)malloc(sizeof(struct array_with_size));
+  nav_cfg->tracks = (struct array_with_size *)malloc(sizeof(struct array_with_size));
   nav_cfg->sounds_custom = (struct array_with_size *)malloc(sizeof(struct array_with_size));
   nav_cfg->sounds_midi = (struct array_with_size *)malloc(sizeof(struct array_with_size));
 
@@ -124,6 +125,14 @@ void setup()
   Serial.println("parsed files size");
   Serial.println((nav_cfg->sounds_custom)->size);
   playFile((nav_cfg->sounds_custom)->array[1]);
+
+  Serial.println("made it here4");
+
+  char **nav_tracks = new char *[2];
+  nav_tracks[0] = strdup("midi1");
+  nav_tracks[1] = strdup("midi2");
+  (nav_cfg->tracks)->array = nav_tracks;
+  (nav_cfg->tracks)->size = 2;
 
   lcd = lcd_init(lcd_cfg);
   nav_data_structure = nav_init(nav_cfg);

@@ -434,6 +434,7 @@ struct nav_config
     struct array_with_size *sounds_custom;
     struct array_with_size *sounds_midi;
     struct array_with_size *effects;
+    struct array_with_size *tracks;
 };
 
 struct button_maxtrix_pin_config
