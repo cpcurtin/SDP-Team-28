@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 LiquidCrystal_I2C *lcd;
 
 char **lcd_state = new char *[LCD_ROWS];
@@ -334,18 +333,18 @@ void loop()
 
   if (button_pressed(BUTTON_DPAD_LEFT)) // return / exit
   {
-    nav_state = nav_selection(nav_state, -1);
+    nav_state = nav_selection(nav_state, NAV_BACKWARD);
 
     lcd_display(lcd, nav_state->lcd_state);
   }
   if (button_pressed(BUTTON_DPAD_DOWN)) // scroll down
   {
-    array_scroll(nav_state, 1);
+    array_scroll(nav_state, NAV_DOWN);
     lcd_display(lcd, nav_state->lcd_state);
   }
   if (button_pressed(BUTTON_DPAD_UP)) // scroll up
   {
-    array_scroll(nav_state, -1);
+    array_scroll(nav_state, NAV_UP);
     lcd_display(lcd, nav_state->lcd_state);
   }
   if (button_pressed(BUTTON_DPAD_RIGHT)) // select
@@ -365,7 +364,7 @@ void loop()
     }
     else
     {
-      nav_state = nav_selection(nav_state, 1);
+      nav_state = nav_selection(nav_state, NAV_FORWARD);
       // Serial.printf("forward, %s\n",selection);
       lcd_display(lcd, nav_state->lcd_state);
     }

@@ -78,32 +78,27 @@ DAC PIN ASSIGNMENTS
 #define DAC_WS 20
 #define DAC_BCK 21
 
-
 /**************************
 LCD PIN ASSIGNMENTS
 **************************/
-#define LCD_RS 2
-#define LCD_EN 3
-#define LCD_DIGITAL_4 4
-#define LCD_DIGITAL_5 5
-#define LCD_DIGITAL_6 6
-#define LCD_DIGITAL_7 8
-#define LCD_I2C 0x27
-
-
+// #define LCD_RS 2
+// #define LCD_EN 3
+// #define LCD_DIGITAL_4 4
+// #define LCD_DIGITAL_5 5
+// #define LCD_DIGITAL_6 6
+// #define LCD_DIGITAL_7 8
+#define LCD_I2C 0x27 // 18 19
 
 /**************************
-DPAD BUTTONS
+DPAD BUTTONS PIN ASSIGNMENTS
 **************************/
 #define BUTTON_DPAD_UP 26
 #define BUTTON_DPAD_DOWN 25
 #define BUTTON_DPAD_LEFT 24
 #define BUTTON_DPAD_RIGHT 27
 
-
-
 /**************************
-MATRIX BUTTONS
+MATRIX BUTTON PIN ASSIGNMENTS
 **************************/
 #define BUTTON_MATRIX_ROW_1 999
 #define BUTTON_MATRIX_ROW_2 999
@@ -120,11 +115,8 @@ MATRIX BUTTONS
 #define BUTTON_MATRIX_COLUMN_8 999
 #define BUTTON_MATRIX_COLUMN_9 999
 
-
-
-
 /**************************
-MEASURE MATRIX BUTTONS
+MEASURE MATRIX BUTTON PIN ASSIGNMENTS
 **************************/
 #define BUTTON_MEASURE_MATRIX_ROW_1 32
 #define BUTTON_MEASURE_MATRIX_ROW_2 31
@@ -138,9 +130,8 @@ MEASURE MATRIX BUTTONS
 #define BUTTON_MEASURE_MATRIX_COLUMN_5 17
 #define BUTTON_MEASURE_MATRIX_COLUMN_6 16
 
-
 /**************************
-MEASURE MATRIX LEDS
+MEASURE MATRIX LED PIN ASSIGNMENTS
 **************************/
 #define LED_MEASURE_MATRIX_ROW_1 38
 #define LED_MEASURE_MATRIX_ROW_2 37
@@ -374,18 +365,31 @@ Percussive Sounds
 #define MuteSurdo 86
 #define Surdo 87
 
-// DYNAMIC OPTIONS
+/**************************
+HARDWARE CONFIGURATIONS
+**************************/
+
+// LCD
 #define LCD_ROWS 4
 #define LCD_COLUMNS 20
+
+// MATRIX
 #define MATRIX_ROWS 4
 #define MATRIX_COLUMNS 9
-
 #define MEASURE_MATRIX_ROWS 4
 #define MEASURE_MATRIX_COLUMNS 6
 
+// PALETTE
 #define PALETTE_MATRIX_ROWS 4
 #define PALETTE_MATRIX_COLUMNS 3
 
+/**************************
+PROGRAM VARIABLES
+**************************/
+#define NAV_FORWARD 1
+#define NAV_BACKWARD -1
+#define NAV_UP -1
+#define NAV_DOWN 1
 
 /**************************
 PROGRAM STRUCTS
@@ -393,64 +397,64 @@ PROGRAM STRUCTS
 
 struct lcd_pin_config
 {
-  const int i2c;
-  const int rows;
-  const int columns;
+    const int i2c;
+    const int rows;
+    const int columns;
 };
 
 struct dac_pin_config
 {
-  const int din;
-  const int ws;
-  const int bck;
+    const int din;
+    const int ws;
+    const int bck;
 };
 
 struct dpad_pin_config
 {
-  const int up;
-  const int down;
-  const int left;
-  const int right;
-  const int select;
+    const int up;
+    const int down;
+    const int left;
+    const int right;
+    const int select;
 };
 struct lcd_nav
 {
-  char *name;
-  char **ptr_str_array;
-  struct lcd_nav *parent;
-  struct lcd_nav **child;
-  size_t size;
-  char **lcd_state;
-  int index;
-  int depth;
+    char *name;
+    char **ptr_str_array;
+    struct lcd_nav *parent;
+    struct lcd_nav **child;
+    size_t size;
+    char **lcd_state;
+    int index;
+    int depth;
 };
 
 struct nav_config
 {
-  struct array_with_size *sounds_custom;
-  struct array_with_size *sounds_midi;
-  struct array_with_size *effects;
+    struct array_with_size *sounds_custom;
+    struct array_with_size *sounds_midi;
+    struct array_with_size *effects;
 };
 
 struct button_maxtrix_pin_config
 {
-  size_t width;   // The length of the array
-  size_t length;  // The length of the array
-  int rows[5];    // Flexible array member
-  int columns[7]; // Flexible array member
+    size_t width;   // The length of the array
+    size_t length;  // The length of the array
+    int rows[5];    // Flexible array member
+    int columns[7]; // Flexible array member
 };
 
 struct palette_cell
 {
-  char *sound;
-  int available;
+    char *sound;
+    int available;
 };
 
 struct palette_matrix
 {
-  struct palette_cell ***cells;
-  int rows;
-  int columns;
+    struct palette_cell ***cells;
+    int rows;
+    int columns;
 };
 
 #endif // MAIN_H
