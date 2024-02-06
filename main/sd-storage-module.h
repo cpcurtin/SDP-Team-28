@@ -9,6 +9,16 @@ struct array_with_size
   size_t size;
 };
 
+struct track{
+  char* name;
+  int bpm;
+};
+// Number of elements in the array
+const int arraySize = 5;
+
+// File name on the SD card
+const char* fileName = "data.txt";
+
 
 
 void sd_init(void);
@@ -18,5 +28,9 @@ void listfiles(void);
 void printDirectory(File dir, int numSpaces);
 void printSpaces(int num);
 void printTime(const DateTimeFields tm);
+
+void saveTracks(struct track singleTrack);
+void read_STRUCT(void);
+// struct tracks* loadTracks(int index);
 
 #endif // SD_STORAGE_MODULE_H

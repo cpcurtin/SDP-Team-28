@@ -164,6 +164,33 @@ void setup()
   START AS A PERCUSION SOUND:
   midiSetInstrument(0,128);
   *****************************************/
+
+
+  struct track myTrack;
+  myTrack.name = strdup("TrackName");
+  myTrack.bpm = 120;
+  // saveTracks(myTracks,0);
+  saveTracks(myTrack);
+  // read_STRUCT();
+
+
+  // Write data to the file
+  // writeDataToFile(myTracks);
+
+  // Read data from the file and reconstruct the array
+  // track readTracks[arraySize];
+  // readDataFromFile(readTracks);
+
+  // Print the reconstructed array for verification
+  // for (int i = 0; i < arraySize; i++) {
+  //   Serial.print("Name: ");
+  //   Serial.print(readTracks[i].name);
+  //   Serial.print(", BPM: ");
+  //   Serial.println(readTracks[i].bpm);
+  // }
+
+  // Free the allocated memory
+  // freeMemory(readTracks);
 }
 
 /* Main subroutine: follow software block diagram */

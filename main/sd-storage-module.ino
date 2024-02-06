@@ -206,3 +206,89 @@ void printTime(const DateTimeFields tm)
   Serial.print(", ");
   Serial.print(tm.year + 1900);
 }
+
+// save current program to card at selected location
+void saveTracks(struct track singleTrack){
+   if (SD.exists(fileName)) {
+
+    Serial.println("example.txt exists.");
+
+  } else {
+
+    Serial.println("example.txt doesn't exist.");
+
+  }
+
+  // open a new file and immediately close it:
+
+  Serial.println("Creating example.txt...");
+
+  File dataFile = SD.open(fileName, FILE_WRITE);
+
+  dataFile.close();
+
+  // Check to see if the file exists:
+
+  if (SD.exists(fileName)) {
+
+    Serial.println("example.txt exists.");
+
+  } else {
+
+    Serial.println("example.txt doesn't exist.");
+
+  }
+
+
+// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+//  dataFile = SD.open(fileName, FILE_WRITE);
+//  if (dataFile) {
+//     // Write the single track to the file
+//     dataFile.write((uint8_t*)&singleTrack, sizeof(track));
+//     // Close the file
+//     Serial.println("Track saved successfully");
+
+//     // while (dataFile.available()) {
+//     //   Serial.write(dataFile.read());
+//     // }
+//   } else {
+//     // If the file didn't open, print an error message
+//     Serial.println("Error opening data.txt");
+//   }
+//   dataFile.close();
+// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+
+  // delete the file:
+
+  Serial.println("Removing example.txt...");
+
+  SD.remove(fileName);
+
+  if (SD.exists(fileName)) {
+
+    Serial.println("example.txt exists.");
+
+  } else {
+
+    Serial.println("example.txt doesn't exist.");
+
+  }
+  Serial.println("fin");
+}
+void read_STRUCT(void) {
+ File structFile = SD.open(fileName, FILE_READ);
+ struct track tracks;
+ structFile.read((uint8_t *)&tracks, sizeof(track)/sizeof(uint8_t));
+ Serial.println(tracks.name);
+
+
+
+ structFile.close();
+}
+
+
+// load program from card
+// struct tracks* loadTracks(int index){
+
+// }
