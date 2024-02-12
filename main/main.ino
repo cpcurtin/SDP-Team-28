@@ -1,76 +1,4 @@
 #include "main.h"
-// struct lcd_pin_config
-// {
-//   const int rs;
-//   const int en;
-//   const int dig4;
-//   const int dig5;
-//   const int dig6;
-//   const int dig7;
-//   const int rows;
-//   const int columns;
-// };
-struct lcd_pin_config
-{
-  const int i2c;
-  const int rows;
-  const int columns;
-};
-
-struct dac_pin_config
-{
-  const int din;
-  const int ws;
-  const int bck;
-};
-
-struct dpad_pin_config
-{
-  const int up;
-  const int down;
-  const int left;
-  const int right;
-  const int select;
-};
-struct lcd_nav
-{
-  char *name;
-  char **ptr_str_array;
-  struct lcd_nav *parent;
-  struct lcd_nav **child;
-  size_t size;
-  char **lcd_state;
-  int index;
-  int depth;
-};
-
-struct nav_config
-{
-  struct array_with_size *sounds_custom;
-  struct array_with_size *sounds_midi;
-  struct array_with_size *effects;
-};
-
-struct button_maxtrix_pin_config
-{
-  size_t width;   // The length of the array
-  size_t length;  // The length of the array
-  int rows[5];    // Flexible array member
-  int columns[7]; // Flexible array member
-};
-
-struct palette_cell
-{
-  char *sound;
-  int available;
-};
-
-struct palette_matrix
-{
-  struct palette_cell ***cells;
-  int rows;
-  int columns;
-};
 
 LiquidCrystal_I2C *lcd;
 
@@ -171,6 +99,7 @@ void setup()
 
   nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
   nav_cfg->effects = (struct array_with_size *)malloc(sizeof(struct array_with_size));
+  nav_cfg->tracks = (struct array_with_size *)malloc(sizeof(struct array_with_size));
   nav_cfg->sounds_custom = (struct array_with_size *)malloc(sizeof(struct array_with_size));
   nav_cfg->sounds_midi = (struct array_with_size *)malloc(sizeof(struct array_with_size));
 
@@ -196,6 +125,14 @@ void setup()
   Serial.println("parsed files size");
   Serial.println((nav_cfg->sounds_custom)->size);
   playFile((nav_cfg->sounds_custom)->array[1]);
+
+  Serial.println("made it here4");
+
+  char **nav_tracks = new char *[2];
+  nav_tracks[0] = strdup("midi1");
+  nav_tracks[1] = strdup("midi2");
+  (nav_cfg->tracks)->array = nav_tracks;
+  (nav_cfg->tracks)->size = 2;
 
   lcd = lcd_init(lcd_cfg);
   nav_data_structure = nav_init(nav_cfg);
@@ -227,6 +164,31 @@ void setup()
   START AS A PERCUSION SOUND:
   midiSetInstrument(0,128);
   *****************************************/
+
+  struct track myTrack;
+  myTrack.name = strdup("TrackName");
+  myTrack.bpm = 120;
+  // saveTracks(myTracks,0);
+  saveTracks(myTrack);
+  // read_STRUCT();
+
+  // Write data to the file
+  // writeDataToFile(myTracks);
+
+  // Read data from the file and reconstruct the array
+  // track readTracks[arraySize];
+  // readDataFromFile(readTracks);
+
+  // Print the reconstructed array for verification
+  // for (int i = 0; i < arraySize; i++) {
+  //   Serial.print("Name: ");
+  //   Serial.print(readTracks[i].name);
+  //   Serial.print(", BPM: ");
+  //   Serial.println(readTracks[i].bpm);
+  // }
+
+  // Free the allocated memory
+  // freeMemory(readTracks);
 }
 
 /* Main subroutine: follow software block diagram */
@@ -241,182 +203,182 @@ void loop()
 
   //   }
   // Main Timing Loop for 4x4 Measure Matrix
-  // if (ledMetro.check() == 1)
-  // {
-  //   if (count == 0)
-  //   {
-  //     Serial.println("Hit");
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-  //     midiNoteOn(0, Crash1, 127);
-  //     midiNoteOn(0, AcousticBassDrum, 127);
-  //     playFile((nav_cfg->sounds_custom)->array[6]);
-  //   }
+  if (ledMetro.check() == 1)
+  {
+    if (count == 0)
+    {
+      Serial.println("Hit");
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+      midiNoteOn(0, Crash1, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
+      playFile((nav_cfg->sounds_custom)->array[6]);
+    }
 
-  //   if (count == 1)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //   }
+    if (count == 1)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+      midiNoteOn(0, ClosedHiHat, 127);
+    }
 
-  //   if (count == 2)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticSnare, 127);
-  //   }
+    if (count == 2)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticSnare, 127);
+    }
 
-  //   if (count == 3)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //   }
+    if (count == 3)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+      midiNoteOn(0, ClosedHiHat, 127);
+    }
 
-  //   if (count == 4)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+    if (count == 4)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticBassDrum, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
+    }
 
-  //   if (count == 5)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //   }
+    if (count == 5)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+      midiNoteOn(0, ClosedHiHat, 127);
+    }
 
-  //   if (count == 6)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+    if (count == 6)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticSnare, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticSnare, 127);
+    }
 
-  //   if (count == 7)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //   }
+    if (count == 7)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+      midiNoteOn(0, ClosedHiHat, 127);
+    }
 
-  //   if (count == 8)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
+    if (count == 8)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticBassDrum, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
+    }
 
-  //   if (count == 9)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
+    if (count == 9)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticBassDrum, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
+    }
 
-  //   if (count == 10)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
+    if (count == 10)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticSnare, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticSnare, 127);
+    }
 
-  //   if (count == 11)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
+    if (count == 11)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticBassDrum, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
+    }
 
-  //   if (count == 12)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
+    if (count == 12)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticBassDrum, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
+    }
 
-  //   if (count == 13)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //   }
+    if (count == 13)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
+      midiNoteOn(0, ClosedHiHat, 127);
+    }
 
-  //   if (count == 14)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
+    if (count == 14)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticSnare, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticSnare, 127);
+    }
 
-  //   if (count == 15)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
+    if (count == 15)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+    }
 
-  //   count++;
-  //   if (count == 16)
-  //   {
-  //     count = 0;
-  //   }
-  // }
+    count++;
+    if (count == 16)
+    {
+      count = 0;
+    }
+  }
 
   if (button_pressed(BUTTON_DPAD_LEFT)) // return / exit
   {
-    nav_state = nav_selection(nav_state, -1);
+    nav_state = nav_selection(nav_state, NAV_BACKWARD);
 
     lcd_display(lcd, nav_state->lcd_state);
   }
   if (button_pressed(BUTTON_DPAD_DOWN)) // scroll down
   {
-    array_scroll(nav_state, 1);
+    array_scroll(nav_state, NAV_DOWN);
     lcd_display(lcd, nav_state->lcd_state);
   }
   if (button_pressed(BUTTON_DPAD_UP)) // scroll up
   {
-    array_scroll(nav_state, -1);
+    array_scroll(nav_state, NAV_UP);
     lcd_display(lcd, nav_state->lcd_state);
   }
   if (button_pressed(BUTTON_DPAD_RIGHT)) // select
@@ -436,7 +398,7 @@ void loop()
     }
     else
     {
-      nav_state = nav_selection(nav_state, 1);
+      nav_state = nav_selection(nav_state, NAV_FORWARD);
       // Serial.printf("forward, %s\n",selection);
       lcd_display(lcd, nav_state->lcd_state);
     }
