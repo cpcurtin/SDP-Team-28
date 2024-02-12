@@ -165,14 +165,12 @@ void setup()
   midiSetInstrument(0,128);
   *****************************************/
 
-
   struct track myTrack;
   myTrack.name = strdup("TrackName");
   myTrack.bpm = 120;
   // saveTracks(myTracks,0);
   saveTracks(myTrack);
   // read_STRUCT();
-
 
   // Write data to the file
   // writeDataToFile(myTracks);
@@ -205,167 +203,167 @@ void loop()
 
   //   }
   // Main Timing Loop for 4x4 Measure Matrix
-  // if (ledMetro.check() == 1)
-  // {
-  //   if (count == 0)
-  //   {
-  //     Serial.println("Hit");
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-  //     midiNoteOn(0, Crash1, 127);
-  //     midiNoteOn(0, AcousticBassDrum, 127);
-  //     playFile((nav_cfg->sounds_custom)->array[6]);
-  //   }
+  if (ledMetro.check() == 1)
+  {
+    if (count == 0)
+    {
+      Serial.println("Hit");
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+      midiNoteOn(0, Crash1, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
+      playFile((nav_cfg->sounds_custom)->array[6]);
+    }
 
-  //   if (count == 1)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //   }
+    if (count == 1)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+      midiNoteOn(0, ClosedHiHat, 127);
+    }
 
-  //   if (count == 2)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticSnare, 127);
-  //   }
+    if (count == 2)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticSnare, 127);
+    }
 
-  //   if (count == 3)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //   }
+    if (count == 3)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
+      midiNoteOn(0, ClosedHiHat, 127);
+    }
 
-  //   if (count == 4)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_1, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+    if (count == 4)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticBassDrum, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
+    }
 
-  //   if (count == 5)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //   }
+    if (count == 5)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+      midiNoteOn(0, ClosedHiHat, 127);
+    }
 
-  //   if (count == 6)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+    if (count == 6)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticSnare, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticSnare, 127);
+    }
 
-  //   if (count == 7)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //   }
+    if (count == 7)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, LOW);
+      midiNoteOn(0, ClosedHiHat, 127);
+    }
 
-  //   if (count == 8)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_2, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
+    if (count == 8)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticBassDrum, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
+    }
 
-  //   if (count == 9)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
+    if (count == 9)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticBassDrum, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
+    }
 
-  //   if (count == 10)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
+    if (count == 10)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticSnare, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticSnare, 127);
+    }
 
-  //   if (count == 11)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
+    if (count == 11)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticBassDrum, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
+    }
 
-  //   if (count == 12)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_3, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
+    if (count == 12)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticBassDrum, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticBassDrum, 127);
+    }
 
-  //   if (count == 13)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //   }
+    if (count == 13)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
+      midiNoteOn(0, ClosedHiHat, 127);
+    }
 
-  //   if (count == 14)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
+    if (count == 14)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //     midiNoteOn(0, AcousticSnare, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+      midiNoteOn(0, AcousticSnare, 127);
+    }
 
-  //   if (count == 15)
-  //   {
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
-  //     digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
-  //     digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
+    if (count == 15)
+    {
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
+      digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
+      digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
-  //     midiNoteOn(0, ClosedHiHat, 127);
-  //   }
+      midiNoteOn(0, ClosedHiHat, 127);
+    }
 
-  //   count++;
-  //   if (count == 16)
-  //   {
-  //     count = 0;
-  //   }
-  // }
+    count++;
+    if (count == 16)
+    {
+      count = 0;
+    }
+  }
 
   if (button_pressed(BUTTON_DPAD_LEFT)) // return / exit
   {
