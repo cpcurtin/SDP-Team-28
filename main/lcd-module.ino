@@ -12,10 +12,10 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config &cfg)
 {
   // welcome message
   char **lcd_init_message = new char *[4];
-  lcd_init_message[0] = strdup("   Welcome to   ");
-  lcd_init_message[1] = strdup("    Moduloop    ");
-  lcd_init_message[2] = strdup("    Moduloop    ");
-  lcd_init_message[3] = strdup("    Moduloop    ");
+  lcd_init_message[0] = strdup("     Welcome to     ");
+  lcd_init_message[1] = strdup("      Moduloop      ");
+  lcd_init_message[2] = strdup("");
+  lcd_init_message[3] = strdup("    SDP team 28    ");
 
   // Creates an LCD object. Parameters: (rs, enable, d4, d5, d6, d7)
   // LiquidCrystal *lcd = new LiquidCrystal(cfg.rs, cfg.en, cfg.dig4, cfg.dig5, cfg.dig6, cfg.dig7);
@@ -82,7 +82,7 @@ void array_scroll(struct lcd_nav *nav, int direction)
   // THIS IS WHERE IT REPEATS
   for (int row = 1; row < lcd_rows; row++)
   {
-    if (row < (int) nav->size)
+    if (row < (int)nav->size)
     {
       int temp_index = (new_index + row) % nav->size;
       nav->lcd_state[row] = format_row(nav->ptr_str_array, temp_index, 0);
