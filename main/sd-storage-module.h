@@ -3,23 +3,23 @@
 #include <Arduino.h>
 #include <SD.h>
 
+
 struct array_with_size
 {
   char **array;
   size_t size;
 };
 
-struct track{
-  char* name;
+struct track
+{
+  char *name;
   int bpm;
 };
 // Number of elements in the array
 const int arraySize = 5;
 
 // File name on the SD card
-const char* fileName = "data.txt";
-
-
+const char *fileName = "data.txt";
 
 void sd_init(void);
 struct array_with_size *parsefiles(void);

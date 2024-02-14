@@ -5,7 +5,7 @@
  *
  */
 #include <Arduino.h>
-#include <SD.h>
+// #include <SD.h>
 #include "sd-storage-module.h"
 
 void sd_init(void)
@@ -208,15 +208,17 @@ void printTime(const DateTimeFields tm)
 }
 
 // save current program to card at selected location
-void saveTracks(struct track singleTrack){
-   if (SD.exists(fileName)) {
+void saveTracks(struct track singleTrack)
+{
+  if (SD.exists(fileName))
+  {
 
     Serial.println("example.txt exists.");
-
-  } else {
+  }
+  else
+  {
 
     Serial.println("example.txt doesn't exist.");
-
   }
 
   // open a new file and immediately close it:
@@ -229,35 +231,34 @@ void saveTracks(struct track singleTrack){
 
   // Check to see if the file exists:
 
-  if (SD.exists(fileName)) {
+  if (SD.exists(fileName))
+  {
 
     Serial.println("example.txt exists.");
-
-  } else {
+  }
+  else
+  {
 
     Serial.println("example.txt doesn't exist.");
-
   }
 
+  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  //  dataFile = SD.open(fileName, FILE_WRITE);
+  //  if (dataFile) {
+  //     // Write the single track to the file
+  //     dataFile.write((uint8_t*)&singleTrack, sizeof(track));
+  //     // Close the file
+  //     Serial.println("Track saved successfully");
 
-// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//  dataFile = SD.open(fileName, FILE_WRITE);
-//  if (dataFile) {
-//     // Write the single track to the file
-//     dataFile.write((uint8_t*)&singleTrack, sizeof(track));
-//     // Close the file
-//     Serial.println("Track saved successfully");
-
-//     // while (dataFile.available()) {
-//     //   Serial.write(dataFile.read());
-//     // }
-//   } else {
-//     // If the file didn't open, print an error message
-//     Serial.println("Error opening data.txt");
-//   }
-//   dataFile.close();
-// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
+  //     // while (dataFile.available()) {
+  //     //   Serial.write(dataFile.read());
+  //     // }
+  //   } else {
+  //     // If the file didn't open, print an error message
+  //     Serial.println("Error opening data.txt");
+  //   }
+  //   dataFile.close();
+  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
   // delete the file:
 
@@ -265,28 +266,27 @@ void saveTracks(struct track singleTrack){
 
   SD.remove(fileName);
 
-  if (SD.exists(fileName)) {
+  if (SD.exists(fileName))
+  {
 
     Serial.println("example.txt exists.");
-
-  } else {
+  }
+  else
+  {
 
     Serial.println("example.txt doesn't exist.");
-
   }
   Serial.println("fin");
 }
-void read_STRUCT(void) {
- File structFile = SD.open(fileName, FILE_READ);
- struct track tracks;
- structFile.read((uint8_t *)&tracks, sizeof(track)/sizeof(uint8_t));
- Serial.println(tracks.name);
+void read_STRUCT(void)
+{
+  File structFile = SD.open(fileName, FILE_READ);
+  struct track tracks;
+  structFile.read((uint8_t *)&tracks, sizeof(track) / sizeof(uint8_t));
+  Serial.println(tracks.name);
 
-
-
- structFile.close();
+  structFile.close();
 }
-
 
 // load program from card
 // struct tracks* loadTracks(int index){

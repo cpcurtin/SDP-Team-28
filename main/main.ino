@@ -124,7 +124,7 @@ void setup()
   (nav_cfg->sounds_custom = parsefiles());
   Serial.println("parsed files size");
   Serial.println((nav_cfg->sounds_custom)->size);
-  playFile((nav_cfg->sounds_custom)->array[1]);
+  // playFile((nav_cfg->sounds_custom)->array[1]);
 
   Serial.println("made it here4");
 
@@ -165,11 +165,11 @@ void setup()
   midiSetInstrument(0,128);
   *****************************************/
 
-  struct track myTrack;
-  myTrack.name = strdup("TrackName");
-  myTrack.bpm = 120;
+  // struct track myTrack;
+  // myTrack.name = strdup("TrackName");
+  // myTrack.bpm = 120;
   // saveTracks(myTracks,0);
-  saveTracks(myTrack);
+  // saveTracks(myTrack);
   // read_STRUCT();
 
   // Write data to the file
@@ -178,6 +178,19 @@ void setup()
   // Read data from the file and reconstruct the array
   // track readTracks[arraySize];
   // readDataFromFile(readTracks);
+
+  Serial.println(FreeMem());
+  Serial.println(AudioMemoryUsageMax());
+  playFile((nav_cfg->sounds_custom)->array[2]);
+  delay(1000);
+  playFile((nav_cfg->sounds_custom)->array[3]);
+  delay(1000);
+  Serial.println(playSdWav1.isPlaying());
+  Serial.println(playSdWav2.isPlaying());
+  Serial.println(playSdWav3.isPlaying());
+  Serial.println(playSdWav4.isPlaying());
+  Serial.println(FreeMem());
+  Serial.println(AudioMemoryUsageMax());
 
   // Print the reconstructed array for verification
   // for (int i = 0; i < arraySize; i++) {
@@ -214,7 +227,7 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, Crash1, 127);
       midiNoteOn(0, AcousticBassDrum, 127);
-      playFile((nav_cfg->sounds_custom)->array[6]);
+      // playFile((nav_cfg->sounds_custom)->array[6]);
     }
 
     if (count == 1)
