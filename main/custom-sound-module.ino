@@ -28,6 +28,11 @@ void playFile(const char *filename)
     return;
   }
 
+    Serial.println(playSdWav1.isPlaying());
+  Serial.println(playSdWav2.isPlaying());
+  Serial.println(playSdWav3.isPlaying());
+  Serial.println(playSdWav4.isPlaying());
+
   // Copy "/sounds/" prefix into temp_str
   strcpy(temp_str, "/sounds/");
 

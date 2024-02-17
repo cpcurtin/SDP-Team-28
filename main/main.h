@@ -3,62 +3,63 @@
 /*
  *       MODULOOP MAIN CONFIGURATIONS
  *
- *    PINOUT:
- *    PIN0:   MIDI RX (not used)
- *    PIN1:   MIDI TX - Serial1
- *    PIN2:   LCD - Register Select
- *    PIN3:   LCD - Enable display
- *    PIN4:   LCD - Digital 4
- *    PIN5:   LCD - Digital 5
- *    PIN6:   LCD - Digital 6
- *    PIN7:   DAC - DIN
- *    PIN8:   LCD - Digital 7
- *    PIN9:   MIDI Reset
- *    PIN10:
- *    PIN11:
- *    PIN12:
- *    PIN13:
- *    PIN14:
- *    PIN15:
- *    PIN16:
- *    PIN17:
- *    PIN18:
- *    PIN19:
- *    PIN20:   DAC - WS
- *    PIN21:   DAC - BCK
- *    PIN22:
- *    PIN23:
- *    PIN24:   DPAD - LEFT
- *    PIN25:   DPAD - DOWN
- *    PIN26:   DPAD - UP
- *    PIN27:   DPAD - RIGHT
- *    PIN28:   PALLET - TEST1
- *    PIN30:   PALLET - TEST2
- *    PIN29:   PALLET - TEST3
- *    PIN31:
- *    PIN32:
- *    PIN33:
- *    PIN34:
- *    PIN35:
- *    PIN36:
- *    PIN37:
- *    PIN38:
- *    PIN39:
- *    PIN40:
- *    PIN41:
- *    PIN42:
- *    PIN43:
- *    PIN44:
- *    PIN45:
- *    PIN46:
- *    PIN47:
- *    PIN48:
- *    PIN49:
- *    PIN50:
- *    PIN51:
- *    PIN52:
- *
+ *    PINOUT: R   O   Y           G     B   I     P     |
+ *    PIN0:   PWM                 CS1   RX1       CRX2  | PIN0: 
+ *    PIN1:   PWM                 MISO1 TX1       CTX2  | PIN1: 
+ *    PIN2:   PWM     OUT2                              | PIN2: 
+ *    PIN3:   PWM     LRCLK2                            | PIN3: 
+ *    PIN4:   PWM     BCLK2                             | PIN4: 
+ *    PIN5:   PWM     IN2                               | PIN5: 
+ *    PIN6:   PWM     OUT1D                             | PIN6: 
+ *    PIN7:   PWM     OUT1A             RX2             | PIN7: 
+ *    PIN8:   PWM     IN1               TX2             | PIN8: 
+ *    PIN9:   PWM     OUT1C                             | PIN9: 
+ *    PIN10:  PWM     MQSR        CS                    | PIN10:  
+ *    PIN11:  PWM                 MOSI            CTX1  | PIN11:  
+ *    PIN12:  PWM     MQSL        MISO                  | PIN12:     
+ *    PIN13:  PWM                 SCK                   | PIN13:     
+ *    PIN14:  PWM A0  S/PDIF OUT        TX3             | PIN14:       
+ *    PIN15:  PWM A1  S/PDIF IN         RX3             | PIN15:         
+ *    PIN16:      A2                    RX4 SCL1        | PIN16:         
+ *    PIN17:      A3                    TX4 SDA1        | PIN17:           
+ *    PIN18:  PWM A4                        SDA         | PIN18:           
+ *    PIN19:  PWM A5                        SCL         | PIN19:        
+ *    PIN20:      A6  LRCLK1            TX5             | PIN20:  
+ *    PIN21:      A7  BCLK1             RX5             | PIN21:  
+ *    PIN22:  PWM A8                              CTX1  | PIN22:    
+ *    PIN23:  PWM A9  MCLK1                       CRX1  | PIN23:  
+ *    PIN24:  PWM A10                       SCL2        | PIN24:  
+ *    PIN25:  PWM A11                       SDA2        | PIN25:  
+ *    PIN26:      A12             MOSI1                 | PIN26:  
+ *    PIN27:      A13             SCK1                  | PIN27:  
+ *    PIN28:  PWM                       RX7             | PIN28:  
+ *    PIN29:  PWM                       TX7             | PIN29:  
+ *    PIN30:                                      CRX3  | PIN30:  
+ *    PIN31:                                      CTX3  | PIN31:       
+ *    PIN32:          OUT1B                             | PIN32:  
+ *    PIN33:  PWM     MCLK2                             | PIN33:  
+ *    PIN34:                            RX8             | PIN34:       
+ *    PIN35:                            TX8             | PIN35:  
+ *    PIN36:  PWM                 CS                    | PIN36:  
+ *    PIN37:  PWM                 CS                    | PIN37:  
+ *    PIN38:      A14 IN1         CS1                   | PIN38:  
+ *    PIN39:      A15 OUT1A       MISO1                 | PIN39:  
+ *    PIN40:      A16                                   | PIN40:  
+ *    PIN41:      A17                                   | PIN41:  
+ *    PIN42:                                            | PIN42:  
+ *    PIN43:                                            | PIN43:  
+ *    PIN44:                                            | PIN44:  
+ *    PIN45:                                            | PIN45:  
+ *    PIN46:                                            | PIN46:  
+ *    PIN47:                                            | PIN47:  
+ *    PIN48:                                            | PIN48:  
+ *    PIN49:                                            | PIN49:  
+ *    PIN50:                                            | PIN50:  
+ *    PIN51:                                            | PIN51:  
+ *    PIN52:                                            | PIN52:  
+ *    PINOUT: R   O   Y           G     B   I     P     | PINOUT: 
  */
+
 /**************************
 MODULE LINKING
 **************************/

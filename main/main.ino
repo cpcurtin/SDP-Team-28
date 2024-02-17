@@ -179,16 +179,32 @@ void setup()
   // track readTracks[arraySize];
   // readDataFromFile(readTracks);
 
-  Serial.println(FreeMem());
-  Serial.println(AudioMemoryUsageMax());
-  playFile((nav_cfg->sounds_custom)->array[2]);
-  delay(1000);
+
+ 
+
+  // Serial.println(FreeMem());
+  // Serial.println(AudioMemoryUsageMax());
+  unsigned long start_millis = millis(); // Get the current time
+  int tracknum=4;
   playFile((nav_cfg->sounds_custom)->array[3]);
-  delay(1000);
-  Serial.println(playSdWav1.isPlaying());
-  Serial.println(playSdWav2.isPlaying());
-  Serial.println(playSdWav3.isPlaying());
-  Serial.println(playSdWav4.isPlaying());
+
+  Serial.print("time: ");
+  Serial.println(millis()-start_millis);
+
+  playFile((nav_cfg->sounds_custom)->array[4]);
+  Serial.print("time: ");
+  Serial.println(millis()-start_millis);
+  
+  playFile((nav_cfg->sounds_custom)->array[5]);
+  Serial.print("time: ");
+  Serial.println(millis()-start_millis);
+  playFile((nav_cfg->sounds_custom)->array[6]);
+  Serial.print("time: ");
+  Serial.println(millis()-start_millis);
+
+  Serial.print("time: ");
+  Serial.println(millis()-start_millis);
+
   Serial.println(FreeMem());
   Serial.println(AudioMemoryUsageMax());
 
