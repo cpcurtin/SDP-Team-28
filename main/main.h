@@ -3,7 +3,18 @@
 /*
  *       MODULOOP MAIN CONFIGURATIONS
  *
- *    PINOUT: R   O   Y           G     B   I     P     |
+ *    KEY:
+ *    R:  PWM
+ *    O:  ANALOG
+ *    LY: PROP
+ *    Y:  AUDIO
+ *    G:  SPI
+ *    LB: FLEXIO
+ *    B:  SERIAL
+ *    I:  I2C
+ *    P:  CAN
+ **************************  HEADERS  **************************
+ *    PINOUT  R   O   Y           G     B   I     P     | PINOUT
  *    PIN0:   PWM                 CS1   RX1       CRX2  | PIN0: 
  *    PIN1:   PWM                 MISO1 TX1       CTX2  | PIN1: 
  *    PIN2:   PWM     OUT2                              | PIN2: 
@@ -46,18 +57,23 @@
  *    PIN39:      A15 OUT1A       MISO1                 | PIN39:  
  *    PIN40:      A16                                   | PIN40:  
  *    PIN41:      A17                                   | PIN41:  
- *    PIN42:                                            | PIN42:  
- *    PIN43:                                            | PIN43:  
- *    PIN44:                                            | PIN44:  
- *    PIN45:                                            | PIN45:  
- *    PIN46:                                            | PIN46:  
- *    PIN47:                                            | PIN47:  
- *    PIN48:                                            | PIN48:  
- *    PIN49:                                            | PIN49:  
- *    PIN50:                                            | PIN50:  
- *    PIN51:                                            | PIN51:  
- *    PIN52:                                            | PIN52:  
- *    PINOUT: R   O   Y           G     B   I     P     | PINOUT: 
+ *    PINOUT  R   O   Y           G     B   I     P     | PINOUT
+ *    *********************  BOTTOM PADS  **********************
+ *    PINOUT  R   LY  G     LB    B   I                 | PINOUT
+ *    PIN42:  PWM     MISO2 DAT1                        | PIN42:  
+ *    PIN43:  PWM     MOSI2 DAT0                        | PIN43:  
+ *    PIN44:  PWM     CS2   CLK       SDA1              | PIN44:  
+ *    PIN45:  PWM     SCK2  CMD       SCL1              | PIN45:  
+ *    PIN46:  PWM           DAT3  RX5                   | PIN46:  
+ *    PIN47:  PWM           DAT2  TX5                   | PIN47:  
+ *    PIN48:      CS0             RX8                   | PIN48:  
+ *    PIN49:      D1  SCK2                              | PIN49:  
+ *    PIN50:      D2  MOSI2                             | PIN50:  
+ *    PIN51:  PWM CS1                 SCL1              | PIN51:  
+ *    PIN52:      D0              RX1                   | PIN52:  
+ *    PIN53:      CLK             TX1                   | PIN53:
+ *    PIN54:  PWM D3  MISO2                             | PIN54:
+ *    PINOUT  R   LY  G     LB    B   I                 | PINOUT
  */
 
 /**************************
