@@ -15,66 +15,149 @@
  *    P:  CAN
  **************************  HEADERS  **************************
  *    PINOUT  R   O   Y           G     B   I     P     | PINOUT
- *    PIN0:   PWM                 CS1   RX1       CRX2  | PIN0: 
- *    PIN1:   PWM                 MISO1 TX1       CTX2  | PIN1: 
- *    PIN2:   PWM     OUT2                              | PIN2: 
- *    PIN3:   PWM     LRCLK2                            | PIN3: 
- *    PIN4:   PWM     BCLK2                             | PIN4: 
- *    PIN5:   PWM     IN2                               | PIN5: 
- *    PIN6:   PWM     OUT1D                             | PIN6: 
- *    PIN7:   PWM     OUT1A             RX2             | PIN7: 
- *    PIN8:   PWM     IN1               TX2             | PIN8: 
- *    PIN9:   PWM     OUT1C                             | PIN9: 
- *    PIN10:  PWM     MQSR        CS                    | PIN10:  
- *    PIN11:  PWM                 MOSI            CTX1  | PIN11:  
- *    PIN12:  PWM     MQSL        MISO                  | PIN12:     
- *    PIN13:  PWM                 SCK                   | PIN13:     
- *    PIN14:  PWM A0  S/PDIF OUT        TX3             | PIN14:       
- *    PIN15:  PWM A1  S/PDIF IN         RX3             | PIN15:         
- *    PIN16:      A2                    RX4 SCL1        | PIN16:         
- *    PIN17:      A3                    TX4 SDA1        | PIN17:           
- *    PIN18:  PWM A4                        SDA         | PIN18:           
- *    PIN19:  PWM A5                        SCL         | PIN19:        
- *    PIN20:      A6  LRCLK1            TX5             | PIN20:  
- *    PIN21:      A7  BCLK1             RX5             | PIN21:  
- *    PIN22:  PWM A8                              CTX1  | PIN22:    
- *    PIN23:  PWM A9  MCLK1                       CRX1  | PIN23:  
- *    PIN24:  PWM A10                       SCL2        | PIN24:  
- *    PIN25:  PWM A11                       SDA2        | PIN25:  
- *    PIN26:      A12             MOSI1                 | PIN26:  
- *    PIN27:      A13             SCK1                  | PIN27:  
- *    PIN28:  PWM                       RX7             | PIN28:  
- *    PIN29:  PWM                       TX7             | PIN29:  
- *    PIN30:                                      CRX3  | PIN30:  
- *    PIN31:                                      CTX3  | PIN31:       
- *    PIN32:          OUT1B                             | PIN32:  
- *    PIN33:  PWM     MCLK2                             | PIN33:  
- *    PIN34:                            RX8             | PIN34:       
- *    PIN35:                            TX8             | PIN35:  
- *    PIN36:  PWM                 CS                    | PIN36:  
- *    PIN37:  PWM                 CS                    | PIN37:  
- *    PIN38:      A14 IN1         CS1                   | PIN38:  
- *    PIN39:      A15 OUT1A       MISO1                 | PIN39:  
- *    PIN40:      A16                                   | PIN40:  
- *    PIN41:      A17                                   | PIN41:  
+ *    PIN0:   PWM                 CS1   RX1       CRX2  | PIN0:
+ *    PIN1:   PWM                 MISO1 TX1       CTX2  | PIN1:
+ *    PIN2:   PWM     OUT2                              | PIN2:
+ *    PIN3:   PWM     LRCLK2                            | PIN3:
+ *    PIN4:   PWM     BCLK2                             | PIN4:
+ *    PIN5:   PWM     IN2                               | PIN5:
+ *    PIN6:   PWM     OUT1D                             | PIN6:
+ *    PIN7:   PWM     OUT1A             RX2             | PIN7:
+ *    PIN8:   PWM     IN1               TX2             | PIN8:
+ *    PIN9:   PWM     OUT1C                             | PIN9:
+ *    PIN10:  PWM     MQSR        CS                    | PIN10:
+ *    PIN11:  PWM                 MOSI            CTX1  | PIN11:
+ *    PIN12:  PWM     MQSL        MISO                  | PIN12:
+ *    PIN13:  PWM                 SCK                   | PIN13:
+ *    PIN14:  PWM A0  S/PDIF OUT        TX3             | PIN14:
+ *    PIN15:  PWM A1  S/PDIF IN         RX3             | PIN15:
+ *    PIN16:      A2                    RX4 SCL1        | PIN16:
+ *    PIN17:      A3                    TX4 SDA1        | PIN17:
+ *    PIN18:  PWM A4                        SDA         | PIN18:
+ *    PIN19:  PWM A5                        SCL         | PIN19:
+ *    PIN20:      A6  LRCLK1            TX5             | PIN20:
+ *    PIN21:      A7  BCLK1             RX5             | PIN21:
+ *    PIN22:  PWM A8                              CTX1  | PIN22:
+ *    PIN23:  PWM A9  MCLK1                       CRX1  | PIN23:
+ *    PIN24:  PWM A10                       SCL2        | PIN24:
+ *    PIN25:  PWM A11                       SDA2        | PIN25:
+ *    PIN26:      A12             MOSI1                 | PIN26:
+ *    PIN27:      A13             SCK1                  | PIN27:
+ *    PIN28:  PWM                       RX7             | PIN28:
+ *    PIN29:  PWM                       TX7             | PIN29:
+ *    PIN30:                                      CRX3  | PIN30:
+ *    PIN31:                                      CTX3  | PIN31:
+ *    PIN32:          OUT1B                             | PIN32:
+ *    PIN33:  PWM     MCLK2                             | PIN33:
+ *    PIN34:                            RX8             | PIN34:
+ *    PIN35:                            TX8             | PIN35:
+ *    PIN36:  PWM                 CS                    | PIN36:
+ *    PIN37:  PWM                 CS                    | PIN37:
+ *    PIN38:      A14 IN1         CS1                   | PIN38:
+ *    PIN39:      A15 OUT1A       MISO1                 | PIN39:
+ *    PIN40:      A16                                   | PIN40:
+ *    PIN41:      A17                                   | PIN41:
  *    PINOUT  R   O   Y           G     B   I     P     | PINOUT
  *    *********************  BOTTOM PADS  **********************
  *    PINOUT  R   LY  G     LB    B   I                 | PINOUT
- *    PIN42:  PWM     MISO2 DAT1                        | PIN42:  
- *    PIN43:  PWM     MOSI2 DAT0                        | PIN43:  
- *    PIN44:  PWM     CS2   CLK       SDA1              | PIN44:  
- *    PIN45:  PWM     SCK2  CMD       SCL1              | PIN45:  
- *    PIN46:  PWM           DAT3  RX5                   | PIN46:  
- *    PIN47:  PWM           DAT2  TX5                   | PIN47:  
- *    PIN48:      CS0             RX8                   | PIN48:  
- *    PIN49:      D1  SCK2                              | PIN49:  
- *    PIN50:      D2  MOSI2                             | PIN50:  
- *    PIN51:  PWM CS1                 SCL1              | PIN51:  
- *    PIN52:      D0              RX1                   | PIN52:  
+ *    PIN42:  PWM     MISO2 DAT1                        | PIN42:
+ *    PIN43:  PWM     MOSI2 DAT0                        | PIN43:
+ *    PIN44:  PWM     CS2   CLK       SDA1              | PIN44:
+ *    PIN45:  PWM     SCK2  CMD       SCL1              | PIN45:
+ *    PIN46:  PWM           DAT3  RX5                   | PIN46:
+ *    PIN47:  PWM           DAT2  TX5                   | PIN47:
+ *    PIN48:      CS0             RX8                   | PIN48:
+ *    PIN49:      D1  SCK2                              | PIN49:
+ *    PIN50:      D2  MOSI2                             | PIN50:
+ *    PIN51:  PWM CS1                 SCL1              | PIN51:
+ *    PIN52:      D0              RX1                   | PIN52:
  *    PIN53:      CLK             TX1                   | PIN53:
  *    PIN54:  PWM D3  MISO2                             | PIN54:
  *    PINOUT  R   LY  G     LB    B   I                 | PINOUT
  */
+
+/*
+HARDWARE PIN ALLOCATION REQUIREMENTS
+
+MIDI board for preset sounds:
+NAME:   TYPE:   ASSIGNMENT:
+VDD:    ?V
+GND:    GND
+RX:     Serial
+TX:     Serial
+GPIO1:   GPIO
+
+DPAD buttoms for GUI:
+NAME:   TYPE:   ASSIGNMENT:
+VDD:    5V
+GND:    GND
+GPIO1:   GPIO
+GPIO2:   GPIO
+GPIO3:   GPIO
+GPIO4:   GPIO
+
+LCD for GUI:
+NAME:   TYPE:   ASSIGNMENT:
+VDD:    5V
+GND:    GND
+SDA:    I2C
+SCL:    I2C
+
+Measure matrix decoders for buttons and leds
+NAME:    TYPE:   ASSIGNMENT:
+VDD:     5V
+GND:     GND
+GPIO1:   GPIO
+GPIO2:   GPIO
+GPIO3:   GPIO
+GPIO4:   GPIO
+GPIO5:   GPIO
+GPIO6:   GPIO
+GPIO7:   GPIO
+GPIO8:   GPIO
+GPIO9:   GPIO
+GPIO10:  GPIO
+GPIO11:  GPIO
+GPIO12:  GPIO
+GPIO13:  GPIO
+
+Serial Flash Memory for custom sounds:
+** CANNOT BE CHANGED **
+NAME:       TYPE:   ASSIGNMENT:
+VDD:        3.3
+VSS:        GND
+CE#:        CS0
+SCLK:       CLK
+SI/SIO[0]:  D0
+SO/SIO[1]:  D1
+SIO[2]:     D2
+SIO[3]:     D3
+
+
+
+PT8211 DAC for custom sounds:
+** UNCERTAIN CAN BE CHANGED **
+NAME:   TYPE:   ASSIGNMENT:
+VDD:    3.3V
+GND:    GND
+BCK:    I2s
+WS:     I2s
+DIN:    I2s
+
+Onboard SD card reader for custom sounds and tracks:
+** CANNOT BE CHANGED **
+NAME:   TYPE:   ASSIGNMENT:
+VDD:    3.3
+GND:    GND
+CMD:    FLEXIO
+CLK:    FLEXIO
+DAT0:   FLEXIO
+DAT1:   FLEXIO
+DAT2:   FLEXIO
+DAT3:   FLEXIO
+
+
+*/
 
 /**************************
 MODULE LINKING
