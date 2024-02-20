@@ -19,11 +19,11 @@ struct nav_config
 struct lcd_nav
 {
     char *name;
-    char **ptr_str_array;
+    const char **ptr_str_array;
     struct lcd_nav *parent;
     struct lcd_nav **child;
     size_t size;
-    char **lcd_state;
+    const char **lcd_state;
     int index;
     int depth;
 };
@@ -35,10 +35,11 @@ struct lcd_pin_config
 };
 
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);
-void lcd_display(LiquidCrystal_I2C *lcd, char **print_arr);
+void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr);
 void array_scroll(struct lcd_nav *nav, int direction);
 struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction);
-char *format_row(char **ptr_str_array, int index, int format);
+char *format_row(const char **ptr_str_array, int index, int format);
 struct lcd_nav *nav_init(struct nav_config *cfg);
+void nav_add(struct lcd_nav *node);
 
 #endif // LCD_MODULE_H

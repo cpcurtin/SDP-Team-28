@@ -36,7 +36,7 @@ struct array_with_size *parsefiles(void)
   // }
 
   // Initialize a dynamic array to store filenames
-  char **filenames = NULL;
+  const char **filenames = NULL;
   size_t numFiles = 0;
 
   // Iterate through the files in the directory
@@ -56,7 +56,7 @@ struct array_with_size *parsefiles(void)
     char *filename = strdup(entry.name());
 
     // Resize the filenames array
-    filenames = (char **)realloc(filenames, (numFiles + 1) * sizeof(char *));
+    filenames = (const char **)realloc(filenames, (numFiles + 1) * sizeof(char *));
 
     // Store the filename in the array
     filenames[numFiles] = filename;
@@ -69,7 +69,7 @@ struct array_with_size *parsefiles(void)
   root.close();
 
   // Resize the filenames array to its final size
-  filenames = (char **)realloc(filenames, (numFiles + 1) * sizeof(char *));
+  filenames = (const char **)realloc(filenames, (numFiles + 1) * sizeof(char *));
 
   // Set the last element of the array to NULL to indicate the end
   filenames[numFiles] = NULL;

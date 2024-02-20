@@ -10,17 +10,19 @@ int lcd_rows;
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 {
   // welcome message
-  char **lcd_init_message = new char *[4];
-  lcd_init_message[0] = strdup("     Welcome to     ");
-  lcd_init_message[1] = strdup("      Moduloop      ");
-  lcd_init_message[2] = strdup("");
-  lcd_init_message[3] = strdup("    SDP team 28    ");
-  // char *lcd_init_message[] = {
-  //     "     Welcome to     ",
-  //     "      Moduloop      ",
-  //     "",
-  //     "    SDP team 28    "};
+  // char **lcd_init_message = new char *[4];
+  // lcd_init_message[0] = strdup("     Welcome to     ");
+  // lcd_init_message[1] = strdup("      Moduloop      ");
+  // lcd_init_message[2] = strdup("");
+  // lcd_init_message[3] = strdup("    SDP team 28    ");
+  const char *lcd_init_message[] = {
+      "     Welcome to     ",
+      "      Moduloop      ",
+      "",
+      "    SDP team 28    "};
+
   // LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg.i2c, cfg.columns, cfg.rows);
+  LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg->i2c, cfg->columns, cfg->rows);
 
   lcd->init(); // initialize the lcd
   lcd->backlight();
@@ -32,7 +34,7 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
   return lcd;
 }
 
-void lcd_display(LiquidCrystal_I2C *lcd, char **print_arr)
+void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr)
 {
   lcd->clear();
   for (int row = 0; row < lcd_rows; row++)
@@ -79,7 +81,7 @@ void array_scroll(struct lcd_nav *nav, int direction)
   // Serial.println("##############END SCROLL##############");
 }
 
-char *format_row(char **ptr_str_array, int index, int format)
+char *format_row(const char **ptr_str_array, int index, int format)
 {
   char *temp_str;
   char *temp_str2;
@@ -129,14 +131,18 @@ struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction)
 struct lcd_nav *nav_init(struct nav_config *cfg)
 {
 
-  char **nav_main = new char *[3];
-  nav_main[0] = strdup("Sounds");
-  nav_main[1] = strdup("Effects");
-  nav_main[2] = strdup("Tracks");
+  // Initialize the navigation strings
+  const char *nav_main[] = {"Sounds", "Effects", "Tracks"};
+  const char *nav_sounds[] = {"Custom Sounds", "MIDI Sounds"};
 
-  char **nav_sounds = new char *[2];
-  nav_sounds[0] = strdup("Custom Sounds");
-  nav_sounds[1] = strdup("MIDI Sounds");
+  // char **nav_main = new char *[3];
+  // nav_main[0] = strdup("Sounds");
+  // nav_main[1] = strdup("Effects");
+  // nav_main[2] = strdup("Tracks");
+
+  // char **nav_sounds = new char *[2];
+  // nav_sounds[0] = strdup("Custom Sounds");
+  // nav_sounds[1] = strdup("MIDI Sounds");
 
   // struct instatiation
   struct lcd_nav *main = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
@@ -145,12 +151,12 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   struct lcd_nav *tracks = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *sounds_custom = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *sounds_midi = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
-  char **state_main = (char **)malloc(2 * sizeof(char *));
-  char **state_sounds = (char **)malloc(2 * sizeof(char *));
-  char **state_effects = (char **)malloc(2 * sizeof(char *));
-  char **state_tracks = (char **)malloc(2 * sizeof(char *));
-  char **state_sounds_custom = (char **)malloc(2 * sizeof(char *));
-  char **state_sounds_midi = (char **)malloc(2 * sizeof(char *));
+  const char **state_main = (const char **)malloc(2 * sizeof(char *));
+  const char **state_sounds = (const char **)malloc(2 * sizeof(char *));
+  const char **state_effects = (const char **)malloc(2 * sizeof(char *));
+  const char **state_tracks = (const char **)malloc(2 * sizeof(char *));
+  const char **state_sounds_custom = (const char **)malloc(2 * sizeof(char *));
+  const char **state_sounds_midi = (const char **)malloc(2 * sizeof(char *));
   // char **state = new char *[2];
 
   // ptr arrays
@@ -230,4 +236,7 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   array_scroll(sounds_midi, 0);
 
   return main;
+}
+void nav_add(struct lcd_nav *node){
+  
 }

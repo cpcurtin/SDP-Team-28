@@ -47,7 +47,7 @@ int button_pressed(int pin);
 // void measure_matrix_init(const struct button_maxtrix_pin_config *cfg);
 void button_matrix_init(struct button_maxtrix_pin_config *cfg);
 // void measure_matrix_init(struct)
-void palette_assign(struct palette_matrix *palette, char *sound);
+// void palette_assign(struct palette_matrix *palette, const char *sound);
 void measure_matrix_init(struct button_maxtrix_pin_config *button_cfg, struct button_maxtrix_pin_config *led_cfg);
 void readMatrix(struct button_maxtrix_pin_config *button_cfg, struct button_maxtrix_pin_config *led_cfg);
 
