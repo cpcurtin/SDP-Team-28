@@ -28,11 +28,11 @@
  *    PIN10:  PWM     MQSR        CS                    | PIN10: DEC3
  *    PIN11:  PWM                 MOSI            CTX1  | PIN11: DEC3
  *    PIN12:  PWM     MQSL        MISO                  | PIN12: DEC3
- *    PIN13:  PWM                 SCK                   | PIN13:
+ *    PIN13:  PWM                 SCK                   | PIN 13:
  *    PIN14:  PWM A0  S/PDIF OUT        TX3             | PIN14:
  *    PIN15:  PWM A1  S/PDIF IN         RX3             | PIN15:
  *    PIN16:      A2                    RX4 SCL1        | PIN16:
- *    PIN17:      A3                    TX4 SDA1        | PIN17: 
+ *    PIN17:      A3                    TX4 SDA1        | PIN17:
  *    PIN18:  PWM A4                        SDA         | PIN18: LCD - SDA
  *    PIN19:  PWM A5                        SCL         | PIN19: LCD - SCL
  *    PIN20:      A6  LRCLK1            TX5             | PIN20: DAC - WS
@@ -59,7 +59,7 @@
  *    PIN41:      A17                                   | PIN41:
  *    PINOUT  R   O   Y           G     B   I     P     | PINOUT
  *    *********************  BOTTOM PADS  **********************
- *    PINOUT  R   LY  G     LB    B   I                 | PINOUT                                
+ *    PINOUT  R   LY  G     LB    B   I                 | PINOUT
  *    PIN42:  PWM     MISO2 DAT1                        | PIN42:    SD READER - DAT1
  *    PIN43:  PWM     MOSI2 DAT0                        | PIN43:    SD READER - DAT0
  *    PIN44:  PWM     CS2   CLK       SDA1              | PIN44:    SD READER - CLK
@@ -81,7 +81,7 @@ HARDWARE PIN ALLOCATION REQUIREMENTS
 
 MIDI board for preset sounds:
 NAME:   TYPE:   ASSIGNMENT:
-VDD:    ?V      
+VDD:    ?V
 GND:    GND     GND
 RX:     Serial  PIN0
 TX:     Serial  PIN1

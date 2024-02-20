@@ -18,7 +18,7 @@
 //  const int dig7;
 // };
 
-LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config &cfg);
+LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);
 void lcd_display(LiquidCrystal_I2C *lcd, char **print_arr);
 void array_scroll(struct lcd_nav *nav, int direction);
 struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction);

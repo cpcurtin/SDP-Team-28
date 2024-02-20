@@ -134,7 +134,7 @@ void setup()
   (nav_cfg->tracks)->array = nav_tracks;
   (nav_cfg->tracks)->size = 2;
 
-  lcd = lcd_init(lcd_cfg);
+  lcd = lcd_init(&lcd_cfg);
   nav_data_structure = nav_init(nav_cfg);
   nav_state = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   // Serial.println(((nav_state->child[0])->child[0])->size);
@@ -179,31 +179,28 @@ void setup()
   // track readTracks[arraySize];
   // readDataFromFile(readTracks);
 
-
- 
-
   // Serial.println(FreeMem());
   // Serial.println(AudioMemoryUsageMax());
   unsigned long start_millis = millis(); // Get the current time
-  int tracknum=4;
+  int tracknum = 4;
   playFile((nav_cfg->sounds_custom)->array[3]);
 
   Serial.print("time: ");
-  Serial.println(millis()-start_millis);
+  Serial.println(millis() - start_millis);
 
   playFile((nav_cfg->sounds_custom)->array[4]);
   Serial.print("time: ");
-  Serial.println(millis()-start_millis);
-  
+  Serial.println(millis() - start_millis);
+
   playFile((nav_cfg->sounds_custom)->array[5]);
   Serial.print("time: ");
-  Serial.println(millis()-start_millis);
+  Serial.println(millis() - start_millis);
   playFile((nav_cfg->sounds_custom)->array[6]);
   Serial.print("time: ");
-  Serial.println(millis()-start_millis);
+  Serial.println(millis() - start_millis);
 
   Serial.print("time: ");
-  Serial.println(millis()-start_millis);
+  Serial.println(millis() - start_millis);
 
   Serial.println(FreeMem());
   Serial.println(AudioMemoryUsageMax());

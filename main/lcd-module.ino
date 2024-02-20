@@ -7,27 +7,20 @@
 #include "lcd-module.h"
 // #include <LiquidCrystal.h>
 int lcd_rows;
-
-LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config &cfg)
+LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 {
   // welcome message
-  char **lcd_init_message = new char *[4];
-  lcd_init_message[0] = strdup("     Welcome to     ");
-  lcd_init_message[1] = strdup("      Moduloop      ");
-  lcd_init_message[2] = strdup("");
-  lcd_init_message[3] = strdup("    SDP team 28    ");
-
-  // Creates an LCD object. Parameters: (rs, enable, d4, d5, d6, d7)
-  // LiquidCrystal *lcd = new LiquidCrystal(cfg.rs, cfg.en, cfg.dig4, cfg.dig5, cfg.dig6, cfg.dig7);
-  // lcd_rows = cfg.rows;
-  // lcd->begin(cfg.columns, cfg.rows);
-  // lcd->clear();
-  // lcd_display(lcd, lcd_init_message);
-
-  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  // LiquidCrystal_I2C lcd(0x27, 20, 4); // I2C address 0x27, 20 column and 4 rows
-  // LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(0x27, 20, 4);
-  LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg.i2c, cfg.columns, cfg.rows);
+  // char **lcd_init_message = new char *[4];
+  // lcd_init_message[0] = strdup("     Welcome to     ");
+  // lcd_init_message[1] = strdup("      Moduloop      ");
+  // lcd_init_message[2] = strdup("");
+  // lcd_init_message[3] = strdup("    SDP team 28    ");
+  char *lcd_init_message[] = {
+      "     Welcome to     ",
+      "      Moduloop      ",
+      "",
+      "    SDP team 28    "};
+  // LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg.i2c, cfg.columns, cfg.rows);
 
   lcd->init(); // initialize the lcd
   lcd->backlight();
@@ -35,16 +28,6 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config &cfg)
   lcd->begin(cfg.columns, cfg.rows);
   lcd->clear();
   lcd_display(lcd, lcd_init_message);
-
-  // test_lcd->setCursor(0, 0);            // move cursor the first row
-  // test_lcd->print("LCD 20x4");          // print message at the first row
-  // test_lcd->setCursor(0, 1);            // move cursor to the second row
-  // test_lcd->print("I2C Address: 0x27"); // print message at the second row
-  // test_lcd->setCursor(0, 2);            // move cursor to the third row
-  // test_lcd->print("TEEEEEEST");          // print message at the third row
-  // test_lcd->setCursor(0, 3);            // move cursor to the fourth row
-  // test_lcd->print("www.diyables.io");   // print message the fourth row
-  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
   return lcd;
 }
