@@ -3,7 +3,6 @@
 #include <Arduino.h>
 #include <SD.h>
 
-
 struct array_with_size
 {
   char **array;

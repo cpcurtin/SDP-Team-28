@@ -26,15 +26,6 @@ int count = 0;
 
 void setup()
 {
-  /* create hardware configuration objects */
-  // struct button_maxtrix_pin_config *matrix_cfg = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  // int matrix_rows[MATRIX_ROWS] = {BUTTON_MATRIX_ROW_1, BUTTON_MATRIX_ROW_2, BUTTON_MATRIX_ROW_3, BUTTON_MATRIX_ROW_4};
-  // int matrix_columms[MATRIX_COLUMNS] = {BUTTON_MATRIX_COLUMN_1, BUTTON_MATRIX_COLUMN_2, BUTTON_MATRIX_COLUMN_3, BUTTON_MATRIX_COLUMN_4, BUTTON_MATRIX_COLUMN_5, BUTTON_MATRIX_COLUMN_6, BUTTON_MATRIX_COLUMN_7, BUTTON_MATRIX_COLUMN_8, BUTTON_MATRIX_COLUMN_9};
-  // matrix_cfg->width = MATRIX_COLUMNS;
-  // matrix_cfg->length = MATRIX_ROWS;
-  // matrix_cfg->rows = matrix_rows;
-  // matrix_cfg->columns = matrix_columms;
-
   //
   //
   // button & led measure matrix
@@ -164,70 +155,11 @@ void setup()
   START AS A PERCUSION SOUND:
   midiSetInstrument(0,128);
   *****************************************/
-
-  // struct track myTrack;
-  // myTrack.name = strdup("TrackName");
-  // myTrack.bpm = 120;
-  // saveTracks(myTracks,0);
-  // saveTracks(myTrack);
-  // read_STRUCT();
-
-  // Write data to the file
-  // writeDataToFile(myTracks);
-
-  // Read data from the file and reconstruct the array
-  // track readTracks[arraySize];
-  // readDataFromFile(readTracks);
-
-  // Serial.println(FreeMem());
-  // Serial.println(AudioMemoryUsageMax());
-  unsigned long start_millis = millis(); // Get the current time
-  int tracknum = 4;
-  playFile((nav_cfg->sounds_custom)->array[3]);
-
-  Serial.print("time: ");
-  Serial.println(millis() - start_millis);
-
-  playFile((nav_cfg->sounds_custom)->array[4]);
-  Serial.print("time: ");
-  Serial.println(millis() - start_millis);
-
-  playFile((nav_cfg->sounds_custom)->array[5]);
-  Serial.print("time: ");
-  Serial.println(millis() - start_millis);
-  playFile((nav_cfg->sounds_custom)->array[6]);
-  Serial.print("time: ");
-  Serial.println(millis() - start_millis);
-
-  Serial.print("time: ");
-  Serial.println(millis() - start_millis);
-
-  Serial.println(FreeMem());
-  Serial.println(AudioMemoryUsageMax());
-
-  // Print the reconstructed array for verification
-  // for (int i = 0; i < arraySize; i++) {
-  //   Serial.print("Name: ");
-  //   Serial.print(readTracks[i].name);
-  //   Serial.print(", BPM: ");
-  //   Serial.println(readTracks[i].bpm);
-  // }
-
-  // Free the allocated memory
-  // freeMemory(readTracks);
 }
 
 /* Main subroutine: follow software block diagram */
 void loop()
 {
-
-  /* play music config no matter what */
-
-  /* on input */
-  // check input - beat matrix, palette, dpad
-  //  if(check_ninput(dpad_cfg)){
-
-  //   }
   // Main Timing Loop for 4x4 Measure Matrix
   if (ledMetro.check() == 1)
   {
