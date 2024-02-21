@@ -23,11 +23,11 @@
  *    PIN5:   PWM     IN2                               | PIN5: 
  *    PIN6:   PWM     OUT1D                             | PIN6:
  *    PIN7:   PWM     OUT1A             RX2             | PIN7: 
- *    PIN8:   PWM     IN1               TX2             | PIN8: DEC3
+ *    PIN8:   PWM     IN1               TX2             | PIN8: Button9
  *    PIN9:   PWM     OUT1C                             | PIN9: MIDI
- *    PIN10:  PWM     MQSR        CS                    | PIN10: DEC3
- *    PIN11:  PWM                 MOSI            CTX1  | PIN11: DEC3
- *    PIN12:  PWM     MQSL        MISO                  | PIN12: DEC3
+ *    PIN10:  PWM     MQSR        CS                    | PIN10: DEC1
+ *    PIN11:  PWM                 MOSI            CTX1  | PIN11: DEC1
+ *    PIN12:  PWM     MQSL        MISO                  | PIN12: DEC1
  *    PIN13:  PWM                 SCK                   | PIN13:
  *    PIN14:  PWM A0  S/PDIF OUT        TX3             | PIN14: DPAD
  *    PIN15:  PWM A1  S/PDIF IN         RX3             | PIN15: DPAD
@@ -39,15 +39,15 @@
  *    PIN21:      A7  BCLK1             RX5             | PIN21: 
  *    PIN22:  PWM A8                              CTX1  | PIN22:
  *    PIN23:  PWM A9  MCLK1                       CRX1  | PIN23:
- *    PIN24:  PWM A10                       SCL2        | PIN24: DEC1
- *    PIN25:  PWM A11                       SDA2        | PIN25: DEC1
- *    PIN26:      A12             MOSI1                 | PIN26: DEC1
+ *    PIN24:  PWM A10                       SCL2        | PIN24: DEC1/2E
+ *    PIN25:  PWM A11                       SDA2        | PIN25: DEC2
+ *    PIN26:      A12             MOSI1                 | PIN26: DEC2
  *    PIN27:      A13             SCK1                  | PIN27: DEC2
- *    PIN28:  PWM                       RX7             | PIN28: DEC2
- *    PIN29:  PWM                       TX7             | PIN29: DEC2
- *    PIN30:                                      CRX3  | PIN30: DEC1/2
- *    PIN31:                                      CTX3  | PIN31: Button9
- *    PIN32:          OUT1B                             | PIN32: LED9
+ *    PIN28:  PWM                       RX7             | PIN28: LED9
+ *    PIN29:  PWM                       TX7             | PIN29: DEC3E
+ *    PIN30:                                      CRX3  | PIN30: DEC3
+ *    PIN31:                                      CTX3  | PIN31: DEC3
+ *    PIN32:          OUT1B                             | PIN32: DEC3
  *    PIN33:  PWM     MCLK2                             | PIN33:
  *    PIN34:                            RX8             | PIN34:
  *    PIN35:                            TX8             | PIN35:
