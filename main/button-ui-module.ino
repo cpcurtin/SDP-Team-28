@@ -71,32 +71,32 @@ void button_matrix_init(struct button_maxtrix_pin_config *cfg)
     pinMode(30, INPUT);
 }
 
-void palette_assign(struct palette_matrix *palette, char *sound)
-{
-    // ACTUAL
+// void palette_assign(struct palette_matrix *palette, const char *sound)
+// {
+//     // ACTUAL
 
-    // TEMPORARY
-    int cell_assigned = 0;
+//     // TEMPORARY
+//     int cell_assigned = 0;
 
-    while ((!cell_assigned))
-    {
-        if (button_pressed(24))
-        {
-            break;
-        }
+//     while ((!cell_assigned))
+//     {
+//         if (button_pressed(24))
+//         {
+//             break;
+//         }
 
-        for (int i = 0; i < 3; i++)
-        {
-            if (button_pressed(i + 28))
-            {
-                Serial.println(i + 28);
-                (palette->cells[0][i])->sound = sound;
-                (palette->cells[0][i])->available = 0;
-                cell_assigned = 1;
-            }
-        }
-    }
-}
+//         for (int i = 0; i < 3; i++)
+//         {
+//             if (button_pressed(i + 28))
+//             {
+//                 Serial.println(i + 28);
+//                 (palette->cells[0][i])->sound = sound;
+//                 (palette->cells[0][i])->available = 0;
+//                 cell_assigned = 1;
+//             }
+//         }
+//     }
+// }
 void measure_matrix_init(struct button_maxtrix_pin_config &button_cfg, struct button_maxtrix_pin_config &led_cfg)
 {
     //  size_t width;  // The length of the array
@@ -104,7 +104,6 @@ void measure_matrix_init(struct button_maxtrix_pin_config &button_cfg, struct bu
     // int *rows;     // Flexible array member
     // int *columns;  // Flexible array member
     // init buttons
-
 
     for (size_t i = 0; i < button_cfg.width; i++)
     {
@@ -126,13 +125,10 @@ void measure_matrix_init(struct button_maxtrix_pin_config &button_cfg, struct bu
         pinMode(led_cfg.rows[i], OUTPUT);
         digitalWrite(led_cfg.rows[i], HIGH);
     }
-
-   
 }
 
 void readMatrix(struct button_maxtrix_pin_config &button_cfg, struct button_maxtrix_pin_config &led_cfg)
 {
-
 
     for (size_t column = 0; column < button_cfg.width; column++)
     {
@@ -178,8 +174,6 @@ void readMatrix(struct button_maxtrix_pin_config &button_cfg, struct button_maxt
 //     digitalWrite(led_cfg->columns[coordinate.column], LOW);
 //                 digitalWrite(led_cfg->rows[coordinate.row], HIGH);
 //   }
-
-
 
 // }
 

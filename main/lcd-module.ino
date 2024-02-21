@@ -7,49 +7,34 @@
 #include "lcd-module.h"
 // #include <LiquidCrystal.h>
 int lcd_rows;
-
-LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config &cfg)
+LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 {
   // welcome message
-  char **lcd_init_message = new char *[4];
-  lcd_init_message[0] = strdup("     Welcome to     ");
-  lcd_init_message[1] = strdup("      Moduloop      ");
-  lcd_init_message[2] = strdup("");
-  lcd_init_message[3] = strdup("    SDP team 28    ");
+  // char **lcd_init_message = new char *[4];
+  // lcd_init_message[0] = strdup("     Welcome to     ");
+  // lcd_init_message[1] = strdup("      Moduloop      ");
+  // lcd_init_message[2] = strdup("");
+  // lcd_init_message[3] = strdup("    SDP team 28    ");
+  const char *lcd_init_message[] = {
+      "     Welcome to     ",
+      "      Moduloop      ",
+      "",
+      "    SDP team 28    "};
 
-  // Creates an LCD object. Parameters: (rs, enable, d4, d5, d6, d7)
-  // LiquidCrystal *lcd = new LiquidCrystal(cfg.rs, cfg.en, cfg.dig4, cfg.dig5, cfg.dig6, cfg.dig7);
-  // lcd_rows = cfg.rows;
-  // lcd->begin(cfg.columns, cfg.rows);
-  // lcd->clear();
-  // lcd_display(lcd, lcd_init_message);
-
-  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  // LiquidCrystal_I2C lcd(0x27, 20, 4); // I2C address 0x27, 20 column and 4 rows
-  // LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(0x27, 20, 4);
-  LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg.i2c, cfg.columns, cfg.rows);
+  // LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg.i2c, cfg.columns, cfg.rows);
+  LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg->i2c, cfg->columns, cfg->rows);
 
   lcd->init(); // initialize the lcd
   lcd->backlight();
-  lcd_rows = cfg.rows;
-  lcd->begin(cfg.columns, cfg.rows);
+  lcd_rows = cfg->rows;
+  lcd->begin(cfg->columns, cfg->rows);
   lcd->clear();
   lcd_display(lcd, lcd_init_message);
-
-  // test_lcd->setCursor(0, 0);            // move cursor the first row
-  // test_lcd->print("LCD 20x4");          // print message at the first row
-  // test_lcd->setCursor(0, 1);            // move cursor to the second row
-  // test_lcd->print("I2C Address: 0x27"); // print message at the second row
-  // test_lcd->setCursor(0, 2);            // move cursor to the third row
-  // test_lcd->print("TEEEEEEST");          // print message at the third row
-  // test_lcd->setCursor(0, 3);            // move cursor to the fourth row
-  // test_lcd->print("www.diyables.io");   // print message the fourth row
-  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
   return lcd;
 }
 
-void lcd_display(LiquidCrystal_I2C *lcd, char **print_arr)
+void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr)
 {
   lcd->clear();
   for (int row = 0; row < lcd_rows; row++)
@@ -96,28 +81,26 @@ void array_scroll(struct lcd_nav *nav, int direction)
   // Serial.println("##############END SCROLL##############");
 }
 
-char *format_row(char **ptr_str_array, int index, int format)
+const char *format_row(const char **ptr_str_array, int index, int format)
 {
-  char *temp_str;
-  char *temp_str2;
+    char *temp_str = (char *)malloc(20 + 1); // Allocate memory dynamically
+    
+    if (temp_str == NULL) {
+        // Allocation failed
+        return NULL;
+    }
+    
+    // spacing, enumerated
+    if (format == 0)
+    {
+        snprintf(temp_str, 20 + 1, " %d %s", index + 1, ptr_str_array[index]);
+    }
+    else if (format == 1)
+    {
+        snprintf(temp_str, 20 + 1, ">%d %s", index + 1, ptr_str_array[index]);
+    }
 
-  temp_str = (char *)malloc(strlen(ptr_str_array[index]) + 7);
-  temp_str2 = (char *)malloc(strlen(ptr_str_array[index]));
-  // spacing, enumerated
-  if (format == 0)
-  {
-    sprintf(temp_str, " %d ", index + 1);
-  }
-  if (format == 1)
-  {
-    sprintf(temp_str, ">%d ", index + 1);
-  }
-  strcpy(temp_str2, ptr_str_array[index]);
-  strcat(temp_str, temp_str2);
-
-  free(temp_str2);
-
-  return temp_str;
+    return temp_str;
 }
 
 struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction)
@@ -146,12 +129,16 @@ struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction)
 struct lcd_nav *nav_init(struct nav_config *cfg)
 {
 
-  char **nav_main = new char *[3];
+  // Initialize the navigation strings
+  // const char *nav_main[] = {"Sounds", "Effects", "Tracks"};
+  // const char *nav_sounds[] = {"Custom Sounds", "MIDI Sounds"};
+
+const  char **nav_main = new const char *[3];
   nav_main[0] = strdup("Sounds");
   nav_main[1] = strdup("Effects");
   nav_main[2] = strdup("Tracks");
 
-  char **nav_sounds = new char *[2];
+  const char **nav_sounds = new const char *[2];
   nav_sounds[0] = strdup("Custom Sounds");
   nav_sounds[1] = strdup("MIDI Sounds");
 
@@ -162,12 +149,12 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   struct lcd_nav *tracks = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *sounds_custom = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *sounds_midi = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
-  char **state_main = (char **)malloc(2 * sizeof(char *));
-  char **state_sounds = (char **)malloc(2 * sizeof(char *));
-  char **state_effects = (char **)malloc(2 * sizeof(char *));
-  char **state_tracks = (char **)malloc(2 * sizeof(char *));
-  char **state_sounds_custom = (char **)malloc(2 * sizeof(char *));
-  char **state_sounds_midi = (char **)malloc(2 * sizeof(char *));
+  const char **state_main = (const char **)malloc(lcd_rows * sizeof(char *));
+  const char **state_sounds = (const char **)malloc(lcd_rows * sizeof(char *));
+  const char **state_effects = (const char **)malloc(lcd_rows * sizeof(char *));
+  const char **state_tracks = (const char **)malloc(lcd_rows * sizeof(char *));
+  const char **state_sounds_custom = (const char **)malloc(lcd_rows * sizeof(char *));
+  const char **state_sounds_midi = (const char **)malloc(lcd_rows * sizeof(char *));
   // char **state = new char *[2];
 
   // ptr arrays
@@ -247,4 +234,7 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   array_scroll(sounds_midi, 0);
 
   return main;
+}
+void nav_add(struct lcd_nav *node){
+  
 }

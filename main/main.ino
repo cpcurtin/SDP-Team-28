@@ -26,15 +26,6 @@ int count = 0;
 
 void setup()
 {
-  /* create hardware configuration objects */
-  // struct button_maxtrix_pin_config *matrix_cfg = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  // int matrix_rows[MATRIX_ROWS] = {BUTTON_MATRIX_ROW_1, BUTTON_MATRIX_ROW_2, BUTTON_MATRIX_ROW_3, BUTTON_MATRIX_ROW_4};
-  // int matrix_columms[MATRIX_COLUMNS] = {BUTTON_MATRIX_COLUMN_1, BUTTON_MATRIX_COLUMN_2, BUTTON_MATRIX_COLUMN_3, BUTTON_MATRIX_COLUMN_4, BUTTON_MATRIX_COLUMN_5, BUTTON_MATRIX_COLUMN_6, BUTTON_MATRIX_COLUMN_7, BUTTON_MATRIX_COLUMN_8, BUTTON_MATRIX_COLUMN_9};
-  // matrix_cfg->width = MATRIX_COLUMNS;
-  // matrix_cfg->length = MATRIX_ROWS;
-  // matrix_cfg->rows = matrix_rows;
-  // matrix_cfg->columns = matrix_columms;
-
   //
   //
   // button & led measure matrix
@@ -68,24 +59,6 @@ void setup()
   {
     measure_matrix_led.columns[i] = led_matrix_columms[i];
   }
-  //   //
-  //   //
-  //   //
-  //   //
-  //   //
-
-  palette = (struct palette_matrix *)malloc(sizeof(struct palette_matrix));
-  palette->cells = (struct palette_cell ***)malloc(PALETTE_MATRIX_ROWS * sizeof(struct palette_cell *));
-  for (int m = 0; m < PALETTE_MATRIX_ROWS; m++)
-  {
-    palette->cells[m] = (struct palette_cell **)malloc(PALETTE_MATRIX_COLUMNS * sizeof(struct palette_cell));
-    for (int n = 0; n < PALETTE_MATRIX_COLUMNS; n++)
-    {
-      palette->cells[m][n] = (struct palette_cell *)malloc(sizeof(struct palette_cell));
-      (palette->cells[m][n])->sound = NULL;
-      (palette->cells[m][n])->available = 1;
-    }
-  }
 
   /* Intialize hardware */
   serial_init();
@@ -105,7 +78,7 @@ void setup()
 
   Serial.println("made it here1");
 
-  char **nav_effects = new char *[2];
+  const char **nav_effects = new const char *[2];
   nav_effects[0] = strdup("effect1");
   nav_effects[1] = strdup("effect2");
   ((nav_cfg->effects)->array) = nav_effects;
@@ -113,7 +86,7 @@ void setup()
 
   Serial.println("made it here2");
 
-  char **nav_sounds_midi = new char *[2];
+  const char **nav_sounds_midi = new const char *[2];
   nav_sounds_midi[0] = strdup("midi1");
   nav_sounds_midi[1] = strdup("midi2");
   (nav_cfg->sounds_midi)->array = nav_sounds_midi;
@@ -128,13 +101,13 @@ void setup()
 
   Serial.println("made it here4");
 
-  char **nav_tracks = new char *[2];
-  nav_tracks[0] = strdup("midi1");
-  nav_tracks[1] = strdup("midi2");
+  const char **nav_tracks = new const char *[2];
+  nav_tracks[0] = strdup("track1");
+  nav_tracks[1] = strdup("track2");
   (nav_cfg->tracks)->array = nav_tracks;
   (nav_cfg->tracks)->size = 2;
 
-  lcd = lcd_init(lcd_cfg);
+  lcd = lcd_init(&lcd_cfg);
   nav_data_structure = nav_init(nav_cfg);
   nav_state = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   // Serial.println(((nav_state->child[0])->child[0])->size);
@@ -164,73 +137,11 @@ void setup()
   START AS A PERCUSION SOUND:
   midiSetInstrument(0,128);
   *****************************************/
-
-  // struct track myTrack;
-  // myTrack.name = strdup("TrackName");
-  // myTrack.bpm = 120;
-  // saveTracks(myTracks,0);
-  // saveTracks(myTrack);
-  // read_STRUCT();
-
-  // Write data to the file
-  // writeDataToFile(myTracks);
-
-  // Read data from the file and reconstruct the array
-  // track readTracks[arraySize];
-  // readDataFromFile(readTracks);
-
-
- 
-
-  // Serial.println(FreeMem());
-  // Serial.println(AudioMemoryUsageMax());
-  unsigned long start_millis = millis(); // Get the current time
-  int tracknum=4;
-  playFile((nav_cfg->sounds_custom)->array[3]);
-
-  Serial.print("time: ");
-  Serial.println(millis()-start_millis);
-
-  playFile((nav_cfg->sounds_custom)->array[4]);
-  Serial.print("time: ");
-  Serial.println(millis()-start_millis);
-  
-  playFile((nav_cfg->sounds_custom)->array[5]);
-  Serial.print("time: ");
-  Serial.println(millis()-start_millis);
-  playFile((nav_cfg->sounds_custom)->array[6]);
-  Serial.print("time: ");
-  Serial.println(millis()-start_millis);
-
-  Serial.print("time: ");
-  Serial.println(millis()-start_millis);
-
-  Serial.println(FreeMem());
-  Serial.println(AudioMemoryUsageMax());
-
-  // Print the reconstructed array for verification
-  // for (int i = 0; i < arraySize; i++) {
-  //   Serial.print("Name: ");
-  //   Serial.print(readTracks[i].name);
-  //   Serial.print(", BPM: ");
-  //   Serial.println(readTracks[i].bpm);
-  // }
-
-  // Free the allocated memory
-  // freeMemory(readTracks);
 }
 
 /* Main subroutine: follow software block diagram */
 void loop()
 {
-
-  /* play music config no matter what */
-
-  /* on input */
-  // check input - beat matrix, palette, dpad
-  //  if(check_ninput(dpad_cfg)){
-
-  //   }
   // Main Timing Loop for 4x4 Measure Matrix
   if (ledMetro.check() == 1)
   {
@@ -415,15 +326,15 @@ void loop()
     if (strcmp(nav_state->name, "custom_sounds") == 0)
     {
       Serial.println("made it here");
-      palette_assign(palette, nav_state->ptr_str_array[nav_state->index]);
-      for (int m = 0; m < PALETTE_MATRIX_ROWS; m++)
-      {
+      // palette_assign(palette, nav_state->ptr_str_array[nav_state->index]);
+      // for (int m = 0; m < PALETTE_MATRIX_ROWS; m++)
+      // {
 
-        for (int n = 0; n < PALETTE_MATRIX_COLUMNS; n++)
-        {
-          Serial.println((palette->cells[m][n])->sound);
-        }
-      }
+      //   for (int n = 0; n < PALETTE_MATRIX_COLUMNS; n++)
+      //   {
+      //     Serial.println((palette->cells[m][n])->sound);
+      //   }
+      // }
     }
     else
     {

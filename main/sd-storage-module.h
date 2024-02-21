@@ -3,10 +3,9 @@
 #include <Arduino.h>
 #include <SD.h>
 
-
 struct array_with_size
 {
-  char **array;
+  const char **array;
   size_t size;
 };
 

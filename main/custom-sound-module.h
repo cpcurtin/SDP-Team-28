@@ -13,6 +13,13 @@
 // #include <SD.h>
 #include <SerialFlash.h>
 
+struct dac_pin_config
+{
+    const int din;
+    const int ws;
+    const int bck;
+};
+
 // GUItool: begin automatically generated code
 AudioPlaySdWav playSdWav3;  // xy=181,257
 AudioPlaySdWav playSdWav4;  // xy=188,328
@@ -31,7 +38,6 @@ AudioConnection patchCord7(playSdWav1, 0, mixer1, 0);
 AudioConnection patchCord8(playSdWav1, 1, mixer2, 0);
 AudioConnection patchCord9(mixer1, 0, pt8211_1, 0);
 AudioConnection patchCord10(mixer2, 0, pt8211_1, 1);
-
 
 #define MAX_FILENAME_LENGTH 50
 
