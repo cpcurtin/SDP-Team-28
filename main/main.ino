@@ -59,24 +59,6 @@ void setup()
   {
     measure_matrix_led.columns[i] = led_matrix_columms[i];
   }
-  //   //
-  //   //
-  //   //
-  //   //
-  //   //
-
-  // palette = (struct palette_matrix *)malloc(sizeof(struct palette_matrix));
-  // palette->cells = (struct palette_cell ***)malloc(PALETTE_MATRIX_ROWS * sizeof(struct palette_cell *));
-  // for (int m = 0; m < PALETTE_MATRIX_ROWS; m++)
-  // {
-  //   palette->cells[m] = (struct palette_cell **)malloc(PALETTE_MATRIX_COLUMNS * sizeof(struct palette_cell));
-  //   for (int n = 0; n < PALETTE_MATRIX_COLUMNS; n++)
-  //   {
-  //     palette->cells[m][n] = (struct palette_cell *)malloc(sizeof(struct palette_cell));
-  //     (palette->cells[m][n])->sound = NULL;
-  //     (palette->cells[m][n])->available = 1;
-  //   }
-  // }
 
   /* Intialize hardware */
   serial_init();
@@ -104,9 +86,9 @@ void setup()
 
   Serial.println("made it here2");
 
-  const char *nav_sounds_midi[] = {
-      "midi1",
-      "midi2"};
+  const char **nav_sounds_midi = new const char *[2];
+  nav_sounds_midi[0] = strdup("midi1");
+  nav_sounds_midi[1] = strdup("midi2");
   (nav_cfg->sounds_midi)->array = nav_sounds_midi;
   (nav_cfg->sounds_midi)->size = 2;
 
@@ -118,9 +100,10 @@ void setup()
   // playFile((nav_cfg->sounds_custom)->array[1]);
 
   Serial.println("made it here4");
-  const char *nav_tracks[] = {
-      "track1",
-      "track2"};
+
+  const char **nav_tracks = new const char *[2];
+  nav_tracks[0] = strdup("track1");
+  nav_tracks[1] = strdup("track2");
   (nav_cfg->tracks)->array = nav_tracks;
   (nav_cfg->tracks)->size = 2;
 

@@ -81,28 +81,26 @@ void array_scroll(struct lcd_nav *nav, int direction)
   // Serial.println("##############END SCROLL##############");
 }
 
-char *format_row(const char **ptr_str_array, int index, int format)
+const char *format_row(const char **ptr_str_array, int index, int format)
 {
-  char *temp_str;
-  char *temp_str2;
+    char *temp_str = (char *)malloc(20 + 1); // Allocate memory dynamically
+    
+    if (temp_str == NULL) {
+        // Allocation failed
+        return NULL;
+    }
+    
+    // spacing, enumerated
+    if (format == 0)
+    {
+        snprintf(temp_str, 20 + 1, " %d %s", index + 1, ptr_str_array[index]);
+    }
+    else if (format == 1)
+    {
+        snprintf(temp_str, 20 + 1, ">%d %s", index + 1, ptr_str_array[index]);
+    }
 
-  temp_str = (char *)malloc(strlen(ptr_str_array[index]) + 7);
-  temp_str2 = (char *)malloc(strlen(ptr_str_array[index]));
-  // spacing, enumerated
-  if (format == 0)
-  {
-    sprintf(temp_str, " %d ", index + 1);
-  }
-  if (format == 1)
-  {
-    sprintf(temp_str, ">%d ", index + 1);
-  }
-  strcpy(temp_str2, ptr_str_array[index]);
-  strcat(temp_str, temp_str2);
-
-  free(temp_str2);
-
-  return temp_str;
+    return temp_str;
 }
 
 struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction)
@@ -132,17 +130,17 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
 {
 
   // Initialize the navigation strings
-  const char *nav_main[] = {"Sounds", "Effects", "Tracks"};
-  const char *nav_sounds[] = {"Custom Sounds", "MIDI Sounds"};
+  // const char *nav_main[] = {"Sounds", "Effects", "Tracks"};
+  // const char *nav_sounds[] = {"Custom Sounds", "MIDI Sounds"};
 
-  // char **nav_main = new char *[3];
-  // nav_main[0] = strdup("Sounds");
-  // nav_main[1] = strdup("Effects");
-  // nav_main[2] = strdup("Tracks");
+const  char **nav_main = new const char *[3];
+  nav_main[0] = strdup("Sounds");
+  nav_main[1] = strdup("Effects");
+  nav_main[2] = strdup("Tracks");
 
-  // char **nav_sounds = new char *[2];
-  // nav_sounds[0] = strdup("Custom Sounds");
-  // nav_sounds[1] = strdup("MIDI Sounds");
+  const char **nav_sounds = new const char *[2];
+  nav_sounds[0] = strdup("Custom Sounds");
+  nav_sounds[1] = strdup("MIDI Sounds");
 
   // struct instatiation
   struct lcd_nav *main = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
@@ -151,12 +149,12 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   struct lcd_nav *tracks = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *sounds_custom = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *sounds_midi = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
-  const char **state_main = (const char **)malloc(2 * sizeof(char *));
-  const char **state_sounds = (const char **)malloc(2 * sizeof(char *));
-  const char **state_effects = (const char **)malloc(2 * sizeof(char *));
-  const char **state_tracks = (const char **)malloc(2 * sizeof(char *));
-  const char **state_sounds_custom = (const char **)malloc(2 * sizeof(char *));
-  const char **state_sounds_midi = (const char **)malloc(2 * sizeof(char *));
+  const char **state_main = (const char **)malloc(lcd_rows * sizeof(char *));
+  const char **state_sounds = (const char **)malloc(lcd_rows * sizeof(char *));
+  const char **state_effects = (const char **)malloc(lcd_rows * sizeof(char *));
+  const char **state_tracks = (const char **)malloc(lcd_rows * sizeof(char *));
+  const char **state_sounds_custom = (const char **)malloc(lcd_rows * sizeof(char *));
+  const char **state_sounds_midi = (const char **)malloc(lcd_rows * sizeof(char *));
   // char **state = new char *[2];
 
   // ptr arrays

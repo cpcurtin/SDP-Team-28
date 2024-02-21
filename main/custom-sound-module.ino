@@ -30,8 +30,8 @@ void playFile(const char *filename)
 
     Serial.println(playSdWav1.isPlaying());
   Serial.println(playSdWav2.isPlaying());
-  Serial.println(playSdWav3.isPlaying());
-  Serial.println(playSdWav4.isPlaying());
+  // Serial.println(playSdWav3.isPlaying());
+  // Serial.println(playSdWav4.isPlaying());
 
   // Copy "/sounds/" prefix into temp_str
   strcpy(temp_str, "/sounds/");
@@ -54,16 +54,16 @@ void playFile(const char *filename)
     playSdWav2.play(temp_str);
     delay(10); // wait for library to parse WAV info
   }
-  else if (playSdWav3.isPlaying() == false)
-  {
-    Serial.println("Start playing 3");
-    playSdWav3.play(temp_str);
-    delay(10); // wait for library to parse WAV info
-  }
-  else if (playSdWav4.isPlaying() == false)
-  {
-    Serial.println("Start playing 4");
-    playSdWav4.play(temp_str);
-    delay(10); // wait for library to parse WAV info
-  }
+  // else if (playSdWav3.isPlaying() == false)
+  // {
+  //   Serial.println("Start playing 3");
+  //   playSdWav3.play(temp_str);
+  //   delay(10); // wait for library to parse WAV info
+  // }
+  // else if (playSdWav4.isPlaying() == false)
+  // {
+  //   Serial.println("Start playing 4");
+  //   playSdWav4.play(temp_str);
+  //   delay(10); // wait for library to parse WAV info
+  // }
 }
