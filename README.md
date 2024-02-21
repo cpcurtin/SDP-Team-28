@@ -1,2 +1,0 @@
-# SDP-Team-28
-UMass ECE SDP 2023

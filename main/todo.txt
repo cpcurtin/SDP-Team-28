@@ -1,6 +1,0 @@
-2/3 - Evan
-    - attempt to implement system metrics on bottom row
-        - BPM, current loop?
-    - test littleFS
-    + modify dpad and nav implementation to follow MVC principles
-    
