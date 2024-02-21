@@ -154,7 +154,7 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, Crash1, 127);
       midiNoteOn(0, AcousticBassDrum, 127);
-      // playFile((nav_cfg->sounds_custom)->array[6]);
+      playFile((nav_cfg->sounds_custom)->array[6]);
     }
 
     if (count == 1)
