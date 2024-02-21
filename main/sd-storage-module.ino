@@ -278,17 +278,77 @@ void saveTracks(struct track singleTrack)
   }
   Serial.println("fin");
 }
-void read_STRUCT(void)
-{
-  File structFile = SD.open(fileName, FILE_READ);
-  struct track tracks;
-  structFile.read((uint8_t *)&tracks, sizeof(track) / sizeof(uint8_t));
-  Serial.println(tracks.name);
 
-  structFile.close();
+void read_track(const char* filename, struct track& config) {
+  // Open file for reading
+  File file = SD.open(filename);
+
+  // Allocate a temporary JsonDocument
+  JsonDocument doc;
+
+  // Deserialize the JSON document
+  DeserializationError error = deserializeJson(doc, file);
+  if (error)
+    Serial.println(F("Failed to read file, using default configuration"));
+
+  // Copy values from the JsonDocument to the Config
+  // config.port = doc["port"] | 2731;
+  // strlcpy(config.hostname,                  // <- destination
+  //         doc["hostname"] | "example.com",  // <- source
+  //         sizeof(config.hostname));         // <- destination's capacity
+  config.port = doc["port"];
+  strlcpy(config.hostname,                  // <- destination
+          doc["hostname"],  // <- source
+          sizeof(config.hostname));         // <- destination's capacity
+
+  // Close the file (Curiously, File's destructor doesn't close the file)
+  file.close();
 }
 
-// load program from card
-// struct tracks* loadTracks(int index){
+// Saves the configuration to a file
+void save_track(const char* filename, const struct track& config) {
+  // Delete existing file, otherwise the configuration is appended to the file
+  SD.remove(filename);
 
-// }
+  // Open file for writing
+  File file = SD.open(filename, FILE_WRITE);
+  if (!file) {
+    Serial.println(F("Failed to create file"));
+    return;
+  }
+
+  // Allocate a temporary JsonDocument
+  JsonDocument doc;
+
+  // Set the values in the document
+  doc["hostname"] = config.hostname;
+  doc["port"] = config.port;
+
+  // Serialize JSON to file
+  if (serializeJson(doc, file) == 0) {
+    Serial.println(F("Failed to write to file"));
+  }
+
+  // Close the file
+  file.close();
+}
+
+// Prints the content of a file to the Serial
+void print_JSON(const char* filename) {
+  // Open file for reading
+  File file = SD.open(filename);
+  if (!file) {
+    Serial.println(F("Failed to read file"));
+    return;
+  }
+
+  // Extract each characters by one by one
+  while (file.available()) {
+    Serial.print((char)file.read());
+  }
+  Serial.println();
+
+  // Close the file
+  file.close();
+}
+

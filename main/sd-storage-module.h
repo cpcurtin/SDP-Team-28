@@ -2,6 +2,7 @@
 #define SD_STORAGE_MODULE_H
 #include <Arduino.h>
 #include <SD.h>
+#include <ArduinoJson.h>
 
 struct array_with_size
 {
@@ -9,10 +10,9 @@ struct array_with_size
   size_t size;
 };
 
-struct track
-{
-  char *name;
-  int bpm;
+struct track {
+  char hostname[64];
+  int port;
 };
 // Number of elements in the array
 const int arraySize = 5;
@@ -29,7 +29,9 @@ void printSpaces(int num);
 void printTime(const DateTimeFields tm);
 
 void saveTracks(struct track singleTrack);
-void read_STRUCT(void);
-// struct tracks* loadTracks(int index);
+
+void read_track(const char* filename, struct track& config);
+void save_track(const char* filename, const struct track& config);
+void print_JSON(const char* filename);
 
 #endif // SD_STORAGE_MODULE_H
