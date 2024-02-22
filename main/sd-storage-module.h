@@ -10,9 +10,10 @@ struct array_with_size
   size_t size;
 };
 
-struct track {
-  char hostname[64];
-  int port;
+struct track
+{
+  char name[64];
+  int bpm;
 };
 // Number of elements in the array
 const int arraySize = 5;
@@ -30,8 +31,8 @@ void printTime(const DateTimeFields tm);
 
 void saveTracks(struct track singleTrack);
 
-void read_track(const char* filename, struct track& config);
-void save_track(const char* filename, const struct track& config);
-void print_JSON(const char* filename);
+void read_track(const char *filename, struct track &config);
+void save_track(const char *filename, const struct track &config);
+void print_JSON(const char *filename);
 
 #endif // SD_STORAGE_MODULE_H

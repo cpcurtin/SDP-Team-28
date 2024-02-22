@@ -5,8 +5,7 @@
  *
  */
 #include "lcd-module.h"
-// #include <LiquidCrystal.h>
-int lcd_rows;
+
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 {
   // welcome message
@@ -37,11 +36,24 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr)
 {
   lcd->clear();
+  if (active_track !=NULL){
   for (int row = 0; row < lcd_rows; row++)
   {
     lcd->setCursor(0, row); // set cursor to row 0
 
     lcd->print(print_arr[row]); // print to row 0
+  }}
+  else{
+    for (int row = 0; row < lcd_rows-1; row++)
+  {
+    lcd->setCursor(0, row); // set cursor to row 0
+
+    lcd->print(print_arr[row]); // print to row 0
+  }
+  lcd->setCursor(0, lcd_rows-1); // set cursor to row 0
+
+    lcd->print(active_track->name); // print to row 0
+
   }
   lcd->home();
 }
@@ -83,24 +95,25 @@ void array_scroll(struct lcd_nav *nav, int direction)
 
 const char *format_row(const char **ptr_str_array, int index, int format)
 {
-    char *temp_str = (char *)malloc(20 + 1); // Allocate memory dynamically
-    
-    if (temp_str == NULL) {
-        // Allocation failed
-        return NULL;
-    }
-    
-    // spacing, enumerated
-    if (format == 0)
-    {
-        snprintf(temp_str, 20 + 1, " %d %s", index + 1, ptr_str_array[index]);
-    }
-    else if (format == 1)
-    {
-        snprintf(temp_str, 20 + 1, ">%d %s", index + 1, ptr_str_array[index]);
-    }
+  char *temp_str = (char *)malloc(20 + 1); // Allocate memory dynamically
 
-    return temp_str;
+  if (temp_str == NULL)
+  {
+    // Allocation failed
+    return NULL;
+  }
+
+  // spacing, enumerated
+  if (format == 0)
+  {
+    snprintf(temp_str, 20 + 1, " %d %s", index + 1, ptr_str_array[index]);
+  }
+  else if (format == 1)
+  {
+    snprintf(temp_str, 20 + 1, ">%d %s", index + 1, ptr_str_array[index]);
+  }
+
+  return temp_str;
 }
 
 struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction)
@@ -133,7 +146,7 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   // const char *nav_main[] = {"Sounds", "Effects", "Tracks"};
   // const char *nav_sounds[] = {"Custom Sounds", "MIDI Sounds"};
 
-const  char **nav_main = new const char *[3];
+  const char **nav_main = new const char *[3];
   nav_main[0] = strdup("Sounds");
   nav_main[1] = strdup("Effects");
   nav_main[2] = strdup("Tracks");
@@ -235,6 +248,6 @@ const  char **nav_main = new const char *[3];
 
   return main;
 }
-void nav_add(struct lcd_nav *node){
-  
+void nav_add(struct lcd_nav *node)
+{
 }

@@ -20,9 +20,9 @@
  *    PIN2:   PWM     OUT2                              | PIN2: DAC - DIN
  *    PIN3:   PWM     LRCLK2                            | PIN3: DAC - FS
  *    PIN4:   PWM     BCLK2                             | PIN4: DAC - BCK
- *    PIN5:   PWM     IN2                               | PIN5: 
+ *    PIN5:   PWM     IN2                               | PIN5:
  *    PIN6:   PWM     OUT1D                             | PIN6:
- *    PIN7:   PWM     OUT1A             RX2             | PIN7: 
+ *    PIN7:   PWM     OUT1A             RX2             | PIN7:
  *    PIN8:   PWM     IN1               TX2             | PIN8: Button9
  *    PIN9:   PWM     OUT1C                             | PIN9: MIDI
  *    PIN10:  PWM     MQSR        CS                    | PIN10: DEC1
@@ -35,8 +35,8 @@
  *    PIN17:      A3                    TX4 SDA1        | PIN17: DPAD
  *    PIN18:  PWM A4                        SDA         | PIN18: LCD - SDA
  *    PIN19:  PWM A5                        SCL         | PIN19: LCD - SCL
- *    PIN20:      A6  LRCLK1            TX5             | PIN20: 
- *    PIN21:      A7  BCLK1             RX5             | PIN21: 
+ *    PIN20:      A6  LRCLK1            TX5             | PIN20:
+ *    PIN21:      A7  BCLK1             RX5             | PIN21:
  *    PIN22:  PWM A8                              CTX1  | PIN22:
  *    PIN23:  PWM A9  MCLK1                       CRX1  | PIN23:
  *    PIN24:  PWM A10                       SCL2        | PIN24: DEC1/2E

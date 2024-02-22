@@ -34,6 +34,9 @@ struct lcd_pin_config
     const int columns;
 };
 
+int lcd_rows;
+struct track* active_track;
+
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);
 void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr);
 void array_scroll(struct lcd_nav *nav, int direction);

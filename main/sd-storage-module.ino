@@ -279,7 +279,8 @@ void saveTracks(struct track singleTrack)
   Serial.println("fin");
 }
 
-void read_track(const char* filename, struct track& config) {
+void read_track(const char *filename, struct track &config)
+{
   // Open file for reading
   File file = SD.open(filename);
 
@@ -292,27 +293,25 @@ void read_track(const char* filename, struct track& config) {
     Serial.println(F("Failed to read file, using default configuration"));
 
   // Copy values from the JsonDocument to the Config
-  // config.port = doc["port"] | 2731;
-  // strlcpy(config.hostname,                  // <- destination
-  //         doc["hostname"] | "example.com",  // <- source
-  //         sizeof(config.hostname));         // <- destination's capacity
-  config.port = doc["port"];
-  strlcpy(config.hostname,                  // <- destination
-          doc["hostname"],  // <- source
-          sizeof(config.hostname));         // <- destination's capacity
+  config.bpm = doc["bpm"];
+  strlcpy(config.name,          // <- destination
+          doc["hostname"],      // <- source
+          sizeof(config.name)); // <- destination's capacity
 
   // Close the file (Curiously, File's destructor doesn't close the file)
   file.close();
 }
 
 // Saves the configuration to a file
-void save_track(const char* filename, const struct track& config) {
+void save_track(const char *filename, const struct track &config)
+{
   // Delete existing file, otherwise the configuration is appended to the file
   SD.remove(filename);
 
   // Open file for writing
   File file = SD.open(filename, FILE_WRITE);
-  if (!file) {
+  if (!file)
+  {
     Serial.println(F("Failed to create file"));
     return;
   }
@@ -321,11 +320,12 @@ void save_track(const char* filename, const struct track& config) {
   JsonDocument doc;
 
   // Set the values in the document
-  doc["hostname"] = config.hostname;
-  doc["port"] = config.port;
+  doc["name"] = config.name;
+  doc["bpm"] = config.bpm;
 
   // Serialize JSON to file
-  if (serializeJson(doc, file) == 0) {
+  if (serializeJson(doc, file) == 0)
+  {
     Serial.println(F("Failed to write to file"));
   }
 
@@ -334,16 +334,19 @@ void save_track(const char* filename, const struct track& config) {
 }
 
 // Prints the content of a file to the Serial
-void print_JSON(const char* filename) {
+void print_JSON(const char *filename)
+{
   // Open file for reading
   File file = SD.open(filename);
-  if (!file) {
+  if (!file)
+  {
     Serial.println(F("Failed to read file"));
     return;
   }
 
   // Extract each characters by one by one
-  while (file.available()) {
+  while (file.available())
+  {
     Serial.print((char)file.read());
   }
   Serial.println();
@@ -351,4 +354,3 @@ void print_JSON(const char* filename) {
   // Close the file
   file.close();
 }
-

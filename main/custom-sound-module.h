@@ -27,7 +27,7 @@ AudioPlaySdWav playSdWav2;  // xy=190,200
 AudioPlaySdWav playSdWav1;  // xy=210,131
 AudioMixer4 mixer1;         // xy=426,163
 AudioMixer4 mixer2;         // xy=429,266
-AudioOutputPT8211      pt8211_1;     // I2s1
+AudioOutputPT8211 pt8211_1; // I2s1
 // AudioOutputPT8211_2      pt8211_2_1;     // I2s2
 AudioConnection patchCord1(playSdWav3, 0, mixer1, 2);
 AudioConnection patchCord2(playSdWav3, 1, mixer2, 2);
