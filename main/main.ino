@@ -137,6 +137,9 @@ void setup()
   START AS A PERCUSION SOUND:
   midiSetInstrument(0,128);
   *****************************************/
+  // struct track tracktst;
+  read_track(fileNamejson, active_track);
+  // active_track=&tracktst;
 }
 
 /* Main subroutine: follow software block diagram */
@@ -323,9 +326,11 @@ void loop()
   }
   if (button_pressed(BUTTON_DPAD_RIGHT)) // select
   {
-    if (strcmp(nav_state->name, "custom_sounds") == 0)
+    if (strcmp(nav_state->name, "tracks") == 0)
     {
       Serial.println("made it here");
+      print_JSON(fileNamejson);
+      Serial.println(active_track.name);
       // palette_assign(palette, nav_state->ptr_str_array[nav_state->index]);
       // for (int m = 0; m < PALETTE_MATRIX_ROWS; m++)
       // {

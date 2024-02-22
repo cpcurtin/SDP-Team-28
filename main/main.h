@@ -267,5 +267,5 @@ PROGRAM VARIABLES
 /**************************
 PROGRAM STRUCTS
 **************************/
-
+struct track active_track;
 #endif // MAIN_H

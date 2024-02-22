@@ -35,7 +35,6 @@ struct lcd_pin_config
 };
 
 int lcd_rows;
-struct track* active_track;
 
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);
 void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr);
@@ -44,5 +43,6 @@ struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction);
 const char *format_row(const char **ptr_str_array, int index, int format);
 struct lcd_nav *nav_init(struct nav_config *cfg);
 void nav_add(struct lcd_nav *node);
+const char * tracks_update(void);
 
 #endif // LCD_MODULE_H

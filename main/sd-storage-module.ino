@@ -281,30 +281,60 @@ void saveTracks(struct track singleTrack)
 
 void read_track(const char *filename, struct track &config)
 {
+  // Calculate the length of the string
+  size_t filename_len = strlen(filename);
+
+  // Check if the filename length exceeds the buffer size
+  if (filename_len >= MAX_FILENAME_LENGTH - 8)
+  {
+    Serial.println("Filename is too long for buffer");
+    return;
+  }
+  Serial.println("hi");
+  // Copy "/sounds/" prefix into temp_str
+  strcpy(temp_str, "/tracks/");
+  // Concatenate filename to temp_str
+  strcat(temp_str, filename);
   // Open file for reading
-  File file = SD.open(filename);
+  Serial.println("hi2");
+  File file = SD.open(temp_str);
+  Serial.println("hi3");
 
   // Allocate a temporary JsonDocument
   JsonDocument doc;
 
   // Deserialize the JSON document
+  Serial.println("hi4");
   DeserializationError error = deserializeJson(doc, file);
   if (error)
     Serial.println(F("Failed to read file, using default configuration"));
-
+  Serial.println("hi5");
   // Copy values from the JsonDocument to the Config
   config.bpm = doc["bpm"];
   strlcpy(config.name,          // <- destination
-          doc["hostname"],      // <- source
+          doc["name"],          // <- source
           sizeof(config.name)); // <- destination's capacity
-
-  // Close the file (Curiously, File's destructor doesn't close the file)
+  Serial.println("hi6");
   file.close();
 }
 
 // Saves the configuration to a file
-void save_track(const char *filename, const struct track &config)
+void save_track(const char *filename, struct track &config)
 {
+
+  // Calculate the length of the string
+  size_t filename_len = strlen(filename);
+
+  // Check if the filename length exceeds the buffer size
+  if (filename_len >= MAX_FILENAME_LENGTH - 8)
+  {
+    Serial.println("Filename is too long for buffer");
+    return;
+  }
+  // Copy "/sounds/" prefix into temp_str
+  strcpy(temp_str, "/tracks/");
+  // Concatenate filename to temp_str
+  strcat(temp_str, filename);
   // Delete existing file, otherwise the configuration is appended to the file
   SD.remove(filename);
 
@@ -336,8 +366,22 @@ void save_track(const char *filename, const struct track &config)
 // Prints the content of a file to the Serial
 void print_JSON(const char *filename)
 {
+
+  // Calculate the length of the string
+  size_t filename_len = strlen(filename);
+
+  // Check if the filename length exceeds the buffer size
+  if (filename_len >= MAX_FILENAME_LENGTH - 8)
+  {
+    Serial.println("Filename is too long for buffer");
+    return;
+  }
+  // Copy "/sounds/" prefix into temp_str
+  strcpy(temp_str, "/tracks/");
+  // Concatenate filename to temp_str
+  strcat(temp_str, filename);
   // Open file for reading
-  File file = SD.open(filename);
+  File file = SD.open(temp_str);
   if (!file)
   {
     Serial.println(F("Failed to read file"));

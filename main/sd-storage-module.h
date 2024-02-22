@@ -17,9 +17,11 @@ struct track
 };
 // Number of elements in the array
 const int arraySize = 5;
+// struct track *active_track;
 
 // File name on the SD card
-const char *fileName = "data.txt";
+const char *fileName = "test.txt";
+const char *fileNamejson = "test.json";
 
 void sd_init(void);
 struct array_with_size *parsefiles(void);
@@ -32,7 +34,7 @@ void printTime(const DateTimeFields tm);
 void saveTracks(struct track singleTrack);
 
 void read_track(const char *filename, struct track &config);
-void save_track(const char *filename, const struct track &config);
+void save_track(const char *filename, struct track &config);
 void print_JSON(const char *filename);
 
 #endif // SD_STORAGE_MODULE_H
