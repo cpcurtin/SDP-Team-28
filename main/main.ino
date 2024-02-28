@@ -137,6 +137,9 @@ void setup()
   START AS A PERCUSION SOUND:
   midiSetInstrument(0,128);
   *****************************************/
+  // struct track tracktst;
+  read_track(fileNamejson, active_track);
+  // active_track=&tracktst;
 }
 
 /* Main subroutine: follow software block diagram */
@@ -299,10 +302,14 @@ void loop()
     }
 
     count++;
+    active_track.bpm=read_tempo();
+     update_tempo(lcd); 
     if (count == 16)
     {
       count = 0;
+     
     }
+    
   }
 
   if (button_pressed(BUTTON_DPAD_LEFT)) // return / exit
@@ -323,9 +330,11 @@ void loop()
   }
   if (button_pressed(BUTTON_DPAD_RIGHT)) // select
   {
-    if (strcmp(nav_state->name, "custom_sounds") == 0)
+    if (strcmp(nav_state->name, "tracks") == 0)
     {
       Serial.println("made it here");
+      print_JSON(fileNamejson);
+      Serial.println(active_track.name);
       // palette_assign(palette, nav_state->ptr_str_array[nav_state->index]);
       // for (int m = 0; m < PALETTE_MATRIX_ROWS; m++)
       // {
@@ -386,6 +395,7 @@ void loop()
 
   // delay(1000);
   // Serial.printf("CURRENT ARRAY SIZE: %s\n\n",nav_state->size);
+  
 }
 
 void serial_init(void)

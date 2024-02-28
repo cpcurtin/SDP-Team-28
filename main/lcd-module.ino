@@ -5,8 +5,7 @@
  *
  */
 #include "lcd-module.h"
-// #include <LiquidCrystal.h>
-int lcd_rows;
+
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 {
   // welcome message
@@ -29,7 +28,13 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
   lcd_rows = cfg->rows;
   lcd->begin(cfg->columns, cfg->rows);
   lcd->clear();
-  lcd_display(lcd, lcd_init_message);
+  for (int row = 0; row < lcd_rows; row++)
+  {
+    lcd->setCursor(0, row); // set cursor to row 0
+
+    lcd->print(lcd_init_message[row]); // print to row 0
+  }
+  lcd->home();
 
   return lcd;
 }
@@ -37,12 +42,16 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr)
 {
   lcd->clear();
-  for (int row = 0; row < lcd_rows; row++)
+  // if (active_track.bpm == 0)
+  // {
+  for (int row = 0; row < lcd_rows - 1; row++)
   {
     lcd->setCursor(0, row); // set cursor to row 0
 
     lcd->print(print_arr[row]); // print to row 0
   }
+  // lcd->setCursor(0, lcd_rows - 1); // set cursor to row 0
+  // lcd->print(tracks_update());     // print to row 0
   lcd->home();
 }
 
@@ -65,7 +74,7 @@ void array_scroll(struct lcd_nav *nav, int direction)
   nav->lcd_state[0] = format_row(nav->ptr_str_array, new_index, 1);
 
   // THIS IS WHERE IT REPEATS
-  for (int row = 1; row < lcd_rows; row++)
+  for (int row = 1; row < lcd_rows - 1; row++)
   {
     if (row < (int)nav->size)
     {
@@ -78,29 +87,31 @@ void array_scroll(struct lcd_nav *nav, int direction)
       nav->lcd_state[row] = strdup("");
     }
   }
+  // nav->lcd_state[lcd_rows-1] = format_row(nav->ptr_str_array, 0, 2); //system info
   // Serial.println("##############END SCROLL##############");
 }
 
 const char *format_row(const char **ptr_str_array, int index, int format)
 {
-    char *temp_str = (char *)malloc(20 + 1); // Allocate memory dynamically
-    
-    if (temp_str == NULL) {
-        // Allocation failed
-        return NULL;
-    }
-    
-    // spacing, enumerated
-    if (format == 0)
-    {
-        snprintf(temp_str, 20 + 1, " %d %s", index + 1, ptr_str_array[index]);
-    }
-    else if (format == 1)
-    {
-        snprintf(temp_str, 20 + 1, ">%d %s", index + 1, ptr_str_array[index]);
-    }
+  char *temp_str = (char *)malloc(20 + 1); // Allocate memory dynamically
 
-    return temp_str;
+  if (temp_str == NULL)
+  {
+    // Allocation failed
+    return NULL;
+  }
+
+  // spacing, enumerated
+  if (format == 0)
+  {
+    snprintf(temp_str, 20 + 1, " %d %s", index + 1, ptr_str_array[index]);
+  }
+  else if (format == 1)
+  {
+    snprintf(temp_str, 20 + 1, ">%d %s", index + 1, ptr_str_array[index]);
+  }
+
+  return temp_str;
 }
 
 struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction)
@@ -133,7 +144,7 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   // const char *nav_main[] = {"Sounds", "Effects", "Tracks"};
   // const char *nav_sounds[] = {"Custom Sounds", "MIDI Sounds"};
 
-const  char **nav_main = new const char *[3];
+  const char **nav_main = new const char *[3];
   nav_main[0] = strdup("Sounds");
   nav_main[1] = strdup("Effects");
   nav_main[2] = strdup("Tracks");
@@ -235,6 +246,33 @@ const  char **nav_main = new const char *[3];
 
   return main;
 }
-void nav_add(struct lcd_nav *node){
-  
+void nav_add(struct lcd_nav *node)
+{
+}
+const char *tracks_update(void)
+{
+  int max_length = 20;
+  char *temp_str = (char *)malloc(max_length + 1); // Allocate memory dynamically
+
+  if (temp_str == NULL)
+  {
+    // Allocation failed
+    return NULL;
+  }
+
+  // spacing, enumerated
+  if (active_track.bpm != 0)
+  {
+    snprintf(temp_str, 20 + 1, "BPM:%d %s", active_track.bpm, active_track.name);
+  }
+  else
+  {
+    snprintf(temp_str, 20 + 1, "NO TRACK SELECTED");
+  }
+  return temp_str;
+}
+void update_tempo(LiquidCrystal_I2C *lcd){
+  lcd->setCursor(0, lcd_rows - 1); // set cursor to row 0
+  lcd->print(tracks_update());     // print to row 0
+  lcd->home();
 }

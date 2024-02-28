@@ -7,6 +7,8 @@
 #ifndef BUTTON_UI_MODULE_H
 #define BUTTON_UI_MODULE_H
 
+#define TEMPO_KNOB 23
+
 struct dpad_pin_config
 {
     const int up;
@@ -50,6 +52,7 @@ void button_matrix_init(struct button_maxtrix_pin_config *cfg);
 // void palette_assign(struct palette_matrix *palette, const char *sound);
 void measure_matrix_init(struct button_maxtrix_pin_config *button_cfg, struct button_maxtrix_pin_config *led_cfg);
 void readMatrix(struct button_maxtrix_pin_config *button_cfg, struct button_maxtrix_pin_config *led_cfg);
+int read_tempo(void);
 
 // void set_matrix_led(struct matrix_coordinate, int state);
 
