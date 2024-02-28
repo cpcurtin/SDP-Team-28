@@ -302,10 +302,14 @@ void loop()
     }
 
     count++;
+    active_track.bpm=read_tempo();
+     update_tempo(lcd); 
     if (count == 16)
     {
       count = 0;
+     
     }
+    
   }
 
   if (button_pressed(BUTTON_DPAD_LEFT)) // return / exit
@@ -391,6 +395,7 @@ void loop()
 
   // delay(1000);
   // Serial.printf("CURRENT ARRAY SIZE: %s\n\n",nav_state->size);
+  
 }
 
 void serial_init(void)

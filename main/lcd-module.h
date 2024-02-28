@@ -44,5 +44,6 @@ const char *format_row(const char **ptr_str_array, int index, int format);
 struct lcd_nav *nav_init(struct nav_config *cfg);
 void nav_add(struct lcd_nav *node);
 const char * tracks_update(void);
+void update_tempo(LiquidCrystal_I2C *lcd);
 
 #endif // LCD_MODULE_H

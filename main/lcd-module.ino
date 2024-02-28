@@ -50,8 +50,8 @@ void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr)
 
     lcd->print(print_arr[row]); // print to row 0
   }
-  lcd->setCursor(0, lcd_rows - 1); // set cursor to row 0
-  lcd->print(tracks_update());     // print to row 0
+  // lcd->setCursor(0, lcd_rows - 1); // set cursor to row 0
+  // lcd->print(tracks_update());     // print to row 0
   lcd->home();
 }
 
@@ -270,4 +270,9 @@ const char *tracks_update(void)
     snprintf(temp_str, 20 + 1, "NO TRACK SELECTED");
   }
   return temp_str;
+}
+void update_tempo(LiquidCrystal_I2C *lcd){
+  lcd->setCursor(0, lcd_rows - 1); // set cursor to row 0
+  lcd->print(tracks_update());     // print to row 0
+  lcd->home();
 }
