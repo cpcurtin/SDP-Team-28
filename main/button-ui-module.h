@@ -8,6 +8,10 @@
 #define BUTTON_UI_MODULE_H
 
 #define TEMPO_KNOB 23
+#define TEMPO_KNOB_MIN 20
+#define TEMPO_KNOB_MAX 150
+#define SMOOTHING_SAMPLES 100
+
 
 struct dpad_pin_config
 {
