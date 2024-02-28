@@ -66,8 +66,6 @@ void setup()
   dpad_init(dpad_cfg);
   test_init();
   onboard_dac_init();
-  // button_matrix_init(matrix_cfg);
-  // button_matrix_init(matrix_cfg);
   measure_matrix_init(measure_matrix_button, measure_matrix_led);
 
   nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
@@ -76,15 +74,11 @@ void setup()
   nav_cfg->sounds_custom = (struct array_with_size *)malloc(sizeof(struct array_with_size));
   nav_cfg->sounds_midi = (struct array_with_size *)malloc(sizeof(struct array_with_size));
 
-  Serial.println("made it here1");
-
   const char **nav_effects = new const char *[2];
   nav_effects[0] = strdup("effect1");
   nav_effects[1] = strdup("effect2");
   ((nav_cfg->effects)->array) = nav_effects;
   ((nav_cfg->effects)->size) = 2;
-
-  Serial.println("made it here2");
 
   const char **nav_sounds_midi = new const char *[2];
   nav_sounds_midi[0] = strdup("midi1");
@@ -92,15 +86,9 @@ void setup()
   (nav_cfg->sounds_midi)->array = nav_sounds_midi;
   (nav_cfg->sounds_midi)->size = 2;
 
-  Serial.println("made it here3");
-
   (nav_cfg->sounds_custom = parsefiles());
   Serial.println("parsed files size");
   Serial.println((nav_cfg->sounds_custom)->size);
-  // playFile((nav_cfg->sounds_custom)->array[1]);
-
-  Serial.println("made it here4");
-
   const char **nav_tracks = new const char *[2];
   nav_tracks[0] = strdup("track1");
   nav_tracks[1] = strdup("track2");
@@ -110,7 +98,6 @@ void setup()
   lcd = lcd_init(&lcd_cfg);
   nav_data_structure = nav_init(nav_cfg);
   nav_state = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
-  // Serial.println(((nav_state->child[0])->child[0])->size);
   nav_state = nav_data_structure;
 
   Serial.println("PROGRAM LOOP BEGINS");
@@ -140,10 +127,10 @@ void setup()
   // struct track tracktst;
   read_track(fileNamejson, active_track);
   // active_track=&tracktst;
-  cached_samples[0] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
-  cached_samples[1] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
-  cached_samples[2] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
-  cached_samples[3] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
+  for (int i = 0;i < 4; i++)
+  {
+    cached_samples[i] = cache_sd_sound((nav_cfg->sounds_custom)->array[2]);
+  }
 }
 int mixer_1;
 int mixer_2;
@@ -157,7 +144,7 @@ void loop()
   if (ledMetro.check() == 1)
   {
     unsigned long start_time = millis();
- 
+
     if (count_temp == 0)
     {
       Serial.println("Hit");
@@ -316,20 +303,16 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
       midiNoteOn(0, ClosedHiHat, 127);
-      Serial.print("lcd tempo: ");
-      Serial.println(active_track.bpm);
       metro_active_tempo = (15000 / active_track.bpm);
-      Serial.print("active tempo: ");
-      Serial.println(metro_active_tempo);
       ledMetro.interval(metro_active_tempo);
     }
-     unsigned long end_time = millis();
-  // Calculate the difference in time
-  unsigned long time_diff = end_time - start_time;
-  // Output the time difference
-  Serial.print("Time elapsed: ");
-  Serial.print(time_diff);
-  Serial.println(" milliseconds");
+    unsigned long end_time = millis();
+    // Calculate the difference in time
+    unsigned long time_diff = end_time - start_time;
+    // Output the time difference
+    Serial.print("Time elapsed: ");
+    Serial.print(time_diff);
+    Serial.println(" milliseconds");
 
     count_temp++;
     active_track.bpm = read_tempo();
@@ -360,18 +343,8 @@ void loop()
   {
     if (strcmp(nav_state->name, "tracks") == 0)
     {
-      Serial.println("made it here");
       print_JSON(fileNamejson);
       Serial.println(active_track.name);
-      // palette_assign(palette, nav_state->ptr_str_array[nav_state->index]);
-      // for (int m = 0; m < PALETTE_MATRIX_ROWS; m++)
-      // {
-
-      //   for (int n = 0; n < PALETTE_MATRIX_COLUMNS; n++)
-      //   {
-      //     Serial.println((palette->cells[m][n])->sound);
-      //   }
-      // }
     }
     else
     {
@@ -380,49 +353,8 @@ void loop()
       lcd_display(lcd, nav_state->lcd_state);
     }
   }
-  // for (int i = 0; i < 3; i++)
-  // {
-  //   if (!(palette->cells[0][i])->available)
-  //   {
-  //     if (button_pressed(28 + i))
-  //     {
-
-  //       playFile((palette->cells[0][i])->sound);
-  //     }
-  //   }
-  // }
 
   // readMatrix(measure_matrix_button, measure_matrix_led);
-
-  /* RIGHT SECTION OF TEST BUTTONS (3 LEFTMOST BUTTONS) */
-  // if (button_pressed(28)) // left button
-  // {
-  //   Serial.println("Button 28");
-  //   // example playing a sd file at current leaf string array index
-  //   if (strcmp(nav_state->name,"custom_sounds")){
-  //     // makes sure custom sound leaf node
-  //     Serial.println("Custom Sounds");
-  //     playFile(nav_state->ptr_str_array[nav_state->index]);
-  //   }
-
-  // //   // Serial.printf("forward, %s\n",selection);
-  // //   lcd_display(lcd, nav_state->lcd_state);
-  // }
-  // if (button_pressed(29)) // middle button
-  // {
-
-  //   // Serial.printf("forward, %s\n",selection);
-  //   lcd_display(lcd, nav_state->lcd_state);
-  // }
-  // if (button_pressed(30)) // right button
-  // {
-
-  //   // Serial.printf("forward, %s\n",selection);
-  //   lcd_display(lcd, nav_state->lcd_state);
-  // }
-
-  // delay(1000);
-  // Serial.printf("CURRENT ARRAY SIZE: %s\n\n",nav_state->size);
 }
 
 void serial_init(void)
