@@ -8,7 +8,8 @@
 
 void onboard_dac_init(void)
 {
-  AudioMemory(16);
+  AudioMemory(20);
+  rraw_a1.enableInterpolation(true);
 
   Serial.println("onboard dac initialized");
 }
@@ -16,7 +17,64 @@ void onboard_dac_init(void)
 // Define a fixed-size buffer for temp_str
 char temp_str[MAX_FILENAME_LENGTH]; // Adjust MAX_FILENAME_LENGTH as needed
 
-void playFile(const char *filename)
+int playFile(newdigate::audiosample *cached_sound)
+{
+  
+  int mixer;
+
+
+
+  if (rraw_a1.isPlaying() == false)
+  {
+    Serial.println("Start playing 1");
+    rraw_a1.playRaw(cached_sound->sampledata, cached_sound->samplesize / 2, 1);
+    
+
+    mixer = 1;
+  }
+  else if (rraw_a2.isPlaying() == false)
+  {
+    Serial.println("Start playing 2");
+    rraw_a2.playRaw(cached_sound->sampledata, cached_sound->samplesize / 2, 1);
+    
+    
+    mixer = 2;
+  }
+  else if (rraw_a3.isPlaying() == false)
+  {
+    Serial.println("Start playing 3");
+    rraw_a3.playRaw(cached_sound->sampledata, cached_sound->samplesize / 2, 1);
+    
+    
+    mixer = 3;
+  }
+  else if (rraw_a4.isPlaying() == false)
+  {
+    Serial.println("Start playing 4");
+    rraw_a4.playRaw(cached_sound->sampledata, cached_sound->samplesize / 2, 1);
+    
+    
+    mixer = 4;
+  }
+  
+  
+      
+    delay(1); // wait for library to parse WAV info
+
+  
+
+  
+
+  Serial.print(AudioMemoryUsage());
+  Serial.print(",");
+  Serial.println(AudioMemoryUsageMax());
+  
+  return mixer;
+}
+void stopFile(int mixer)
+{
+}
+newdigate::audiosample *cache_sd_sound(const char *filename)
 {
   // Calculate the length of the string
   size_t filename_len = strlen(filename);
@@ -25,13 +83,7 @@ void playFile(const char *filename)
   if (filename_len >= MAX_FILENAME_LENGTH - 8)
   {
     Serial.println("Filename is too long for buffer");
-    return;
   }
-
-  Serial.println(playSdWav1.isPlaying());
-  Serial.println(playSdWav2.isPlaying());
-  // Serial.println(playSdWav3.isPlaying());
-  // Serial.println(playSdWav4.isPlaying());
 
   // Copy "/sounds/" prefix into temp_str
   strcpy(temp_str, "/sounds/");
@@ -41,29 +93,5 @@ void playFile(const char *filename)
 
   Serial.print("Playing file: ");
   Serial.println(filename);
-
-  if (playSdWav1.isPlaying() == false)
-  {
-    Serial.println("Start playing 1");
-    playSdWav1.play(temp_str);
-    delay(10); // wait for library to parse WAV info
-  }
-  else if (playSdWav2.isPlaying() == false)
-  {
-    Serial.println("Start playing 2");
-    playSdWav2.play(temp_str);
-    delay(10); // wait for library to parse WAV info
-  }
-  // else if (playSdWav3.isPlaying() == false)
-  // {
-  //   Serial.println("Start playing 3");
-  //   playSdWav3.play(temp_str);
-  //   delay(10); // wait for library to parse WAV info
-  // }
-  // else if (playSdWav4.isPlaying() == false)
-  // {
-  //   Serial.println("Start playing 4");
-  //   playSdWav4.play(temp_str);
-  //   delay(10); // wait for library to parse WAV info
-  // }
+  return loader.loadSample(temp_str);
 }

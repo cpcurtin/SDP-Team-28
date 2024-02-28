@@ -22,7 +22,7 @@ const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUT
 
 // Metronome Definition
 Metro ledMetro = Metro(250);
-int count = 0;
+int count_temp = 0;
 
 void setup()
 {
@@ -140,15 +140,25 @@ void setup()
   // struct track tracktst;
   read_track(fileNamejson, active_track);
   // active_track=&tracktst;
+  cached_samples[0] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
+  cached_samples[1] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
+  cached_samples[2] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
+  cached_samples[3] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
 }
-
+int mixer_1;
+int mixer_2;
+int mixer_3;
+int mixer_4;
+float metro_active_tempo;
 /* Main subroutine: follow software block diagram */
 void loop()
 {
   // Main Timing Loop for 4x4 Measure Matrix
   if (ledMetro.check() == 1)
   {
-    if (count == 0)
+    unsigned long start_time = millis();
+ 
+    if (count_temp == 0)
     {
       Serial.println("Hit");
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
@@ -157,35 +167,41 @@ void loop()
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, Crash1, 127);
       midiNoteOn(0, AcousticBassDrum, 127);
-      playFile((nav_cfg->sounds_custom)->array[6]);
+      mixer_1 = playFile(cached_samples[0]);
     }
 
-    if (count == 1)
+    if (count_temp == 1)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, ClosedHiHat, 127);
+      mixer_2 = playFile(cached_samples[0]);
+      stopFile(mixer_1);
     }
 
-    if (count == 2)
+    if (count_temp == 2)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, ClosedHiHat, 127);
       midiNoteOn(0, AcousticSnare, 127);
+      mixer_3 = playFile(cached_samples[0]);
+      stopFile(mixer_2);
     }
 
-    if (count == 3)
+    if (count_temp == 3)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, LOW);
       midiNoteOn(0, ClosedHiHat, 127);
+      mixer_4 = playFile(cached_samples[0]);
+      stopFile(mixer_3);
     }
 
-    if (count == 4)
+    if (count_temp == 4)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
       digitalWrite(LED_MEASURE_MATRIX_ROW_1, HIGH);
@@ -194,9 +210,10 @@ void loop()
 
       midiNoteOn(0, ClosedHiHat, 127);
       midiNoteOn(0, AcousticBassDrum, 127);
+      stopFile(mixer_4);
     }
 
-    if (count == 5)
+    if (count_temp == 5)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
@@ -204,7 +221,7 @@ void loop()
       midiNoteOn(0, ClosedHiHat, 127);
     }
 
-    if (count == 6)
+    if (count_temp == 6)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
@@ -214,7 +231,7 @@ void loop()
       midiNoteOn(0, AcousticSnare, 127);
     }
 
-    if (count == 7)
+    if (count_temp == 7)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
@@ -222,7 +239,7 @@ void loop()
       midiNoteOn(0, ClosedHiHat, 127);
     }
 
-    if (count == 8)
+    if (count_temp == 8)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
       digitalWrite(LED_MEASURE_MATRIX_ROW_2, HIGH);
@@ -233,7 +250,7 @@ void loop()
       midiNoteOn(0, AcousticBassDrum, 127);
     }
 
-    if (count == 9)
+    if (count_temp == 9)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
@@ -243,7 +260,7 @@ void loop()
       midiNoteOn(0, AcousticBassDrum, 127);
     }
 
-    if (count == 10)
+    if (count_temp == 10)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
@@ -253,7 +270,7 @@ void loop()
       midiNoteOn(0, AcousticSnare, 127);
     }
 
-    if (count == 11)
+    if (count_temp == 11)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
@@ -263,7 +280,7 @@ void loop()
       midiNoteOn(0, AcousticBassDrum, 127);
     }
 
-    if (count == 12)
+    if (count_temp == 12)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, LOW);
       digitalWrite(LED_MEASURE_MATRIX_ROW_3, HIGH);
@@ -274,7 +291,7 @@ void loop()
       midiNoteOn(0, AcousticBassDrum, 127);
     }
 
-    if (count == 13)
+    if (count_temp == 13)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_1, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, HIGH);
@@ -282,7 +299,7 @@ void loop()
       midiNoteOn(0, ClosedHiHat, 127);
     }
 
-    if (count == 14)
+    if (count_temp == 14)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_2, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, HIGH);
@@ -292,24 +309,35 @@ void loop()
       midiNoteOn(0, AcousticSnare, 127);
     }
 
-    if (count == 15)
+    if (count_temp == 15)
     {
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_3, LOW);
       digitalWrite(LED_MEASURE_MATRIX_COLUMN_4, HIGH);
       digitalWrite(LED_MEASURE_MATRIX_ROW_4, LOW);
 
       midiNoteOn(0, ClosedHiHat, 127);
+      Serial.print("lcd tempo: ");
+      Serial.println(active_track.bpm);
+      metro_active_tempo = (15000 / active_track.bpm);
+      Serial.print("active tempo: ");
+      Serial.println(metro_active_tempo);
+      ledMetro.interval(metro_active_tempo);
     }
+     unsigned long end_time = millis();
+  // Calculate the difference in time
+  unsigned long time_diff = end_time - start_time;
+  // Output the time difference
+  Serial.print("Time elapsed: ");
+  Serial.print(time_diff);
+  Serial.println(" milliseconds");
 
-    count++;
-    active_track.bpm=read_tempo();
-     update_tempo(lcd); 
-    if (count == 16)
+    count_temp++;
+    active_track.bpm = read_tempo();
+    update_tempo(lcd);
+    if (count_temp == 16)
     {
-      count = 0;
-     
+      count_temp = 0;
     }
-    
   }
 
   if (button_pressed(BUTTON_DPAD_LEFT)) // return / exit
@@ -395,7 +423,6 @@ void loop()
 
   // delay(1000);
   // Serial.printf("CURRENT ARRAY SIZE: %s\n\n",nav_state->size);
-  
 }
 
 void serial_init(void)

@@ -216,23 +216,18 @@ void readMatrix(struct button_maxtrix_pin_config &button_cfg, struct button_maxt
 // }
 int read_tempo(void){
   int raw_avg=0;
-  int smooth=25;
-  for (int i=0;i<smooth;i++){
+  for (int i=0;i<SMOOTHING_SAMPLES;i++){
  raw_avg+=analogRead(TEMPO_KNOB);
   }
-  raw_avg=raw_avg/smooth;
+  raw_avg=raw_avg/SMOOTHING_SAMPLES;
   Serial.print(raw_avg);
 
   // Convert the raw value to voltage
   // float voltage = rawValue * (5.0 / 1023.0); // Assuming 5V Arduino board
-  int voltage = (int)raw_avg * (100.0 / 1023.0); // Assuming 5V Arduino board
+  int voltage = (int)raw_avg * ((TEMPO_KNOB_MAX-TEMPO_KNOB_MIN) / 1023.0); // Assuming 5V Arduino board
 
 
-  // Print the voltage value
-  Serial.print("Voltage: ");
-  Serial.print(voltage);
-  Serial.println(" V");
-  return 120-voltage;
+  return TEMPO_KNOB_MAX-voltage;
 
   // Delay for readability (adjust as needed)
 }

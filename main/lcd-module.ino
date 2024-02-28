@@ -271,7 +271,8 @@ const char *tracks_update(void)
   }
   return temp_str;
 }
-void update_tempo(LiquidCrystal_I2C *lcd){
+void update_tempo(LiquidCrystal_I2C *lcd)
+{
   lcd->setCursor(0, lcd_rows - 1); // set cursor to row 0
   lcd->print(tracks_update());     // print to row 0
   lcd->home();
