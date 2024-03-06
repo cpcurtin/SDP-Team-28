@@ -12,7 +12,6 @@ typedef struct array_with_size
 
 typedef struct track
 {
-
   int id;
   int bpm;
   int measure_steps;

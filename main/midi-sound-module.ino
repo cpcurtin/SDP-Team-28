@@ -8,17 +8,34 @@
 
 int midi_init(void)
 {
+
+  // Midi Init
+  MIDI.begin(31250);
+  pinMode(VS1053_RST, OUTPUT);
+  digitalWrite(VS1053_RST, LOW);
+  delay(10);
+  digitalWrite(VS1053_RST, HIGH);
+  delay(10);
+  midiSetChannelVolume(0, 127);
+  midiSetChannelBank(0, Drums1);
+
+  midiSetInstrument(0, 128);
+  /*****************************************
+  PUT THIS LINE AT THE TOP OF ALL PERCUSSIVE SOUND BLOCKS SO IT WILL
+  START AS A PERCUSION SOUND:
+  midiSetInstrument(0,128);
+  *****************************************/
   return 0;
 }
 
 array_with_size *fetch_midi_sounds(void)
 {
 
-  const char **nav_sounds_midi = new const char *[2];
-  nav_sounds_midi[0] = strdup("midi1");
-  nav_sounds_midi[1] = strdup("midi2");
+  const char **sounds_preset_options_midi = new const char *[2];
+  sounds_preset_options_midi[0] = strdup("midi1");
+  sounds_preset_options_midi[1] = strdup("midi2");
 
-  midi_sound_list->array = nav_sounds_midi;
+  midi_sound_list->array = sounds_preset_options_midi;
   midi_sound_list->size = 2;
   return midi_sound_list;
 }

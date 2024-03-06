@@ -63,7 +63,7 @@ void array_scroll(lcd_nav *nav, int direction)
   }
 
   nav->index = new_index;
-  nav->lcd_state[0] = format_row(nav->ptr_str_array, new_index, 1);
+  nav->lcd_state[0] = format_row(nav->data_array, new_index, 1);
 
   // THIS IS WHERE IT REPEATS
   for (int row = 1; row < lcd_rows - 1; row++)
@@ -71,7 +71,7 @@ void array_scroll(lcd_nav *nav, int direction)
     if (row < (int)nav->size)
     {
       int temp_index = (new_index + row) % nav->size;
-      nav->lcd_state[row] = format_row(nav->ptr_str_array, temp_index, 0);
+      nav->lcd_state[row] = format_row(nav->data_array, temp_index, 0);
     }
     else
     {
@@ -81,7 +81,7 @@ void array_scroll(lcd_nav *nav, int direction)
   }
 }
 
-const char *format_row(const char **ptr_str_array, int index, int format)
+const char *format_row(const char **data_array, int index, int format)
 {
   char *temp_str = (char *)malloc(20 + 1); // Allocate memory dynamically
 
@@ -94,11 +94,11 @@ const char *format_row(const char **ptr_str_array, int index, int format)
   // spacing, enumerated
   if (format == 0)
   {
-    snprintf(temp_str, 20 + 1, " %d %s", index + 1, ptr_str_array[index]);
+    snprintf(temp_str, 20 + 1, " %d %s", index + 1, data_array[index]);
   }
   else if (format == 1)
   {
-    snprintf(temp_str, 20 + 1, ">%d %s", index + 1, ptr_str_array[index]);
+    snprintf(temp_str, 20 + 1, ">%d %s", index + 1, data_array[index]);
   }
 
   return temp_str;
@@ -130,150 +130,170 @@ lcd_nav *nav_selection(lcd_nav *nav, int direction)
 lcd_nav *nav_init(struct nav_config *cfg)
 {
 
-  const char **nav_main = new const char *[3];
-  nav_main[0] = strdup("Sounds");
-  nav_main[1] = strdup("Effects");
-  nav_main[2] = strdup("Tracks");
+  const char **main_preset_options = new const char *[3];
+  main_preset_options[0] = strdup("Sounds");
+  main_preset_options[1] = strdup("Effects");
+  main_preset_options[2] = strdup("Tracks");
 
-  const char **nav_sounds = new const char *[2];
-  nav_sounds[0] = strdup("Custom Sounds");
-  nav_sounds[1] = strdup("MIDI Sounds");
+  const char **sounds_preset_options = new const char *[2];
+  sounds_preset_options[0] = strdup("Custom Sounds");
+  sounds_preset_options[1] = strdup("MIDI Sounds");
 
-  const char **nav_tracks = new const char *[3];
+  const char **tracks_preset_options = new const char *[3];
 
-  nav_tracks[0] = strdup("Save Track");
-  nav_tracks[1] = strdup("Load Track");
-  nav_tracks[2] = strdup("Set # steps");
-  const char **nav_tracks_steps = new const char *[6];
+  tracks_preset_options[0] = strdup("Save Track");
+  tracks_preset_options[1] = strdup("Load Track");
+  tracks_preset_options[2] = strdup("Set # steps");
+  const char **tracks_preset_options_steps = new const char *[6];
   for (int i = 0; i < MAX_MEASURE_STEPS; i++)
   {
-    nav_tracks_steps[i] = strdup("Step");
+    tracks_preset_options_steps[i] = strdup("Step");
   }
 
-  /* NAV STRUCT INITIALIZATION */
-  lcd_nav *main = (lcd_nav *)malloc(sizeof(lcd_nav));
-  lcd_nav *sounds = (lcd_nav *)malloc(sizeof(lcd_nav));
-  lcd_nav *effects = (lcd_nav *)malloc(sizeof(lcd_nav));
-  lcd_nav *tracks = (lcd_nav *)malloc(sizeof(lcd_nav));
-  lcd_nav *sounds_custom = (lcd_nav *)malloc(sizeof(lcd_nav));
-  lcd_nav *sounds_midi = (lcd_nav *)malloc(sizeof(lcd_nav));
-  lcd_nav *tracks_load = (lcd_nav *)malloc(sizeof(lcd_nav));
-  lcd_nav *tracks_set_steps = (lcd_nav *)malloc(sizeof(lcd_nav));
+  // /* NAV STRUCT INITIALIZATION */
+  // lcd_nav *main = (lcd_nav *)malloc(sizeof(lcd_nav));
+  // lcd_nav *sounds = (lcd_nav *)malloc(sizeof(lcd_nav));
+  // lcd_nav *effects = (lcd_nav *)malloc(sizeof(lcd_nav));
+  // lcd_nav *tracks = (lcd_nav *)malloc(sizeof(lcd_nav));
+  // lcd_nav *sounds_custom = (lcd_nav *)malloc(sizeof(lcd_nav));
+  // lcd_nav *sounds_midi = (lcd_nav *)malloc(sizeof(lcd_nav));
+  // lcd_nav *tracks_load = (lcd_nav *)malloc(sizeof(lcd_nav));
+  // lcd_nav *tracks_set_steps = (lcd_nav *)malloc(sizeof(lcd_nav));
 
-  /* LCD STATES INITIALIZATION */
-  const char **state_main = (const char **)malloc(lcd_rows * sizeof(char *));
-  const char **state_sounds = (const char **)malloc(lcd_rows * sizeof(char *));
-  const char **state_effects = (const char **)malloc(lcd_rows * sizeof(char *));
-  const char **state_tracks = (const char **)malloc(lcd_rows * sizeof(char *));
-  const char **state_sounds_custom = (const char **)malloc(lcd_rows * sizeof(char *));
-  const char **state_sounds_midi = (const char **)malloc(lcd_rows * sizeof(char *));
-  const char **state_tracks_load = (const char **)malloc(lcd_rows * sizeof(char *));
-  const char **state_tracks_set_steps = (const char **)malloc(lcd_rows * sizeof(char *));
-  // char **state = new char *[2];
+  // /* LCD STATES INITIALIZATION */
+  // const char **state_main = (const char **)malloc(lcd_rows * sizeof(char *));
+  // const char **state_sounds = (const char **)malloc(lcd_rows * sizeof(char *));
+  // const char **state_effects = (const char **)malloc(lcd_rows * sizeof(char *));
+  // const char **state_tracks = (const char **)malloc(lcd_rows * sizeof(char *));
+  // const char **state_sounds_custom = (const char **)malloc(lcd_rows * sizeof(char *));
+  // const char **state_sounds_midi = (const char **)malloc(lcd_rows * sizeof(char *));
+  // const char **state_tracks_load = (const char **)malloc(lcd_rows * sizeof(char *));
+  // const char **state_tracks_set_steps = (const char **)malloc(lcd_rows * sizeof(char *));
+
+  // NAV STRUCT INITIALIZATION
+  // lcd_nav *main = new lcd_nav;
+  // lcd_nav *sounds = new lcd_nav;
+  // lcd_nav *effects = new lcd_nav;
+  // lcd_nav *tracks = new lcd_nav;
+  // lcd_nav *sounds_custom = new lcd_nav;
+  // lcd_nav *sounds_midi = new lcd_nav;
+  // lcd_nav *tracks_load = new lcd_nav;
+  // lcd_nav *tracks_set_steps = new lcd_nav;
+
+  // LCD STATES INITIALIZATION
+  const char **state_main = new const char *[lcd_rows];
+  const char **state_sounds = new const char *[lcd_rows];
+  const char **state_effects = new const char *[lcd_rows];
+  const char **state_tracks = new const char *[lcd_rows];
+  const char **state_sounds_custom = new const char *[lcd_rows];
+  const char **state_sounds_midi = new const char *[lcd_rows];
+  const char **state_tracks_load = new const char *[lcd_rows];
+  const char **state_tracks_set_steps = new const char *[lcd_rows];
 
   // ptr arrays
   lcd_nav **main_child = new lcd_nav *[3];
-  main_child[0] = sounds;
-  main_child[1] = effects;
-  main_child[2] = tracks;
+  main_child[0] = sounds_nav;
+  main_child[1] = effects_nav;
+  main_child[2] = tracks_nav;
 
   lcd_nav **sounds_child = new lcd_nav *[2];
-  sounds_child[0] = sounds_custom;
-  sounds_child[1] = sounds_midi;
+  sounds_child[0] = sounds_custom_nav;
+  sounds_child[1] = sounds_midi_nav;
 
   lcd_nav **tracks_child = new lcd_nav *[3];
   // tracks_child[0]  save track
-  tracks_child[1] = tracks_load;      // load track
-  tracks_child[2] = tracks_set_steps; // set steps
+  tracks_child[1] = tracks_load_nav;      // load track
+  tracks_child[2] = tracks_set_steps_nav; // set steps
+
   // main
-  main->name = strdup("main");
-  main->ptr_str_array = nav_main;
-  main->parent = NULL;
-  main->child = main_child;
-  main->size = 3; // sizeof(nav_main) / sizeof(nav_main[0]);
-  main->lcd_state = state_main;
-  main->index = 0;
-  main->depth = 0;
-  array_scroll(main, 0);
+  main_nav->name = strdup("main");
+  main_nav->data_array = main_preset_options;
+  main_nav->parent = NULL;
+  main_nav->child = main_child;
+  main_nav->size = 3; // sizeof(main_preset_options) / sizeof(main_preset_options[0]);
+  main_nav->lcd_state = state_main;
+  main_nav->index = 0;
+  main_nav->depth = 0;
+  array_scroll(main_nav, 0);
 
   // sounds
-  sounds->name = strdup("sounds");
-  sounds->ptr_str_array = nav_sounds;
-  sounds->parent = main;
-  sounds->child = sounds_child;
-  sounds->size = 2; // sizeof(nav_sounds) / sizeof(nav_sounds[0]);
-  sounds->lcd_state = state_sounds;
-  sounds->depth = 1;
-  sounds->index = 0;
-  array_scroll(sounds, 0);
+  sounds_nav->name = strdup("sounds");
+  sounds_nav->data_array = sounds_preset_options;
+  sounds_nav->parent = main_nav;
+  sounds_nav->child = sounds_child;
+  sounds_nav->size = 2; // sizeof(sounds_preset_options) / sizeof(sounds_preset_options[0]);
+  sounds_nav->lcd_state = state_sounds;
+  sounds_nav->depth = 1;
+  sounds_nav->index = 0;
+  array_scroll(sounds_nav, 0);
 
   // effects
-  effects->name = strdup("effects");
-  effects->ptr_str_array = (cfg->effects)->array;
-  effects->parent = main;
-  effects->child = NULL;
-  effects->size = (cfg->effects)->size;
-  effects->lcd_state = state_effects;
-  effects->depth = 1;
-  effects->index = 0;
-  array_scroll(effects, 0);
+  effects_nav->name = strdup("effects");
+  effects_nav->data_array = (cfg->effects)->array;
+  effects_nav->parent = main_nav;
+  effects_nav->child = NULL;
+  effects_nav->size = (cfg->effects)->size;
+  effects_nav->lcd_state = state_effects;
+  effects_nav->depth = 1;
+  effects_nav->index = 0;
+  array_scroll(effects_nav, 0);
 
   // tracks
-  tracks->name = strdup("tracks");
-  tracks->ptr_str_array = nav_tracks;
-  tracks->parent = main;
-  tracks->child = tracks_child;
-  tracks->size = 3; // sizeof(nav_tracks) / sizeof(nav_tracks[0]);
-  tracks->lcd_state = state_tracks;
-  tracks->depth = 1;
-  tracks->index = 0;
-  array_scroll(tracks, 0);
+  tracks_nav->name = strdup("tracks");
+  tracks_nav->data_array = tracks_preset_options;
+  tracks_nav->parent = main_nav;
+  tracks_nav->child = tracks_child;
+  tracks_nav->size = 3; // sizeof(tracks_preset_options) / sizeof(tracks_preset_options[0]);
+  tracks_nav->lcd_state = state_tracks;
+  tracks_nav->depth = 1;
+  tracks_nav->index = 0;
+  array_scroll(tracks_nav, 0);
 
   // tracks LOAD
-  tracks_load->name = strdup("tracks_load");
-  tracks_load->ptr_str_array = (cfg->tracks_load)->array;
-  tracks_load->parent = tracks;
-  tracks_load->child = NULL;
-  tracks_load->size = (cfg->tracks_load)->size;
-  tracks_load->lcd_state = state_tracks_load;
-  tracks_load->depth = 2;
-  tracks_load->index = 0;
-  array_scroll(tracks_load, 0);
+  tracks_load_nav->name = strdup("tracks_load");
+  tracks_load_nav->data_array = (cfg->tracks_load)->array;
+  tracks_load_nav->parent = tracks_nav;
+  tracks_load_nav->child = NULL;
+  tracks_load_nav->size = (cfg->tracks_load)->size;
+  tracks_load_nav->lcd_state = state_tracks_load;
+  tracks_load_nav->depth = 2;
+  tracks_load_nav->index = 0;
+  array_scroll(tracks_load_nav, 0);
 
   // tracks SET STEPS
-  tracks_set_steps->name = strdup("tracks_set_steps");
-  tracks_set_steps->ptr_str_array = nav_tracks_steps;
-  tracks_set_steps->parent = tracks;
-  tracks_set_steps->child = NULL;
-  tracks_set_steps->size = 6; // sizeof(nav_tracks_steps) / sizeof(nav_tracks_steps[0]);
-  tracks_set_steps->lcd_state = state_tracks_set_steps;
-  tracks_set_steps->depth = 2;
-  tracks_set_steps->index = 0;
-  array_scroll(tracks_set_steps, 0);
+  tracks_set_steps_nav->name = strdup("tracks_set_steps");
+  tracks_set_steps_nav->data_array = tracks_preset_options_steps;
+  tracks_set_steps_nav->parent = tracks_nav;
+  tracks_set_steps_nav->child = NULL;
+  tracks_set_steps_nav->size = 6; // sizeof(tracks_preset_options_steps) / sizeof(tracks_preset_options_steps[0]);
+  tracks_set_steps_nav->lcd_state = state_tracks_set_steps;
+  tracks_set_steps_nav->depth = 2;
+  tracks_set_steps_nav->index = 0;
+  array_scroll(tracks_set_steps_nav, 0);
 
   // custom_sounds
-  sounds_custom->name = strdup("custom_sounds");
-  sounds_custom->ptr_str_array = (cfg->sounds_custom)->array;
-  sounds_custom->parent = sounds;
-  sounds_custom->child = NULL;
-  sounds_custom->size = (cfg->sounds_custom)->size;
-  sounds_custom->lcd_state = state_sounds_custom;
-  sounds_custom->depth = 2;
-  sounds_custom->index = 0;
-  array_scroll(sounds_custom, 0);
+  sounds_custom_nav->name = strdup("custom_sounds");
+  sounds_custom_nav->data_array = (cfg->sounds_custom)->array;
+  sounds_custom_nav->parent = sounds_nav;
+  sounds_custom_nav->child = NULL;
+  sounds_custom_nav->size = (cfg->sounds_custom)->size;
+  sounds_custom_nav->lcd_state = state_sounds_custom;
+  sounds_custom_nav->depth = 2;
+  sounds_custom_nav->index = 0;
+  array_scroll(sounds_custom_nav, 0);
 
   // sounds_midi
-  sounds_midi->name = strdup("sounds_midi");
-  sounds_midi->ptr_str_array = (cfg->sounds_midi)->array;
-  sounds_midi->parent = sounds;
-  sounds_midi->child = NULL;
-  sounds_midi->size = (cfg->sounds_midi)->size;
-  sounds_midi->lcd_state = state_sounds_midi;
-  sounds_midi->depth = 2;
-  sounds_midi->index = 0;
-  array_scroll(sounds_midi, 0);
+  sounds_midi_nav->name = strdup("sounds_midi");
+  sounds_midi_nav->data_array = (cfg->sounds_midi)->array;
+  sounds_midi_nav->parent = sounds_nav;
+  sounds_midi_nav->child = NULL;
+  sounds_midi_nav->size = (cfg->sounds_midi)->size;
+  sounds_midi_nav->lcd_state = state_sounds_midi;
+  sounds_midi_nav->depth = 2;
+  sounds_midi_nav->index = 0;
+  array_scroll(sounds_midi_nav, 0);
 
-  return main;
+  return main_nav;
 }
 void nav_add(lcd_nav *node)
 {

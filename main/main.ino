@@ -57,22 +57,6 @@ void setup()
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
-  // Midi Init
-  MIDI.begin(31250);
-  pinMode(VS1053_RST, OUTPUT);
-  digitalWrite(VS1053_RST, LOW);
-  delay(10);
-  digitalWrite(VS1053_RST, HIGH);
-  delay(10);
-  midiSetChannelVolume(0, 127);
-  midiSetChannelBank(0, Drums1);
-
-  midiSetInstrument(0, 128);
-  /*****************************************
-  PUT THIS LINE AT THE TOP OF ALL PERCUSSIVE SOUND BLOCKS SO IT WILL
-  START AS A PERCUSION SOUND:
-  midiSetInstrument(0,128);
-  *****************************************/
   for (int i = 0; i < 4; i++)
   {
     cached_samples[i] = cache_sd_sound((nav_cfg->sounds_custom)->array[2]);
@@ -276,7 +260,7 @@ void loop()
   }
   if (button_pressed(BUTTON_DPAD_RIGHT)) // select
   {
-    if (strcmp(nav_state->ptr_str_array[nav_state->index], "Save Track") == 0)
+    if (strcmp(nav_state->data_array[nav_state->index], "Save Track") == 0)
     {
       char *temp_str5 = (char *)malloc(20 + 1);
       snprintf(temp_str5, 20 + 1, "TRACK%d.json", (nav_state->child[1])->size);
@@ -285,7 +269,7 @@ void loop()
       save_track(temp_str5, active_track);
 
       sd_fetch_tracks();
-      (nav_state->child[1])->ptr_str_array = track_list->array;
+      (nav_state->child[1])->data_array = track_list->array;
       (nav_state->child[1])->size = track_list->size;
       (nav_state->child[1])->index = 0;
       array_scroll(nav_state->child[1], 0);
@@ -294,7 +278,7 @@ void loop()
     }
     else if (strcmp(nav_state->name, "tracks_load") == 0)
     {
-      read_track(nav_state->ptr_str_array[nav_state->index], active_track);
+      read_track(nav_state->data_array[nav_state->index], active_track);
     }
     else if (strcmp(nav_state->name, "tracks_set_steps") == 0)
     {
