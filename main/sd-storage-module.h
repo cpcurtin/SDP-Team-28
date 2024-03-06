@@ -12,15 +12,17 @@ struct array_with_size
 
 struct track
 {
-  char name[64];
+
+  int id;
   int bpm;
+  int measure_steps;
 };
 // Number of elements in the array
 const int arraySize = 5;
-// struct track *active_track;
+struct array_with_size *track_list = new struct array_with_size;
 
 // File name on the SD card
-const char *fileName = "test.txt";
+// const char *fileName = "test.txt";
 const char *fileNamejson = "test.json";
 
 void sd_init(void);
@@ -31,10 +33,9 @@ void printDirectory(File dir, int numSpaces);
 void printSpaces(int num);
 void printTime(const DateTimeFields tm);
 
-void saveTracks(struct track singleTrack);
-
 void read_track(const char *filename, struct track &config);
 void save_track(const char *filename, struct track &config);
 void print_JSON(const char *filename);
+void parse_tracks(void);
 
 #endif // SD_STORAGE_MODULE_H

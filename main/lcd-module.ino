@@ -9,18 +9,12 @@
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 {
   // welcome message
-  // char **lcd_init_message = new char *[4];
-  // lcd_init_message[0] = strdup("     Welcome to     ");
-  // lcd_init_message[1] = strdup("      Moduloop      ");
-  // lcd_init_message[2] = strdup("");
-  // lcd_init_message[3] = strdup("    SDP team 28    ");
   const char *lcd_init_message[] = {
       "     Welcome to     ",
       "      Moduloop      ",
       "",
       "    SDP team 28    "};
 
-  // LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg.i2c, cfg.columns, cfg.rows);
   LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg->i2c, cfg->columns, cfg->rows);
 
   lcd->init(); // initialize the lcd
@@ -42,16 +36,14 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr)
 {
   lcd->clear();
-  // if (active_track.bpm == 0)
-  // {
+
   for (int row = 0; row < lcd_rows - 1; row++)
   {
     lcd->setCursor(0, row); // set cursor to row 0
 
     lcd->print(print_arr[row]); // print to row 0
   }
-  // lcd->setCursor(0, lcd_rows - 1); // set cursor to row 0
-  // lcd->print(tracks_update());     // print to row 0
+
   lcd->home();
 }
 
@@ -83,12 +75,10 @@ void array_scroll(struct lcd_nav *nav, int direction)
     }
     else
     {
-      // nav->lcd_state[row] = format_row(nav->ptr_str_array, temp_index, 0);
+
       nav->lcd_state[row] = strdup("");
     }
   }
-  // nav->lcd_state[lcd_rows-1] = format_row(nav->ptr_str_array, 0, 2); //system info
-  // Serial.println("##############END SCROLL##############");
 }
 
 const char *format_row(const char **ptr_str_array, int index, int format)
@@ -153,6 +143,24 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   nav_sounds[0] = strdup("Custom Sounds");
   nav_sounds[1] = strdup("MIDI Sounds");
 
+  const char **nav_tracks = new const char *[3];
+
+  nav_tracks[0] = strdup("Save Track");
+  nav_tracks[1] = strdup("Load Track");
+  nav_tracks[2] = strdup("Set # steps");
+  const char **nav_tracks_steps = new const char *[6];
+  for (int i = 0; i < MAX_MEASURE_STEPS; i++)
+  {
+    nav_tracks_steps[i] = strdup("Step");
+  }
+
+  // nav_tracks_steps[0] = strdup("1");
+  // nav_tracks_steps[1] = strdup("2");
+  // nav_tracks_steps[2] = strdup("3");
+  // nav_tracks_steps[3] = strdup("4");
+  // nav_tracks_steps[4] = strdup("5");
+  // nav_tracks_steps[5] = strdup("6");
+
   // struct instatiation
   struct lcd_nav *main = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *sounds = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
@@ -160,12 +168,16 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   struct lcd_nav *tracks = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *sounds_custom = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   struct lcd_nav *sounds_midi = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
+  struct lcd_nav *tracks_load = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
+  struct lcd_nav *tracks_set_steps = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
   const char **state_main = (const char **)malloc(lcd_rows * sizeof(char *));
   const char **state_sounds = (const char **)malloc(lcd_rows * sizeof(char *));
   const char **state_effects = (const char **)malloc(lcd_rows * sizeof(char *));
   const char **state_tracks = (const char **)malloc(lcd_rows * sizeof(char *));
   const char **state_sounds_custom = (const char **)malloc(lcd_rows * sizeof(char *));
   const char **state_sounds_midi = (const char **)malloc(lcd_rows * sizeof(char *));
+  const char **state_tracks_load = (const char **)malloc(lcd_rows * sizeof(char *));
+  const char **state_tracks_set_steps = (const char **)malloc(lcd_rows * sizeof(char *));
   // char **state = new char *[2];
 
   // ptr arrays
@@ -178,23 +190,29 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
   sounds_child[0] = sounds_custom;
   sounds_child[1] = sounds_midi;
 
+  struct lcd_nav **tracks_child = new struct lcd_nav *[3];
+  // tracks_child[0] = tracks_load; // save track
+  tracks_child[1] = tracks_load;      // load track
+  tracks_child[2] = tracks_set_steps; // set steps
   // main
   main->name = strdup("main");
   main->ptr_str_array = nav_main;
   main->parent = NULL;
   main->child = main_child;
-  main->size = 3;
+  main->size = 3; // sizeof(nav_main) / sizeof(nav_main[0]);
   main->lcd_state = state_main;
   main->index = 0;
   main->depth = 0;
   array_scroll(main, 0);
+  // Serial.print("test size of main: ");
+  // Serial.println(sizeof(nav_main) / sizeof(nav_main[0]));
 
   // sounds
   sounds->name = strdup("sounds");
   sounds->ptr_str_array = nav_sounds;
   sounds->parent = main;
   sounds->child = sounds_child;
-  sounds->size = 2;
+  sounds->size = 2; // sizeof(nav_sounds) / sizeof(nav_sounds[0]);
   sounds->lcd_state = state_sounds;
   sounds->depth = 1;
   sounds->index = 0;
@@ -213,14 +231,36 @@ struct lcd_nav *nav_init(struct nav_config *cfg)
 
   // tracks
   tracks->name = strdup("tracks");
-  tracks->ptr_str_array = (cfg->tracks)->array;
+  tracks->ptr_str_array = nav_tracks;
   tracks->parent = main;
-  tracks->child = NULL;
-  tracks->size = (cfg->tracks)->size;
+  tracks->child = tracks_child;
+  tracks->size = 3; // sizeof(nav_tracks) / sizeof(nav_tracks[0]);
   tracks->lcd_state = state_tracks;
   tracks->depth = 1;
   tracks->index = 0;
   array_scroll(tracks, 0);
+
+  // tracks LOAD
+  tracks_load->name = strdup("tracks_load");
+  tracks_load->ptr_str_array = (cfg->tracks_load)->array;
+  tracks_load->parent = tracks;
+  tracks_load->child = NULL;
+  tracks_load->size = (cfg->tracks_load)->size;
+  tracks_load->lcd_state = state_tracks_load;
+  tracks_load->depth = 2;
+  tracks_load->index = 0;
+  array_scroll(tracks_load, 0);
+
+  // tracks SET STEPS
+  tracks_set_steps->name = strdup("tracks_set_steps");
+  tracks_set_steps->ptr_str_array = nav_tracks_steps;
+  tracks_set_steps->parent = tracks;
+  tracks_set_steps->child = NULL;
+  tracks_set_steps->size = 6; // sizeof(nav_tracks_steps) / sizeof(nav_tracks_steps[0]);
+  tracks_set_steps->lcd_state = state_tracks_set_steps;
+  tracks_set_steps->depth = 2;
+  tracks_set_steps->index = 0;
+  array_scroll(tracks_set_steps, 0);
 
   // custom_sounds
   sounds_custom->name = strdup("custom_sounds");
@@ -252,7 +292,7 @@ void nav_add(struct lcd_nav *node)
 const char *tracks_update(void)
 {
   int max_length = 20;
-  char *temp_str = (char *)malloc(max_length + 1); // Allocate memory dynamically
+  char *temp_str = (char *)malloc(max_length + 1);
 
   if (temp_str == NULL)
   {
@@ -263,7 +303,7 @@ const char *tracks_update(void)
   // spacing, enumerated
   if (active_track.bpm != 0)
   {
-    snprintf(temp_str, 20 + 1, "BPM:%d %s", active_track.bpm, active_track.name);
+    snprintf(temp_str, 20 + 1, "BPM:%d STEPS:%d ID:%d ", active_track.bpm, active_track.measure_steps, active_track.id);
   }
   else
   {
