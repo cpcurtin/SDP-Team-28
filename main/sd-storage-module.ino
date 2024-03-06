@@ -24,7 +24,7 @@ void sd_init(void)
   // File root = SD.open("/");
 }
 
-struct array_with_size *parsefiles(void)
+array_with_size *parsefiles(void)
 {
   File root = SD.open("/sounds");
 
@@ -72,7 +72,7 @@ struct array_with_size *parsefiles(void)
   //       Serial.println(); // Print a newline after each filename
   //   }
   // char **state = new char *[2];
-  struct array_with_size *sound_list = new struct array_with_size;
+  array_with_size *sound_list = new array_with_size;
 
   sound_list->array = filenames;
   sound_list->size = numFiles;
@@ -200,7 +200,7 @@ void printTime(const DateTimeFields tm)
   Serial.print(tm.year + 1900);
 }
 
-void read_track(const char *filename, struct track &config)
+void read_track(const char *filename, track &config)
 {
   // Calculate the length of the string
   size_t filename_len = strlen(filename);
@@ -239,7 +239,7 @@ void read_track(const char *filename, struct track &config)
 }
 
 // Saves the configuration to a file
-void save_track(const char *filename, struct track &config)
+void save_track(const char *filename, track &config)
 {
 
   // Calculate the length of the string

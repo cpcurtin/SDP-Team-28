@@ -70,11 +70,11 @@ void setup()
 
   // INITIALIZE AND POPULATE NAV ARRAYS DYNAMICALLY
   nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
-  nav_cfg->effects = (struct array_with_size *)malloc(sizeof(struct array_with_size));
-  // nav_cfg->tracks = (struct array_with_size *)malloc(sizeof(struct array_with_size));
-  nav_cfg->tracks_load = (struct array_with_size *)malloc(sizeof(struct array_with_size));
-  nav_cfg->sounds_custom = (struct array_with_size *)malloc(sizeof(struct array_with_size));
-  nav_cfg->sounds_midi = (struct array_with_size *)malloc(sizeof(struct array_with_size));
+  nav_cfg->effects = (array_with_size *)malloc(sizeof(array_with_size));
+  // nav_cfg->tracks = (array_with_size *)malloc(sizeof(array_with_size));
+  nav_cfg->tracks_load = (array_with_size *)malloc(sizeof(array_with_size));
+  nav_cfg->sounds_custom = (array_with_size *)malloc(sizeof(array_with_size));
+  nav_cfg->sounds_midi = (array_with_size *)malloc(sizeof(array_with_size));
 
   // COMPLETE
   const char **nav_effects = new const char *[2];
@@ -143,7 +143,7 @@ void setup()
   START AS A PERCUSION SOUND:
   midiSetInstrument(0,128);
   *****************************************/
-  // struct track tracktst;
+  // track tracktst;
   // read_track(fileNamejson, active_track);
   active_track.id = 0;
   active_track.bpm = 120;
@@ -368,7 +368,7 @@ void loop()
       active_track.id = (nav_state->child[1])->size;
       save_track(temp_str5, active_track);
       // update list
-      // struct array_with_size *temp_tracks;
+      // array_with_size *temp_tracks;
       // nav_cfg->tracks_load = parse_tracks();
       parse_tracks();
       // Serial.println((nav_state->child[1])->name);
@@ -395,7 +395,7 @@ void loop()
     lcd_display(lcd, nav_state->lcd_state);
     // }
   }
-  // save_track(const char *filename, struct track &config)
+  // save_track(const char *filename, track &config)
   // readMatrix(measure_matrix_button, measure_matrix_led);
 }
 
