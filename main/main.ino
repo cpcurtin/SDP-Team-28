@@ -2,7 +2,7 @@
 
 /*
 
-PERFORMANCE TESTING 
+PERFORMANCE TESTING
 
 unsigned long start_time = millis();
 unsigned long end_time = millis();
@@ -12,17 +12,28 @@ Serial.print(time_diff);
 Serial.println(" milliseconds");
 */
 
-
-
 void setup()
 {
 
   /* Intialize hardware */
   serial_init();
-  sd_init();
-  dpad_init(dpad_cfg);
-  test_init();
-  onboard_dac_init();
+
+  if (sd_init())
+  {
+    Serial.println("SD INIT FAILED");
+  }
+  if (midi_init())
+  {
+    Serial.println("MIDI INIT FAILED");
+  }
+  if (dpad_init(dpad_cfg))
+  {
+    Serial.println("DPAD INIT FAILED");
+  }
+  if (dac_init())
+  {
+    Serial.println("DAC INIT FAILED");
+  }
 
   // INITIALIZE AND POPULATE NAV ARRAYS DYNAMICALLY
   nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
@@ -31,25 +42,18 @@ void setup()
   nav_cfg->sounds_custom = (array_with_size *)malloc(sizeof(array_with_size));
   nav_cfg->sounds_midi = (array_with_size *)malloc(sizeof(array_with_size));
 
-  // COMPLETE
-  const char **nav_effects = new const char *[2];
-  nav_effects[0] = strdup("effect1");
-  nav_effects[1] = strdup("effect2");
-  ((nav_cfg->effects)->array) = nav_effects;
-  ((nav_cfg->effects)->size) = 2; // sizeof(nav_effects) / sizeof(nav_effects[0]);
+  /* FETCH EFFECTS */
+  fetch_effects();
+  nav_cfg->effects = effect_list;
 
-  // IMPORT
-  const char **nav_sounds_midi = new const char *[2];
-  nav_sounds_midi[0] = strdup("midi1");
-  nav_sounds_midi[1] = strdup("midi2");
-  (nav_cfg->sounds_midi)->array = nav_sounds_midi;
-  (nav_cfg->sounds_midi)->size = 2; // sizeof(nav_sounds_midi) / sizeof(nav_sounds_midi[0]);
+  /* FETCH MIDI SOUNDS */
+  nav_cfg->sounds_midi = midi_sound_list;
 
-  // PARSE SD CARD
+  /* FETCH SD SOUNDS */
   sd_fetch_sounds();
-  nav_cfg->sounds_custom = sound_list;
+  nav_cfg->sounds_custom = custom_sound_list;
 
-  // TRACKS LOAD
+  /* FETCH TRACKS */
   sd_fetch_tracks();
   nav_cfg->tracks_load = track_list;
 

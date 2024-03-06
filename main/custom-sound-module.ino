@@ -6,12 +6,13 @@
  */
 #include "custom-sound-module.h"
 
-void onboard_dac_init(void)
+int dac_init(void)
 {
   AudioMemory(10);
   rraw_a1.enableInterpolation(true);
 
   Serial.println("onboard dac initialized");
+  return 0;
 }
 
 // Define a fixed-size buffer for temp_str

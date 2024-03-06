@@ -12,7 +12,6 @@
 #define TEMPO_KNOB_MAX 150
 #define SMOOTHING_SAMPLES 100
 
-
 struct dpad_pin_config
 {
     const int up;
@@ -42,7 +41,7 @@ struct palette_matrix
     int columns;
 };
 
-void dpad_init(const struct dpad_pin_config &cfg);
+int dpad_init(const struct dpad_pin_config &cfg);
 void dpad_read(const struct dpad_pin_config &cfg);
 
 int check_ninput(const struct dpad_pin_config &cfg);

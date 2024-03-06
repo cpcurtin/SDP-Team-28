@@ -18,10 +18,10 @@ typedef struct track
   int measure_steps;
 } track;
 
-array_with_size *sound_list = new array_with_size;
+array_with_size *custom_sound_list = new array_with_size;
 array_with_size *track_list = new array_with_size;
 
-void sd_init(void);
+int sd_init(void);
 void sd_fetch_sounds(void);
 void freeArrayOfStrings(char **stringArray, size_t numStrings);
 void listfiles(void);

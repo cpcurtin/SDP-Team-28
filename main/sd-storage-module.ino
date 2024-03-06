@@ -8,7 +8,7 @@
 // #include <SD.h>
 #include "sd-storage-module.h"
 
-void sd_init(void)
+int sd_init(void)
 {
   const int chipSelect = BUILTIN_SDCARD;
 
@@ -17,11 +17,12 @@ void sd_init(void)
   if (!SD.begin(chipSelect))
   {
     Serial.println("initialization failed!");
-    return;
+    return 1;
   }
   Serial.println("initialization done.");
 
   // File root = SD.open("/");
+  return 0;
 }
 
 void sd_fetch_sounds(void)
@@ -67,8 +68,8 @@ void sd_fetch_sounds(void)
   // Set the last element of the array to NULL to indicate the end
   filenames[numFiles] = NULL;
 
-  sound_list->array = filenames;
-  sound_list->size = numFiles;
+  custom_sound_list->array = filenames;
+  custom_sound_list->size = numFiles;
 }
 
 // Function to free the memory allocated for the array of strings

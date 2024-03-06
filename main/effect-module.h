@@ -8,6 +8,8 @@
 #define EFFECT_MODULE_H
 
 // functions, extern variables, structs go here
-void test_init(void);
-uint32_t FreeMem(void);
+array_with_size *effect_list = new array_with_size;
+
+void fetch_effects(void);
+
 #endif // EFFECT_MODULE_H

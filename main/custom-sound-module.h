@@ -70,7 +70,7 @@ newdigate::audiosample *cached_samples[MAX_SOUNDS];
 newdigate::flashloader loader;
 
 // functions, extern variables, structs go here
-void onboard_dac_init(void);
+int dac_init(void);
 int playFile(newdigate::audiosample *cached_sound);
 newdigate::audiosample *cache_sd_sound(const char *filename);
 void stopFile(int mixer);
