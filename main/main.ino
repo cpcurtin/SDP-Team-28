@@ -1,64 +1,21 @@
 #include "main.h"
 
-LiquidCrystal_I2C *lcd;
+/*
 
-char **lcd_state = new char *[LCD_ROWS];
-int lcd_index = 0;
-lcd_nav *sounds;
-lcd_nav *nav_data_structure;
-lcd_nav *nav_state;
-struct palette_matrix *palette;
-struct button_maxtrix_pin_config measure_matrix_button;
-struct button_maxtrix_pin_config measure_matrix_led;
-struct nav_config *nav_cfg;
+PERFORMANCE TESTING 
 
-char *selection;
+unsigned long start_time = millis();
+unsigned long end_time = millis();
+Calculate the difference in time unsigned long time_diff = end_time - start_time;
+Serial.print("Time elapsed: ");
+Serial.print(time_diff);
+Serial.println(" milliseconds");
+*/
 
-// const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
-const struct lcd_pin_config lcd_cfg = {LCD_I2C, LCD_ROWS, LCD_COLUMNS};
-const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
-const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT};
-// create 2D array of palette_cell structs
 
-// Metronome Definition
-Metro ledMetro = Metro(250);
-int count_temp = 0;
 
 void setup()
 {
-  //
-  //
-  // button & led measure matrix
-  //
-  //
-  // measure_matrix_button = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int button_matrix_rows[MEASURE_MATRIX_ROWS + 1] = {BUTTON_MEASURE_MATRIX_ROW_1, BUTTON_MEASURE_MATRIX_ROW_2, BUTTON_MEASURE_MATRIX_ROW_3, BUTTON_MEASURE_MATRIX_ROW_4};
-  int button_matrix_columms[MEASURE_MATRIX_COLUMNS + 1] = {BUTTON_MEASURE_MATRIX_COLUMN_1, BUTTON_MEASURE_MATRIX_COLUMN_2, BUTTON_MEASURE_MATRIX_COLUMN_3, BUTTON_MEASURE_MATRIX_COLUMN_4, BUTTON_MEASURE_MATRIX_COLUMN_5, BUTTON_MEASURE_MATRIX_COLUMN_6};
-  measure_matrix_button.width = MEASURE_MATRIX_COLUMNS;
-  measure_matrix_button.length = MEASURE_MATRIX_ROWS;
-
-  for (size_t i = 0; i < MEASURE_MATRIX_ROWS; ++i)
-  {
-    measure_matrix_button.rows[i] = button_matrix_rows[i];
-  }
-  for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i)
-  {
-    measure_matrix_button.columns[i] = button_matrix_columms[i];
-  }
-
-  // measure_matrix_led = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int led_matrix_rows[MEASURE_MATRIX_ROWS + 1] = {LED_MEASURE_MATRIX_ROW_1, LED_MEASURE_MATRIX_ROW_2, LED_MEASURE_MATRIX_ROW_3, LED_MEASURE_MATRIX_ROW_4};
-  int led_matrix_columms[MEASURE_MATRIX_COLUMNS + 1] = {LED_MEASURE_MATRIX_COLUMN_1, LED_MEASURE_MATRIX_COLUMN_2, LED_MEASURE_MATRIX_COLUMN_3, LED_MEASURE_MATRIX_COLUMN_4, LED_MEASURE_MATRIX_COLUMN_5, LED_MEASURE_MATRIX_COLUMN_6};
-  measure_matrix_led.width = MEASURE_MATRIX_COLUMNS;
-  measure_matrix_led.length = MEASURE_MATRIX_ROWS;
-  for (size_t i = 0; i < MEASURE_MATRIX_ROWS; ++i)
-  {
-    measure_matrix_led.rows[i] = led_matrix_rows[i];
-  }
-  for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i)
-  {
-    measure_matrix_led.columns[i] = led_matrix_columms[i];
-  }
 
   /* Intialize hardware */
   serial_init();
@@ -66,7 +23,6 @@ void setup()
   dpad_init(dpad_cfg);
   test_init();
   onboard_dac_init();
-  measure_matrix_init(measure_matrix_button, measure_matrix_led);
 
   // INITIALIZE AND POPULATE NAV ARRAYS DYNAMICALLY
   nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
@@ -102,12 +58,8 @@ void setup()
   nav_state = (lcd_nav *)malloc(sizeof(lcd_nav));
   nav_state = nav_data_structure;
 
-  for (size_t i = 0; i < (nav_cfg->sounds_custom)->size; i++)
-  {
-    Serial.println((nav_cfg->sounds_custom)->array[i]);
-  }
-  delay(3000);
-  lcd_display(lcd, nav_state->lcd_state);
+  delay(3000);                            // 3 second splash strart screen
+  lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
   // Midi Init
   MIDI.begin(31250);
@@ -138,7 +90,6 @@ void loop()
   // Main Timing Loop for 4x4 Measure Matrix
   if (ledMetro.check() == 1)
   {
-    // unsigned long start_time = millis();
 
     if (count_temp == 0)
     {
@@ -301,13 +252,6 @@ void loop()
       metro_active_tempo = (15000 / active_track.bpm);
       ledMetro.interval(metro_active_tempo);
     }
-    // unsigned long end_time = millis();
-    // Calculate the difference in time
-    // unsigned long time_diff = end_time - start_time;
-    // Output the time difference
-    // Serial.print("Time elapsed: ");
-    // Serial.print(time_diff);
-    // Serial.println(" milliseconds");
 
     count_temp++;
     active_track.bpm = read_tempo();
@@ -364,12 +308,9 @@ void loop()
     {
       nav_state = nav_selection(nav_state, NAV_FORWARD);
     }
-    // Serial.printf("forward, %s\n",selection);
+
     lcd_display(lcd, nav_state->lcd_state);
-    // }
   }
-  // save_track(const char *filename, track &config)
-  // readMatrix(measure_matrix_button, measure_matrix_led);
 }
 
 void serial_init(void)

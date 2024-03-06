@@ -4,7 +4,7 @@
  *
  *
  */
-#include "test-module.h"
+#include "effect-module.h"
 
 void test_init(void)
 {

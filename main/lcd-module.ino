@@ -130,10 +130,6 @@ lcd_nav *nav_selection(lcd_nav *nav, int direction)
 lcd_nav *nav_init(struct nav_config *cfg)
 {
 
-  // Initialize the navigation strings
-  // const char *nav_main[] = {"Sounds", "Effects", "Tracks"};
-  // const char *nav_sounds[] = {"Custom Sounds", "MIDI Sounds"};
-
   const char **nav_main = new const char *[3];
   nav_main[0] = strdup("Sounds");
   nav_main[1] = strdup("Effects");
@@ -153,13 +149,6 @@ lcd_nav *nav_init(struct nav_config *cfg)
   {
     nav_tracks_steps[i] = strdup("Step");
   }
-
-  // nav_tracks_steps[0] = strdup("1");
-  // nav_tracks_steps[1] = strdup("2");
-  // nav_tracks_steps[2] = strdup("3");
-  // nav_tracks_steps[3] = strdup("4");
-  // nav_tracks_steps[4] = strdup("5");
-  // nav_tracks_steps[5] = strdup("6");
 
   /* NAV STRUCT INITIALIZATION */
   lcd_nav *main = (lcd_nav *)malloc(sizeof(lcd_nav));
