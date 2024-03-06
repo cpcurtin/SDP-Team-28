@@ -19,82 +19,66 @@ char temp_str[MAX_FILENAME_LENGTH]; // Adjust MAX_FILENAME_LENGTH as needed
 
 int playFile(newdigate::audiosample *cached_sound)
 {
-  
-  int mixer;
 
-
+  int mixer = -1;
 
   if (rraw_a1.isPlaying() == false)
   {
-    Serial.println("Start playing 1");
+    // Serial.println("Start playing 1");
     rraw_a1.playRaw(cached_sound->sampledata, cached_sound->samplesize / 2, 1);
-    
 
     mixer = 1;
   }
   else if (rraw_a2.isPlaying() == false)
   {
-    Serial.println("Start playing 2");
+    // Serial.println("Start playing 2");
     rraw_a2.playRaw(cached_sound->sampledata, cached_sound->samplesize / 2, 1);
-    
-    
+
     mixer = 2;
   }
   else if (rraw_a3.isPlaying() == false)
   {
-    Serial.println("Start playing 3");
+    // Serial.println("Start playing 3");
     rraw_a3.playRaw(cached_sound->sampledata, cached_sound->samplesize / 2, 1);
-    
-    
+
     mixer = 3;
   }
   else if (rraw_a4.isPlaying() == false)
   {
-    Serial.println("Start playing 4");
+    // Serial.println("Start playing 4");
     rraw_a4.playRaw(cached_sound->sampledata, cached_sound->samplesize / 2, 1);
 
     mixer = 4;
   }
-  
-  
-      
-    delay(1); // wait for library to parse WAV info
 
-  
+  delay(1); // wait for library to parse WAV info
 
-  
+  // Serial.print(AudioMemoryUsage());
+  // Serial.print(",");
+  // Serial.println(AudioMemoryUsageMax());
 
-  Serial.print(AudioMemoryUsage());
-  Serial.print(",");
-  Serial.println(AudioMemoryUsageMax());
-  
   return mixer;
 }
 void stopFile(int mixer)
 {
-   if (mixer == 1)
+  if (mixer == 1)
   {
-    Serial.println("Stopping 1");
+    // Serial.println("Stopping 1");
     rraw_a1.stop();
-    
   }
   else if (mixer == 2)
   {
-    Serial.println("Stopping 2");
+    // Serial.println("Stopping 2");
     rraw_a2.stop();
-    
-   
   }
   else if (mixer == 3)
   {
-    Serial.println("Stopping 3");
+    // Serial.println("Stopping 3");
     rraw_a3.stop();
-    
- 
   }
   else if (mixer == 4)
   {
-    Serial.println("Stopping 4");
+    // Serial.println("Stopping 4");
     rraw_a4.stop();
   }
 }

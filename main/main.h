@@ -256,13 +256,21 @@ HARDWARE CONFIGURATIONS
 #define PALETTE_MATRIX_ROWS 4
 #define PALETTE_MATRIX_COLUMNS 3
 
-/**************************
-PROGRAM VARIABLES
-**************************/
+// DPAD to nav interface
 #define NAV_FORWARD 1
 #define NAV_BACKWARD -1
 #define NAV_UP -1
 #define NAV_DOWN 1
+
+/**************************
+PROGRAM VARIABLES
+**************************/
+// int measure_steps = 6; // default =6
+int mixer_1;
+int mixer_2;
+int mixer_3;
+int mixer_4;
+float metro_active_tempo;
 
 /**************************
 PROGRAM STRUCTS

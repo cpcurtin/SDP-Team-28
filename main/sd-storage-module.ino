@@ -28,13 +28,6 @@ struct array_with_size *parsefiles(void)
 {
   File root = SD.open("/sounds");
 
-  // Check if the directory is open
-  // if (!root)
-  // {
-  //   Serial.println("Failed to open directory");
-  //   return NULL; // Return NULL in case of failure
-  // }
-
   // Initialize a dynamic array to store filenames
   const char **filenames = NULL;
   size_t numFiles = 0;
@@ -207,78 +200,6 @@ void printTime(const DateTimeFields tm)
   Serial.print(tm.year + 1900);
 }
 
-// save current program to card at selected location
-void saveTracks(struct track singleTrack)
-{
-  if (SD.exists(fileName))
-  {
-
-    Serial.println("example.txt exists.");
-  }
-  else
-  {
-
-    Serial.println("example.txt doesn't exist.");
-  }
-
-  // open a new file and immediately close it:
-
-  Serial.println("Creating example.txt...");
-
-  File dataFile = SD.open(fileName, FILE_WRITE);
-
-  dataFile.close();
-
-  // Check to see if the file exists:
-
-  if (SD.exists(fileName))
-  {
-
-    Serial.println("example.txt exists.");
-  }
-  else
-  {
-
-    Serial.println("example.txt doesn't exist.");
-  }
-
-  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  //  dataFile = SD.open(fileName, FILE_WRITE);
-  //  if (dataFile) {
-  //     // Write the single track to the file
-  //     dataFile.write((uint8_t*)&singleTrack, sizeof(track));
-  //     // Close the file
-  //     Serial.println("Track saved successfully");
-
-  //     // while (dataFile.available()) {
-  //     //   Serial.write(dataFile.read());
-  //     // }
-  //   } else {
-  //     // If the file didn't open, print an error message
-  //     Serial.println("Error opening data.txt");
-  //   }
-  //   dataFile.close();
-  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-  // delete the file:
-
-  Serial.println("Removing example.txt...");
-
-  SD.remove(fileName);
-
-  if (SD.exists(fileName))
-  {
-
-    Serial.println("example.txt exists.");
-  }
-  else
-  {
-
-    Serial.println("example.txt doesn't exist.");
-  }
-  Serial.println("fin");
-}
-
 void read_track(const char *filename, struct track &config)
 {
   // Calculate the length of the string
@@ -290,31 +211,30 @@ void read_track(const char *filename, struct track &config)
     Serial.println("Filename is too long for buffer");
     return;
   }
-  Serial.println("hi");
+
   // Copy "/sounds/" prefix into temp_str
   strcpy(temp_str, "/tracks/");
   // Concatenate filename to temp_str
   strcat(temp_str, filename);
   // Open file for reading
-  Serial.println("hi2");
+
   File file = SD.open(temp_str);
-  Serial.println("hi3");
 
   // Allocate a temporary JsonDocument
   JsonDocument doc;
 
   // Deserialize the JSON document
-  Serial.println("hi4");
+
   DeserializationError error = deserializeJson(doc, file);
   if (error)
     Serial.println(F("Failed to read file, using default configuration"));
-  Serial.println("hi5");
+
   // Copy values from the JsonDocument to the Config
+
+  config.id = doc["id"];
   config.bpm = doc["bpm"];
-  strlcpy(config.name,          // <- destination
-          doc["name"],          // <- source
-          sizeof(config.name)); // <- destination's capacity
-  Serial.println("hi6");
+  config.measure_steps = doc["measure_steps"];
+
   file.close();
 }
 
@@ -336,10 +256,10 @@ void save_track(const char *filename, struct track &config)
   // Concatenate filename to temp_str
   strcat(temp_str, filename);
   // Delete existing file, otherwise the configuration is appended to the file
-  SD.remove(filename);
+  SD.remove(temp_str);
 
   // Open file for writing
-  File file = SD.open(filename, FILE_WRITE);
+  File file = SD.open(temp_str, FILE_WRITE);
   if (!file)
   {
     Serial.println(F("Failed to create file"));
@@ -350,8 +270,9 @@ void save_track(const char *filename, struct track &config)
   JsonDocument doc;
 
   // Set the values in the document
-  doc["name"] = config.name;
+  doc["id"] = config.id;
   doc["bpm"] = config.bpm;
+  doc["measure_steps"] = config.measure_steps;
 
   // Serialize JSON to file
   if (serializeJson(doc, file) == 0)
@@ -397,4 +318,52 @@ void print_JSON(const char *filename)
 
   // Close the file
   file.close();
+}
+
+void parse_tracks(void)
+{
+  File root = SD.open("/tracks");
+
+  // Initialize a dynamic array to store filenames
+  const char **filenames = NULL;
+  size_t numFiles = 0;
+
+  // Iterate through the files in the directory
+  while (true)
+  {
+    File entry = root.openNextFile();
+    if (!entry)
+    {
+      break; // No more files
+    }
+
+    // Allocate memory for the new filename
+    if (!strncmp(entry.name(), "._", 2))
+    {
+      continue;
+    }
+    char *filename = strdup(entry.name());
+
+    // Resize the filenames array
+    filenames = (const char **)realloc(filenames, (numFiles + 1) * sizeof(char *));
+
+    // Store the filename in the array
+    filenames[numFiles] = filename;
+    ++numFiles;
+
+    entry.close();
+  }
+
+  // Close the "sounds" directory
+  root.close();
+
+  // Resize the filenames array to its final size
+  filenames = (const char **)realloc(filenames, (numFiles + 1) * sizeof(char *));
+
+  // Set the last element of the array to NULL to indicate the end
+  filenames[numFiles] = NULL;
+
+  track_list->array = filenames;
+  track_list->size = numFiles;
+  // return track_list;
 }

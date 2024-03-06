@@ -220,10 +220,7 @@ int read_tempo(void){
  raw_avg+=analogRead(TEMPO_KNOB);
   }
   raw_avg=raw_avg/SMOOTHING_SAMPLES;
-  Serial.print(raw_avg);
-
-  // Convert the raw value to voltage
-  // float voltage = rawValue * (5.0 / 1023.0); // Assuming 5V Arduino board
+  
   int voltage = (int)raw_avg * ((TEMPO_KNOB_MAX-TEMPO_KNOB_MIN) / 1023.0); // Assuming 5V Arduino board
 
 
