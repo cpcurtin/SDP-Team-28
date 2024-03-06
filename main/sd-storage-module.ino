@@ -25,7 +25,7 @@ int sd_init(void)
   return 0;
 }
 
-void sd_fetch_sounds(void)
+array_with_size *sd_fetch_sounds(void)
 {
   File root = SD.open("/sounds");
 
@@ -70,6 +70,7 @@ void sd_fetch_sounds(void)
 
   custom_sound_list->array = filenames;
   custom_sound_list->size = numFiles;
+  return custom_sound_list;
 }
 
 // Function to free the memory allocated for the array of strings
@@ -296,7 +297,7 @@ void print_JSON(const char *filename)
   file.close();
 }
 
-void sd_fetch_tracks(void)
+array_with_size *sd_fetch_tracks(void)
 {
   File root = SD.open("/tracks");
 
@@ -341,5 +342,5 @@ void sd_fetch_tracks(void)
 
   track_list->array = filenames;
   track_list->size = numFiles;
-  // return track_list;
+  return track_list;
 }

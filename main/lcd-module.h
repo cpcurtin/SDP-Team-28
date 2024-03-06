@@ -36,6 +36,7 @@ struct lcd_pin_config
 };
 
 int lcd_rows;
+struct nav_config *nav_cfg = new struct nav_config;
 
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);
 void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr);

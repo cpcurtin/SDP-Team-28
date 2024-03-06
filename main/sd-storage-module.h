@@ -22,7 +22,7 @@ array_with_size *custom_sound_list = new array_with_size;
 array_with_size *track_list = new array_with_size;
 
 int sd_init(void);
-void sd_fetch_sounds(void);
+array_with_size *sd_fetch_sounds(void);
 void freeArrayOfStrings(char **stringArray, size_t numStrings);
 void listfiles(void);
 void printDirectory(File dir, int numSpaces);
@@ -32,6 +32,6 @@ void printTime(const DateTimeFields tm);
 void read_track(const char *filename, track &config);
 void save_track(const char *filename, track &config);
 void print_JSON(const char *filename);
-void sd_fetch_tracks(void);
+array_with_size *sd_fetch_tracks(void);
 
 #endif // SD_STORAGE_MODULE_H

@@ -35,34 +35,26 @@ void setup()
     Serial.println("DAC INIT FAILED");
   }
 
-  // INITIALIZE AND POPULATE NAV ARRAYS DYNAMICALLY
-  nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
-  nav_cfg->effects = (array_with_size *)malloc(sizeof(array_with_size));
-  nav_cfg->tracks_load = (array_with_size *)malloc(sizeof(array_with_size));
-  nav_cfg->sounds_custom = (array_with_size *)malloc(sizeof(array_with_size));
-  nav_cfg->sounds_midi = (array_with_size *)malloc(sizeof(array_with_size));
-
-  /* FETCH EFFECTS */
-  fetch_effects();
-  nav_cfg->effects = effect_list;
-
-  /* FETCH MIDI SOUNDS */
-  nav_cfg->sounds_midi = midi_sound_list;
-
-  /* FETCH SD SOUNDS */
-  sd_fetch_sounds();
-  nav_cfg->sounds_custom = custom_sound_list;
-
-  /* FETCH TRACKS */
-  sd_fetch_tracks();
-  nav_cfg->tracks_load = track_list;
-
   lcd = lcd_init(&lcd_cfg);
+  delay(3000); // 3 second splash strart screen
+
+  /* POPULATE DYNAMIC LISTS */
+  nav_cfg->sounds_custom = sd_fetch_sounds();
+  nav_cfg->sounds_midi = fetch_midi_sounds(); // static TODO
+  nav_cfg->effects = fetch_effects();         // static TODO
+  nav_cfg->tracks_load = sd_fetch_tracks();
+
+  // INITIALIZE AND POPULATE NAV ARRAYS DYNAMICALLY
+  // nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
+  // nav_cfg->effects = (array_with_size *)malloc(sizeof(array_with_size));
+  // nav_cfg->tracks_load = (array_with_size *)malloc(sizeof(array_with_size));
+  // nav_cfg->sounds_custom = (array_with_size *)malloc(sizeof(array_with_size));
+  // nav_cfg->sounds_midi = (array_with_size *)malloc(sizeof(array_with_size));
+
   nav_data_structure = nav_init(nav_cfg);
   nav_state = (lcd_nav *)malloc(sizeof(lcd_nav));
   nav_state = nav_data_structure;
 
-  delay(3000);                            // 3 second splash strart screen
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
   // Midi Init

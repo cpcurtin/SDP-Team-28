@@ -11,15 +11,16 @@ int midi_init(void)
   return 0;
 }
 
-void fetch_midi_sounds(void)
+array_with_size *fetch_midi_sounds(void)
 {
 
   const char **nav_sounds_midi = new const char *[2];
   nav_sounds_midi[0] = strdup("midi1");
   nav_sounds_midi[1] = strdup("midi2");
 
-  midi_sound_list->array = midi_sound_list;
+  midi_sound_list->array = nav_sounds_midi;
   midi_sound_list->size = 2;
+  return midi_sound_list;
 }
 
 void midiSetInstrument(uint8_t chan, uint8_t inst)

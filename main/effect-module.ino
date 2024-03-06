@@ -6,7 +6,7 @@
  */
 #include "effect-module.h"
 
-void fetch_effects(void)
+array_with_size *fetch_effects(void)
 {
     const char **nav_effects = new const char *[2];
     nav_effects[0] = strdup("effect1");
@@ -14,4 +14,5 @@ void fetch_effects(void)
 
     effect_list->array = nav_effects;
     effect_list->size = 2;
+    return effect_list;
 }
