@@ -1,21 +1,21 @@
-const int selectPin1_button = 11; //select bit A
-const int selectPin2_button = 12; //select bit B
-const int selectPin3_button = 13; //select bit C
-const int enablePin_columns = 6; //enable bit
+const int selectPin1_button = 10; //select bit A
+const int selectPin2_button = 11; //select bit B
+const int selectPin3_button = 12; //select bit C
+const int enablePin_columns = 24; //enable bit
 
-const int selectPin1_LED = 7; //select bit A
-const int selectPin2_LED = 8; //select bit B
-const int selectPin3_LED = 9; //select bit C
+const int selectPin1_LED = 25; //select bit A
+const int selectPin2_LED = 26; //select bit B
+const int selectPin3_LED = 27; //select bit C
 
-const int selectPin1_rows = 2; //select bit A
-const int selectPin2_rows = 3; //select bit B
-const int selectPin3_rows = 4; //select bit C
-const int enablePin_rows = A3;
+const int selectPin1_rows = 32; //select bit A
+const int selectPin2_rows = 31; //select bit B
+const int selectPin3_rows = 30; //select bit C
+const int enablePin_rows = 29;
 
-const int Button_column8 = A4;
-const int LED_column8 = A5;
+const int Button_column8 = 8;
+const int LED_column8 = 28;
 
-byte rows[] = {A0,A1,A2,10};
+byte rows[] = {33,34,35,36};
 
 const int rowCount = 4;
 const int colCount = 9;
