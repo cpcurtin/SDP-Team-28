@@ -17,7 +17,7 @@ struct nav_config
     struct array_with_size *effects;
     struct array_with_size *tracks_load;
 };
-struct lcd_nav
+typedef struct lcd_nav
 {
     char *name;
     const char **ptr_str_array;
@@ -27,7 +27,7 @@ struct lcd_nav
     const char **lcd_state;
     int index;
     int depth;
-};
+} lcd_nav;
 struct lcd_pin_config
 {
     const int i2c;
@@ -39,11 +39,11 @@ int lcd_rows;
 
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);
 void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr);
-void array_scroll(struct lcd_nav *nav, int direction);
-struct lcd_nav *nav_selection(struct lcd_nav *nav, int direction);
+void array_scroll(lcd_nav *nav, int direction);
+lcd_nav *nav_selection(lcd_nav *nav, int direction);
 const char *format_row(const char **ptr_str_array, int index, int format);
-struct lcd_nav *nav_init(struct nav_config *cfg);
-void nav_add(struct lcd_nav *node);
+lcd_nav *nav_init(struct nav_config *cfg);
+void nav_add(lcd_nav *node);
 const char *tracks_update(void);
 void update_tempo(LiquidCrystal_I2C *lcd);
 

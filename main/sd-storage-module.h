@@ -18,14 +18,11 @@ typedef struct track
   int measure_steps;
 } track;
 
+array_with_size *sound_list = new array_with_size;
 array_with_size *track_list = new array_with_size;
 
-// File name on the SD card
-// const char *fileName = "test.txt";
-const char *fileNamejson = "test.json";
-
 void sd_init(void);
-array_with_size *parsefiles(void);
+void sd_fetch_sounds(void);
 void freeArrayOfStrings(char **stringArray, size_t numStrings);
 void listfiles(void);
 void printDirectory(File dir, int numSpaces);
@@ -35,6 +32,6 @@ void printTime(const DateTimeFields tm);
 void read_track(const char *filename, track &config);
 void save_track(const char *filename, track &config);
 void print_JSON(const char *filename);
-void parse_tracks(void);
+void sd_fetch_tracks(void);
 
 #endif // SD_STORAGE_MODULE_H

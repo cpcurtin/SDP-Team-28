@@ -4,9 +4,9 @@ LiquidCrystal_I2C *lcd;
 
 char **lcd_state = new char *[LCD_ROWS];
 int lcd_index = 0;
-struct lcd_nav *sounds;
-struct lcd_nav *nav_data_structure;
-struct lcd_nav *nav_state;
+lcd_nav *sounds;
+lcd_nav *nav_data_structure;
+lcd_nav *nav_state;
 struct palette_matrix *palette;
 struct button_maxtrix_pin_config measure_matrix_button;
 struct button_maxtrix_pin_config measure_matrix_led;
@@ -71,7 +71,6 @@ void setup()
   // INITIALIZE AND POPULATE NAV ARRAYS DYNAMICALLY
   nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
   nav_cfg->effects = (array_with_size *)malloc(sizeof(array_with_size));
-  // nav_cfg->tracks = (array_with_size *)malloc(sizeof(array_with_size));
   nav_cfg->tracks_load = (array_with_size *)malloc(sizeof(array_with_size));
   nav_cfg->sounds_custom = (array_with_size *)malloc(sizeof(array_with_size));
   nav_cfg->sounds_midi = (array_with_size *)malloc(sizeof(array_with_size));
@@ -91,35 +90,18 @@ void setup()
   (nav_cfg->sounds_midi)->size = 2; // sizeof(nav_sounds_midi) / sizeof(nav_sounds_midi[0]);
 
   // PARSE SD CARD
-  (nav_cfg->sounds_custom = parsefiles());
-  Serial.println("parsed files size");
-  Serial.println((nav_cfg->sounds_custom)->size);
+  sd_fetch_sounds();
+  nav_cfg->sounds_custom = sound_list;
 
   // TRACKS LOAD
-  parse_tracks();
+  sd_fetch_tracks();
   nav_cfg->tracks_load = track_list;
-  // nav_cfg->tracks_load = parse_tracks();
-  Serial.println("parsed tracks");
-  Serial.println((nav_cfg->tracks_load)->size);
-
-  // const char **nav_tracks_load = new const char *[2];
-  // nav_tracks_load[0] = strdup("TEST saved track1");
-  // nav_tracks_load[1] = strdup("TEST saved track2");
-  // ((nav_cfg->tracks_load)->array) = nav_tracks_load;
-  // ((nav_cfg->tracks_load)->size) = 2;
-
-  // const char **nav_tracks = new const char *[2];
-  // nav_tracks[0] = strdup("track1");
-  // nav_tracks[1] = strdup("track2");
-  // (nav_cfg->tracks)->array = nav_tracks;
-  // (nav_cfg->tracks)->size = 2;
 
   lcd = lcd_init(&lcd_cfg);
   nav_data_structure = nav_init(nav_cfg);
-  nav_state = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
+  nav_state = (lcd_nav *)malloc(sizeof(lcd_nav));
   nav_state = nav_data_structure;
 
-  Serial.println("PROGRAM LOOP BEGINS");
   for (size_t i = 0; i < (nav_cfg->sounds_custom)->size; i++)
   {
     Serial.println((nav_cfg->sounds_custom)->array[i]);
@@ -143,16 +125,11 @@ void setup()
   START AS A PERCUSION SOUND:
   midiSetInstrument(0,128);
   *****************************************/
-  // track tracktst;
-  // read_track(fileNamejson, active_track);
-  active_track.id = 0;
-  active_track.bpm = 120;
-  active_track.measure_steps = 6;
-
   for (int i = 0; i < 4; i++)
   {
     cached_samples[i] = cache_sd_sound((nav_cfg->sounds_custom)->array[2]);
   }
+  Serial.println("PROGRAM LOOP BEGINS");
 }
 
 /* Main subroutine: follow software block diagram */
@@ -161,7 +138,7 @@ void loop()
   // Main Timing Loop for 4x4 Measure Matrix
   if (ledMetro.check() == 1)
   {
-    unsigned long start_time = millis();
+    // unsigned long start_time = millis();
 
     if (count_temp == 0)
     {
@@ -324,9 +301,9 @@ void loop()
       metro_active_tempo = (15000 / active_track.bpm);
       ledMetro.interval(metro_active_tempo);
     }
-    unsigned long end_time = millis();
+    // unsigned long end_time = millis();
     // Calculate the difference in time
-    unsigned long time_diff = end_time - start_time;
+    // unsigned long time_diff = end_time - start_time;
     // Output the time difference
     // Serial.print("Time elapsed: ");
     // Serial.print(time_diff);
@@ -363,15 +340,11 @@ void loop()
     {
       char *temp_str5 = (char *)malloc(20 + 1);
       snprintf(temp_str5, 20 + 1, "TRACK%d.json", (nav_state->child[1])->size);
-      Serial.print("save current track: ");
-      Serial.println(temp_str5);
+
       active_track.id = (nav_state->child[1])->size;
       save_track(temp_str5, active_track);
-      // update list
-      // array_with_size *temp_tracks;
-      // nav_cfg->tracks_load = parse_tracks();
-      parse_tracks();
-      // Serial.println((nav_state->child[1])->name);
+
+      sd_fetch_tracks();
       (nav_state->child[1])->ptr_str_array = track_list->array;
       (nav_state->child[1])->size = track_list->size;
       (nav_state->child[1])->index = 0;

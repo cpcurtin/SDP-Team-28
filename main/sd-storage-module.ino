@@ -24,7 +24,7 @@ void sd_init(void)
   // File root = SD.open("/");
 }
 
-array_with_size *parsefiles(void)
+void sd_fetch_sounds(void)
 {
   File root = SD.open("/sounds");
 
@@ -67,33 +67,8 @@ array_with_size *parsefiles(void)
   // Set the last element of the array to NULL to indicate the end
   filenames[numFiles] = NULL;
 
-  // for (size_t i = 0; i < numFiles; i++) {
-  // Serial.print(filenames[2]);
-  //       Serial.println(); // Print a newline after each filename
-  //   }
-  // char **state = new char *[2];
-  array_with_size *sound_list = new array_with_size;
-
   sound_list->array = filenames;
   sound_list->size = numFiles;
-  // sound_list->lcd_state = state;
-  // sound_list->index = 0;
-
-  // char *name;
-  //  char **ptr_str_array;
-  //  struct lcd_nav **parent;
-  //  struct lcd_nav **child;
-  //  size_t size;
-  //  char **lcd_state;
-  //  int index;
-  //  int depth;
-  // struct lcd_nav *custom_sounds = new struct lcd_nav;
-  // custom_sounds->ptr_str_array = filenames;
-  // custom_sounds->size = numFiles;
-  // custom_sounds->lcd_state = state;
-  // custom_sounds->index = 0;
-
-  return sound_list;
 }
 
 // Function to free the memory allocated for the array of strings
@@ -320,7 +295,7 @@ void print_JSON(const char *filename)
   file.close();
 }
 
-void parse_tracks(void)
+void sd_fetch_tracks(void)
 {
   File root = SD.open("/tracks");
 

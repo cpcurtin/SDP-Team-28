@@ -275,5 +275,5 @@ float metro_active_tempo;
 /**************************
 PROGRAM STRUCTS
 **************************/
-track active_track;
+track active_track = {0, 120, 6};
 #endif // MAIN_H
