@@ -207,7 +207,9 @@ void read_track(const char *filename, track &config)
     Serial.println(F("Failed to read file, using default configuration"));
 
   // Copy values from the JsonDocument to the Config
-
+  strlcpy(config.filename, // <- destination
+          doc["filename"], // <- source
+          sizeof(config.filename));
   config.id = doc["id"];
   config.bpm = doc["bpm"];
   config.measure_steps = doc["measure_steps"];
@@ -247,6 +249,7 @@ void save_track(const char *filename, track &config)
   JsonDocument doc;
 
   // Set the values in the document
+  doc["filename"] = config.filename;
   doc["id"] = config.id;
   doc["bpm"] = config.bpm;
   doc["measure_steps"] = config.measure_steps;
@@ -343,4 +346,27 @@ array_with_size *sd_fetch_tracks(void)
   track_list->array = filenames;
   track_list->size = numFiles;
   return track_list;
+}
+int sd_delete_track(const char *filename)
+{
+
+  // Calculate the length of the string
+  size_t filename_len = strlen(filename);
+
+  // Check if the filename length exceeds the buffer size
+  if (filename_len >= MAX_FILENAME_LENGTH - 8)
+  {
+    Serial.println("Filename is too long for buffer");
+    return 1;
+  }
+  // Copy CUSTOM_SOUNDS_DIRECTORY prefix into temp_str
+  strcpy(temp_str, TRACKS_DIRECTORY);
+  // Concatenate filename to temp_str
+  strcat(temp_str, filename);
+  // Delete existing file, otherwise the configuration is appended to the file
+  if (SD.remove(temp_str))
+  {
+    return 0;
+  }
+  return 1;
 }

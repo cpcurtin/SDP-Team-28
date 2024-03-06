@@ -255,19 +255,41 @@ void loop()
   {
     if (strcmp(nav_state->data_array[nav_state->index], "Save Track") == 0)
     {
-      char *temp_str5 = (char *)malloc(20 + 1);
-      snprintf(temp_str5, 20 + 1, "TRACK%d.json", (nav_state->child[1])->size);
+      char *new_track_filename = (char *)malloc(20 + 1);
+      snprintf(new_track_filename, 20 + 1, "TRACK%d.json", (nav_state->child[2])->size);
+      strncpy(active_track.filename, new_track_filename, 63); // Copy up to 63 characters to ensure null-termination
+      active_track.filename[63] = '\0';
 
-      active_track.id = (nav_state->child[1])->size;
-      save_track(temp_str5, active_track);
+      active_track.id = (nav_state->child[2])->size;
+      save_track(new_track_filename, active_track);
 
-      sd_fetch_tracks();
-      (nav_state->child[1])->data_array = track_list->array;
-      (nav_state->child[1])->size = track_list->size;
-      (nav_state->child[1])->index = 0;
-      array_scroll(nav_state->child[1], 0);
+      track_list = sd_fetch_tracks();
+      (nav_state->child[2])->data_array = track_list->array;
+      (nav_state->child[2])->size = track_list->size;
+      (nav_state->child[2])->index = 0;
+      array_scroll(nav_state->child[2], 0);
+      free(new_track_filename);
+    }
+    else if (strcmp(nav_state->data_array[nav_state->index], "Delete Track") == 0)
+    {
+      char *delete_track_filename = (char *)malloc(20 + 1);
+      snprintf(delete_track_filename, 20 + 1, "TRACK%d.json", active_track.id);
 
-      free(temp_str5);
+      if (sd_delete_track(delete_track_filename))
+      {
+        Serial.print("FAILED TO DELETE: ");
+        Serial.println(active_track.filename);
+      }
+      else
+      {
+        track_list = sd_fetch_tracks();
+        (nav_state->child[2])->data_array = track_list->array;
+        (nav_state->child[2])->size = track_list->size;
+        (nav_state->child[2])->index = 0;
+        array_scroll(nav_state->child[2], 0);
+        read_track((nav_state->child[2])->data_array[(nav_state->child[2])->size - 1], active_track);
+      }
+      free(delete_track_filename);
     }
     else if (strcmp(nav_state->name, "tracks_load") == 0)
     {
@@ -281,7 +303,6 @@ void loop()
     {
       nav_state = nav_selection(nav_state, NAV_FORWARD);
     }
-
     lcd_display(lcd, nav_state->lcd_state);
   }
 }

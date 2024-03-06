@@ -138,11 +138,12 @@ lcd_nav *nav_init(struct nav_config *cfg)
   sounds_preset_options[0] = strdup("Custom Sounds");
   sounds_preset_options[1] = strdup("MIDI Sounds");
 
-  const char **tracks_preset_options = new const char *[3];
+  const char **tracks_preset_options = new const char *[4];
+  tracks_preset_options[0] = strdup("Set # steps");
+  tracks_preset_options[1] = strdup("Save Track");
+  tracks_preset_options[2] = strdup("Load Track");
+  tracks_preset_options[3] = strdup("Delete Track");
 
-  tracks_preset_options[0] = strdup("Save Track");
-  tracks_preset_options[1] = strdup("Load Track");
-  tracks_preset_options[2] = strdup("Set # steps");
   const char **tracks_preset_options_steps = new const char *[6];
   for (int i = 0; i < MAX_MEASURE_STEPS; i++)
   {
@@ -169,10 +170,11 @@ lcd_nav *nav_init(struct nav_config *cfg)
   sounds_child[0] = sounds_custom_nav;
   sounds_child[1] = sounds_midi_nav;
 
-  lcd_nav **tracks_child = new lcd_nav *[3];
-  // tracks_child[0]  save track
-  tracks_child[1] = tracks_load_nav;      // load track
-  tracks_child[2] = tracks_set_steps_nav; // set steps
+  lcd_nav **tracks_child = new lcd_nav *[4];
+  tracks_child[0] = tracks_set_steps_nav; // set steps
+  // tracks_child[1] = SAVE TRACK
+  tracks_child[2] = tracks_load_nav; // load track
+  // tracks_child[3] = DELETE TRACK
 
   // main
   main_nav->name = strdup("main");
@@ -212,7 +214,7 @@ lcd_nav *nav_init(struct nav_config *cfg)
   tracks_nav->data_array = tracks_preset_options;
   tracks_nav->parent = main_nav;
   tracks_nav->child = tracks_child;
-  tracks_nav->size = 3; // sizeof(tracks_preset_options) / sizeof(tracks_preset_options[0]);
+  tracks_nav->size = 4; // sizeof(tracks_preset_options) / sizeof(tracks_preset_options[0]);
   tracks_nav->lcd_state = state_tracks;
   tracks_nav->depth = 1;
   tracks_nav->index = 0;

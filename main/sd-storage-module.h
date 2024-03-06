@@ -15,6 +15,7 @@ typedef struct array_with_size
 
 typedef struct track
 {
+  char filename[64];
   int id;
   int bpm;
   int measure_steps;
@@ -23,6 +24,13 @@ typedef struct track
 array_with_size *custom_sound_list = new array_with_size;
 array_with_size *track_list = new array_with_size;
 
+track active_track = {
+    "DEFAULT.json", // filename
+    1,              // id
+    120,            // bpm
+    16              // measure_steps
+};
+track default_track=active_track;
 int sd_init(void);
 array_with_size *sd_fetch_sounds(void);
 void freeArrayOfStrings(char **stringArray, size_t numStrings);
@@ -35,5 +43,7 @@ void read_track(const char *filename, track &config);
 void save_track(const char *filename, track &config);
 void print_JSON(const char *filename);
 array_with_size *sd_fetch_tracks(void);
+
+int sd_delete_track(const char *filename);
 
 #endif // SD_STORAGE_MODULE_H
