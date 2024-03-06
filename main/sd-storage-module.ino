@@ -8,7 +8,7 @@
 // #include <SD.h>
 #include "sd-storage-module.h"
 
-void sd_init(void)
+int sd_init(void)
 {
   const int chipSelect = BUILTIN_SDCARD;
 
@@ -17,14 +17,15 @@ void sd_init(void)
   if (!SD.begin(chipSelect))
   {
     Serial.println("initialization failed!");
-    return;
+    return 1;
   }
   Serial.println("initialization done.");
 
   // File root = SD.open("/");
+  return 0;
 }
 
-struct array_with_size *parsefiles(void)
+array_with_size *sd_fetch_sounds(void)
 {
   File root = SD.open("/sounds");
 
@@ -67,33 +68,9 @@ struct array_with_size *parsefiles(void)
   // Set the last element of the array to NULL to indicate the end
   filenames[numFiles] = NULL;
 
-  // for (size_t i = 0; i < numFiles; i++) {
-  // Serial.print(filenames[2]);
-  //       Serial.println(); // Print a newline after each filename
-  //   }
-  // char **state = new char *[2];
-  struct array_with_size *sound_list = new struct array_with_size;
-
-  sound_list->array = filenames;
-  sound_list->size = numFiles;
-  // sound_list->lcd_state = state;
-  // sound_list->index = 0;
-
-  // char *name;
-  //  char **ptr_str_array;
-  //  struct lcd_nav **parent;
-  //  struct lcd_nav **child;
-  //  size_t size;
-  //  char **lcd_state;
-  //  int index;
-  //  int depth;
-  // struct lcd_nav *custom_sounds = new struct lcd_nav;
-  // custom_sounds->ptr_str_array = filenames;
-  // custom_sounds->size = numFiles;
-  // custom_sounds->lcd_state = state;
-  // custom_sounds->index = 0;
-
-  return sound_list;
+  custom_sound_list->array = filenames;
+  custom_sound_list->size = numFiles;
+  return custom_sound_list;
 }
 
 // Function to free the memory allocated for the array of strings
@@ -200,7 +177,7 @@ void printTime(const DateTimeFields tm)
   Serial.print(tm.year + 1900);
 }
 
-void read_track(const char *filename, struct track &config)
+void read_track(const char *filename, track &config)
 {
   // Calculate the length of the string
   size_t filename_len = strlen(filename);
@@ -212,8 +189,8 @@ void read_track(const char *filename, struct track &config)
     return;
   }
 
-  // Copy "/sounds/" prefix into temp_str
-  strcpy(temp_str, "/tracks/");
+  // Copy CUSTOM_SOUNDS_DIRECTORY prefix into temp_str
+  strcpy(temp_str, TRACKS_DIRECTORY);
   // Concatenate filename to temp_str
   strcat(temp_str, filename);
   // Open file for reading
@@ -230,7 +207,9 @@ void read_track(const char *filename, struct track &config)
     Serial.println(F("Failed to read file, using default configuration"));
 
   // Copy values from the JsonDocument to the Config
-
+  strlcpy(config.filename, // <- destination
+          doc["filename"], // <- source
+          sizeof(config.filename));
   config.id = doc["id"];
   config.bpm = doc["bpm"];
   config.measure_steps = doc["measure_steps"];
@@ -239,7 +218,7 @@ void read_track(const char *filename, struct track &config)
 }
 
 // Saves the configuration to a file
-void save_track(const char *filename, struct track &config)
+void save_track(const char *filename, track &config)
 {
 
   // Calculate the length of the string
@@ -251,8 +230,8 @@ void save_track(const char *filename, struct track &config)
     Serial.println("Filename is too long for buffer");
     return;
   }
-  // Copy "/sounds/" prefix into temp_str
-  strcpy(temp_str, "/tracks/");
+  // Copy CUSTOM_SOUNDS_DIRECTORY prefix into temp_str
+  strcpy(temp_str, TRACKS_DIRECTORY);
   // Concatenate filename to temp_str
   strcat(temp_str, filename);
   // Delete existing file, otherwise the configuration is appended to the file
@@ -270,6 +249,7 @@ void save_track(const char *filename, struct track &config)
   JsonDocument doc;
 
   // Set the values in the document
+  doc["filename"] = config.filename;
   doc["id"] = config.id;
   doc["bpm"] = config.bpm;
   doc["measure_steps"] = config.measure_steps;
@@ -297,8 +277,8 @@ void print_JSON(const char *filename)
     Serial.println("Filename is too long for buffer");
     return;
   }
-  // Copy "/sounds/" prefix into temp_str
-  strcpy(temp_str, "/tracks/");
+  // Copy CUSTOM_SOUNDS_DIRECTORY prefix into temp_str
+  strcpy(temp_str, TRACKS_DIRECTORY);
   // Concatenate filename to temp_str
   strcat(temp_str, filename);
   // Open file for reading
@@ -320,7 +300,7 @@ void print_JSON(const char *filename)
   file.close();
 }
 
-void parse_tracks(void)
+array_with_size *sd_fetch_tracks(void)
 {
   File root = SD.open("/tracks");
 
@@ -365,5 +345,28 @@ void parse_tracks(void)
 
   track_list->array = filenames;
   track_list->size = numFiles;
-  // return track_list;
+  return track_list;
+}
+int sd_delete_track(const char *filename)
+{
+
+  // Calculate the length of the string
+  size_t filename_len = strlen(filename);
+
+  // Check if the filename length exceeds the buffer size
+  if (filename_len >= MAX_FILENAME_LENGTH - 8)
+  {
+    Serial.println("Filename is too long for buffer");
+    return 1;
+  }
+  // Copy CUSTOM_SOUNDS_DIRECTORY prefix into temp_str
+  strcpy(temp_str, TRACKS_DIRECTORY);
+  // Concatenate filename to temp_str
+  strcat(temp_str, filename);
+  // Delete existing file, otherwise the configuration is appended to the file
+  if (SD.remove(temp_str))
+  {
+    return 0;
+  }
+  return 1;
 }

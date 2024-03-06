@@ -6,12 +6,13 @@
  */
 #include "custom-sound-module.h"
 
-void onboard_dac_init(void)
+int dac_init(void)
 {
   AudioMemory(10);
   rraw_a1.enableInterpolation(true);
 
   Serial.println("onboard dac initialized");
+  return 0;
 }
 
 // Define a fixed-size buffer for temp_str
@@ -93,8 +94,8 @@ newdigate::audiosample *cache_sd_sound(const char *filename)
     Serial.println("Filename is too long for buffer");
   }
 
-  // Copy "/sounds/" prefix into temp_str
-  strcpy(temp_str, "/sounds/");
+  // Copy CUSTOM_SOUNDS_DIRECTORY prefix into temp_str
+  strcpy(temp_str, CUSTOM_SOUNDS_DIRECTORY);
 
   // Concatenate filename to temp_str
   strcat(temp_str, filename);

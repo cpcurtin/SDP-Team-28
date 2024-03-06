@@ -4,38 +4,46 @@
 #include <SD.h>
 #include <ArduinoJson.h>
 
-struct array_with_size
+#define CUSTOM_SOUNDS_DIRECTORY "/sounds/"
+#define TRACKS_DIRECTORY "/tracks/"
+
+typedef struct array_with_size
 {
   const char **array;
   size_t size;
-};
+} array_with_size;
 
-struct track
+typedef struct track
 {
-
+  char filename[64];
   int id;
   int bpm;
   int measure_steps;
+} track;
+
+array_with_size *custom_sound_list = new array_with_size;
+array_with_size *track_list = new array_with_size;
+
+track active_track = {
+    "DEFAULT.json", // filename
+    1,              // id
+    120,            // bpm
+    16              // measure_steps
 };
-// Number of elements in the array
-const int arraySize = 5;
-struct array_with_size *track_list = new struct array_with_size;
-
-// File name on the SD card
-// const char *fileName = "test.txt";
-const char *fileNamejson = "test.json";
-
-void sd_init(void);
-struct array_with_size *parsefiles(void);
+track default_track=active_track;
+int sd_init(void);
+array_with_size *sd_fetch_sounds(void);
 void freeArrayOfStrings(char **stringArray, size_t numStrings);
 void listfiles(void);
 void printDirectory(File dir, int numSpaces);
 void printSpaces(int num);
 void printTime(const DateTimeFields tm);
 
-void read_track(const char *filename, struct track &config);
-void save_track(const char *filename, struct track &config);
+void read_track(const char *filename, track &config);
+void save_track(const char *filename, track &config);
 void print_JSON(const char *filename);
-void parse_tracks(void);
+array_with_size *sd_fetch_tracks(void);
+
+int sd_delete_track(const char *filename);
 
 #endif // SD_STORAGE_MODULE_H

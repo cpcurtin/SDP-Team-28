@@ -1,158 +1,60 @@
 #include "main.h"
 
-LiquidCrystal_I2C *lcd;
+/*
 
-char **lcd_state = new char *[LCD_ROWS];
-int lcd_index = 0;
-struct lcd_nav *sounds;
-struct lcd_nav *nav_data_structure;
-struct lcd_nav *nav_state;
-struct palette_matrix *palette;
-struct button_maxtrix_pin_config measure_matrix_button;
-struct button_maxtrix_pin_config measure_matrix_led;
-struct nav_config *nav_cfg;
+PERFORMANCE TESTING
 
-char *selection;
-
-// const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
-const struct lcd_pin_config lcd_cfg = {LCD_I2C, LCD_ROWS, LCD_COLUMNS};
-const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
-const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT};
-// create 2D array of palette_cell structs
-
-// Metronome Definition
-Metro ledMetro = Metro(250);
-int count_temp = 0;
+unsigned long start_time = millis();
+unsigned long end_time = millis();
+Calculate the difference in time unsigned long time_diff = end_time - start_time;
+Serial.print("Time elapsed: ");
+Serial.print(time_diff);
+Serial.println(" milliseconds");
+*/
 
 void setup()
 {
-  //
-  //
-  // button & led measure matrix
-  //
-  //
-  // measure_matrix_button = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int button_matrix_rows[MEASURE_MATRIX_ROWS + 1] = {BUTTON_MEASURE_MATRIX_ROW_1, BUTTON_MEASURE_MATRIX_ROW_2, BUTTON_MEASURE_MATRIX_ROW_3, BUTTON_MEASURE_MATRIX_ROW_4};
-  int button_matrix_columms[MEASURE_MATRIX_COLUMNS + 1] = {BUTTON_MEASURE_MATRIX_COLUMN_1, BUTTON_MEASURE_MATRIX_COLUMN_2, BUTTON_MEASURE_MATRIX_COLUMN_3, BUTTON_MEASURE_MATRIX_COLUMN_4, BUTTON_MEASURE_MATRIX_COLUMN_5, BUTTON_MEASURE_MATRIX_COLUMN_6};
-  measure_matrix_button.width = MEASURE_MATRIX_COLUMNS;
-  measure_matrix_button.length = MEASURE_MATRIX_ROWS;
-
-  for (size_t i = 0; i < MEASURE_MATRIX_ROWS; ++i)
-  {
-    measure_matrix_button.rows[i] = button_matrix_rows[i];
-  }
-  for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i)
-  {
-    measure_matrix_button.columns[i] = button_matrix_columms[i];
-  }
-
-  // measure_matrix_led = (struct button_maxtrix_pin_config *)malloc(sizeof(struct button_maxtrix_pin_config));
-  int led_matrix_rows[MEASURE_MATRIX_ROWS + 1] = {LED_MEASURE_MATRIX_ROW_1, LED_MEASURE_MATRIX_ROW_2, LED_MEASURE_MATRIX_ROW_3, LED_MEASURE_MATRIX_ROW_4};
-  int led_matrix_columms[MEASURE_MATRIX_COLUMNS + 1] = {LED_MEASURE_MATRIX_COLUMN_1, LED_MEASURE_MATRIX_COLUMN_2, LED_MEASURE_MATRIX_COLUMN_3, LED_MEASURE_MATRIX_COLUMN_4, LED_MEASURE_MATRIX_COLUMN_5, LED_MEASURE_MATRIX_COLUMN_6};
-  measure_matrix_led.width = MEASURE_MATRIX_COLUMNS;
-  measure_matrix_led.length = MEASURE_MATRIX_ROWS;
-  for (size_t i = 0; i < MEASURE_MATRIX_ROWS; ++i)
-  {
-    measure_matrix_led.rows[i] = led_matrix_rows[i];
-  }
-  for (size_t i = 0; i < MEASURE_MATRIX_COLUMNS; ++i)
-  {
-    measure_matrix_led.columns[i] = led_matrix_columms[i];
-  }
 
   /* Intialize hardware */
   serial_init();
-  sd_init();
-  dpad_init(dpad_cfg);
-  test_init();
-  onboard_dac_init();
-  measure_matrix_init(measure_matrix_button, measure_matrix_led);
 
-  // INITIALIZE AND POPULATE NAV ARRAYS DYNAMICALLY
-  nav_cfg = (struct nav_config *)malloc(sizeof(struct nav_config));
-  nav_cfg->effects = (struct array_with_size *)malloc(sizeof(struct array_with_size));
-  // nav_cfg->tracks = (struct array_with_size *)malloc(sizeof(struct array_with_size));
-  nav_cfg->tracks_load = (struct array_with_size *)malloc(sizeof(struct array_with_size));
-  nav_cfg->sounds_custom = (struct array_with_size *)malloc(sizeof(struct array_with_size));
-  nav_cfg->sounds_midi = (struct array_with_size *)malloc(sizeof(struct array_with_size));
-
-  // COMPLETE
-  const char **nav_effects = new const char *[2];
-  nav_effects[0] = strdup("effect1");
-  nav_effects[1] = strdup("effect2");
-  ((nav_cfg->effects)->array) = nav_effects;
-  ((nav_cfg->effects)->size) = 2; // sizeof(nav_effects) / sizeof(nav_effects[0]);
-
-  // IMPORT
-  const char **nav_sounds_midi = new const char *[2];
-  nav_sounds_midi[0] = strdup("midi1");
-  nav_sounds_midi[1] = strdup("midi2");
-  (nav_cfg->sounds_midi)->array = nav_sounds_midi;
-  (nav_cfg->sounds_midi)->size = 2; // sizeof(nav_sounds_midi) / sizeof(nav_sounds_midi[0]);
-
-  // PARSE SD CARD
-  (nav_cfg->sounds_custom = parsefiles());
-  Serial.println("parsed files size");
-  Serial.println((nav_cfg->sounds_custom)->size);
-
-  // TRACKS LOAD
-  parse_tracks();
-  nav_cfg->tracks_load = track_list;
-  // nav_cfg->tracks_load = parse_tracks();
-  Serial.println("parsed tracks");
-  Serial.println((nav_cfg->tracks_load)->size);
-
-  // const char **nav_tracks_load = new const char *[2];
-  // nav_tracks_load[0] = strdup("TEST saved track1");
-  // nav_tracks_load[1] = strdup("TEST saved track2");
-  // ((nav_cfg->tracks_load)->array) = nav_tracks_load;
-  // ((nav_cfg->tracks_load)->size) = 2;
-
-  // const char **nav_tracks = new const char *[2];
-  // nav_tracks[0] = strdup("track1");
-  // nav_tracks[1] = strdup("track2");
-  // (nav_cfg->tracks)->array = nav_tracks;
-  // (nav_cfg->tracks)->size = 2;
+  if (sd_init())
+  {
+    Serial.println("SD INIT FAILED");
+  }
+  if (midi_init())
+  {
+    Serial.println("MIDI INIT FAILED");
+  }
+  if (dpad_init(dpad_cfg))
+  {
+    Serial.println("DPAD INIT FAILED");
+  }
+  if (dac_init())
+  {
+    Serial.println("DAC INIT FAILED");
+  }
 
   lcd = lcd_init(&lcd_cfg);
-  nav_data_structure = nav_init(nav_cfg);
-  nav_state = (struct lcd_nav *)malloc(sizeof(struct lcd_nav));
-  nav_state = nav_data_structure;
+  delay(3000); // 3 second splash strart screen
 
-  Serial.println("PROGRAM LOOP BEGINS");
-  for (size_t i = 0; i < (nav_cfg->sounds_custom)->size; i++)
-  {
-    Serial.println((nav_cfg->sounds_custom)->array[i]);
-  }
-  delay(3000);
-  lcd_display(lcd, nav_state->lcd_state);
+  /* POPULATE DYNAMIC LISTS */
+  nav_cfg->sounds_custom = sd_fetch_sounds();
+  nav_cfg->sounds_midi = fetch_midi_sounds(); // static TODO
+  nav_cfg->effects = fetch_effects();         // static TODO
+  nav_cfg->tracks_load = sd_fetch_tracks();
+  nav_state = nav_init(nav_cfg);
+  // nav_data_structure = nav_init(nav_cfg);
+  // nav_state = (lcd_nav *)malloc(sizeof(lcd_nav));
+  // nav_state = nav_data_structure;
 
-  // Midi Init
-  MIDI.begin(31250);
-  pinMode(VS1053_RST, OUTPUT);
-  digitalWrite(VS1053_RST, LOW);
-  delay(10);
-  digitalWrite(VS1053_RST, HIGH);
-  delay(10);
-  midiSetChannelVolume(0, 127);
-  midiSetChannelBank(0, Drums1);
-
-  midiSetInstrument(0, 128);
-  /*****************************************
-  PUT THIS LINE AT THE TOP OF ALL PERCUSSIVE SOUND BLOCKS SO IT WILL
-  START AS A PERCUSION SOUND:
-  midiSetInstrument(0,128);
-  *****************************************/
-  // struct track tracktst;
-  // read_track(fileNamejson, active_track);
-  active_track.id = 0;
-  active_track.bpm = 120;
-  active_track.measure_steps = 6;
+  lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
   for (int i = 0; i < 4; i++)
   {
     cached_samples[i] = cache_sd_sound((nav_cfg->sounds_custom)->array[2]);
   }
+  Serial.println("PROGRAM LOOP BEGINS");
 }
 
 /* Main subroutine: follow software block diagram */
@@ -161,7 +63,6 @@ void loop()
   // Main Timing Loop for 4x4 Measure Matrix
   if (ledMetro.check() == 1)
   {
-    unsigned long start_time = millis();
 
     if (count_temp == 0)
     {
@@ -324,13 +225,6 @@ void loop()
       metro_active_tempo = (15000 / active_track.bpm);
       ledMetro.interval(metro_active_tempo);
     }
-    unsigned long end_time = millis();
-    // Calculate the difference in time
-    unsigned long time_diff = end_time - start_time;
-    // Output the time difference
-    // Serial.print("Time elapsed: ");
-    // Serial.print(time_diff);
-    // Serial.println(" milliseconds");
 
     count_temp++;
     active_track.bpm = read_tempo();
@@ -359,29 +253,47 @@ void loop()
   }
   if (button_pressed(BUTTON_DPAD_RIGHT)) // select
   {
-    if (strcmp(nav_state->ptr_str_array[nav_state->index], "Save Track") == 0)
+    if (strcmp(nav_state->data_array[nav_state->index], "Save Track") == 0)
     {
-      char *temp_str5 = (char *)malloc(20 + 1);
-      snprintf(temp_str5, 20 + 1, "TRACK%d.json", (nav_state->child[1])->size);
-      Serial.print("save current track: ");
-      Serial.println(temp_str5);
-      active_track.id = (nav_state->child[1])->size;
-      save_track(temp_str5, active_track);
-      // update list
-      // struct array_with_size *temp_tracks;
-      // nav_cfg->tracks_load = parse_tracks();
-      parse_tracks();
-      // Serial.println((nav_state->child[1])->name);
-      (nav_state->child[1])->ptr_str_array = track_list->array;
-      (nav_state->child[1])->size = track_list->size;
-      (nav_state->child[1])->index = 0;
-      array_scroll(nav_state->child[1], 0);
+      char *new_track_filename = (char *)malloc(20 + 1);
+      snprintf(new_track_filename, 20 + 1, "TRACK%d.json", (nav_state->child[2])->size);
+      strncpy(active_track.filename, new_track_filename, 63); // Copy up to 63 characters to ensure null-termination
+      active_track.filename[63] = '\0';
 
-      free(temp_str5);
+      active_track.id = (nav_state->child[2])->size;
+      save_track(new_track_filename, active_track);
+
+      track_list = sd_fetch_tracks();
+      (nav_state->child[2])->data_array = track_list->array;
+      (nav_state->child[2])->size = track_list->size;
+      (nav_state->child[2])->index = 0;
+      array_scroll(nav_state->child[2], 0);
+      free(new_track_filename);
+    }
+    else if (strcmp(nav_state->data_array[nav_state->index], "Delete Track") == 0)
+    {
+      char *delete_track_filename = (char *)malloc(20 + 1);
+      snprintf(delete_track_filename, 20 + 1, "TRACK%d.json", active_track.id);
+
+      if (sd_delete_track(delete_track_filename))
+      {
+        Serial.print("FAILED TO DELETE: ");
+        Serial.println(active_track.filename);
+      }
+      else
+      {
+        track_list = sd_fetch_tracks();
+        (nav_state->child[2])->data_array = track_list->array;
+        (nav_state->child[2])->size = track_list->size;
+        (nav_state->child[2])->index = 0;
+        array_scroll(nav_state->child[2], 0);
+        read_track((nav_state->child[2])->data_array[(nav_state->child[2])->size - 1], active_track);
+      }
+      free(delete_track_filename);
     }
     else if (strcmp(nav_state->name, "tracks_load") == 0)
     {
-      read_track(nav_state->ptr_str_array[nav_state->index], active_track);
+      read_track(nav_state->data_array[nav_state->index], active_track);
     }
     else if (strcmp(nav_state->name, "tracks_set_steps") == 0)
     {
@@ -391,12 +303,8 @@ void loop()
     {
       nav_state = nav_selection(nav_state, NAV_FORWARD);
     }
-    // Serial.printf("forward, %s\n",selection);
     lcd_display(lcd, nav_state->lcd_state);
-    // }
   }
-  // save_track(const char *filename, struct track &config)
-  // readMatrix(measure_matrix_button, measure_matrix_led);
 }
 
 void serial_init(void)

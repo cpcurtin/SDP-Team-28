@@ -7,7 +7,7 @@
 #include "button-ui-module.h"
 // const struct dpad_pin_config dpad_cfg;
 
-void dpad_init(const struct dpad_pin_config &cfg)
+int dpad_init(const struct dpad_pin_config &cfg)
 {
     // dpad_cfg=cfg
     pinMode(cfg.left, INPUT);
@@ -15,6 +15,7 @@ void dpad_init(const struct dpad_pin_config &cfg)
     pinMode(cfg.up, INPUT);
     pinMode(cfg.right, INPUT);
     pinMode(cfg.select, INPUT);
+    return 0;
 }
 
 void dpad_read(const struct dpad_pin_config &cfg)
@@ -214,17 +215,18 @@ void readMatrix(struct button_maxtrix_pin_config &button_cfg, struct button_maxt
 
 // 	}
 // }
-int read_tempo(void){
-  int raw_avg=0;
-  for (int i=0;i<SMOOTHING_SAMPLES;i++){
- raw_avg+=analogRead(TEMPO_KNOB);
-  }
-  raw_avg=raw_avg/SMOOTHING_SAMPLES;
-  
-  int voltage = (int)raw_avg * ((TEMPO_KNOB_MAX-TEMPO_KNOB_MIN) / 1023.0); // Assuming 5V Arduino board
+int read_tempo(void)
+{
+    int raw_avg = 0;
+    for (int i = 0; i < SMOOTHING_SAMPLES; i++)
+    {
+        raw_avg += analogRead(TEMPO_KNOB);
+    }
+    raw_avg = raw_avg / SMOOTHING_SAMPLES;
 
+    int voltage = (int)raw_avg * ((TEMPO_KNOB_MAX - TEMPO_KNOB_MIN) / 1023.0); // Assuming 5V Arduino board
 
-  return TEMPO_KNOB_MAX-voltage;
+    return TEMPO_KNOB_MAX - voltage;
 
-  // Delay for readability (adjust as needed)
+    // Delay for readability (adjust as needed)
 }

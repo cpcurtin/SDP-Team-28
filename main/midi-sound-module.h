@@ -227,7 +227,12 @@ Percussive Sounds
 #define MuteSurdo 86
 #define Surdo 87
 
+array_with_size *midi_sound_list = new array_with_size;
+
 // functions, extern variables, structs go here
+
+int midi_init(void);
+array_with_size *fetch_midi_sounds(void);
 void midiSetInstrument(uint8_t chan, uint8_t inst);
 
 void midiSetChannelVolume(uint8_t chan, uint8_t vol);
