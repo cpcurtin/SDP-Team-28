@@ -94,8 +94,8 @@ newdigate::audiosample *cache_sd_sound(const char *filename)
     Serial.println("Filename is too long for buffer");
   }
 
-  // Copy "/sounds/" prefix into temp_str
-  strcpy(temp_str, "/sounds/");
+  // Copy CUSTOM_SOUNDS_DIRECTORY prefix into temp_str
+  strcpy(temp_str, CUSTOM_SOUNDS_DIRECTORY);
 
   // Concatenate filename to temp_str
   strcat(temp_str, filename);

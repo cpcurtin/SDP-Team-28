@@ -36,6 +36,7 @@ struct lcd_pin_config
 };
 
 // NAV STRUCT INITIALIZATION
+lcd_nav *nav_state = new lcd_nav;
 lcd_nav *main_nav = new lcd_nav;
 lcd_nav *sounds_nav = new lcd_nav;
 lcd_nav *effects_nav = new lcd_nav;
@@ -45,7 +46,6 @@ lcd_nav *sounds_midi_nav = new lcd_nav;
 lcd_nav *tracks_load_nav = new lcd_nav;
 lcd_nav *tracks_set_steps_nav = new lcd_nav;
 
-int lcd_rows;
 struct nav_config *nav_cfg = new struct nav_config;
 
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);

@@ -189,8 +189,8 @@ void read_track(const char *filename, track &config)
     return;
   }
 
-  // Copy "/sounds/" prefix into temp_str
-  strcpy(temp_str, "/tracks/");
+  // Copy CUSTOM_SOUNDS_DIRECTORY prefix into temp_str
+  strcpy(temp_str, TRACKS_DIRECTORY);
   // Concatenate filename to temp_str
   strcat(temp_str, filename);
   // Open file for reading
@@ -228,8 +228,8 @@ void save_track(const char *filename, track &config)
     Serial.println("Filename is too long for buffer");
     return;
   }
-  // Copy "/sounds/" prefix into temp_str
-  strcpy(temp_str, "/tracks/");
+  // Copy CUSTOM_SOUNDS_DIRECTORY prefix into temp_str
+  strcpy(temp_str, TRACKS_DIRECTORY);
   // Concatenate filename to temp_str
   strcat(temp_str, filename);
   // Delete existing file, otherwise the configuration is appended to the file
@@ -274,8 +274,8 @@ void print_JSON(const char *filename)
     Serial.println("Filename is too long for buffer");
     return;
   }
-  // Copy "/sounds/" prefix into temp_str
-  strcpy(temp_str, "/tracks/");
+  // Copy CUSTOM_SOUNDS_DIRECTORY prefix into temp_str
+  strcpy(temp_str, TRACKS_DIRECTORY);
   // Concatenate filename to temp_str
   strcat(temp_str, filename);
   // Open file for reading

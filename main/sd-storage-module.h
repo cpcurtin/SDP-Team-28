@@ -4,6 +4,9 @@
 #include <SD.h>
 #include <ArduinoJson.h>
 
+#define CUSTOM_SOUNDS_DIRECTORY "/sounds/"
+#define TRACKS_DIRECTORY "/tracks/"
+
 typedef struct array_with_size
 {
   const char **array;

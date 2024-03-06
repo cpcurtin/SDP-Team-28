@@ -19,10 +19,9 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 
   lcd->init(); // initialize the lcd
   lcd->backlight();
-  lcd_rows = cfg->rows;
   lcd->begin(cfg->columns, cfg->rows);
   lcd->clear();
-  for (int row = 0; row < lcd_rows; row++)
+  for (int row = 0; row < LCD_ROWS; row++)
   {
     lcd->setCursor(0, row); // set cursor to row 0
 
@@ -37,7 +36,7 @@ void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr)
 {
   lcd->clear();
 
-  for (int row = 0; row < lcd_rows - 1; row++)
+  for (int row = 0; row < LCD_ROWS - 1; row++)
   {
     lcd->setCursor(0, row); // set cursor to row 0
 
@@ -66,7 +65,7 @@ void array_scroll(lcd_nav *nav, int direction)
   nav->lcd_state[0] = format_row(nav->data_array, new_index, 1);
 
   // THIS IS WHERE IT REPEATS
-  for (int row = 1; row < lcd_rows - 1; row++)
+  for (int row = 1; row < LCD_ROWS - 1; row++)
   {
     if (row < (int)nav->size)
     {
@@ -150,45 +149,15 @@ lcd_nav *nav_init(struct nav_config *cfg)
     tracks_preset_options_steps[i] = strdup("Step");
   }
 
-  // /* NAV STRUCT INITIALIZATION */
-  // lcd_nav *main = (lcd_nav *)malloc(sizeof(lcd_nav));
-  // lcd_nav *sounds = (lcd_nav *)malloc(sizeof(lcd_nav));
-  // lcd_nav *effects = (lcd_nav *)malloc(sizeof(lcd_nav));
-  // lcd_nav *tracks = (lcd_nav *)malloc(sizeof(lcd_nav));
-  // lcd_nav *sounds_custom = (lcd_nav *)malloc(sizeof(lcd_nav));
-  // lcd_nav *sounds_midi = (lcd_nav *)malloc(sizeof(lcd_nav));
-  // lcd_nav *tracks_load = (lcd_nav *)malloc(sizeof(lcd_nav));
-  // lcd_nav *tracks_set_steps = (lcd_nav *)malloc(sizeof(lcd_nav));
-
-  // /* LCD STATES INITIALIZATION */
-  // const char **state_main = (const char **)malloc(lcd_rows * sizeof(char *));
-  // const char **state_sounds = (const char **)malloc(lcd_rows * sizeof(char *));
-  // const char **state_effects = (const char **)malloc(lcd_rows * sizeof(char *));
-  // const char **state_tracks = (const char **)malloc(lcd_rows * sizeof(char *));
-  // const char **state_sounds_custom = (const char **)malloc(lcd_rows * sizeof(char *));
-  // const char **state_sounds_midi = (const char **)malloc(lcd_rows * sizeof(char *));
-  // const char **state_tracks_load = (const char **)malloc(lcd_rows * sizeof(char *));
-  // const char **state_tracks_set_steps = (const char **)malloc(lcd_rows * sizeof(char *));
-
-  // NAV STRUCT INITIALIZATION
-  // lcd_nav *main = new lcd_nav;
-  // lcd_nav *sounds = new lcd_nav;
-  // lcd_nav *effects = new lcd_nav;
-  // lcd_nav *tracks = new lcd_nav;
-  // lcd_nav *sounds_custom = new lcd_nav;
-  // lcd_nav *sounds_midi = new lcd_nav;
-  // lcd_nav *tracks_load = new lcd_nav;
-  // lcd_nav *tracks_set_steps = new lcd_nav;
-
   // LCD STATES INITIALIZATION
-  const char **state_main = new const char *[lcd_rows];
-  const char **state_sounds = new const char *[lcd_rows];
-  const char **state_effects = new const char *[lcd_rows];
-  const char **state_tracks = new const char *[lcd_rows];
-  const char **state_sounds_custom = new const char *[lcd_rows];
-  const char **state_sounds_midi = new const char *[lcd_rows];
-  const char **state_tracks_load = new const char *[lcd_rows];
-  const char **state_tracks_set_steps = new const char *[lcd_rows];
+  const char **state_main = new const char *[LCD_ROWS];
+  const char **state_sounds = new const char *[LCD_ROWS];
+  const char **state_effects = new const char *[LCD_ROWS];
+  const char **state_tracks = new const char *[LCD_ROWS];
+  const char **state_sounds_custom = new const char *[LCD_ROWS];
+  const char **state_sounds_midi = new const char *[LCD_ROWS];
+  const char **state_tracks_load = new const char *[LCD_ROWS];
+  const char **state_tracks_set_steps = new const char *[LCD_ROWS];
 
   // ptr arrays
   lcd_nav **main_child = new lcd_nav *[3];
@@ -322,7 +291,7 @@ const char *tracks_update(void)
 }
 void update_tempo(LiquidCrystal_I2C *lcd)
 {
-  lcd->setCursor(0, lcd_rows - 1); // set cursor to row 0
+  lcd->setCursor(0, LCD_ROWS - 1); // set cursor to row 0
   lcd->print(tracks_update());     // print to row 0
   lcd->home();
 }

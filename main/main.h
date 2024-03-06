@@ -271,14 +271,12 @@ LiquidCrystal_I2C *lcd;
 char **lcd_state = new char *[LCD_ROWS];
 int lcd_index = 0;
 // lcd_nav *sounds;
-lcd_nav *nav_data_structure;
-lcd_nav *nav_state;
+// lcd_nav *nav_data_structure;
+// lcd_nav *nav_state;
 struct palette_matrix *palette;
 // struct button_maxtrix_pin_config measure_matrix_button;
 // struct button_maxtrix_pin_config measure_matrix_led;
 // struct nav_config *nav_cfg;
-
-char *selection;
 
 // const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
 const struct lcd_pin_config lcd_cfg = {LCD_I2C, LCD_ROWS, LCD_COLUMNS};
