@@ -41,6 +41,42 @@ struct palette_matrix
     int columns;
 };
 
+const int selectPin1_button = 10; //select bit A
+const int selectPin2_button = 11; //select bit B
+const int selectPin3_button = 12; //select bit C
+const int enablePin_columns = 24; //enable bit
+
+const int selectPin1_LED = 25; //select bit A
+const int selectPin2_LED = 26; //select bit B
+const int selectPin3_LED = 27; //select bit C
+
+const int selectPin1_rows = 32; //select bit A
+const int selectPin2_rows = 31; //select bit B
+const int selectPin3_rows = 30; //select bit C
+const int enablePin_rows = 29;
+
+const int Button_column8 = 8;
+const int LED_column8 = 28;
+
+byte rows[] = {33,34,35,36};
+
+const int rowCount = 4;
+const int colCount = 9;
+const int LED_rowcount = 4;
+const int LED_colcount = 9;
+
+
+int Previous_Button_State[] = {9,9};
+int Current_Button_State[] = {9,9}; 
+int Last_Pushed_State[] = {9,9};
+int Pressed = 0;
+
+unsigned long previousMillis = 0;
+unsigned long interval = 50;
+int loop_counter = 0;
+
+
+
 int dpad_init(const struct dpad_pin_config &cfg);
 void dpad_read(const struct dpad_pin_config &cfg);
 
@@ -48,14 +84,21 @@ int check_ninput(const struct dpad_pin_config &cfg);
 
 int button_pressed(int pin);
 
-// void palette_init(const struct button_maxtrix_pin_config *cfg);
-// void measure_matrix_init(const struct button_maxtrix_pin_config *cfg);
-void button_matrix_init(struct button_maxtrix_pin_config *cfg);
-// void measure_matrix_init(struct)
-// void palette_assign(struct palette_matrix *palette, const char *sound);
-void measure_matrix_init(struct button_maxtrix_pin_config *button_cfg, struct button_maxtrix_pin_config *led_cfg);
-void readMatrix(struct button_maxtrix_pin_config *button_cfg, struct button_maxtrix_pin_config *led_cfg);
 int read_tempo(void);
+
+// X
+int button_matrix_init(void);
+
+void readMatrix();
+void check_rows(int colIndex);
+void Button_Pressed(int Current_State[], int Previous_State[]);
+void Button_Released(int Current_State[], int Previous_State[]);
+void LED_On(int Row, int Column);
+void LED_Off(int Row, int Column);
+void selectColumn_button(int Column);
+void selectColumn_LED(int Column);
+void selectRow_LED(int Row);
+
 
 // void set_matrix_led(struct matrix_coordinate, int state);
 

@@ -30,6 +30,10 @@ void setup()
   {
     Serial.println("DPAD INIT FAILED");
   }
+   if (button_matrix_init())
+  {
+    Serial.println("BUTTON MATRIX INIT FAILED");
+  }
   if (dac_init())
   {
     Serial.println("DAC INIT FAILED");
@@ -305,6 +309,27 @@ void loop()
     }
     lcd_display(lcd, nav_state->lcd_state);
   }
+
+
+
+
+unsigned long currentMillis_matrix = millis();
+
+  if (currentMillis_matrix - previousMillis >= interval) {
+    
+    if (Pressed==0){
+      readMatrix();
+    }
+
+    if (Pressed==1){
+      Button_Pressed(Current_Button_State, Previous_Button_State);
+    }
+
+    Previous_Button_State[0] = Current_Button_State[0];
+    Previous_Button_State[1] = Current_Button_State[1];
+  }
+
+
 }
 
 void serial_init(void)
