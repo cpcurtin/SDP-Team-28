@@ -17,7 +17,8 @@ int midi_init(void)
   digitalWrite(VS1053_RST, HIGH);
   delay(10);
   midiSetChannelVolume(0, 127);
-  midiSetChannelBank(0, Drums1);
+  midiSetChannelBank(0, Drums2);
+  midiSetChannelBank(1, Melody);
 
   midiSetInstrument(0, 128);
   /*****************************************

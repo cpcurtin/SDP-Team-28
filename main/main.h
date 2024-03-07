@@ -273,7 +273,7 @@ int lcd_index = 0;
 // lcd_nav *sounds;
 // lcd_nav *nav_data_structure;
 // lcd_nav *nav_state;
-struct palette_matrix *palette;
+//struct palette_matrix *palette;
 // struct button_maxtrix_pin_config measure_matrix_button;
 // struct button_maxtrix_pin_config measure_matrix_led;
 // struct nav_config *nav_cfg;
@@ -285,7 +285,7 @@ const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUT
 // create 2D array of palette_cell structs
 
 // Metronome Definition
-Metro ledMetro = Metro(250);
+Metro ledMetro = Metro(500);
 int count_temp = 0;
 
 int mixer_1;
@@ -293,6 +293,22 @@ int mixer_2;
 int mixer_3;
 int mixer_4;
 float metro_active_tempo;
+
+// Pallete Variables
+
+int currNote = 0;
+int currBank = 0;
+int prevCount = 0;
+int meMat[][6] = { {0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},
+                   {0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},
+                   {0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},
+                   {0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1}};
+int palette[][3] = {{0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60},
+                    {0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60},
+                    {0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60},
+                    {0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60}};
+int palbut = -1;
+int stop = 1;
 
 /**************************
 PROGRAM STRUCTS

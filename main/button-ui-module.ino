@@ -214,7 +214,7 @@ void check_rows(int colIndex)
 void Button_Pressed(int Current_State[], int Previous_State[])
 {
   previousMillis = millis();
-  LED_On(Current_State[0], Current_State[1]);
+  //LED_On(Current_State[0], Current_State[1]);
 
   if (loop_counter == 3)
   {
@@ -256,7 +256,7 @@ void Button_Released(int Current_State[], int Previous_State[])
 {
 
   previousMillis = millis();
-  LED_Off(Previous_State[0], Previous_State[1]);
+  //LED_Off(Previous_State[0], Previous_State[1]);
   Current_State[0] = 9;
   Current_State[1] = 9;
 }
