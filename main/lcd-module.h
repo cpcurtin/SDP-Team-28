@@ -49,6 +49,7 @@ lcd_nav *tracks_set_steps_nav = new lcd_nav;
 
 lcd_nav *sounds_midi_melodic_nav = new lcd_nav;
 lcd_nav *sounds_midi_percussion_nav = new lcd_nav;
+lcd_nav *sounds_midi__nav = new lcd_nav;
 
 /* NAVS TODO:
 
