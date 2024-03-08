@@ -23,16 +23,15 @@ void setup()
     Serial.println("SD INIT FAILED");
   }*/
 
-
-   if (midi_init())
+  if (midi_init())
   {
-     Serial.println("MIDI INIT FAILED");
-   }
+    Serial.println("MIDI INIT FAILED");
+  }
   // if (dpad_init(dpad_cfg))
   // {
   //   Serial.println("DPAD INIT FAILED");
   // }
-   if (button_matrix_init())
+  if (button_matrix_init())
   {
     Serial.println("BUTTON MATRIX INIT FAILED");
   }
@@ -45,14 +44,12 @@ void setup()
   delay(3000); // 3 second splash strart screen
 
   /* POPULATE DYNAMIC LISTS */
-  //nav_cfg->sounds_custom = sd_fetch_sounds();
-  // nav_cfg->sounds_midi = fetch_midi_sounds(); // static TODO
-  // nav_cfg->effects = fetch_effects();         // static TODO
- // nav_cfg->tracks_load = sd_fetch_tracks();
+  // nav_cfg->sounds_custom = sd_fetch_sounds();
+  //  nav_cfg->effects = fetch_effects();         // static TODO
+  // nav_cfg->tracks_load = sd_fetch_tracks();
+  // nav_cfg->sounds_midi_melodic = fetch_midi_melodic_sounds();
+  // nav_cfg->sounds_midi_percussion = fetch_midi_percussion_sounds();
   // nav_state = nav_init(nav_cfg);
-  // nav_data_structure = nav_init(nav_cfg);
-  // nav_state = (lcd_nav *)malloc(sizeof(lcd_nav));
-  // nav_state = nav_data_structure;
 
   // lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
@@ -67,58 +64,61 @@ void setup()
 void loop()
 {
 
-
-if (ledMetro.check() == 1)
+  if (ledMetro.check() == 1)
   {
 
     // turning off all midi sounds on last step
-    if (count_temp == 0){
+    if (count_temp == 0)
+    {
       prevCount = 23;
     }
     else
     {
       prevCount = count_temp - 1;
     }
-    for (int i = 0; i < 6; i+=3) 
+    for (int i = 0; i < 6; i += 3)
     {
       currBank = meMat[prevCount][i];
       if (currBank == 0)
       {
-        currNote = meMat[prevCount][i+1];
+        currNote = meMat[prevCount][i + 1];
       }
       if (currBank == 1)
       {
-        currNote = meMat[prevCount][i+2];
+        currNote = meMat[prevCount][i + 2];
       }
       midiNoteOff(currBank, currNote, 127);
     }
 
     // Turn on and off measure matrix LEDs
-    LED_Off(MeMat_LEDindex[prevCount][0],MeMat_LEDindex[prevCount][1]);
+    LED_Off(MeMat_LEDindex[prevCount][0], MeMat_LEDindex[prevCount][1]);
 
-    if (stop==1){
-      LED_On(MeMat_LEDindex[count_temp][0],MeMat_LEDindex[count_temp][1]);
+    if (stop == 1)
+    {
+      LED_On(MeMat_LEDindex[count_temp][0], MeMat_LEDindex[count_temp][1]);
     }
 
     // play sounds on measure matrix
-    for (int i = 0; i < 6; i+=3) {
+    for (int i = 0; i < 6; i += 3)
+    {
       if (meMat[count_temp][i] == 0)
       {
-        midiSetInstrument(0,128);
+        midiSetInstrument(0, 128);
         int channel = meMat[count_temp][i];
-        int note = meMat[count_temp][i+1];
+        int note = meMat[count_temp][i + 1];
         midiNoteOn(channel, note, 127);
-        //currNote = note;
-       // currBank = 0;
+        // currNote = note;
+        // currBank = 0;
       }
-      if (meMat[count_temp][i] == 1) {
-        int instrum = meMat[count_temp][i+1];
-        midiSetInstrument(1,instrum);
+      if (meMat[count_temp][i] == 1)
+      {
+        int instrum = meMat[count_temp][i + 1];
+        midiSetInstrument(1, instrum);
         int channel = meMat[count_temp][i];
-        int note = meMat[count_temp][i+2];
+        int note = meMat[count_temp][i + 2];
         midiNoteOn(channel, note, 127);
-       // currNote = note;
-        //currBank = 1;
+        // currNote = note;
+        // currBank = 1;
       }
     }
     count_temp++;
@@ -127,60 +127,66 @@ if (ledMetro.check() == 1)
       count_temp = 0;
     }
     ledMetro.reset();
-  }  
+  }
 
-  if(Current_Button_State[1]>=5 && Current_Button_State[1]!=9){
-    
+  if (Current_Button_State[1] >= 5 && Current_Button_State[1] != 9)
+  {
+
     Current_Row = Current_Button_State[0];
     Current_Column = Current_Button_State[1];
     LED_On(Current_Row, Current_Column);
     stop = 0;
 
-    for(int i=0 ; i<12 ; i++){
-      if(Palette_LEDMatrix[i][0] == Current_Row && Palette_LEDMatrix[i][1] == Current_Column ){
-        palbut=i;
+    for (int i = 0; i < 12; i++)
+    {
+      if (Palette_LEDMatrix[i][0] == Current_Row && Palette_LEDMatrix[i][1] == Current_Column)
+      {
+        palbut = i;
       }
     }
   }
-  if(Current_Button_State[1]<5 && Current_Button_State[1]!=9 && palbut!= -1){
-    LED_Off(Current_Row,Current_Column);
+  if (Current_Button_State[1] < 5 && Current_Button_State[1] != 9 && palbut != -1)
+  {
+    LED_Off(Current_Row, Current_Column);
     int channel = palette[palbut][0];
     int instr = palette[palbut][1];
     int note = palette[palbut][2];
-    for (int i = 0; i < 6; i+=3)
+    for (int i = 0; i < 6; i += 3)
     {
-      if (meMat[0][i] == channel && meMat[0][i+1] == instr && meMat[0][i+2] == note && stop == 0)
+      if (meMat[0][i] == channel && meMat[0][i + 1] == instr && meMat[0][i + 2] == note && stop == 0)
       {
         meMat[0][i] = -1;
-        meMat[0][i+1] = -1;
-        meMat[0][i+2] = -1;
+        meMat[0][i + 1] = -1;
+        meMat[0][i + 2] = -1;
         stop = 1;
       }
     }
-    for (int i = 0; i < 6; i+=3)
+    for (int i = 0; i < 6; i += 3)
     {
       if (meMat[0][i] == -1 && stop == 0)
       {
         meMat[0][i] = channel;
-        meMat[0][i+1] = instr;
-        meMat[0][i+2] = note;
+        meMat[0][i + 1] = instr;
+        meMat[0][i + 2] = note;
         stop = 1;
-        //Serial.println("here");
+        // Serial.println("here");
       }
     }
     palbut = -1;
   }
 
+  unsigned long currentMillis_matrix = millis();
 
-unsigned long currentMillis_matrix = millis();
+  if (currentMillis_matrix - previousMillis >= interval)
+  {
 
-  if (currentMillis_matrix - previousMillis >= interval) {
-    
-    if (Pressed==0){
+    if (Pressed == 0)
+    {
       readMatrix();
     }
 
-    if (Pressed==1){
+    if (Pressed == 1)
+    {
       Button_Pressed(Current_Button_State, Previous_Button_State);
     }
 
@@ -258,11 +264,6 @@ unsigned long currentMillis_matrix = millis();
   //   }
   //   lcd_display(lcd, nav_state->lcd_state);
   // }
-
-
-
-
-
 }
 
 void serial_init(void)
