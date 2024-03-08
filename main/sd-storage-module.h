@@ -28,9 +28,9 @@ track active_track = {
     "DEFAULT.json", // filename
     1,              // id
     120,            // bpm
-    6              // measure_steps
+    6               // measure_steps
 };
-track default_track=active_track;
+track default_track = active_track;
 int sd_init(void);
 array_with_size *sd_fetch_sounds(void);
 void freeArrayOfStrings(char **stringArray, size_t numStrings);

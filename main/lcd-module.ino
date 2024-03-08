@@ -150,6 +150,10 @@ lcd_nav *nav_init(struct nav_config *cfg)
     tracks_preset_options_steps[i] = strdup("Step");
   }
 
+  const char **midi_preset_options = new const char *[2];
+  midi_preset_options[0] = strdup("Melodic Instruments");
+  midi_preset_options[1] = strdup("Percussion Instruments");
+
   // LCD STATES INITIALIZATION
   const char **state_main = new const char *[LCD_ROWS];
   const char **state_sounds = new const char *[LCD_ROWS];
@@ -159,6 +163,8 @@ lcd_nav *nav_init(struct nav_config *cfg)
   const char **state_sounds_midi = new const char *[LCD_ROWS];
   const char **state_tracks_load = new const char *[LCD_ROWS];
   const char **state_tracks_set_steps = new const char *[LCD_ROWS];
+  const char **state_midi_melodic = new const char *[LCD_ROWS];
+  const char **state_midi_percussion = new const char *[LCD_ROWS];
 
   // ptr arrays
   lcd_nav **main_child = new lcd_nav *[3];
@@ -169,6 +175,10 @@ lcd_nav *nav_init(struct nav_config *cfg)
   lcd_nav **sounds_child = new lcd_nav *[2];
   sounds_child[0] = sounds_custom_nav;
   sounds_child[1] = sounds_midi_nav;
+
+  lcd_nav **midi_child = new lcd_nav *[2];
+  midi_child[0] = sounds_midi_melodic_nav;
+  midi_child[1] = sounds_midi_percussion_nav;
 
   lcd_nav **tracks_child = new lcd_nav *[4];
   tracks_child[0] = tracks_set_steps_nav; // set steps
@@ -184,7 +194,6 @@ lcd_nav *nav_init(struct nav_config *cfg)
   main_nav->size = 3; // sizeof(main_preset_options) / sizeof(main_preset_options[0]);
   main_nav->lcd_state = state_main;
   main_nav->index = 0;
-  main_nav->depth = 0;
   array_scroll(main_nav, 0);
 
   // sounds
@@ -194,7 +203,6 @@ lcd_nav *nav_init(struct nav_config *cfg)
   sounds_nav->child = sounds_child;
   sounds_nav->size = 2; // sizeof(sounds_preset_options) / sizeof(sounds_preset_options[0]);
   sounds_nav->lcd_state = state_sounds;
-  sounds_nav->depth = 1;
   sounds_nav->index = 0;
   array_scroll(sounds_nav, 0);
 
@@ -205,7 +213,6 @@ lcd_nav *nav_init(struct nav_config *cfg)
   effects_nav->child = NULL;
   effects_nav->size = (cfg->effects)->size;
   effects_nav->lcd_state = state_effects;
-  effects_nav->depth = 1;
   effects_nav->index = 0;
   array_scroll(effects_nav, 0);
 
@@ -216,7 +223,6 @@ lcd_nav *nav_init(struct nav_config *cfg)
   tracks_nav->child = tracks_child;
   tracks_nav->size = 4; // sizeof(tracks_preset_options) / sizeof(tracks_preset_options[0]);
   tracks_nav->lcd_state = state_tracks;
-  tracks_nav->depth = 1;
   tracks_nav->index = 0;
   array_scroll(tracks_nav, 0);
 
@@ -227,7 +233,6 @@ lcd_nav *nav_init(struct nav_config *cfg)
   tracks_load_nav->child = NULL;
   tracks_load_nav->size = (cfg->tracks_load)->size;
   tracks_load_nav->lcd_state = state_tracks_load;
-  tracks_load_nav->depth = 2;
   tracks_load_nav->index = 0;
   array_scroll(tracks_load_nav, 0);
 
@@ -238,7 +243,6 @@ lcd_nav *nav_init(struct nav_config *cfg)
   tracks_set_steps_nav->child = NULL;
   tracks_set_steps_nav->size = 6; // sizeof(tracks_preset_options_steps) / sizeof(tracks_preset_options_steps[0]);
   tracks_set_steps_nav->lcd_state = state_tracks_set_steps;
-  tracks_set_steps_nav->depth = 2;
   tracks_set_steps_nav->index = 0;
   array_scroll(tracks_set_steps_nav, 0);
 
@@ -249,20 +253,38 @@ lcd_nav *nav_init(struct nav_config *cfg)
   sounds_custom_nav->child = NULL;
   sounds_custom_nav->size = (cfg->sounds_custom)->size;
   sounds_custom_nav->lcd_state = state_sounds_custom;
-  sounds_custom_nav->depth = 2;
   sounds_custom_nav->index = 0;
   array_scroll(sounds_custom_nav, 0);
 
   // sounds_midi
   sounds_midi_nav->name = strdup("sounds_midi");
-  sounds_midi_nav->data_array = (cfg->sounds_midi)->array;
+  sounds_midi_nav->data_array = midi_preset_options;
   sounds_midi_nav->parent = sounds_nav;
-  sounds_midi_nav->child = NULL;
-  sounds_midi_nav->size = (cfg->sounds_midi)->size;
+  sounds_midi_nav->child = midi_child;
+  sounds_midi_nav->size = 2;
   sounds_midi_nav->lcd_state = state_sounds_midi;
-  sounds_midi_nav->depth = 2;
   sounds_midi_nav->index = 0;
   array_scroll(sounds_midi_nav, 0);
+
+  // sounds_midi_melodic
+  sounds_midi_melodic_nav->name = strdup("sounds_midi_melodic");
+  sounds_midi_melodic_nav->data_array = (cfg->sounds_midi_melodic)->array;
+  sounds_midi_melodic_nav->parent = sounds_midi_nav;
+  sounds_midi_melodic_nav->child = NULL;
+  sounds_midi_melodic_nav->size = (cfg->sounds_midi_melodic)->size;
+  sounds_midi_melodic_nav->lcd_state = state_midi_melodic;
+  sounds_midi_melodic_nav->index = 0;
+  array_scroll(sounds_midi_melodic_nav, 0);
+
+  // sounds_midi_percussion
+  sounds_midi_percussion_nav->name = strdup("sounds_midi_percussion");
+  sounds_midi_percussion_nav->data_array = (cfg->sounds_midi_percussion)->array;
+  sounds_midi_percussion_nav->parent = sounds_midi_nav;
+  sounds_midi_percussion_nav->child = NULL;
+  sounds_midi_percussion_nav->size = (cfg->sounds_midi_percussion)->size;
+  sounds_midi_percussion_nav->lcd_state = state_midi_percussion;
+  sounds_midi_percussion_nav->index = 0;
+  array_scroll(sounds_midi_percussion_nav, 0);
 
   return main_nav;
 }
