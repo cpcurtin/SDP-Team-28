@@ -86,3 +86,9 @@ initialized:
     #all digital??
     >scroll digital effects
       >select for effect palette
+
+###################### Note For Running On Battery Power #######################
+
+If the system is going to be run on battery power, the serial_init() line in main.ino has to be removed!!!!!!!!!
+
+If you do not remove this line, the system will not function on battery power!!!!!!!!!!!!!

@@ -12,29 +12,34 @@ Serial.print(time_diff);
 Serial.println(" milliseconds");
 */
 
+
 void setup()
 {
+  //delay(3000);
 
   /* Intialize hardware */
-  serial_init();
+  // READ THIS!!!!!!! - If you are trying to run on battery power, take out the serial_init() below!!!!!!!!
+  //serial_init();
 
   /*if (sd_init())
   {
     Serial.println("SD INIT FAILED");
   }*/
+  midi_init();
 
-  if (midi_init())
-  {
-    Serial.println("MIDI INIT FAILED");
-  }
+  //if (midi_init())
+  //{
+  //  Serial.println("MIDI INIT FAILED");
+  //}
   // if (dpad_init(dpad_cfg))
   // {
   //   Serial.println("DPAD INIT FAILED");
   // }
-  if (button_matrix_init())
-  {
-    Serial.println("BUTTON MATRIX INIT FAILED");
-  }
+  //if (button_matrix_init())
+  //{
+  //  Serial.println("BUTTON MATRIX INIT FAILED");
+  //}
+  button_matrix_init();
   // if (dac_init())
   // {
   //   Serial.println("DAC INIT FAILED");
@@ -57,7 +62,7 @@ void setup()
   // {
   //   cached_samples[i] = cache_sd_sound((nav_cfg->sounds_custom)->array[2]);
   // }
-  Serial.println("PROGRAM LOOP BEGINS");
+  //Serial.println("PROGRAM LOOP BEGINS");
 }
 
 /* Main subroutine: follow software block diagram */
@@ -66,7 +71,6 @@ void loop()
 
   if (ledMetro.check() == 1)
   {
-
     // turning off all midi sounds on last step
     if (count_temp == 0)
     {

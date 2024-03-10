@@ -299,10 +299,10 @@ float metro_active_tempo;
 int currNote = 0;
 int currBank = 0;
 int prevCount = 0;
-int meMat[][6] = { {0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},
-                   {0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},
-                   {0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},
-                   {0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1},{0, Crash1, -1, -1, -1, -1}};
+int meMat[][6] = { {0, Crash1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, AcousticSnare, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},
+                   {0, ClosedHiHat, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1},{0, AcousticSnare, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},
+                   {0, AcousticBassDrum, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, AcousticSnare, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},
+                   {0, AcousticBassDrum, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1},{0, AcousticSnare, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1}};
 int palette[][3] = {{0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60},
                     {0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60},
                     {0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60},
