@@ -85,7 +85,6 @@ int read_tempo(void);
 
 // X
 int button_matrix_init(void);
-
 void readMatrix();
 void check_rows(int colIndex);
 void Button_Pressed(int Current_State[], int Previous_State[]);
