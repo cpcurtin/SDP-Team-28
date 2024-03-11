@@ -53,18 +53,8 @@ lcd_nav *sounds_midi_octaves_nav = new lcd_nav;
 lcd_nav *sounds_midi_notes_nav = new lcd_nav;
 const char *octaves[] = {"-2 LOWEST", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8 HIGHEST"};
 const char *note_names[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-
-/* NAVS TODO:
-
-midi->accoustic
-midi->percussion
-
-make arrays per
-
-
-
-
-*/
+const char *selected_sound[] = {"SELECTED SOUND:", "", "", "STEPS: "};
+const char *selected_sound[] = {"SELECTED EFFECT:", "", "", ""};
 
 struct nav_config *nav_cfg = new struct nav_config;
 
@@ -77,5 +67,7 @@ lcd_nav *nav_init(struct nav_config *cfg);
 void nav_add(lcd_nav *node);
 const char *tracks_update(void);
 void update_tempo(LiquidCrystal_I2C *lcd);
+
+void lcd_splash(const char **print_arr);
 
 #endif // LCD_MODULE_H

@@ -163,7 +163,11 @@ void loop()
     }
     count_temp++;
     active_track.bpm = read_tempo();
-    update_tempo(lcd);
+
+    if (splash_screen_active == false)
+    {
+      update_tempo(lcd);
+    }
     metro_active_tempo = (60000 / (active_track.bpm * active_track.measure_steps));
     ledMetro.interval(metro_active_tempo);
     if (count_temp == 24)
@@ -241,9 +245,9 @@ void loop()
   active_track.bpm = read_tempo();
   update_tempo(lcd);
 
-  /*
+  /*****************************************************************************
   DPAD LEFT
-  */
+  *****************************************************************************/
   if (button_pressed(BUTTON_DPAD_LEFT)) // return / exit
   {
     nav_state = nav_selection(nav_state, NAV_BACKWARD);
@@ -251,29 +255,32 @@ void loop()
     lcd_display(lcd, nav_state->lcd_state);
   }
 
-  /*
+  /*****************************************************************************
   DPAD DOWN
-  */
+  *****************************************************************************/
   if (button_pressed(BUTTON_DPAD_DOWN)) // scroll down
   {
     array_scroll(nav_state, NAV_DOWN);
     lcd_display(lcd, nav_state->lcd_state);
   }
 
-  /*
+  /*****************************************************************************
   DPAD UP
-  */
+  *****************************************************************************/
   if (button_pressed(BUTTON_DPAD_UP)) // scroll up
   {
     array_scroll(nav_state, NAV_UP);
     lcd_display(lcd, nav_state->lcd_state);
   }
 
-  /*
+  /*****************************************************************************
   DPAD RIGHT
-  */
+  *****************************************************************************/
   if (button_pressed(BUTTON_DPAD_RIGHT)) // select
   {
+    /*
+    SAVE TRACK
+    */
     if (strcmp(nav_state->data_array[nav_state->index], "Save Track") == 0)
     {
       char *new_track_filename = (char *)malloc(20 + 1);
@@ -291,6 +298,9 @@ void loop()
       array_scroll(nav_state->child[2], 0);
       free(new_track_filename);
     }
+    /*
+    DELETE TRACK
+    */
     else if (strcmp(nav_state->data_array[nav_state->index], "Delete Track") == 0)
     {
       char *delete_track_filename = (char *)malloc(20 + 1);
@@ -312,14 +322,23 @@ void loop()
       }
       free(delete_track_filename);
     }
+    /*
+    LOAD TRACKS
+    */
     else if (strcmp(nav_state->name, "tracks_load") == 0)
     {
       read_track(nav_state->data_array[nav_state->index], active_track);
     }
+    /*
+    SET TRACK STEPS
+    */
     else if (strcmp(nav_state->name, "tracks_set_steps") == 0)
     {
       active_track.measure_steps = nav_state->index + 1;
     }
+    /*
+    SELECTED MELODIC MIDI SOUND
+    */
     else if (strcmp(nav_state->name, "sounds_midi_notes") == 0)
     {
       Serial.println("MIDI SOUNDS SELECTION:");
@@ -341,6 +360,9 @@ void loop()
       // midi standard mapping (octave & note)
       // midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index]
     }
+    /*
+    SELECTED PERCUSSION MIDI SOUND
+    */
     else if (strcmp(nav_state->name, "sounds_midi_percussion") == 0)
     {
       // BANK
@@ -349,11 +371,17 @@ void loop()
       // currently selected midi sound
       // midi_percussion_values[sounds_midi_percussion_nav->index];
     }
+    /*
+    SELECTED CUSTOM SOUND
+    */
     else if (strcmp(nav_state->name, "custom_sounds") == 0)
     {
       // currently selected custom sound
       // sounds_custom_nav->data_array[sounds_custom_nav->index];
     }
+    /*
+    SELECT NEXT NAV
+    */
     else
     {
       nav_state = nav_selection(nav_state, NAV_FORWARD);

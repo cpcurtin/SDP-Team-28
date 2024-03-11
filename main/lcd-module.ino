@@ -335,9 +335,26 @@ const char *tracks_update(void)
   }
   return temp_str;
 }
+
 void update_tempo(LiquidCrystal_I2C *lcd)
 {
   lcd->setCursor(0, LCD_ROWS - 1); // set cursor to row 0
   lcd->print(tracks_update());     // print to row 0
+  lcd->home();
+}
+
+void lcd_splash(const char **print_arr)
+{
+  splash_screen_active = true;
+
+  
+
+  lcd->clear();
+  for (int row = 0; row < LCD_ROWS; row++)
+  {
+    lcd->setCursor(0, row); // set cursor to row 0
+
+    lcd->print(print_arr[row]); // print to row 0
+  }
   lcd->home();
 }
