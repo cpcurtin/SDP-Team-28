@@ -7,14 +7,13 @@
 #include "button-ui-module.h"
 // const struct dpad_pin_config dpad_cfg;
 
-int dpad_init(const struct dpad_pin_config &cfg)
+int dpad_init()
 {
-  // dpad_cfg=cfg
-  pinMode(cfg.left, INPUT);
-  pinMode(cfg.down, INPUT);
-  pinMode(cfg.up, INPUT);
-  pinMode(cfg.right, INPUT);
-  pinMode(cfg.select, INPUT);
+  pinMode(BUTTON_DPAD_LEFT, INPUT);
+  pinMode(BUTTON_DPAD_RIGHT, INPUT);
+  pinMode(BUTTON_DPAD_DOWN, INPUT);
+  pinMode(BUTTON_DPAD_UP, INPUT);
+  
   return 0;
 }
 int button_matrix_init(void)
@@ -53,35 +52,11 @@ int button_matrix_init(void)
 
   return 0;
 }
-void dpad_read(const struct dpad_pin_config &cfg)
+int dpad_read(void)
 {
+
 }
 
-int check_ninput(const struct dpad_pin_config &cfg)
-{
-  {
-    int pressedCount = 0;
-
-    if (digitalRead(cfg.left) == LOW)
-    {
-      pressedCount++;
-    }
-    if (digitalRead(cfg.down) == LOW)
-    {
-      pressedCount++;
-    }
-    if (digitalRead(cfg.up) == LOW)
-    {
-      pressedCount++;
-    }
-    if (digitalRead(cfg.right) == LOW)
-    {
-      pressedCount++;
-    }
-
-    return pressedCount == 1;
-  }
-}
 
 int button_pressed(int pin)
 {
@@ -327,7 +302,7 @@ int read_tempo(void)
 
   int voltage = (int)raw_avg * ((TEMPO_KNOB_MAX - TEMPO_KNOB_MIN) / 1023.0); // Assuming 5V Arduino board
 
-  return TEMPO_KNOB_MAX - voltage;
+  return TEMPO_KNOB_MIN+ voltage;
 
   // Delay for readability (adjust as needed)
 }

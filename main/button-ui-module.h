@@ -7,19 +7,16 @@
 #ifndef BUTTON_UI_MODULE_H
 #define BUTTON_UI_MODULE_H
 
-#define TEMPO_KNOB 23
+
 #define TEMPO_KNOB_MIN 20
 #define TEMPO_KNOB_MAX 150
 #define SMOOTHING_SAMPLES 100
+#define DPAD_LEFT 1
+#define DPAD_RIGHT 2
+#define DPAD_DOWN 3
+#define DPAD_UP 4
 
-struct dpad_pin_config
-{
-    const int up;
-    const int down;
-    const int left;
-    const int right;
-    const int select;
-};
+
 struct button_maxtrix_pin_config
 {
     size_t width;   // The length of the array
@@ -88,10 +85,9 @@ int Palette_LEDMatrix[][2] = {{0,6},{0,7},{0,8},
 int Current_Row = 0;
 int Current_Column = 0;
 
-int dpad_init(const struct dpad_pin_config &cfg);
-void dpad_read(const struct dpad_pin_config &cfg);
+int dpad_init(void);
+int dpad_read(void);
 
-int check_ninput(const struct dpad_pin_config &cfg);
 
 int button_pressed(int pin);
 

@@ -48,7 +48,7 @@
  *    PIN30:                                      CRX3  | PIN30: DEC3
  *    PIN31:                                      CTX3  | PIN31: DEC3
  *    PIN32:          OUT1B                             | PIN32: DEC3
- *    PIN33:  PWM     MCLK2                             | PIN33:
+ *    PIN33:  PWM     MCLK2                             | PIN33: x
  *    PIN34:                            RX8             | PIN34:
  *    PIN35:                            TX8             | PIN35:
  *    PIN36:  PWM                 CS                    | PIN36:
@@ -56,7 +56,7 @@
  *    PIN38:      A14 IN1         CS1                   | PIN38:
  *    PIN39:      A15 OUT1A       MISO1                 | PIN39:
  *    PIN40:      A16                                   | PIN40:
- *    PIN41:      A17                                   | PIN41:
+ *    PIN41:      A17                                   | PIN41: TEMPO WHEEL
  *    PINOUT  R   O   Y           G     B   I     P     | PINOUT
  *    *********************  BOTTOM PADS  **********************
  *    PINOUT  R   LY  G     LB    B   I                 | PINOUT
@@ -183,12 +183,17 @@ LCD PIN ASSIGNMENTS
 #define LCD_I2C 0x27 // pin18 pin19
 
 /**************************
+TEMPO WHEEL PIN ASSIGNMENTS
+**************************/
+#define TEMPO_KNOB 41
+
+/**************************
 DPAD BUTTONS PIN ASSIGNMENTS
 **************************/
-#define BUTTON_DPAD_UP 26
-#define BUTTON_DPAD_DOWN 25
-#define BUTTON_DPAD_LEFT 24
-#define BUTTON_DPAD_RIGHT 27
+#define BUTTON_DPAD_UP 15
+#define BUTTON_DPAD_DOWN 16
+#define BUTTON_DPAD_LEFT 17
+#define BUTTON_DPAD_RIGHT 14
 
 /**************************
 MATRIX BUTTON PIN ASSIGNMENTS
@@ -273,7 +278,7 @@ int lcd_index = 0;
 // lcd_nav *sounds;
 // lcd_nav *nav_data_structure;
 // lcd_nav *nav_state;
-//struct palette_matrix *palette;
+// struct palette_matrix *palette;
 // struct button_maxtrix_pin_config measure_matrix_button;
 // struct button_maxtrix_pin_config measure_matrix_led;
 // struct nav_config *nav_cfg;
@@ -281,7 +286,7 @@ int lcd_index = 0;
 // const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
 const struct lcd_pin_config lcd_cfg = {LCD_I2C, LCD_ROWS, LCD_COLUMNS};
 const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
-const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUTTON_DPAD_UP, BUTTON_DPAD_RIGHT};
+
 // create 2D array of palette_cell structs
 
 // Metronome Definition
@@ -300,15 +305,9 @@ int currNote = 0;
 int currBank = 0;
 int prevCount = 0;
 
-int meMat[][6] = { {0, Crash1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, AcousticSnare, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},
-                   {0, ClosedHiHat, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1},{0, AcousticSnare, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},
-                   {0, AcousticBassDrum, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, AcousticSnare, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},
-                   {0, AcousticBassDrum, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1},{0, AcousticSnare, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1}};
+int meMat[][6] = {{0, Crash1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1}, {0, AcousticSnare, -1, -1, -1, -1}, {0, AcousticBassDrum, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1}, {0, AcousticBassDrum, -1, -1, -1, -1}, {0, AcousticBassDrum, -1, -1, -1, -1}, {0, AcousticSnare, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1}, {0, AcousticBassDrum, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1}, {0, AcousticSnare, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1}, {0, AcousticBassDrum, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1}, {0, AcousticBassDrum, -1, -1, -1, -1}, {0, AcousticSnare, -1, -1, -1, -1}, {0, AcousticBassDrum, -1, -1, -1, -1}};
 
-int palette[][3] = {{0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60},
-                    {0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60},
-                    {0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60},
-                    {0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60}};
+int palette[][3] = {{0, Crash1, -1}, {1, ElectricGuitarClean, 60}, {1, ElectricGuitarClean, 60}, {0, Crash1, -1}, {1, ElectricGuitarClean, 60}, {1, ElectricGuitarClean, 60}, {0, Crash1, -1}, {1, ElectricGuitarClean, 60}, {1, ElectricGuitarClean, 60}, {0, Crash1, -1}, {1, ElectricGuitarClean, 60}, {1, ElectricGuitarClean, 60}};
 int palbut = -1;
 int stop = 1;
 

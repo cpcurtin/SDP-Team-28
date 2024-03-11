@@ -32,7 +32,7 @@ void setup()
   {
     Serial.println("MIDI INIT FAILED");
   }
-  if (dpad_init(dpad_cfg))
+  if (dpad_init())
   {
     Serial.println("DPAD INIT FAILED");
   }
