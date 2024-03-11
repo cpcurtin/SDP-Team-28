@@ -32,14 +32,15 @@ int midi_init(void)
 array_with_size *fetch_midi_melodic_sounds(void)
 {
   midi_melodic_sound_list->array = midi_melodic_sounds;
-  midi_melodic_sound_list->size = sizeof(midi_melodic_sounds)/sizeof(midi_melodic_sounds[0]);
+  midi_melodic_sound_list->size = sizeof(midi_melodic_sounds) / sizeof(midi_melodic_sounds[0]);
+
   return midi_melodic_sound_list;
 }
 
 array_with_size *fetch_midi_percussion_sounds(void)
 {
   midi_percussion_sound_list->array = midi_percussion_sounds;
-  midi_percussion_sound_list->size = sizeof(midi_percussion_sounds)/sizeof(midi_percussion_sounds[0]);
+  midi_percussion_sound_list->size = sizeof(midi_percussion_sounds) / sizeof(midi_percussion_sounds[0]);
   return midi_percussion_sound_list;
 }
 

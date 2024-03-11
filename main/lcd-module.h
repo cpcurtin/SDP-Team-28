@@ -49,7 +49,10 @@ lcd_nav *tracks_set_steps_nav = new lcd_nav;
 
 lcd_nav *sounds_midi_melodic_nav = new lcd_nav;
 lcd_nav *sounds_midi_percussion_nav = new lcd_nav;
-lcd_nav *sounds_midi__nav = new lcd_nav;
+lcd_nav *sounds_midi_octaves_nav = new lcd_nav;
+lcd_nav *sounds_midi_notes_nav = new lcd_nav;
+const char *octaves[] = {"-2 LOWEST", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8 HIGHEST"};
+const char *note_names[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
 /* NAVS TODO:
 

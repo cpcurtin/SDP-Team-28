@@ -316,4 +316,6 @@ int stop = 1;
 PROGRAM STRUCTS
 **************************/
 
+int serial_init(void);
+
 #endif // MAIN_H

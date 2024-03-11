@@ -50,16 +50,8 @@ void array_scroll(lcd_nav *nav, int direction)
 {
 
   int new_index;
-  if (nav->index + direction < 0)
-  {
-    // new index loops in reverse from 0 to end
-    new_index = (int)nav->size - 1;
-  }
-  else
-  {
-    // new index changes +/- and goes from end to 0
-    new_index = (nav->index + direction) % nav->size;
-  }
+  // new index changes +/- and goes from end to 0
+  new_index = (nav->index + direction + nav->size) % nav->size;
 
   nav->index = new_index;
   nav->lcd_state[0] = format_row(nav->data_array, new_index, 1);
@@ -113,6 +105,17 @@ lcd_nav *nav_selection(lcd_nav *nav, int direction)
       Serial.println(nav->name);
       return nav->child[nav->index];
     }
+    else if (strcmp((nav->parent)->name, "sounds_midi") == 0)
+    {
+      sounds_midi_octaves_nav->parent = nav;
+
+      return sounds_midi_octaves_nav;
+    }
+    else if (strcmp(nav->name, "sounds_midi_octaves") == 0)
+    {
+
+      return sounds_midi_notes_nav;
+    }
   }
   if (direction < 0)
   {
@@ -165,6 +168,8 @@ lcd_nav *nav_init(struct nav_config *cfg)
   const char **state_tracks_set_steps = new const char *[LCD_ROWS];
   const char **state_midi_melodic = new const char *[LCD_ROWS];
   const char **state_midi_percussion = new const char *[LCD_ROWS];
+  const char **state_midi_octaves = new const char *[LCD_ROWS];
+  const char **state_midi_notes = new const char *[LCD_ROWS];
 
   // ptr arrays
   lcd_nav **main_child = new lcd_nav *[3];
@@ -285,6 +290,26 @@ lcd_nav *nav_init(struct nav_config *cfg)
   sounds_midi_percussion_nav->lcd_state = state_midi_percussion;
   sounds_midi_percussion_nav->index = 0;
   array_scroll(sounds_midi_percussion_nav, 0);
+
+  // sounds_midi_octaves
+  sounds_midi_octaves_nav->name = strdup("sounds_midi_octaves");
+  sounds_midi_octaves_nav->data_array = octaves;
+  sounds_midi_octaves_nav->parent = NULL;
+  sounds_midi_octaves_nav->child = NULL;
+  sounds_midi_octaves_nav->size = 11;
+  sounds_midi_octaves_nav->lcd_state = state_midi_octaves;
+  sounds_midi_octaves_nav->index = 2;
+  array_scroll(sounds_midi_octaves_nav, 0);
+
+  // sounds_midi_notes
+  sounds_midi_notes_nav->name = strdup("sounds_midi_notes");
+  sounds_midi_notes_nav->data_array = note_names;
+  sounds_midi_notes_nav->parent = sounds_midi_octaves_nav;
+  sounds_midi_notes_nav->child = NULL;
+  sounds_midi_notes_nav->size = 12;
+  sounds_midi_notes_nav->lcd_state = state_midi_notes;
+  sounds_midi_notes_nav->index = 0;
+  array_scroll(sounds_midi_notes_nav, 0);
 
   return main_nav;
 }
