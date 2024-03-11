@@ -10,6 +10,8 @@ int dac_init(void)
 {
   AudioMemory(10);
   rraw_a1.enableInterpolation(true);
+  amp1.gain(DAC_GAIN);
+  amp2.gain(DAC_GAIN);
 
   Serial.println("onboard dac initialized");
   return 0;
@@ -20,6 +22,7 @@ char temp_str[MAX_FILENAME_LENGTH]; // Adjust MAX_FILENAME_LENGTH as needed
 
 int playFile(newdigate::audiosample *cached_sound)
 {
+  
 
   int mixer = -1;
 

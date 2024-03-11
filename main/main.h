@@ -1,8 +1,10 @@
 #ifndef MAIN_H
 #define MAIN_H
-#define BATTERY_OPERATED 0 // 1 if only on battery operation, 0 if not
-#define USING_MAIN_PCB 0   // 1 for integrated DAC, 0 for daughter board DAC
+#define BATTERY_OPERATED 1 // 1 if only on battery operation, 0 if not
+#define USING_MAIN_PCB 1   // 1 for integrated DAC, 0 for daughter board DAC
+#define USING_PSRAM 1   // 1 for teesny 4.1 with solder psram, 0 otherwise
 /*
+\
  *       MODULOOP MAIN CONFIGURATIONS
  *
  *    KEY:
@@ -192,10 +194,10 @@ TEMPO WHEEL PIN ASSIGNMENTS
 /**************************
 DPAD BUTTONS PIN ASSIGNMENTS
 **************************/
-#define BUTTON_DPAD_UP 15
-#define BUTTON_DPAD_DOWN 16
-#define BUTTON_DPAD_LEFT 17
-#define BUTTON_DPAD_RIGHT 14
+#define BUTTON_DPAD_LEFT 14
+#define BUTTON_DPAD_DOWN 15
+#define BUTTON_DPAD_UP 16
+#define BUTTON_DPAD_RIGHT 17
 
 /**************************
 MATRIX BUTTON PIN ASSIGNMENTS

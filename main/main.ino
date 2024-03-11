@@ -73,7 +73,7 @@ void setup()
 
   for (int i = 0; i < 4; i++)
   {
-    cached_samples[i] = cache_sd_sound((nav_cfg->sounds_custom)->array[2]);
+    cached_samples[i] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
   }
   Serial.println("PROGRAM LOOP BEGINS");
 }
@@ -84,6 +84,29 @@ void loop()
 
   if (ledMetro.check() == 1)
   {
+    if (count_temp == 0)
+    {
+      mixer_1 = playFile(cached_samples[0]);
+    }
+    if (count_temp == 5)
+    {
+      stopFile(mixer_1);
+      mixer_2 = playFile(cached_samples[1]);
+    }
+    if (count_temp == 11)
+    {
+      stopFile(mixer_2);
+      mixer_3 = playFile(cached_samples[2]);
+    }
+    if (count_temp == 17)
+    {
+      stopFile(mixer_3);
+      mixer_4 = playFile(cached_samples[3]);
+    }
+    if (count_temp == 25)
+    {
+      stopFile(mixer_4);
+    }
     // turning off all midi sounds on last step
     if (count_temp == 0)
     {
@@ -139,6 +162,10 @@ void loop()
       }
     }
     count_temp++;
+    active_track.bpm = read_tempo();
+    update_tempo(lcd);
+    metro_active_tempo = (60000 / (active_track.bpm * active_track.measure_steps));
+    ledMetro.interval(metro_active_tempo);
     if (count_temp == 24)
     {
       count_temp = 0;
