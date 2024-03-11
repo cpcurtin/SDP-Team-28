@@ -105,15 +105,12 @@ lcd_nav *nav_selection(lcd_nav *nav, int direction)
       Serial.println(nav->name);
       return nav->child[nav->index];
     }
-    else if (strcmp((nav->parent)->name, "sounds_midi") == 0)
+    else if (strcmp(nav->name, "sounds_midi_melodic") == 0)
     {
-      sounds_midi_octaves_nav->parent = nav;
-
       return sounds_midi_octaves_nav;
     }
     else if (strcmp(nav->name, "sounds_midi_octaves") == 0)
     {
-
       return sounds_midi_notes_nav;
     }
   }
@@ -294,7 +291,7 @@ lcd_nav *nav_init(struct nav_config *cfg)
   // sounds_midi_octaves
   sounds_midi_octaves_nav->name = strdup("sounds_midi_octaves");
   sounds_midi_octaves_nav->data_array = octaves;
-  sounds_midi_octaves_nav->parent = NULL;
+  sounds_midi_octaves_nav->parent = sounds_midi_percussion_nav;
   sounds_midi_octaves_nav->child = NULL;
   sounds_midi_octaves_nav->size = 11;
   sounds_midi_octaves_nav->lcd_state = state_midi_octaves;

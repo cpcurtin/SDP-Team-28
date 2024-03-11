@@ -60,13 +60,13 @@ void setup()
   nav_state = nav_init(nav_cfg);
 
   Serial.println("default track stats:");
-  // Serial.print("filename: ");
+  Serial.print("filename: ");
   Serial.println(active_track.filename);
-  // Serial.print("id: ");
+  Serial.print("id: ");
   Serial.println(active_track.id);
-  // Serial.print("bpm: ");
+  Serial.print("bpm: ");
   Serial.println(active_track.bpm);
-  // Serial.print("measure steps: ");
+  Serial.print("measure steps: ");
   Serial.println(active_track.measure_steps);
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
@@ -281,13 +281,13 @@ void loop()
     else if (strcmp(nav_state->name, "sounds_midi_notes") == 0)
     {
       Serial.println("MIDI SOUNDS SELECTION:");
-      // Serial.print("BANK: ");
+      Serial.print("BANK: ");
       Serial.println(((nav_state->parent)->parent)->name);
-      // Serial.print("Octave: ");
+      Serial.print("Octave: ");
       Serial.println((nav_state->parent)->data_array[(nav_state->parent)->index]);
-      // Serial.print("Note: ");
+      Serial.print("Note: ");
       Serial.println(nav_state->data_array[nav_state->index]);
-      // Serial.print("TEST: ");
+      Serial.print("TEST: ");
       Serial.println(midi_mapping[nav_state->index][(nav_state->parent)->index]);
     }
     else
