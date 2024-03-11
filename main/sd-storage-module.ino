@@ -12,7 +12,7 @@ int sd_init(void)
 {
   const int chipSelect = BUILTIN_SDCARD;
 
-  Serial.print("Initializing SD card...");
+  // Serial.print("Initializing SD card...");
 
   if (!SD.begin(chipSelect))
   {
@@ -93,7 +93,7 @@ void listfiles()
     ; // wait for serial port to connect.
   }
 
-  Serial.print("Initializing SD card...");
+  // Serial.print("Initializing SD card...");
 
   if (!SD.begin(chipSelect))
   {
@@ -120,7 +120,7 @@ void printDirectory(File dir, int numSpaces)
       break;
     }
     printSpaces(numSpaces);
-    Serial.print(entry.name());
+    // Serial.print(entry.name());
     if (entry.isDirectory())
     {
       Serial.println("/");
@@ -135,8 +135,8 @@ void printDirectory(File dir, int numSpaces)
       if (n > 10)
         n = 10;
       printSpaces(50 - numSpaces - strlen(entry.name()) - n);
-      Serial.print("  ");
-      Serial.print(entry.size(), DEC);
+      // Serial.print("  ");
+      // Serial.print(entry.size(), DEC);
       DateTimeFields datetime;
       if (entry.getModifyTime(datetime))
       {
@@ -153,7 +153,7 @@ void printSpaces(int num)
 {
   for (int i = 0; i < num; i++)
   {
-    Serial.print(" ");
+    // Serial.print(" ");
   }
 }
 
@@ -163,18 +163,18 @@ void printTime(const DateTimeFields tm)
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"};
   if (tm.hour < 10)
-    Serial.print('0');
-  Serial.print(tm.hour);
-  Serial.print(':');
-  if (tm.min < 10)
-    Serial.print('0');
-  Serial.print(tm.min);
-  Serial.print("  ");
-  Serial.print(tm.mon < 12 ? months[tm.mon] : "???");
-  Serial.print(" ");
-  Serial.print(tm.mday);
-  Serial.print(", ");
-  Serial.print(tm.year + 1900);
+    // Serial.print('0');
+    // Serial.print(tm.hour);
+    // Serial.print(':');
+    if (tm.min < 10)
+  // Serial.print('0');
+  // Serial.print(tm.min);
+  // Serial.print("  ");
+  // Serial.print(tm.mon < 12 ? months[tm.mon] : "???");
+  // Serial.print(" ");
+  // Serial.print(tm.mday);
+  // Serial.print(", ");
+  // Serial.print(tm.year + 1900);
 }
 
 void read_track(const char *filename, track &config)
@@ -292,7 +292,7 @@ void print_JSON(const char *filename)
   // Extract each characters by one by one
   while (file.available())
   {
-    Serial.print((char)file.read());
+    // Serial.print((char)file.read());
   }
   Serial.println();
 

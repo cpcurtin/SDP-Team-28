@@ -13,7 +13,7 @@ int dpad_init()
   pinMode(BUTTON_DPAD_RIGHT, INPUT);
   pinMode(BUTTON_DPAD_DOWN, INPUT);
   pinMode(BUTTON_DPAD_UP, INPUT);
-  
+
   return 0;
 }
 int button_matrix_init(void)
@@ -54,9 +54,7 @@ int button_matrix_init(void)
 }
 int dpad_read(void)
 {
-
 }
-
 
 int button_pressed(int pin)
 {
@@ -179,8 +177,8 @@ void check_rows(int colIndex)
       Current_Button_State[0] = rowIndex;
       Current_Button_State[1] = colIndex;
       Pressed = 1;
-      Serial.print("Push");
-      Serial.print(rowIndex);
+      // Serial.print("Push");
+      // Serial.print(rowIndex);
       Serial.println(colIndex);
     }
   }
@@ -189,7 +187,7 @@ void check_rows(int colIndex)
 void Button_Pressed(int Current_State[], int Previous_State[])
 {
   previousMillis = millis();
-  //LED_On(Current_State[0], Current_State[1]);
+  // LED_On(Current_State[0], Current_State[1]);
 
   if (loop_counter == 3)
   {
@@ -231,7 +229,7 @@ void Button_Released(int Current_State[], int Previous_State[])
 {
 
   previousMillis = millis();
-  //LED_Off(Previous_State[0], Previous_State[1]);
+  // LED_Off(Previous_State[0], Previous_State[1]);
   Current_State[0] = 9;
   Current_State[1] = 9;
 }
@@ -302,7 +300,7 @@ int read_tempo(void)
 
   int voltage = (int)raw_avg * ((TEMPO_KNOB_MAX - TEMPO_KNOB_MIN) / 1023.0); // Assuming 5V Arduino board
 
-  return TEMPO_KNOB_MIN+ voltage;
+  return TEMPO_KNOB_MIN + voltage;
 
   // Delay for readability (adjust as needed)
 }

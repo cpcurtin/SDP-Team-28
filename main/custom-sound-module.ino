@@ -54,8 +54,8 @@ int playFile(newdigate::audiosample *cached_sound)
 
   delay(1); // wait for library to parse WAV info
 
-  // Serial.print(AudioMemoryUsage());
-  // Serial.print(",");
+  // // Serial.print(AudioMemoryUsage());
+  // // Serial.print(",");
   // Serial.println(AudioMemoryUsageMax());
 
   return mixer;
@@ -100,7 +100,7 @@ newdigate::audiosample *cache_sd_sound(const char *filename)
   // Concatenate filename to temp_str
   strcat(temp_str, filename);
 
-  Serial.print("Playing file: ");
+  // Serial.print("Playing file: ");
   Serial.println(filename);
   return loader.loadSample(temp_str);
 }
