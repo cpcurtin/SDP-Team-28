@@ -214,22 +214,37 @@ void loop()
   active_track.bpm = read_tempo();
   update_tempo(lcd);
 
+  /*
+  DPAD LEFT
+  */
   if (button_pressed(BUTTON_DPAD_LEFT)) // return / exit
   {
     nav_state = nav_selection(nav_state, NAV_BACKWARD);
 
     lcd_display(lcd, nav_state->lcd_state);
   }
+
+  /*
+  DPAD DOWN
+  */
   if (button_pressed(BUTTON_DPAD_DOWN)) // scroll down
   {
     array_scroll(nav_state, NAV_DOWN);
     lcd_display(lcd, nav_state->lcd_state);
   }
+
+  /*
+  DPAD UP
+  */
   if (button_pressed(BUTTON_DPAD_UP)) // scroll up
   {
     array_scroll(nav_state, NAV_UP);
     lcd_display(lcd, nav_state->lcd_state);
   }
+
+  /*
+  DPAD RIGHT
+  */
   if (button_pressed(BUTTON_DPAD_RIGHT)) // select
   {
     if (strcmp(nav_state->data_array[nav_state->index], "Save Track") == 0)
@@ -289,6 +304,28 @@ void loop()
       Serial.println(nav_state->data_array[nav_state->index]);
       Serial.print("TEST: ");
       Serial.println(midi_mapping[nav_state->index][(nav_state->parent)->index]);
+
+      // BANK
+      // sounds_midi_nav->index;
+
+      // melodic sound
+      // midi_melodic_values[sounds_midi_melodic_nav->index];
+
+      // midi standard mapping (octave & note)
+      // midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index]
+    }
+    else if (strcmp(nav_state->name, "sounds_midi_percussion") == 0)
+    {
+      // BANK
+      // sounds_midi_nav->index;
+
+      // currently selected midi sound
+      // midi_percussion_values[sounds_midi_percussion_nav->index];
+    }
+    else if (strcmp(nav_state->name, "custom_sounds") == 0)
+    {
+      // currently selected custom sound
+      // sounds_custom_nav->data_array[sounds_custom_nav->index];
     }
     else
     {
