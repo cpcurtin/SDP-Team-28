@@ -1,5 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
+#define BATTERY_OPERATED 0 // 1 if only on battery operation, 0 if not
+#define USING_MAIN_PCB 0   // 1 for integrated DAC, 0 for daughter board DAC
 /*
  *       MODULOOP MAIN CONFIGURATIONS
  *

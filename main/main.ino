@@ -15,13 +15,15 @@ Serial.println(" milliseconds");
 void setup()
 {
 
-  /* Intialize hardware */
-  // READ THIS!!!!!!! - If you are trying to run on battery power, take out the serial_init() below!!!!!!!!
+/* Intialize hardware */
+// READ THIS!!!!!!! - If you are trying to run on battery power, take out the serial_init() below!!!!!!!!
+#if BATTERY_OPERATED == 0
   if (serial_init())
   {
 
     Serial.println("SERIAL INIT FAILED");
   }
+#endif
 
   if (sd_init())
   {
