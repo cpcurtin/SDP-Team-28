@@ -20,7 +20,7 @@ struct dac_pin_config
     const int ws;
     const int bck;
 };
-#define I2S_CHANNEL 1 // 0 if using top dac, 1 if using dac on main
+#define I2S_CHANNEL 0 // 0 if using top dac, 1 if using dac on main
 
 #if I2S_CHANNEL == 1
 AudioPlayArrayResmp rraw_a3;    // xy=321,513

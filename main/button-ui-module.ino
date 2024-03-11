@@ -54,6 +54,7 @@ int button_matrix_init(void)
 }
 int dpad_read(void)
 {
+  return 0;
 }
 
 int button_pressed(int pin)
@@ -80,32 +81,6 @@ void button_matrix_init(struct button_maxtrix_pin_config *cfg)
   pinMode(30, INPUT);
 }
 
-// void palette_assign(struct palette_matrix *palette, const char *sound)
-// {
-//     // ACTUAL
-
-//     // TEMPORARY
-//     int cell_assigned = 0;
-
-//     while ((!cell_assigned))
-//     {
-//         if (button_pressed(24))
-//         {
-//             break;
-//         }
-
-//         for (int i = 0; i < 3; i++)
-//         {
-//             if (button_pressed(i + 28))
-//             {
-//                 Serial.println(i + 28);
-//                 (palette->cells[0][i])->sound = sound;
-//                 (palette->cells[0][i])->available = 0;
-//                 cell_assigned = 1;
-//             }
-//         }
-//     }
-// }
 void measure_matrix_init(struct button_maxtrix_pin_config &button_cfg, struct button_maxtrix_pin_config &led_cfg)
 {
   //  size_t width;  // The length of the array

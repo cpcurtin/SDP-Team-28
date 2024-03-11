@@ -163,18 +163,18 @@ void printTime(const DateTimeFields tm)
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"};
   if (tm.hour < 10)
-    // Serial.print('0');
-    // Serial.print(tm.hour);
-    // Serial.print(':');
-    if (tm.min < 10)
-  // Serial.print('0');
-  // Serial.print(tm.min);
-  // Serial.print("  ");
-  // Serial.print(tm.mon < 12 ? months[tm.mon] : "???");
-  // Serial.print(" ");
-  // Serial.print(tm.mday);
-  // Serial.print(", ");
-  // Serial.print(tm.year + 1900);
+    Serial.print('0');
+  Serial.print(tm.hour);
+  Serial.print(':');
+  if (tm.min < 10)
+    Serial.print('0');
+  Serial.print(tm.min);
+  Serial.print("  ");
+  Serial.print(tm.mon < 12 ? months[tm.mon] : "???");
+  Serial.print(" ");
+  Serial.print(tm.mday);
+  Serial.print(", ");
+  Serial.print(tm.year + 1900);
 }
 
 void read_track(const char *filename, track &config)
