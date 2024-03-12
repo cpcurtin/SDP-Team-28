@@ -36,10 +36,12 @@ struct palette_matrix
     int columns;
 };
 
-const int selectPin1_button = 10; // select bit A
-const int selectPin2_button = 11; // select bit B
-const int selectPin3_button = 12; // select bit C
-const int enablePin_columns = 24; // enable bit
+
+const int selectPin1_button = 12; //select bit A
+const int selectPin2_button = 11; //select bit B
+const int selectPin3_button = 10; //select bit C
+const int enablePin_columns = 24; //enable bit
+
 
 const int selectPin1_LED = 27; // select bit A
 const int selectPin2_LED = 26; // select bit B
