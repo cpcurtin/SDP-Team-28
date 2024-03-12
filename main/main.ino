@@ -133,8 +133,6 @@ void loop()
     ledMetro.reset();
   }
 
-  if (Current_Button_State[1] >= 5 && Current_Button_State[1] != 9)
-  {
 
   if(Current_Button_State[1]>5 && Current_Button_State[1]!=9){
     //Serial.println("palette pushed");
