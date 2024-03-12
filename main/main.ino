@@ -130,10 +130,10 @@ void loop()
     }
 
     // Turn on and off measure matrix LEDs
-    LED_Off(MeMat_LEDindex[prevCount][0], MeMat_LEDindex[prevCount][1]);
 
     if (stop == 1)
     {
+      LED_Off(MeMat_LEDindex[prevCount][0], MeMat_LEDindex[prevCount][1]);
       LED_On(MeMat_LEDindex[count_temp][0], MeMat_LEDindex[count_temp][1]);
     }
 
@@ -192,13 +192,13 @@ void loop()
       }
     }
   }
-  if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palbut != -1)
-  {
-    // Serial.println("measure pushed");
-    Current_Row = Current_Button_State[0];
-    Current_Column = Current_Button_State[1];
-    int meMatConv = 6 * Current_Row + Current_Column;
-    LED_Off(Current_Row, Current_Column);
+  if(Current_Button_State[1]<=5 && Current_Button_State[1]!=9 && palbut!= -1){
+    //Serial.println("measure pushed");
+    Serial.println("test");
+    int Current_Row1 = Current_Button_State[0];
+    int Current_Column1 = Current_Button_State[1];
+    int meMatConv = 6*Current_Row1 + Current_Column1;
+    LED_Off(Current_Row,Current_Column);
     int channel = palette[palbut][0];
     int instr = palette[palbut][1];
     int note = palette[palbut][2];
@@ -212,8 +212,7 @@ void loop()
         stop = 1;
       }
     }
-    for (int i = 0; i < 12; i += 3)
-
+    for (int i = 0; i < 12; i+=3)
     {
       if (meMat[meMatConv][i] == -1 && stop == 0)
       {
@@ -224,10 +223,12 @@ void loop()
         // Serial.println("here");
       }
     }
+    /*
     for (int i = 0; i < 12; i++)
     {
       Serial.println(meMat[meMatConv][i]);
     }
+    */
     palbut = -1;
   }
 
