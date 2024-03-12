@@ -74,7 +74,7 @@ void array_scroll(lcd_nav *nav, int direction)
 
 const char *format_row(const char **data_array, int index, int format)
 {
-  char *temp_str = (char *)malloc(20 + 1); // Allocate memory dynamically
+  char *temp_str = (char *)malloc(LCD_COLUMNS + NULL_TERMINATION); // Allocate memory dynamically
 
   if (temp_str == NULL)
   {
@@ -85,11 +85,11 @@ const char *format_row(const char **data_array, int index, int format)
   // spacing, enumerated
   if (format == 0)
   {
-    snprintf(temp_str, 20 + 1, " %d %s", index + 1, data_array[index]);
+    snprintf(temp_str, LCD_COLUMNS + NULL_TERMINATION, " %d %s", index + 1, data_array[index]);
   }
   else if (format == 1)
   {
-    snprintf(temp_str, 20 + 1, ">%d %s", index + 1, data_array[index]);
+    snprintf(temp_str, LCD_COLUMNS + NULL_TERMINATION, ">%d %s", index + 1, data_array[index]);
   }
 
   return temp_str;
@@ -327,11 +327,11 @@ const char *tracks_update(void)
   // spacing, enumerated
   if (active_track.bpm != 0)
   {
-    snprintf(temp_str, 20 + 1, "BPM:%d STEPS:%d ID:%d ", active_track.bpm, active_track.measure_steps, active_track.id);
+    snprintf(temp_str, LCD_COLUMNS + NULL_TERMINATION, "BPM:%d STEPS:%d ID:%d ", active_track.bpm, active_track.measure_steps, active_track.id);
   }
   else
   {
-    snprintf(temp_str, 20 + 1, "NO TRACK SELECTED");
+    snprintf(temp_str, LCD_COLUMNS + NULL_TERMINATION, "NO TRACK SELECTED");
   }
   return temp_str;
 }
@@ -343,18 +343,27 @@ void update_tempo(LiquidCrystal_I2C *lcd)
   lcd->home();
 }
 
-void lcd_splash(const char **print_arr)
+void lcd_splash(LiquidCrystal_I2C *lcd, const char **print_arr)
 {
+
   splash_screen_active = true;
 
-  
+  for (int row = 0; row < LCD_ROWS; row++)
+  {
+    state_splash_screen[row] = print_arr[row];
+  }
 
+  // strcat(state_splash_screen[1], sound_name);
+  // strcat(state_splash_screen[2], );
+  // strcat(state_splash_screen[3], );
   lcd->clear();
+
   for (int row = 0; row < LCD_ROWS; row++)
   {
     lcd->setCursor(0, row); // set cursor to row 0
 
-    lcd->print(print_arr[row]); // print to row 0
+    lcd->print(state_splash_screen[row]); // print to row 0
   }
+
   lcd->home();
 }

@@ -242,9 +242,6 @@ void loop()
     Previous_Button_State[1] = Current_Button_State[1];
   }
 
-  active_track.bpm = read_tempo();
-  update_tempo(lcd);
-
   /*****************************************************************************
   DPAD LEFT
   *****************************************************************************/
@@ -278,13 +275,16 @@ void loop()
   *****************************************************************************/
   if (button_pressed(BUTTON_DPAD_RIGHT)) // select
   {
+
+    /**************************     TRACKS OPTIONS     **************************/
+
     /*
     SAVE TRACK
     */
     if (strcmp(nav_state->data_array[nav_state->index], "Save Track") == 0)
     {
-      char *new_track_filename = (char *)malloc(20 + 1);
-      snprintf(new_track_filename, 20 + 1, "TRACK%d.json", (nav_state->child[2])->size);
+      char *new_track_filename = (char *)malloc(LCD_COLUMNS + NULL_TERMINATION);
+      snprintf(new_track_filename, LCD_COLUMNS + NULL_TERMINATION, "TRACK%d.json", (nav_state->child[2])->size);
       strncpy(active_track.filename, new_track_filename, 63); // Copy up to 63 characters to ensure null-termination
       active_track.filename[63] = '\0';
 
@@ -303,8 +303,8 @@ void loop()
     */
     else if (strcmp(nav_state->data_array[nav_state->index], "Delete Track") == 0)
     {
-      char *delete_track_filename = (char *)malloc(20 + 1);
-      snprintf(delete_track_filename, 20 + 1, "TRACK%d.json", active_track.id);
+      char *delete_track_filename = (char *)malloc(LCD_COLUMNS + NULL_TERMINATION);
+      snprintf(delete_track_filename, LCD_COLUMNS + NULL_TERMINATION, "TRACK%d.json", active_track.id);
 
       if (sd_delete_track(delete_track_filename))
       {
@@ -336,6 +336,7 @@ void loop()
     {
       active_track.measure_steps = nav_state->index + 1;
     }
+    /*************************     SOUNDS SELECT     **************************/
     /*
     SELECTED MELODIC MIDI SOUND
     */
@@ -359,6 +360,9 @@ void loop()
 
       // midi standard mapping (octave & note)
       // midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index]
+      nav_state = main_nav;
+      Serial.println("DISPLAY SPLASH");
+      lcd_splash(lcd, selected_sound); //, sounds_midi_melodic_nav->data_array[sounds_midi_melodic_nav->index]);
     }
     /*
     SELECTED PERCUSSION MIDI SOUND
@@ -379,6 +383,7 @@ void loop()
       // currently selected custom sound
       // sounds_custom_nav->data_array[sounds_custom_nav->index];
     }
+    /************************     DEFAULT BEHAVIOR     ************************/
     /*
     SELECT NEXT NAV
     */
