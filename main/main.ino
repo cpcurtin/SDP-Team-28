@@ -87,22 +87,22 @@ void loop()
     {
       mixer_1 = playFile(cached_samples[0]);
     }
-    if (count_temp == 5)
+    if (count_temp == 2)
     {
       stopFile(mixer_1);
       mixer_2 = playFile(cached_samples[1]);
     }
-    if (count_temp == 11)
+    if (count_temp == 4)
     {
       stopFile(mixer_2);
       mixer_3 = playFile(cached_samples[2]);
     }
-    if (count_temp == 17)
+    if (count_temp == 6)
     {
       stopFile(mixer_3);
       mixer_4 = playFile(cached_samples[3]);
     }
-    if (count_temp == 25)
+    if (count_temp == 8)
     {
       stopFile(mixer_4);
     }
@@ -192,13 +192,14 @@ void loop()
       }
     }
   }
-  if(Current_Button_State[1]<=5 && Current_Button_State[1]!=9 && palbut!= -1){
-    //Serial.println("measure pushed");
+  if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palbut != -1)
+  {
+    // Serial.println("measure pushed");
     Serial.println("test");
     int Current_Row1 = Current_Button_State[0];
     int Current_Column1 = Current_Button_State[1];
-    int meMatConv = 6*Current_Row1 + Current_Column1;
-    LED_Off(Current_Row,Current_Column);
+    int meMatConv = 6 * Current_Row1 + Current_Column1;
+    LED_Off(Current_Row, Current_Column);
     int channel = palette[palbut][0];
     int instr = palette[palbut][1];
     int note = palette[palbut][2];
@@ -212,7 +213,7 @@ void loop()
         stop = 1;
       }
     }
-    for (int i = 0; i < 12; i+=3)
+    for (int i = 0; i < 12; i += 3)
     {
       if (meMat[meMatConv][i] == -1 && stop == 0)
       {
@@ -251,12 +252,15 @@ void loop()
     Previous_Button_State[1] = Current_Button_State[1];
   }
 
-  /*
-  READ DPAD INPUTS
-  */
+
+
+
+  
+  /*************************     READ DPAD INPUTS     *************************/
   dpad_pressed = dpad_read();
+
   /*****************************************************************************
-  DPAD LEFT
+  ******************************     DPAD LEFT     *****************************
   *****************************************************************************/
   if (dpad_pressed == BUTTON_DPAD_LEFT) // return / exit
   {
@@ -265,8 +269,9 @@ void loop()
     lcd_display(lcd, nav_state->lcd_state);
   }
 
+  
   /*****************************************************************************
-  DPAD DOWN
+  ******************************     DPAD DOWN     *****************************
   *****************************************************************************/
   if (dpad_pressed == BUTTON_DPAD_DOWN) // scroll down
   {
@@ -275,7 +280,7 @@ void loop()
   }
 
   /*****************************************************************************
-  DPAD UP
+  ******************************     DPAD UP       *****************************
   *****************************************************************************/
   if (dpad_pressed == BUTTON_DPAD_UP) // scroll up
   {
@@ -284,7 +289,7 @@ void loop()
   }
 
   /*****************************************************************************
-  DPAD RIGHT
+  ******************************     DPAD RIGHT    *****************************
   *****************************************************************************/
   if (dpad_pressed == BUTTON_DPAD_RIGHT) // select
   {
