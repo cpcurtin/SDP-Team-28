@@ -285,7 +285,7 @@ const struct dpad_pin_config dpad_cfg = {BUTTON_DPAD_LEFT, BUTTON_DPAD_DOWN, BUT
 // create 2D array of palette_cell structs
 
 // Metronome Definition
-Metro ledMetro = Metro(500);
+Metro ledMetro = Metro(200);
 int count_temp = 0;
 
 int mixer_1;
@@ -300,15 +300,14 @@ int currNote = 0;
 int currBank = 0;
 int prevCount = 0;
 
-int meMat[][6] = { {0, Crash1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, AcousticSnare, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},
-                   {0, ClosedHiHat, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1},{0, AcousticSnare, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},
-                   {0, AcousticBassDrum, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, AcousticSnare, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},
-                   {0, AcousticBassDrum, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1},{0, AcousticSnare, -1, -1, -1, -1},{0, AcousticBassDrum, -1, -1, -1, -1}};
-
-int palette[][3] = {{0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60},
-                    {0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60},
-                    {0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60},
-                    {0, Crash1, -1},{1, ElectricGuitarClean, 60},{1, ElectricGuitarClean, 60}};
+int meMat[][12] = { {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                   {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                   {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                   {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
+int palette[][3] = {{0, Crash1, -1},{0, MetBell, -1},{0, Maracas, -1},
+                    {0, Crash1, -1},{0, MetBell, -1},{0, Maracas, -1},
+                    {1, Tuba, 40},{1, Flute, 60},{1, ElectricGuitarClean, 60},
+                    {1, Tuba, 40},{1, Flute, 60},{1, ElectricGuitarClean, 60}};
 int palbut = -1;
 int stop = 1;
 

@@ -19,6 +19,7 @@ void setup()
 
   /* Intialize hardware */
   // READ THIS!!!!!!! - If you are trying to run on battery power, take out the serial_init() below!!!!!!!!
+
   //serial_init();
 
   /*if (sd_init())
@@ -80,7 +81,7 @@ void loop()
     {
       prevCount = count_temp - 1;
     }
-    for (int i = 0; i < 6; i += 3)
+    for (int i = 0; i < 12; i+=3) 
     {
       currBank = meMat[prevCount][i];
       if (currBank == 0)
@@ -103,8 +104,7 @@ void loop()
     }
 
     // play sounds on measure matrix
-    for (int i = 0; i < 6; i += 3)
-    {
+    for (int i = 0; i < 12; i+=3) {
       if (meMat[count_temp][i] == 0)
       {
         midiSetInstrument(0, 128);
@@ -136,6 +136,8 @@ void loop()
   if (Current_Button_State[1] >= 5 && Current_Button_State[1] != 9)
   {
 
+  if(Current_Button_State[1]>5 && Current_Button_State[1]!=9){
+    //Serial.println("palette pushed");
     Current_Row = Current_Button_State[0];
     Current_Column = Current_Button_State[1];
     LED_On(Current_Row, Current_Column);
@@ -149,32 +151,40 @@ void loop()
       }
     }
   }
-  if (Current_Button_State[1] < 5 && Current_Button_State[1] != 9 && palbut != -1)
-  {
-    LED_Off(Current_Row, Current_Column);
+  if(Current_Button_State[1]<=5 && Current_Button_State[1]!=9 && palbut!= -1){
+    //Serial.println("measure pushed");
+    Current_Row = Current_Button_State[0];
+    Current_Column = Current_Button_State[1];
+    int meMatConv = 6*Current_Row + Current_Column;
+    LED_Off(Current_Row,Current_Column);
     int channel = palette[palbut][0];
     int instr = palette[palbut][1];
     int note = palette[palbut][2];
-    for (int i = 0; i < 6; i += 3)
+    for (int i = 0; i < 12; i+=3)
     {
-      if (meMat[0][i] == channel && meMat[0][i + 1] == instr && meMat[0][i + 2] == note && stop == 0)
+      if (meMat[meMatConv][i] == channel && meMat[meMatConv][i+1] == instr && meMat[meMatConv][i+2] == note && stop == 0)
       {
-        meMat[0][i] = -1;
-        meMat[0][i + 1] = -1;
-        meMat[0][i + 2] = -1;
+        meMat[meMatConv][i] = -1;
+        meMat[meMatConv][i+1] = -1;
+        meMat[meMatConv][i+2] = -1;
         stop = 1;
       }
     }
-    for (int i = 0; i < 6; i += 3)
+    for (int i = 0; i < 12; i+=3)
+
     {
-      if (meMat[0][i] == -1 && stop == 0)
+      if (meMat[meMatConv][i] == -1 && stop == 0)
       {
-        meMat[0][i] = channel;
-        meMat[0][i + 1] = instr;
-        meMat[0][i + 2] = note;
+        meMat[meMatConv][i] = channel;
+        meMat[meMatConv][i+1] = instr;
+        meMat[meMatConv][i+2] = note;
         stop = 1;
         // Serial.println("here");
       }
+    }
+    for (int i = 0; i < 12; i++)
+    {
+      Serial.println(meMat[meMatConv][i]);
     }
     palbut = -1;
   }
