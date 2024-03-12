@@ -194,10 +194,10 @@ TEMPO WHEEL PIN ASSIGNMENTS
 /**************************
 DPAD BUTTONS PIN ASSIGNMENTS
 **************************/
-#define BUTTON_DPAD_LEFT 14
-#define BUTTON_DPAD_DOWN 15
-#define BUTTON_DPAD_UP 16
-#define BUTTON_DPAD_RIGHT 17
+#define BUTTON_DPAD_LEFT 17
+#define BUTTON_DPAD_DOWN 16
+#define BUTTON_DPAD_UP 15
+#define BUTTON_DPAD_RIGHT 14
 
 /**************************
 MATRIX BUTTON PIN ASSIGNMENTS
@@ -295,7 +295,7 @@ const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
 // create 2D array of palette_cell structs
 
 // Metronome Definition
-Metro ledMetro = Metro(200);
+Metro ledMetro = Metro(100);
 int count_temp = 0;
 
 int mixer_1;
@@ -309,7 +309,7 @@ float metro_active_tempo;
 int currNote = 0;
 int currBank = 0;
 int prevCount = 0;
-
+newdigate::audiosample *cached_samples_sd[24][4];
 
 int meMat[][12] = { {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                    {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},

@@ -71,41 +71,60 @@ void setup()
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
-  for (int i = 0; i < 4; i++)
-  {
-    cached_samples[i] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
-  }
+  // for (int i = 0; i < 4; i++)
+  // {
+  //   cached_samples[i] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
+  // }
+
+  cached_samples[0] = cache_sd_sound((nav_cfg->sounds_custom)->array[5]);
+  cached_samples[1] = cache_sd_sound((nav_cfg->sounds_custom)->array[5]);
+  cached_samples[2] = cache_sd_sound((nav_cfg->sounds_custom)->array[5]);
+  cached_samples[3] = cache_sd_sound((nav_cfg->sounds_custom)->array[5]);
   Serial.println("PROGRAM LOOP BEGINS");
+  cached_samples_sd[0][0] = cached_samples[0];
+  cached_samples_sd[1][0] = cached_samples[1];
+  cached_samples_sd[2][0] = cached_samples[2];
+  cached_samples_sd[3][0] = cached_samples[3];
+  //Serial.println(SDmeMat[0][0]);
+
 }
 
 /* Main subroutine: follow software block diagram */
 void loop()
-{
+{ 
+  
+  if(cached_samples_sd[0][0]==nullptr){
+    Serial.println("cached sound exists");
+  }
+  // Serial.println(SDmeMat[0][0]);
   if (ledMetro.check() == 1)
   {
+    
     if (count_temp == 0)
     {
-      mixer_1 = playFile(cached_samples[0]);
+      mixer_1 = playFile(cached_samples_sd[0][0]);
+    }
+    if (count_temp == 1)
+    {
+      mixer_2 = playFile(cached_samples_sd[1][0]);
+      stopFile(mixer_1);
     }
     if (count_temp == 2)
     {
-      stopFile(mixer_1);
-      mixer_2 = playFile(cached_samples[1]);
+      stopFile(mixer_2);
+      mixer_3 = playFile(cached_samples_sd[2][0]);
+    }
+    if (count_temp == 3)
+    {
+      stopFile(mixer_3);
+      mixer_4 = playFile(cached_samples_sd[3][0]);
     }
     if (count_temp == 4)
     {
-      stopFile(mixer_2);
-      mixer_3 = playFile(cached_samples[2]);
-    }
-    if (count_temp == 6)
-    {
-      stopFile(mixer_3);
-      mixer_4 = playFile(cached_samples[3]);
-    }
-    if (count_temp == 8)
-    {
       stopFile(mixer_4);
     }
+    
+
     // turning off all midi sounds on last step
     if (count_temp == 0)
     {
