@@ -52,10 +52,6 @@ int button_matrix_init(void)
 
   return 0;
 }
-int dpad_read(void)
-{
-  return 0;
-}
 
 int button_pressed(int pin)
 {
@@ -278,4 +274,46 @@ int read_tempo(void)
   return TEMPO_KNOB_MIN + voltage;
 
   // Delay for readability (adjust as needed)
+}
+
+int dpad_read(void)
+{
+
+  if (dpad_button_pressed)
+  {
+    if (millis() - dpad_last_pressed > 50 && digitalRead(dpad_button_pressed) == LOW)
+    {
+      dpad_press_return = dpad_button_pressed;
+      dpad_button_pressed = 0;
+      return dpad_press_return;
+    }
+  }
+  else
+  {
+    if (digitalRead(BUTTON_DPAD_LEFT) == HIGH)
+    {
+      dpad_button_pressed = BUTTON_DPAD_LEFT;
+    }
+    if (digitalRead(BUTTON_DPAD_DOWN) == HIGH)
+    {
+      dpad_button_pressed = BUTTON_DPAD_DOWN;
+    }
+    if (digitalRead(BUTTON_DPAD_UP) == HIGH)
+    {
+      dpad_button_pressed = BUTTON_DPAD_UP;
+    }
+    if (digitalRead(BUTTON_DPAD_RIGHT) == HIGH)
+    {
+      dpad_button_pressed = BUTTON_DPAD_RIGHT;
+    }
+    dpad_last_pressed = millis();
+  }
+
+  /*
+unsigned long start_time = millis();
+unsigned long end_time = millis();
+Calculate the difference in time unsigned long time_diff = end_time - start_time;
+  */
+
+  return 0;
 }

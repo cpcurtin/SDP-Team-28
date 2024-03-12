@@ -22,7 +22,6 @@ struct dac_pin_config
     const int bck;
 };
 
-
 #if USING_MAIN_PCB == 1
 // GUItool: begin automatically generated code
 AudioPlayArrayResmp rraw_a3;    // xy=321,513
@@ -93,7 +92,6 @@ newdigate::audiosample *cached_samples[MAX_SOUNDS];
 // newdigate::audiosample *player3;
 // newdigate::audiosample *player4;
 newdigate::flashloader loader;
-
 
 // functions, extern variables, structs go here
 int dac_init(void);

@@ -81,7 +81,6 @@ void setup()
 /* Main subroutine: follow software block diagram */
 void loop()
 {
-
   if (ledMetro.check() == 1)
   {
     if (count_temp == 0)
@@ -116,7 +115,7 @@ void loop()
     {
       prevCount = count_temp - 1;
     }
-    for (int i = 0; i < 12; i+=3) 
+    for (int i = 0; i < 12; i += 3)
     {
       currBank = meMat[prevCount][i];
       if (currBank == 0)
@@ -139,7 +138,8 @@ void loop()
     }
 
     // play sounds on measure matrix
-    for (int i = 0; i < 12; i+=3) {
+    for (int i = 0; i < 12; i += 3)
+    {
       if (meMat[count_temp][i] == 0)
       {
         midiSetInstrument(0, 128);
@@ -176,9 +176,9 @@ void loop()
     ledMetro.reset();
   }
 
-
-  if(Current_Button_State[1]>5 && Current_Button_State[1]!=9){
-    //Serial.println("palette pushed");
+  if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9)
+  {
+    // Serial.println("palette pushed");
     Current_Row = Current_Button_State[0];
     Current_Column = Current_Button_State[1];
     LED_On(Current_Row, Current_Column);
@@ -192,33 +192,34 @@ void loop()
       }
     }
   }
-  if(Current_Button_State[1]<=5 && Current_Button_State[1]!=9 && palbut!= -1){
-    //Serial.println("measure pushed");
+  if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palbut != -1)
+  {
+    // Serial.println("measure pushed");
     Current_Row = Current_Button_State[0];
     Current_Column = Current_Button_State[1];
-    int meMatConv = 6*Current_Row + Current_Column;
-    LED_Off(Current_Row,Current_Column);
+    int meMatConv = 6 * Current_Row + Current_Column;
+    LED_Off(Current_Row, Current_Column);
     int channel = palette[palbut][0];
     int instr = palette[palbut][1];
     int note = palette[palbut][2];
-    for (int i = 0; i < 12; i+=3)
+    for (int i = 0; i < 12; i += 3)
     {
-      if (meMat[meMatConv][i] == channel && meMat[meMatConv][i+1] == instr && meMat[meMatConv][i+2] == note && stop == 0)
+      if (meMat[meMatConv][i] == channel && meMat[meMatConv][i + 1] == instr && meMat[meMatConv][i + 2] == note && stop == 0)
       {
         meMat[meMatConv][i] = -1;
-        meMat[meMatConv][i+1] = -1;
-        meMat[meMatConv][i+2] = -1;
+        meMat[meMatConv][i + 1] = -1;
+        meMat[meMatConv][i + 2] = -1;
         stop = 1;
       }
     }
-    for (int i = 0; i < 12; i+=3)
+    for (int i = 0; i < 12; i += 3)
 
     {
       if (meMat[meMatConv][i] == -1 && stop == 0)
       {
         meMat[meMatConv][i] = channel;
-        meMat[meMatConv][i+1] = instr;
-        meMat[meMatConv][i+2] = note;
+        meMat[meMatConv][i + 1] = instr;
+        meMat[meMatConv][i + 2] = note;
         stop = 1;
         // Serial.println("here");
       }
@@ -249,10 +250,14 @@ void loop()
     Previous_Button_State[1] = Current_Button_State[1];
   }
 
+  /*
+  READ DPAD INPUTS
+  */
+  dpad_pressed = dpad_read();
   /*****************************************************************************
   DPAD LEFT
   *****************************************************************************/
-  if (button_pressed(BUTTON_DPAD_LEFT)) // return / exit
+  if (dpad_pressed == BUTTON_DPAD_LEFT) // return / exit
   {
     nav_state = nav_selection(nav_state, NAV_BACKWARD);
 
@@ -262,7 +267,7 @@ void loop()
   /*****************************************************************************
   DPAD DOWN
   *****************************************************************************/
-  if (button_pressed(BUTTON_DPAD_DOWN)) // scroll down
+  if (dpad_pressed == BUTTON_DPAD_DOWN) // scroll down
   {
     array_scroll(nav_state, NAV_DOWN);
     lcd_display(lcd, nav_state->lcd_state);
@@ -271,7 +276,7 @@ void loop()
   /*****************************************************************************
   DPAD UP
   *****************************************************************************/
-  if (button_pressed(BUTTON_DPAD_UP)) // scroll up
+  if (dpad_pressed == BUTTON_DPAD_UP) // scroll up
   {
     array_scroll(nav_state, NAV_UP);
     lcd_display(lcd, nav_state->lcd_state);
@@ -280,7 +285,7 @@ void loop()
   /*****************************************************************************
   DPAD RIGHT
   *****************************************************************************/
-  if (button_pressed(BUTTON_DPAD_RIGHT)) // select
+  if (dpad_pressed == BUTTON_DPAD_RIGHT) // select
   {
 
     /**************************     TRACKS OPTIONS     **************************/

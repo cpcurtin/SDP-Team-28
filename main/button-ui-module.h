@@ -36,12 +36,10 @@ struct palette_matrix
     int columns;
 };
 
-
-const int selectPin1_button = 12; //select bit A
-const int selectPin2_button = 11; //select bit B
-const int selectPin3_button = 10; //select bit C
-const int enablePin_columns = 24; //enable bit
-
+const int selectPin1_button = 12; // select bit A
+const int selectPin2_button = 11; // select bit B
+const int selectPin3_button = 10; // select bit C
+const int enablePin_columns = 24; // enable bit
 
 const int selectPin1_LED = 27; // select bit A
 const int selectPin2_LED = 26; // select bit B
@@ -78,9 +76,14 @@ int Palette_LEDMatrix[][2] = {{0, 6}, {0, 7}, {0, 8}, {1, 6}, {1, 7}, {1, 8}, {2
 int Current_Row = 0;
 int Current_Column = 0;
 
-int dpad_init(void);
-int dpad_read(void);
+int dpad_button_pressed = 0;
+int dpad_press_return = 0;
+int dpad_pressed = 0;
+unsigned long dpad_last_pressed;
 
+int dpad_init(void);
+
+int dpad_read(void);
 int button_pressed(int pin);
 
 int read_tempo(void);
