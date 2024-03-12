@@ -10,6 +10,8 @@ int dac_init(void)
 {
   AudioMemory(10);
   rraw_a1.enableInterpolation(true);
+  amp1.gain(DAC_GAIN);
+  amp2.gain(DAC_GAIN);
 
   Serial.println("onboard dac initialized");
   return 0;
@@ -20,6 +22,7 @@ char temp_str[MAX_FILENAME_LENGTH]; // Adjust MAX_FILENAME_LENGTH as needed
 
 int playFile(newdigate::audiosample *cached_sound)
 {
+  
 
   int mixer = -1;
 
@@ -54,8 +57,8 @@ int playFile(newdigate::audiosample *cached_sound)
 
   delay(1); // wait for library to parse WAV info
 
-  // Serial.print(AudioMemoryUsage());
-  // Serial.print(",");
+  // // Serial.print(AudioMemoryUsage());
+  // // Serial.print(",");
   // Serial.println(AudioMemoryUsageMax());
 
   return mixer;
@@ -100,7 +103,7 @@ newdigate::audiosample *cache_sd_sound(const char *filename)
   // Concatenate filename to temp_str
   strcat(temp_str, filename);
 
-  Serial.print("Playing file: ");
+  // Serial.print("Playing file: ");
   Serial.println(filename);
   return loader.loadSample(temp_str);
 }

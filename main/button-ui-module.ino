@@ -7,14 +7,13 @@
 #include "button-ui-module.h"
 // const struct dpad_pin_config dpad_cfg;
 
-int dpad_init(const struct dpad_pin_config &cfg)
+int dpad_init()
 {
-  // dpad_cfg=cfg
-  pinMode(cfg.left, INPUT);
-  pinMode(cfg.down, INPUT);
-  pinMode(cfg.up, INPUT);
-  pinMode(cfg.right, INPUT);
-  pinMode(cfg.select, INPUT);
+  pinMode(BUTTON_DPAD_LEFT, INPUT);
+  pinMode(BUTTON_DPAD_RIGHT, INPUT);
+  pinMode(BUTTON_DPAD_DOWN, INPUT);
+  pinMode(BUTTON_DPAD_UP, INPUT);
+
   return 0;
 }
 int button_matrix_init(void)
@@ -53,34 +52,9 @@ int button_matrix_init(void)
 
   return 0;
 }
-void dpad_read(const struct dpad_pin_config &cfg)
+int dpad_read(void)
 {
-}
-
-int check_ninput(const struct dpad_pin_config &cfg)
-{
-  {
-    int pressedCount = 0;
-
-    if (digitalRead(cfg.left) == LOW)
-    {
-      pressedCount++;
-    }
-    if (digitalRead(cfg.down) == LOW)
-    {
-      pressedCount++;
-    }
-    if (digitalRead(cfg.up) == LOW)
-    {
-      pressedCount++;
-    }
-    if (digitalRead(cfg.right) == LOW)
-    {
-      pressedCount++;
-    }
-
-    return pressedCount == 1;
-  }
+  return 0;
 }
 
 int button_pressed(int pin)
@@ -107,32 +81,6 @@ void button_matrix_init(struct button_maxtrix_pin_config *cfg)
   pinMode(30, INPUT);
 }
 
-// void palette_assign(struct palette_matrix *palette, const char *sound)
-// {
-//     // ACTUAL
-
-//     // TEMPORARY
-//     int cell_assigned = 0;
-
-//     while ((!cell_assigned))
-//     {
-//         if (button_pressed(24))
-//         {
-//             break;
-//         }
-
-//         for (int i = 0; i < 3; i++)
-//         {
-//             if (button_pressed(i + 28))
-//             {
-//                 Serial.println(i + 28);
-//                 (palette->cells[0][i])->sound = sound;
-//                 (palette->cells[0][i])->available = 0;
-//                 cell_assigned = 1;
-//             }
-//         }
-//     }
-// }
 void measure_matrix_init(struct button_maxtrix_pin_config &button_cfg, struct button_maxtrix_pin_config &led_cfg)
 {
   //  size_t width;  // The length of the array
@@ -204,8 +152,8 @@ void check_rows(int colIndex)
       Current_Button_State[0] = rowIndex;
       Current_Button_State[1] = colIndex;
       Pressed = 1;
-      Serial.print("Push");
-      Serial.print(rowIndex);
+      // Serial.print("Push");
+      // Serial.print(rowIndex);
       Serial.println(colIndex);
     }
   }
@@ -214,7 +162,7 @@ void check_rows(int colIndex)
 void Button_Pressed(int Current_State[], int Previous_State[])
 {
   previousMillis = millis();
-  //LED_On(Current_State[0], Current_State[1]);
+  // LED_On(Current_State[0], Current_State[1]);
 
   if (loop_counter == 3)
   {
@@ -256,7 +204,7 @@ void Button_Released(int Current_State[], int Previous_State[])
 {
 
   previousMillis = millis();
-  //LED_Off(Previous_State[0], Previous_State[1]);
+  // LED_Off(Previous_State[0], Previous_State[1]);
   Current_State[0] = 9;
   Current_State[1] = 9;
 }
@@ -327,7 +275,7 @@ int read_tempo(void)
 
   int voltage = (int)raw_avg * ((TEMPO_KNOB_MAX - TEMPO_KNOB_MIN) / 1023.0); // Assuming 5V Arduino board
 
-  return TEMPO_KNOB_MAX - voltage;
+  return TEMPO_KNOB_MIN + voltage;
 
   // Delay for readability (adjust as needed)
 }

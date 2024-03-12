@@ -25,11 +25,7 @@ array_with_size *custom_sound_list = new array_with_size;
 array_with_size *track_list = new array_with_size;
 
 track active_track = {
-    "DEFAULT.json", // filename
-    1,              // id
-    120,            // bpm
-    6               // measure_steps
-};
+    "DEFAULT.json", 1, 120, 6};
 track default_track = active_track;
 int sd_init(void);
 array_with_size *sd_fetch_sounds(void);

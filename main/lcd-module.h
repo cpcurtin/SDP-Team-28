@@ -49,20 +49,17 @@ lcd_nav *tracks_set_steps_nav = new lcd_nav;
 
 lcd_nav *sounds_midi_melodic_nav = new lcd_nav;
 lcd_nav *sounds_midi_percussion_nav = new lcd_nav;
-lcd_nav *sounds_midi__nav = new lcd_nav;
+lcd_nav *sounds_midi_octaves_nav = new lcd_nav;
+lcd_nav *sounds_midi_notes_nav = new lcd_nav;
 
-/* NAVS TODO:
+const char **state_splash_screen = new const char *[4];
 
-midi->accoustic
-midi->percussion
+const char *octaves[] = {"-2 LOWEST", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8 HIGHEST"};
+const char *note_names[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+const char *selected_sound[] = {"SELECTED SOUND:", "", "", "STEPS: "};
+const char *selected_effect[] = {"SELECTED EFFECT:", "", "", ""};
 
-make arrays per
-
-
-
-
-*/
-
+bool splash_screen_active = false;
 struct nav_config *nav_cfg = new struct nav_config;
 
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);
@@ -74,5 +71,7 @@ lcd_nav *nav_init(struct nav_config *cfg);
 void nav_add(lcd_nav *node);
 const char *tracks_update(void);
 void update_tempo(LiquidCrystal_I2C *lcd);
+
+void lcd_splash(LiquidCrystal_I2C *lcd, const char **print_arr);
 
 #endif // LCD_MODULE_H
