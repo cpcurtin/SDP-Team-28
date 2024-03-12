@@ -87,6 +87,7 @@ AudioConnection patchCord10(mixer2, 0, pt8211_1, 1);
 #define MAX_FILENAME_LENGTH 50
 #define MAX_SOUNDS 16
 newdigate::audiosample *cached_samples[MAX_SOUNDS];
+newdigate::audiosample *temp_sample;
 // newdigate::audiosample *player1;
 // newdigate::audiosample *player2;
 // newdigate::audiosample *player3;

@@ -85,21 +85,21 @@ void setup()
   cached_samples_sd[1][0] = cached_samples[1];
   cached_samples_sd[2][0] = cached_samples[2];
   cached_samples_sd[3][0] = cached_samples[3];
-  //Serial.println(SDmeMat[0][0]);
-
+  // Serial.println(SDmeMat[0][0]);
 }
 
 /* Main subroutine: follow software block diagram */
 void loop()
-{ 
-  
-  if(cached_samples_sd[0][0]==nullptr){
+{
+
+  if (cached_samples_sd[0][0] == nullptr)
+  {
     Serial.println("cached sound exists");
   }
   // Serial.println(SDmeMat[0][0]);
   if (ledMetro.check() == 1)
   {
-    
+
     if (count_temp == 0)
     {
       mixer_1 = playFile(cached_samples_sd[0][0]);
@@ -123,7 +123,6 @@ void loop()
     {
       stopFile(mixer_4);
     }
-    
 
     // turning off all midi sounds on last step
     if (count_temp == 0)
@@ -271,10 +270,6 @@ void loop()
     Previous_Button_State[1] = Current_Button_State[1];
   }
 
-
-
-
-  
   /*************************     READ DPAD INPUTS     *************************/
   dpad_pressed = dpad_read();
 
@@ -288,7 +283,6 @@ void loop()
     lcd_display(lcd, nav_state->lcd_state);
   }
 
-  
   /*****************************************************************************
   ******************************     DPAD DOWN     *****************************
   *****************************************************************************/
@@ -419,6 +413,15 @@ void loop()
     {
       // currently selected custom sound
       // sounds_custom_nav->data_array[sounds_custom_nav->index];
+      temp_sample = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index]);
+      if (temp_sample != nullptr)
+      {
+        // ADD NEWLY CACHED SOUND TO PALETTE
+      }
+      else
+      {
+        // NO SIZE ON PSRAM TO CACHE SOUND
+      }
     }
     /************************     DEFAULT BEHAVIOR     ************************/
     /*
