@@ -1,12 +1,14 @@
 /*
- *
- *       example function library
- *
- *
- */
+*
+*       example function library
+*
+*
+*/
 #ifndef MIDI_SOUND_MODULE_H
 #define MIDI_SOUND_MODULE_H
-
+// #define (x) #x
+#define NUM_NOTES 12
+#define NUM_OCTAVES 11
 /**************************
 Midi Definitions
 **************************/
@@ -33,7 +35,7 @@ Midi Definitions
 /**************************
 Melodic Sounds
 **************************/
-#define AcoursticGrandPiano 1
+#define AcousticGrandPiano 1
 #define BrightAcousticPiano 2
 #define ElectricGrandPiano 3
 #define HonkyTonkPiano 4
@@ -46,7 +48,7 @@ Melodic Sounds
 #define MusicBox 11
 #define Vibraphone 12
 #define Marimba 13
-#define Zylophone 14
+#define Xylophone 14
 #define TubularBells 15
 #define Dulcimer 16
 #define DrawbarOrgan 17
@@ -56,9 +58,9 @@ Melodic Sounds
 #define ReedOrgan 21
 #define Accordion 22
 #define Harmonica 23
-#define TangoAccordian 24
+#define TangoAccordion 24
 #define AcousticGuitarNylon 25
-#define AcoursticGuitarSteel 26
+#define AcousticGuitarSteel 26
 #define ElectricGuitarJazz 27
 #define ElectricGuitarClean 28
 #define ElectricGuitarMuted 29
@@ -83,19 +85,19 @@ Melodic Sounds
 #define Timpani 48
 #define StringEnsemble1 49
 #define StringEnsemble2 50
-#define SythStrings1 51
+#define SynthStrings1 51
 #define SynthStrings2 52
 #define ChoirAahs 53
-#define Voice Oohs 54
+#define VoiceOohs 54
 #define SynthVoice 55
 #define OrchestraHit 56
 #define Trumpet 57
 #define Trombone 58
 #define Tuba 59
-#define MuteTrumpet 60
+#define MutedTrumpet 60
 #define FrenchHorn 61
 #define BrassSelection 62
-#define SymthBrass1 63
+#define SynthBrass1 63
 #define SynthBrass2 64
 #define SopranoSax 65
 #define AltoSax 66
@@ -145,7 +147,7 @@ Melodic Sounds
 #define BagPipe 110
 #define Fiddle 111
 #define Shanai 112
-#define TimkleBell 113
+#define TinkleBell 113
 #define Agogo 114
 #define PitchedPercussion 115
 #define WoodBlock 116
@@ -195,7 +197,7 @@ Percussive Sounds
 #define Tambourine 54
 #define Splash 55
 #define Cowbell 56
-#define Crash2
+#define Crash2 57
 #define Vibraslap 58
 #define Ride2 59
 #define HighBongo 60
@@ -216,7 +218,7 @@ Percussive Sounds
 #define Claves 75
 #define HighWoodBlock 76
 #define LowWoodBlock 77
-#define Mute Cuica 78
+#define MuteCuica 78
 #define Cuica 79
 #define MuteTriangle 80
 #define Triangle 81
@@ -227,12 +229,286 @@ Percussive Sounds
 #define MuteSurdo 86
 #define Surdo 87
 
-array_with_size *midi_sound_list = new array_with_size;
+const char *midi_percussion_sounds[]        = {"HighQ",
+"Slap",
+"ScratchPush",
+"ScratchPull", "Sticks", "SquareClick",
+"MetClick", "MetBell", "AcousticBassDrum",
+"BassDrum", "SideStick", "AcousticSnare",
+"Clap", "ElectricSnare", "LowFloorTom",
+"ClosedHiHat", "HighFloorTom", "PedalHiHat",
+"LowTom", "OpenHiHat", "LowMidTom",
+"HighMidTom", "Crash1", "HighTom",
+"Ride1", "China", "RideBell",
+"Tambourine", "Splash", "Cowbell",
+"Crash2", "Vibraslap", "Ride2",
+"HighBongo", "LowBogo", "MuteHighConga",
+"HighConga", "LowConga", "HighTimbale",
+"LowTimbale", "HighAgogo", "LowAgogo",
+"Cabasa", "Maracas", "ShortWhistle",
+"LongWhistle", "ShortGuiro", "LongGuiro",
+"Claves", "HighWoodBlock", "LowWoodBlock",
+"Mute Cuica", "Cuica", "MuteTriangle",
+"Triangle", "Shaker", "JingleBell",
+"BellTree", "Castanets", "MuteSurdo",
+"Surdo" };
+
+const char *midi_melodic_sounds[]           = {"AcousticGrandPiano",
+"BrightAcousticPiano",
+"ElectricGrandPiano",
+"HonkyTonkPiano",
+"ElectricPiano1",
+"ElectricPiano2",
+"Harpsichord",
+"Clavi",
+"Celesta",
+"Clockenspiel",
+"MusicBox",
+"Vibraphone", "Marimba",
+"Xylophone",
+"TubularBells",
+"Dulcimer",
+"DrawbarOrgan",
+"PercussiveOrgan",
+"RockOrgan",
+"ChurchOrgan",
+"ReedOrgan",
+"Accordion",
+"Harmonica", "TangoAccordion", "AcousticGuitarNylon", "AcousticGuitarSteel", "ElectricGuitarJazz", "ElectricGuitarClean", "ElectricGuitarMuted", "OverdrivenGuitar", "DistortionGuitar", "GuitarHarmonics", "AcousticBass",
+"ElectricBassFinger", "ElectricBassPick",
+"FretlessBass",
+"SlapBass1", "SlapBass2", "SynthBass1",
+"SynthBass2", "Violin",
+"Viola",
+"Cello",
+"Contrabass", "TremoloStrings",
+"PizzicatoStrings",
+"OrchestralHarp", "Timpani", "StringEnsemble1",
+"StringEnsemble2",
+"SynthStrings1",
+"SynthStrings2",
+"ChoirAahs", "VoiceOohs", "SynthVoice",
+"OrchestraHit", "Trumpet",
+"Trombone",
+"Tuba", "MutedTrumpet", "FrenchHorn", "BrassSelection",
+"SynthBrass1",
+"SynthBrass2",
+"SopranoSax",
+"AltoSax", "TenorSax",
+"BaritoneSax", "Oboe", "EnglishHorn", "Bassoon", "Clarinet",
+"Piccolo",
+"Flute",
+"Recorder",
+"PanFlute",
+"BlownBottle",
+"Shakuhachi", "Whistle", "Ocarina", "SquareLead", "SawLead",
+"CalliopeLead",
+"ChiffLead",
+"CharangLead",
+"VoiceLead",
+"FifthsLead",
+"BassLead", "NewAge", "WarmPad", "Polysynth",
+"Choir",
+"Bowed",
+"Metallic",
+"Halo",
+"Sweep",
+"Rain",
+"SoundTrack", "Crystal", "Atmosphere", "Brightness",
+"Goblins",
+"Echoes",
+"SciFi",
+"Sitar", "Banjo", "Shamisen",
+"Koto",
+"Kalimba",
+"BagPipe", "Fiddle", "Shanai",
+"TinkleBell",
+"Agogo",
+"PitchedPercussion", "WoodBlock",
+"TaikoDrum",
+"MelodicTom", "SynthDrum",
+"ReverseCymbal", "GuitarFretNoise", "BreathNoise", "Seashore",
+"BirdTweet",
+"TelephoneRing",
+"Helicopter",
+"Applause",
+"Gunshot" };
 
 // functions, extern variables, structs go here
+const int midi_percussion_values[]          = {HighQ, Slap, ScratchPush, ScratchPull, Sticks,
+SquareClick, MetClick, MetBell, AcousticBassDrum, BassDrum,
+SideStick, AcousticSnare, Clap, ElectricSnare, LowFloorTom,
+ClosedHiHat, HighFloorTom, PedalHiHat, LowTom, OpenHiHat,
+LowMidTom, HighMidTom, Crash1, HighTom, Ride1,
+China, RideBell, Tambourine, Splash, Cowbell,
+Crash2, Vibraslap, Ride2, HighBongo, LowBogo,
+MuteHighConga, HighConga, LowConga, HighTimbale, LowTimbale,
+HighAgogo, LowAgogo, Cabasa, Maracas, ShortWhistle,
+LongWhistle, ShortGuiro, LongGuiro, Claves, HighWoodBlock,
+LowWoodBlock, MuteCuica, Cuica, MuteTriangle, Triangle,
+Shaker, JingleBell, BellTree, Castanets, MuteSurdo,
+Surdo};
+
+const int midi_values[]                     = {AcousticGrandPiano,
+BrightAcousticPiano,
+ElectricGrandPiano,
+HonkyTonkPiano,
+ElectricPiano1,
+ElectricPiano2,
+Harpsichord,
+Clavi,
+Celesta,
+Clockenspiel,
+MusicBox,
+Vibraphone,
+Marimba,
+Xylophone,
+TubularBells,
+Dulcimer,
+DrawbarOrgan,
+PercussiveOrgan,
+RockOrgan,
+ChurchOrgan,
+ReedOrgan,
+Accordion,
+Harmonica,
+TangoAccordion,
+AcousticGuitarNylon,
+AcousticGuitarSteel,
+ElectricGuitarJazz,
+ElectricGuitarClean,
+ElectricGuitarMuted,
+OverdrivenGuitar,
+DistortionGuitar,
+GuitarHarmonics,
+AcousticBass,
+ElectricBassFinger,
+ElectricBassPick,
+FretlessBass,
+SlapBass1,
+SlapBass2,
+SynthBass1,
+SynthBass2,
+Violin,
+Viola,
+Cello,
+ContraBass,
+TremoloStrings,
+PizzicatoStrings,
+OrchestralHarp,
+Timpani,
+StringEnsemble1,
+StringEnsemble2,
+SynthStrings1,
+SynthStrings2,
+ChoirAahs,
+VoiceOohs,
+SynthVoice,
+OrchestraHit,
+Trumpet,
+Trombone,
+Tuba,
+MutedTrumpet,
+FrenchHorn,
+BrassSelection,
+SynthBrass1,
+SynthBrass2,
+SopranoSax,
+AltoSax,
+TenorSax,
+BaritoneSax,
+Oboe,
+EnglishHorn,
+Bassoon,
+Clarinet,
+Piccolo,
+Flute,
+Recorder,
+PanFlute,
+BlownBottle,
+Shakuhachi,
+Whistle,
+Ocarina,
+SquareLead,
+SawLead,
+CalliopeLead,
+ChiffLead,
+CharangLead,
+VoiceLead,
+FifthsLead,
+BassLead,
+NewAge,
+WarmPad,
+Polysynth,
+Choir,
+Bowed,
+Metallic,
+Halo,
+Sweep,
+Rain,
+SoundTrack,
+Crystal,
+Atmosphere,
+Brightness,
+Goblins,
+Echoes,
+SciFi,
+Sitar,
+Banjo,
+Shamisen,
+Koto,
+Kalimba,
+BagPipe,
+Fiddle,
+Shanai,
+TinkleBell,
+Agogo,
+PitchedPercussion,
+WoodBlock,
+TaikoDrum,
+MelodicTom,
+SynthDrum,
+ReverseCymbal,
+GuitarFretNoise,
+BreathNoise,
+Seashore,
+BirdTweet,
+TelephoneRing,
+Helicopter,
+Applause,
+Gunshot};
+
+
+
+
+
+// Array for MIDI note values
+// when displaying octaves need to decrement by 2 to begin with -2, -1, 0,.. etc
+int midi_mapping[NUM_NOTES][NUM_OCTAVES]    = {
+{0, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120},
+{1, 13, 25, 37, 49, 61, 73, 85, 97, 109, 121},
+{2, 14, 26, 38, 50, 62, 74, 86, 98, 110, 122},
+{3, 15, 27, 39, 51, 63, 75, 87, 99, 111, 123},
+{4, 16, 28, 40, 52, 64, 76, 88, 100, 112, 124},
+{5, 17, 29, 41, 53, 65, 77, 89, 101, 113, 125},
+{6, 18, 30, 42, 54, 66, 78, 90, 102, 114, 126},
+{7, 19, 31, 43, 55, 67, 79, 91, 103, 115, 127},
+{8, 20, 32, 44, 56, 68, 80, 92, 104, 116, -1},
+{9, 21, 33, 45, 57, 69, 81, 93, 105, 117, -1},
+{10, 22, 34, 46, 58, 70, 82, 94, 106, 118, -1},
+{11, 23, 35, 47, 59, 71, 83, 95, 107, 119, -1}};
+
+
+const char* note_names[]                    = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+
+array_with_size *midi_melodic_sound_list    = new array_with_size;
+array_with_size *midi_percussion_sound_list = new array_with_size;
 
 int midi_init(void);
-array_with_size *fetch_midi_sounds(void);
+
+array_with_size *fetch_midi_melodic_sounds(void);
+array_with_size *fetch_midi_percussion_sounds(void);
+
 void midiSetInstrument(uint8_t chan, uint8_t inst);
 
 void midiSetChannelVolume(uint8_t chan, uint8_t vol);

@@ -29,16 +29,18 @@ int midi_init(void)
   return 0;
 }
 
-array_with_size *fetch_midi_sounds(void)
+array_with_size *fetch_midi_melodic_sounds(void)
 {
+  midi_melodic_sound_list->array = midi_melodic_sounds;
+  midi_melodic_sound_list->size = sizeof(midi_melodic_sounds)/sizeof(midi_melodic_sounds[0]);
+  return midi_melodic_sound_list;
+}
 
-  const char **sounds_preset_options_midi = new const char *[2];
-  sounds_preset_options_midi[0] = strdup("midi1");
-  sounds_preset_options_midi[1] = strdup("midi2");
-
-  midi_sound_list->array = sounds_preset_options_midi;
-  midi_sound_list->size = 2;
-  return midi_sound_list;
+array_with_size *fetch_midi_percussion_sounds(void)
+{
+  midi_percussion_sound_list->array = midi_percussion_sounds;
+  midi_percussion_sound_list->size = sizeof(midi_percussion_sounds)/sizeof(midi_percussion_sounds[0]);
+  return midi_percussion_sound_list;
 }
 
 void midiSetInstrument(uint8_t chan, uint8_t inst)

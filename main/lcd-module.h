@@ -13,9 +13,10 @@
 struct nav_config
 {
     struct array_with_size *sounds_custom;
-    struct array_with_size *sounds_midi;
     struct array_with_size *effects;
     struct array_with_size *tracks_load;
+    struct array_with_size *sounds_midi_melodic;
+    struct array_with_size *sounds_midi_percussion;
 };
 typedef struct lcd_nav
 {
@@ -26,7 +27,7 @@ typedef struct lcd_nav
     size_t size;
     const char **lcd_state;
     int index;
-    int depth;
+
 } lcd_nav;
 struct lcd_pin_config
 {
@@ -45,6 +46,22 @@ lcd_nav *sounds_custom_nav = new lcd_nav;
 lcd_nav *sounds_midi_nav = new lcd_nav;
 lcd_nav *tracks_load_nav = new lcd_nav;
 lcd_nav *tracks_set_steps_nav = new lcd_nav;
+
+lcd_nav *sounds_midi_melodic_nav = new lcd_nav;
+lcd_nav *sounds_midi_percussion_nav = new lcd_nav;
+lcd_nav *sounds_midi__nav = new lcd_nav;
+
+/* NAVS TODO:
+
+midi->accoustic
+midi->percussion
+
+make arrays per
+
+
+
+
+*/
 
 struct nav_config *nav_cfg = new struct nav_config;
 
