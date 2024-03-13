@@ -450,6 +450,15 @@ void loop()
     {
       // currently selected custom sound
       // sounds_custom_nav->data_array[sounds_custom_nav->index];
+      temp_sample= cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index]);
+      if (temp_sample!=nullptr){
+        // add to palette
+      }
+      else{
+        // CANNOT ADD TO PALETTE, MEMORY FULL
+      }
+
+
     }
     /************************     DEFAULT BEHAVIOR     ************************/
     /*
