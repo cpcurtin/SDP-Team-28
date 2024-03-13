@@ -96,19 +96,27 @@ void loop()
   if (ledMetro.check() == 1)
   {
 
-    // turning off all SD sounds on last step
-    stopFile(0);
-
     // turning off all midi sounds on last step
     if (count_temp == 0)
     {
       // prevCount = 23;
-      prevCount = (4 * active_track.measure_steps) - 1;
+      // 0  1  2  3  4  5
+      // 6  7  8  9  10 11
+      // 12 13 14 15 16 17
+      // 18 19 20 21 22 23
+
+      prevCount = 17 + active_track.measure_steps;
+    }
+    else if ((count_temp) % 6 == 0)
+    {
+      prevCount = count_temp - (6 - (active_track.measure_steps - 1));
     }
     else
     {
       prevCount = count_temp - 1;
     }
+
+    // TURN MIDI NOTES OFF
     for (int i = 0; i < 12; i += 3)
     {
       currBank = meMat[prevCount][i];
@@ -131,6 +139,9 @@ void loop()
       LED_On(MeMat_LEDindex[count_temp][0], MeMat_LEDindex[count_temp][1]);
     }
 
+    // turning off all SD sounds on last step
+    stopFile(0);
+
     // play SD sounds on measure matrix
     for (int i = 0; i < 4; i++)
     {
@@ -139,12 +150,12 @@ void loop()
         playFile(cached_samples_sd[count_temp][i]);
       }
     }
-
     // play MIDI sounds on measure matrix
     for (int i = 0; i < 12; i += 3)
     {
       if (meMat[count_temp][i] == 0)
       {
+        // play percussion
         midiSetInstrument(0, 128);
         int channel = meMat[count_temp][i];
         int note = meMat[count_temp][i + 1];
@@ -154,6 +165,7 @@ void loop()
       }
       if (meMat[count_temp][i] == 1)
       {
+        // play melodic
         int instrum = meMat[count_temp][i + 1];
         midiSetInstrument(1, instrum);
         int channel = meMat[count_temp][i];
@@ -164,6 +176,28 @@ void loop()
       }
     }
     count_temp++;
+
+    // ledMetro.reset();
+
+    //  == ((active_track.measure_steps-1) % 6)
+    // steps =4
+    //              V
+    // 0  1  2  3  4  5
+    // 6  7  8  9  10 11
+    // 12 13 14 15 16 17
+    // 18 19 20 21 22 23
+
+    if (count_temp % 6 > active_track.measure_steps - 1)
+    {
+      count_temp = count_temp + (6 - active_track.measure_steps);
+    }
+    if (count_temp == 24)
+    // if (count_temp == (active_track.measure_steps * 4))
+    {
+      count_temp = 0;
+    }
+    /*************************     UPDATE TEMPO     *************************/
+
     active_track.bpm = read_tempo();
 
     if (splash_screen_active == false)
@@ -172,12 +206,7 @@ void loop()
     }
     metro_active_tempo = (60000 / (active_track.bpm * active_track.measure_steps));
     ledMetro.interval(metro_active_tempo);
-    // if (count_temp == 24)
-    if (count_temp == 4 * active_track.measure_steps)
-    {
-      count_temp = 0;
-    }
-    ledMetro.reset();
+    /*************************     STEP STATEMENT ENDS     *************************/
   }
 
   if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9)
@@ -185,6 +214,7 @@ void loop()
     // Serial.println("palette pushed");
     Current_Row = Current_Button_State[0];
     Current_Column = Current_Button_State[1];
+
     for (int i = 0; i < 12; i++)
     {
       if (Palette_LEDMatrix[i][0] == Current_Row && Palette_LEDMatrix[i][1] == Current_Column)
@@ -274,12 +304,30 @@ void loop()
         // Serial.println("here");
       }
     }
-    /*
-    for (int i = 0; i < 12; i++)
-    {
-      Serial.println(meMat[meMatConv][i]);
-    }
-    */
+    
+    // Play note at current palette to see whats there
+    // MUST ADD STOPING CURRENT MIDI AND CUSTOM SOUNDS TO WORK
+    // if (palette[palbut][0] != -1)
+    // {
+
+    //   if (palette[palbut][0])
+    //   {
+    //     // Play melodic
+    //     midiSetInstrument(palette[palbut][0], palette[palbut][1]);
+    //     midiNoteOn(palette[palbut][0], palette[palbut][2], 127);
+    //   }
+    //   else
+    //   {
+    //     // play percussion
+    //     midiSetInstrument(palette[palbut][0], 128);
+    //     midiNoteOn(palette[palbut][0], palette[palbut][1], 127);
+    //   }
+    // }
+    // else if (sd_palette[palbut] != nullptr)
+    // {
+    //   // play custom sound
+    //   playFile(sd_palette[palbut]);
+    // }
     palbut = -1;
   }
 
