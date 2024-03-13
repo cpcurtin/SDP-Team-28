@@ -76,15 +76,15 @@ void setup()
   //   cached_samples[i] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
   // }
 
-  cached_samples[0] = cache_sd_sound((nav_cfg->sounds_custom)->array[5]);
-  cached_samples[1] = cache_sd_sound((nav_cfg->sounds_custom)->array[5]);
-  cached_samples[2] = cache_sd_sound((nav_cfg->sounds_custom)->array[5]);
-  cached_samples[3] = cache_sd_sound((nav_cfg->sounds_custom)->array[5]);
+  cached_samples[0] = cache_sd_sound((nav_cfg->sounds_custom)->array[0]);
+  cached_samples[1] = cache_sd_sound((nav_cfg->sounds_custom)->array[1]);
+  cached_samples[2] = cache_sd_sound((nav_cfg->sounds_custom)->array[2]);
+  cached_samples[3] = cache_sd_sound((nav_cfg->sounds_custom)->array[3]);
   Serial.println("PROGRAM LOOP BEGINS");
-  cached_samples_sd[0][0] = cached_samples[0];
-  cached_samples_sd[1][0] = cached_samples[1];
-  cached_samples_sd[2][0] = cached_samples[2];
-  cached_samples_sd[3][0] = cached_samples[3];
+
+  sd_palette[6] = cached_samples[0];
+  sd_palette[9] = cached_samples[1];
+
   //Serial.println(SDmeMat[0][0]);
 
 }
@@ -93,13 +93,10 @@ void setup()
 void loop()
 { 
   
-  if(cached_samples_sd[0][0]==nullptr){
-    Serial.println("cached sound exists");
-  }
   // Serial.println(SDmeMat[0][0]);
   if (ledMetro.check() == 1)
   {
-    
+    /*
     if (count_temp == 0)
     {
       mixer_1 = playFile(cached_samples_sd[0][0]);
@@ -123,7 +120,10 @@ void loop()
     {
       stopFile(mixer_4);
     }
-    
+    */
+
+    // turning off all SD sounds on last step 
+    stopFile(0);
 
     // turning off all midi sounds on last step
     if (count_temp == 0)
@@ -150,13 +150,21 @@ void loop()
 
     // Turn on and off measure matrix LEDs
 
-    if (stop == 1)
+    if (stop == 1 && stopSD == 1)
     {
       LED_Off(MeMat_LEDindex[prevCount][0], MeMat_LEDindex[prevCount][1]);
       LED_On(MeMat_LEDindex[count_temp][0], MeMat_LEDindex[count_temp][1]);
     }
 
-    // play sounds on measure matrix
+    // play SD sounds on measure matrix 
+    for (int i = 0; i < 4; i++){
+      if(cached_samples_sd[count_temp][i]!=nullptr)
+      { 
+        playFile(cached_samples_sd[count_temp][i]); 
+      }
+    }
+
+    // play MIDI sounds on measure matrix
     for (int i = 0; i < 12; i += 3)
     {
       if (meMat[count_temp][i] == 0)
@@ -202,6 +210,7 @@ void loop()
     Current_Column = Current_Button_State[1];
     LED_On(Current_Row, Current_Column);
     stop = 0;
+    stopSD = 0;
 
     for (int i = 0; i < 12; i++)
     {
@@ -222,6 +231,28 @@ void loop()
     int channel = palette[palbut][0];
     int instr = palette[palbut][1];
     int note = palette[palbut][2];
+
+// Assigning SD sounds to measure matrix 
+    for (int i = 0; i < 4; i++)
+    {
+      if(cached_samples_sd[meMatConv][i] == sd_palette[palbut] && stopSD == 0)
+      {
+        Serial.println("deleting");
+        cached_samples_sd[meMatConv][i] = nullptr;
+        stopSD = 1;
+      }
+    }
+    for (int i = 0; i < 4; i++)
+    {
+      if(cached_samples_sd[meMatConv][i]==nullptr && stopSD == 0)
+      {
+        Serial.println("adding");
+        cached_samples_sd[meMatConv][i] = sd_palette[palbut];
+        stopSD = 1;
+      }
+    }
+
+// Assigning MIDI sounds to measure matrix 
     for (int i = 0; i < 12; i += 3)
     {
       if (meMat[meMatConv][i] == channel && meMat[meMatConv][i + 1] == instr && meMat[meMatConv][i + 2] == note && stop == 0)

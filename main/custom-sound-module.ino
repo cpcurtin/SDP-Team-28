@@ -65,6 +65,14 @@ int playFile(newdigate::audiosample *cached_sound)
 }
 void stopFile(int mixer)
 {
+  if (mixer == 0)
+    {
+      // Serial.println("Stopping 1");
+      rraw_a1.stop();
+      rraw_a2.stop();
+      rraw_a3.stop();
+      rraw_a4.stop();
+    }
   if (mixer == 1)
   {
     // Serial.println("Stopping 1");
