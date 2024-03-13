@@ -81,43 +81,22 @@ void setup()
   cached_samples[2] = cache_sd_sound((nav_cfg->sounds_custom)->array[2]);
   cached_samples[3] = cache_sd_sound((nav_cfg->sounds_custom)->array[3]);
   Serial.println("PROGRAM LOOP BEGINS");
-<<<<<<< HEAD
 
   sd_palette[6] = cached_samples[0];
   sd_palette[9] = cached_samples[1];
 
   //Serial.println(SDmeMat[0][0]);
 
-=======
-  cached_samples_sd[0][0] = cached_samples[0];
-  cached_samples_sd[1][0] = cached_samples[1];
-  cached_samples_sd[2][0] = cached_samples[2];
-  cached_samples_sd[3][0] = cached_samples[3];
-  // Serial.println(SDmeMat[0][0]);
->>>>>>> 3618e5a4757441f1e01de72a68bfe4496d1adef7
 }
 
 /* Main subroutine: follow software block diagram */
 void loop()
-<<<<<<< HEAD
 { 
   
   // Serial.println(SDmeMat[0][0]);
   if (ledMetro.check() == 1)
   {
     /*
-=======
-{
-
-  if (cached_samples_sd[0][0] == nullptr)
-  {
-    Serial.println("cached sound exists");
-  }
-  // Serial.println(SDmeMat[0][0]);
-  if (ledMetro.check() == 1)
-  {
-
->>>>>>> 3618e5a4757441f1e01de72a68bfe4496d1adef7
     if (count_temp == 0)
     {
       mixer_1 = playFile(cached_samples_sd[0][0]);
@@ -141,13 +120,10 @@ void loop()
     {
       stopFile(mixer_4);
     }
-<<<<<<< HEAD
     */
 
     // turning off all SD sounds on last step 
     stopFile(0);
-=======
->>>>>>> 3618e5a4757441f1e01de72a68bfe4496d1adef7
 
     // turning off all midi sounds on last step
     if (count_temp == 0)
