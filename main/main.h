@@ -194,10 +194,10 @@ TEMPO WHEEL PIN ASSIGNMENTS
 /**************************
 DPAD BUTTONS PIN ASSIGNMENTS
 **************************/
-#define BUTTON_DPAD_LEFT 14
-#define BUTTON_DPAD_DOWN 15
-#define BUTTON_DPAD_UP 16
-#define BUTTON_DPAD_RIGHT 17
+#define BUTTON_DPAD_LEFT 17
+#define BUTTON_DPAD_DOWN 16
+#define BUTTON_DPAD_UP 15
+#define BUTTON_DPAD_RIGHT 14
 
 /**************************
 MATRIX BUTTON PIN ASSIGNMENTS
@@ -295,7 +295,7 @@ const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
 // create 2D array of palette_cell structs
 
 // Metronome Definition
-Metro ledMetro = Metro(200);
+Metro ledMetro = Metro(100);
 int count_temp = 0;
 
 int mixer_1;
@@ -310,6 +310,14 @@ int currNote = 0;
 int currBank = 0;
 int prevCount = 0;
 
+int dispBank = -1;
+int dispInstrum = -1;
+int dispNote = -1;
+int dispFlag = 1;
+int dispBounce = 0;
+
+newdigate::audiosample *cached_samples_sd[24][4];
+newdigate::audiosample *sd_palette[12];
 
 int meMat[][12] = { {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                    {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
@@ -317,11 +325,12 @@ int meMat[][12] = { {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1
                    {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
 int palette[][3] = {{0, Crash1, -1},{0, MetBell, -1},{0, Maracas, -1},
                     {0, Crash1, -1},{0, MetBell, -1},{0, Maracas, -1},
-                    {1, Tuba, 40},{1, Flute, 60},{1, ElectricGuitarClean, 60},
-                    {1, Tuba, 40},{1, Flute, 60},{1, ElectricGuitarClean, 60}};
+                    {-1, -1, -1},{1, Flute, 60},{1, ElectricGuitarClean, 60},
+                    {-1, -1, -1},{1, Flute, 60},{1, ElectricGuitarClean, 60}};
 
 int palbut = -1;
 int stop = 1;
+int stopSD = 1;
 
 /**************************
 PROGRAM STRUCTS

@@ -151,9 +151,8 @@ lcd_nav *nav_init(struct nav_config *cfg)
   }
 
   const char **midi_preset_options = new const char *[2];
-  midi_preset_options[0] = strdup("Melodic Instruments");
-  midi_preset_options[1] = strdup("Percussion Instruments");
-
+  midi_preset_options[0] = strdup("Percussion Instruments");
+  midi_preset_options[1] = strdup("Melodic Instruments");
   // LCD STATES INITIALIZATION
   const char **state_main = new const char *[LCD_ROWS];
   const char **state_sounds = new const char *[LCD_ROWS];
@@ -179,8 +178,8 @@ lcd_nav *nav_init(struct nav_config *cfg)
   sounds_child[1] = sounds_midi_nav;
 
   lcd_nav **midi_child = new lcd_nav *[2];
-  midi_child[0] = sounds_midi_melodic_nav;
-  midi_child[1] = sounds_midi_percussion_nav;
+  midi_child[0] = sounds_midi_percussion_nav;
+  midi_child[1] = sounds_midi_melodic_nav;
 
   lcd_nav **tracks_child = new lcd_nav *[4];
   tracks_child[0] = tracks_set_steps_nav; // set steps
@@ -291,11 +290,11 @@ lcd_nav *nav_init(struct nav_config *cfg)
   // sounds_midi_octaves
   sounds_midi_octaves_nav->name = strdup("sounds_midi_octaves");
   sounds_midi_octaves_nav->data_array = octaves;
-  sounds_midi_octaves_nav->parent = sounds_midi_percussion_nav;
+  sounds_midi_octaves_nav->parent = sounds_midi_melodic_nav;
   sounds_midi_octaves_nav->child = NULL;
   sounds_midi_octaves_nav->size = 11;
   sounds_midi_octaves_nav->lcd_state = state_midi_octaves;
-  sounds_midi_octaves_nav->index = 2;
+  sounds_midi_octaves_nav->index = 0;
   array_scroll(sounds_midi_octaves_nav, 0);
 
   // sounds_midi_notes
@@ -343,19 +342,33 @@ void update_tempo(LiquidCrystal_I2C *lcd)
   lcd->home();
 }
 
-void lcd_splash(LiquidCrystal_I2C *lcd, const char **print_arr)
+void lcd_splash(LiquidCrystal_I2C *lcd, lcd_nav *current_nav, const char **print_arr)
 {
 
   splash_screen_active = true;
-
-  for (int row = 0; row < LCD_ROWS; row++)
+  state_splash_screen = print_arr;
+  
+  if (current_nav == nullptr)
   {
-    state_splash_screen[row] = print_arr[row];
+    Serial.println("size too large");
+    // maybe find out what sounds are the largest and display them
+  }
+  else if (strcmp(nav_state->name, "sounds_midi_notes") == 0)
+  {
+    state_splash_screen[1] = sounds_midi_melodic_nav->data_array[sounds_midi_melodic_nav->index];
+    snprintf(state_splash_screen[2], LCD_COLUMNS + NULL_TERMINATION, "Octave:%s Note:%s",
+             sounds_midi_octaves_nav->data_array[sounds_midi_octaves_nav->index],
+             sounds_midi_notes_nav->data_array[sounds_midi_notes_nav->index]);
+  }
+  else if (strcmp(nav_state->name, "sounds_midi_percussion") == 0)
+  {
+    state_splash_screen[1] = sounds_midi_percussion_nav->data_array[sounds_midi_percussion_nav->index];
+  }
+  else if (strcmp(nav_state->name, "custom_sounds") == 0)
+  {
+    state_splash_screen[1] = sounds_custom_nav->data_array[sounds_custom_nav->index];
   }
 
-  // strcat(state_splash_screen[1], sound_name);
-  // strcat(state_splash_screen[2], );
-  // strcat(state_splash_screen[3], );
   lcd->clear();
 
   for (int row = 0; row < LCD_ROWS; row++)
