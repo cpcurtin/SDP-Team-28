@@ -103,7 +103,7 @@ void loop()
     if (count_temp == 0)
     {
       // prevCount = 23;
-      prev_count = (4 * active_track.measure_steps) - 1;
+      prevCount = (4 * active_track.measure_steps) - 1;
     }
     else
     {
@@ -432,9 +432,8 @@ void loop()
 
       // midi standard mapping (octave & note)
       // midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index]
+      lcd_splash(lcd, nav_state, selected_sound);
       nav_state = main_nav;
-      // Serial.println("DISPLAY SPLASH");
-      lcd_splash(lcd, selected_sound); //, sounds_midi_melodic_nav->data_array[sounds_midi_melodic_nav->index]);
     }
     /*
     SELECTED PERCUSSION MIDI SOUND
@@ -455,9 +454,8 @@ void loop()
       Serial.println(dispInstrum);
       Serial.println(dispNote);
 
+      lcd_splash(lcd, nav_state, selected_sound);
       nav_state = main_nav;
-      // Serial.println("DISPLAY SPLASH");
-      lcd_splash(lcd, selected_sound); //,
     }
     /*
     SELECTED CUSTOM SOUND
@@ -470,14 +468,14 @@ void loop()
       if (temp_sample != nullptr)
       {
         dispFlag = 3;
-        nav_state = main_nav;
-        // Serial.println("DISPLAY SPLASH");
-        lcd_splash(lcd, selected_sound); //,
+        lcd_splash(lcd, nav_state, selected_sound);
       }
       else
       {
         // NO SIZE ON PSRAM TO CACHE SOUND
+        lcd_splash(lcd, nullptr, error_psram_full);
       }
+      nav_state = main_nav;
     }
     /************************     DEFAULT BEHAVIOR     ************************/
     /*
