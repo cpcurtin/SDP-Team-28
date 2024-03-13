@@ -311,6 +311,7 @@ int currBank = 0;
 int prevCount = 0;
 
 
+
 newdigate::audiosample *cached_samples_sd[24][4];
 newdigate::audiosample *sd_palette[12];
 
