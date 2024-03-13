@@ -82,53 +82,28 @@ void setup()
   cached_samples[3] = cache_sd_sound((nav_cfg->sounds_custom)->array[3]);
   Serial.println("PROGRAM LOOP BEGINS");
 
-  //sd_palette[6] = cached_samples[0];
+  // sd_palette[6] = cached_samples[0];
   sd_palette[9] = cached_samples[1];
 
-  //Serial.println(SDmeMat[0][0]);
-
+  // Serial.println(SDmeMat[0][0]);
 }
 
 /* Main subroutine: follow software block diagram */
 void loop()
-{ 
-  
+{
+
   // Serial.println(SDmeMat[0][0]);
   if (ledMetro.check() == 1)
   {
-    /*
-    if (count_temp == 0)
-    {
-      mixer_1 = playFile(cached_samples_sd[0][0]);
-    }
-    if (count_temp == 1)
-    {
-      mixer_2 = playFile(cached_samples_sd[1][0]);
-      stopFile(mixer_1);
-    }
-    if (count_temp == 2)
-    {
-      stopFile(mixer_2);
-      mixer_3 = playFile(cached_samples_sd[2][0]);
-    }
-    if (count_temp == 3)
-    {
-      stopFile(mixer_3);
-      mixer_4 = playFile(cached_samples_sd[3][0]);
-    }
-    if (count_temp == 4)
-    {
-      stopFile(mixer_4);
-    }
-    */
 
-    // turning off all SD sounds on last step 
+    // turning off all SD sounds on last step
     stopFile(0);
 
     // turning off all midi sounds on last step
     if (count_temp == 0)
     {
-      prevCount = 23;
+      // prevCount = 23;
+      prev_count = (4 * active_track.measure_steps) - 1;
     }
     else
     {
@@ -156,11 +131,12 @@ void loop()
       LED_On(MeMat_LEDindex[count_temp][0], MeMat_LEDindex[count_temp][1]);
     }
 
-    // play SD sounds on measure matrix 
-    for (int i = 0; i < 4; i++){
-      if(cached_samples_sd[count_temp][i]!=nullptr)
-      { 
-        playFile(cached_samples_sd[count_temp][i]); 
+    // play SD sounds on measure matrix
+    for (int i = 0; i < 4; i++)
+    {
+      if (cached_samples_sd[count_temp][i] != nullptr)
+      {
+        playFile(cached_samples_sd[count_temp][i]);
       }
     }
 
@@ -196,7 +172,8 @@ void loop()
     }
     metro_active_tempo = (60000 / (active_track.bpm * active_track.measure_steps));
     ledMetro.interval(metro_active_tempo);
-    if (count_temp == 24)
+    // if (count_temp == 24)
+    if (count_temp == 4 * active_track.measure_steps)
     {
       count_temp = 0;
     }
@@ -216,7 +193,8 @@ void loop()
       }
     }
 
-    if (dispFlag == 1){
+    if (dispFlag == 1)
+    {
       LED_On(Current_Row, Current_Column);
       stop = 0;
       stopSD = 0;
@@ -254,10 +232,10 @@ void loop()
     int instr = palette[palbut][1];
     int note = palette[palbut][2];
 
-    // Assigning SD sounds to measure matrix 
+    // Assigning SD sounds to measure matrix
     for (int i = 0; i < 4; i++)
     {
-      if(cached_samples_sd[meMatConv][i] == sd_palette[palbut] && stopSD == 0)
+      if (cached_samples_sd[meMatConv][i] == sd_palette[palbut] && stopSD == 0)
       {
         Serial.println("deleting");
         cached_samples_sd[meMatConv][i] = nullptr;
@@ -266,7 +244,7 @@ void loop()
     }
     for (int i = 0; i < 4; i++)
     {
-      if(cached_samples_sd[meMatConv][i]==nullptr && stopSD == 0)
+      if (cached_samples_sd[meMatConv][i] == nullptr && stopSD == 0)
       {
         Serial.println("adding");
         cached_samples_sd[meMatConv][i] = sd_palette[palbut];
@@ -274,7 +252,7 @@ void loop()
       }
     }
 
-    // Assigning MIDI sounds to measure matrix 
+    // Assigning MIDI sounds to measure matrix
     for (int i = 0; i < 12; i += 3)
     {
       if (meMat[meMatConv][i] == channel && meMat[meMatConv][i + 1] == instr && meMat[meMatConv][i + 2] == note && stop == 0)
@@ -455,7 +433,7 @@ void loop()
       // midi standard mapping (octave & note)
       // midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index]
       nav_state = main_nav;
-      //Serial.println("DISPLAY SPLASH");
+      // Serial.println("DISPLAY SPLASH");
       lcd_splash(lcd, selected_sound); //, sounds_midi_melodic_nav->data_array[sounds_midi_melodic_nav->index]);
     }
     /*
@@ -478,7 +456,7 @@ void loop()
       Serial.println(dispNote);
 
       nav_state = main_nav;
-      //Serial.println("DISPLAY SPLASH");
+      // Serial.println("DISPLAY SPLASH");
       lcd_splash(lcd, selected_sound); //,
     }
     /*
@@ -493,7 +471,7 @@ void loop()
       {
         dispFlag = 3;
         nav_state = main_nav;
-        //Serial.println("DISPLAY SPLASH");
+        // Serial.println("DISPLAY SPLASH");
         lcd_splash(lcd, selected_sound); //,
       }
       else
