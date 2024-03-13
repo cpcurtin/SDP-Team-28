@@ -151,9 +151,8 @@ lcd_nav *nav_init(struct nav_config *cfg)
   }
 
   const char **midi_preset_options = new const char *[2];
-  midi_preset_options[0] = strdup("Melodic Instruments");
-  midi_preset_options[1] = strdup("Percussion Instruments");
-
+  midi_preset_options[0] = strdup("Percussion Instruments");
+  midi_preset_options[1] = strdup("Melodic Instruments");
   // LCD STATES INITIALIZATION
   const char **state_main = new const char *[LCD_ROWS];
   const char **state_sounds = new const char *[LCD_ROWS];
@@ -179,8 +178,9 @@ lcd_nav *nav_init(struct nav_config *cfg)
   sounds_child[1] = sounds_midi_nav;
 
   lcd_nav **midi_child = new lcd_nav *[2];
-  midi_child[0] = sounds_midi_melodic_nav;
-  midi_child[1] = sounds_midi_percussion_nav;
+  midi_child[0] = sounds_midi_percussion_nav;
+  midi_child[1] = sounds_midi_melodic_nav;
+  
 
   lcd_nav **tracks_child = new lcd_nav *[4];
   tracks_child[0] = tracks_set_steps_nav; // set steps
@@ -291,11 +291,11 @@ lcd_nav *nav_init(struct nav_config *cfg)
   // sounds_midi_octaves
   sounds_midi_octaves_nav->name = strdup("sounds_midi_octaves");
   sounds_midi_octaves_nav->data_array = octaves;
-  sounds_midi_octaves_nav->parent = sounds_midi_percussion_nav;
+  sounds_midi_octaves_nav->parent = sounds_midi_melodic_nav;
   sounds_midi_octaves_nav->child = NULL;
   sounds_midi_octaves_nav->size = 11;
   sounds_midi_octaves_nav->lcd_state = state_midi_octaves;
-  sounds_midi_octaves_nav->index = 2;
+  sounds_midi_octaves_nav->index = 0;
   array_scroll(sounds_midi_octaves_nav, 0);
 
   // sounds_midi_notes
