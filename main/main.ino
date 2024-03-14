@@ -306,7 +306,7 @@ void loop()
         meMat[meMatConv][i] = channel;
         meMat[meMatConv][i + 1] = instr;
         meMat[meMatConv][i + 2] = note;
-        cached_samples_sd[meMatConv][i] =nullptr;
+        cached_samples_sd[meMatConv][i] = nullptr;
         stop = 1;
         // Serial.println("here");
       }
@@ -453,6 +453,11 @@ void loop()
     else if (strcmp(nav_state->name, "tracks_set_steps") == 0)
     {
       active_track.measure_steps = nav_state->index + 1;
+      // TEMP SET BEATS
+      if (nav_state->index + 1 <= 4)
+      {
+        active_track.measure_beats = nav_state->index + 1;
+      }
     }
     /*
     SET TRACK BEATS
