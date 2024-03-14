@@ -213,6 +213,7 @@ void read_track(const char *filename, track &config)
   config.id = doc["id"];
   config.bpm = doc["bpm"];
   config.measure_steps = doc["measure_steps"];
+  config.measure_beats = doc["measure_beats"];
 
   file.close();
 }
@@ -253,7 +254,8 @@ void save_track(const char *filename, track &config)
   doc["id"] = config.id;
   doc["bpm"] = config.bpm;
   doc["measure_steps"] = config.measure_steps;
-
+  doc["measure_beats"] = config.measure_beats;
+  
   // Serialize JSON to file
   if (serializeJson(doc, file) == 0)
   {
