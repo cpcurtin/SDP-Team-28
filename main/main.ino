@@ -102,10 +102,11 @@ void loop()
       // prevCount = 23;
       // 0  1  2  3  4  5
       // 6  7  8  9  10 11
-      // 12 13 14 15 16 17
+      // 12 13 14 15 16 17---
       // 18 19 20 21 22 23
 
-      prevCount = 17 + active_track.measure_steps;
+      // prevCount = (6 * (active_track.measure_beats - 1)) - 1 + active_track.measure_steps;
+      prevCount = (6 * active_track.measure_beats) - (6 - active_track.measure_steps) - 1;
     }
     else if ((count_temp) % 6 == 0)
     {
@@ -189,10 +190,11 @@ void loop()
 
     if (count_temp % 6 > active_track.measure_steps - 1)
     {
+
       count_temp = count_temp + (6 - active_track.measure_steps);
     }
-    if (count_temp == 24)
-    // if (count_temp == (active_track.measure_steps * 4))
+
+    if ((count_temp / 6) > active_track.measure_beats - 1)
     {
       count_temp = 0;
     }
@@ -304,7 +306,7 @@ void loop()
         // Serial.println("here");
       }
     }
-    
+
     // Play note at current palette to see whats there
     // MUST ADD STOPING CURRENT MIDI AND CUSTOM SOUNDS TO WORK
     // if (palette[palbut][0] != -1)
@@ -395,18 +397,18 @@ void loop()
     if (strcmp(nav_state->data_array[nav_state->index], "Save Track") == 0)
     {
       char *new_track_filename = (char *)malloc(LCD_COLUMNS + NULL_TERMINATION);
-      snprintf(new_track_filename, LCD_COLUMNS + NULL_TERMINATION, "TRACK%d.json", (nav_state->child[2])->size);
+      snprintf(new_track_filename, LCD_COLUMNS + NULL_TERMINATION, "TRACK%d.json", (nav_state->child[3])->size);
       strncpy(active_track.filename, new_track_filename, 63); // Copy up to 63 characters to ensure null-termination
       active_track.filename[63] = '\0';
 
-      active_track.id = (nav_state->child[2])->size;
+      active_track.id = (nav_state->child[3])->size;
       save_track(new_track_filename, active_track);
 
       track_list = sd_fetch_tracks();
-      (nav_state->child[2])->data_array = track_list->array;
-      (nav_state->child[2])->size = track_list->size;
-      (nav_state->child[2])->index = 0;
-      array_scroll(nav_state->child[2], 0);
+      (nav_state->child[3])->data_array = track_list->array;
+      (nav_state->child[3])->size = track_list->size;
+      (nav_state->child[3])->index = 0;
+      array_scroll(nav_state->child[3], 0);
       free(new_track_filename);
     }
     /*
@@ -425,11 +427,11 @@ void loop()
       else
       {
         track_list = sd_fetch_tracks();
-        (nav_state->child[2])->data_array = track_list->array;
-        (nav_state->child[2])->size = track_list->size;
-        (nav_state->child[2])->index = 0;
-        array_scroll(nav_state->child[2], 0);
-        read_track((nav_state->child[2])->data_array[(nav_state->child[2])->size - 1], active_track);
+        (nav_state->child[3])->data_array = track_list->array;
+        (nav_state->child[3])->size = track_list->size;
+        (nav_state->child[3])->index = 0;
+        array_scroll(nav_state->child[3], 0);
+        read_track((nav_state->child[3])->data_array[(nav_state->child[3])->size - 1], active_track);
       }
       free(delete_track_filename);
     }
@@ -446,6 +448,13 @@ void loop()
     else if (strcmp(nav_state->name, "tracks_set_steps") == 0)
     {
       active_track.measure_steps = nav_state->index + 1;
+    }
+    /*
+    SET TRACK BEATS
+    */
+    else if (strcmp(nav_state->name, "tracks_set_beats") == 0)
+    {
+      active_track.measure_beats = nav_state->index + 1;
     }
     /*************************     SOUNDS SELECT     **************************/
     /*

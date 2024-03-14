@@ -9,6 +9,8 @@
 #include <LiquidCrystal.h>
 #include <LiquidCrystal_I2C.h>
 #define MAX_MEASURE_STEPS 6
+#define MAX_MEASURE_BEATS 4
+
 
 struct nav_config
 {
@@ -46,6 +48,7 @@ lcd_nav *sounds_custom_nav = new lcd_nav;
 lcd_nav *sounds_midi_nav = new lcd_nav;
 lcd_nav *tracks_load_nav = new lcd_nav;
 lcd_nav *tracks_set_steps_nav = new lcd_nav;
+lcd_nav *tracks_set_beats_nav = new lcd_nav;
 
 lcd_nav *sounds_midi_melodic_nav = new lcd_nav;
 lcd_nav *sounds_midi_percussion_nav = new lcd_nav;

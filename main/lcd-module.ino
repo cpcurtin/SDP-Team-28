@@ -138,16 +138,23 @@ lcd_nav *nav_init(struct nav_config *cfg)
   sounds_preset_options[0] = strdup("Custom Sounds");
   sounds_preset_options[1] = strdup("MIDI Sounds");
 
-  const char **tracks_preset_options = new const char *[4];
+  const char **tracks_preset_options = new const char *[5];
   tracks_preset_options[0] = strdup("Set # steps");
-  tracks_preset_options[1] = strdup("Save Track");
-  tracks_preset_options[2] = strdup("Load Track");
-  tracks_preset_options[3] = strdup("Delete Track");
+  tracks_preset_options[1] = strdup("Set # beats");
+  tracks_preset_options[2] = strdup("Save Track");
+  tracks_preset_options[3] = strdup("Load Track");
+  tracks_preset_options[4] = strdup("Delete Track");
 
-  const char **tracks_preset_options_steps = new const char *[6];
+  const char **tracks_preset_options_steps = new const char *[MAX_MEASURE_STEPS];
   for (int i = 0; i < MAX_MEASURE_STEPS; i++)
   {
     tracks_preset_options_steps[i] = strdup("Step");
+  }
+
+  const char **tracks_preset_options_beats = new const char *[MAX_MEASURE_BEATS];
+  for (int i = 0; i < MAX_MEASURE_BEATS; i++)
+  {
+    tracks_preset_options_steps[i] = strdup("Beat");
   }
 
   const char **midi_preset_options = new const char *[2];
@@ -162,6 +169,7 @@ lcd_nav *nav_init(struct nav_config *cfg)
   const char **state_sounds_midi = new const char *[LCD_ROWS];
   const char **state_tracks_load = new const char *[LCD_ROWS];
   const char **state_tracks_set_steps = new const char *[LCD_ROWS];
+  const char **state_tracks_set_beats = new const char *[LCD_ROWS];
   const char **state_midi_melodic = new const char *[LCD_ROWS];
   const char **state_midi_percussion = new const char *[LCD_ROWS];
   const char **state_midi_octaves = new const char *[LCD_ROWS];
@@ -181,11 +189,12 @@ lcd_nav *nav_init(struct nav_config *cfg)
   midi_child[0] = sounds_midi_percussion_nav;
   midi_child[1] = sounds_midi_melodic_nav;
 
-  lcd_nav **tracks_child = new lcd_nav *[4];
+  lcd_nav **tracks_child = new lcd_nav *[5];
   tracks_child[0] = tracks_set_steps_nav; // set steps
-  // tracks_child[1] = SAVE TRACK
-  tracks_child[2] = tracks_load_nav; // load track
-  // tracks_child[3] = DELETE TRACK
+  tracks_child[1] = tracks_set_beats_nav; // set beats
+  // tracks_child[2] = SAVE TRACK
+  tracks_child[3] = tracks_load_nav; // load track
+  // tracks_child[4] = DELETE TRACK
 
   // main
   main_nav->name = strdup("main");
@@ -222,7 +231,7 @@ lcd_nav *nav_init(struct nav_config *cfg)
   tracks_nav->data_array = tracks_preset_options;
   tracks_nav->parent = main_nav;
   tracks_nav->child = tracks_child;
-  tracks_nav->size = 4; // sizeof(tracks_preset_options) / sizeof(tracks_preset_options[0]);
+  tracks_nav->size = 5; // sizeof(tracks_preset_options) / sizeof(tracks_preset_options[0]);
   tracks_nav->lcd_state = state_tracks;
   tracks_nav->index = 0;
   array_scroll(tracks_nav, 0);
@@ -242,10 +251,20 @@ lcd_nav *nav_init(struct nav_config *cfg)
   tracks_set_steps_nav->data_array = tracks_preset_options_steps;
   tracks_set_steps_nav->parent = tracks_nav;
   tracks_set_steps_nav->child = NULL;
-  tracks_set_steps_nav->size = 6; // sizeof(tracks_preset_options_steps) / sizeof(tracks_preset_options_steps[0]);
+  tracks_set_steps_nav->size = MAX_MEASURE_STEPS; // sizeof(tracks_preset_options_steps) / sizeof(tracks_preset_options_steps[0]);
   tracks_set_steps_nav->lcd_state = state_tracks_set_steps;
   tracks_set_steps_nav->index = 0;
   array_scroll(tracks_set_steps_nav, 0);
+
+  // tracks SET BEATS
+  tracks_set_beats_nav->name = strdup("tracks_set_beats");
+  tracks_set_beats_nav->data_array = tracks_preset_options_beats;
+  tracks_set_beats_nav->parent = tracks_nav;
+  tracks_set_beats_nav->child = NULL;
+  tracks_set_beats_nav->size = MAX_MEASURE_BEATS; // sizeof(tracks_preset_options_steps) / sizeof(tracks_preset_options_steps[0]);
+  tracks_set_beats_nav->lcd_state = state_tracks_set_beats;
+  tracks_set_beats_nav->index = 0;
+  array_scroll(tracks_set_beats_nav, 0);
 
   // custom_sounds
   sounds_custom_nav->name = strdup("custom_sounds");
@@ -347,7 +366,7 @@ void lcd_splash(LiquidCrystal_I2C *lcd, lcd_nav *current_nav, const char **print
 
   splash_screen_active = true;
   state_splash_screen = print_arr;
-  
+
   if (current_nav == nullptr)
   {
     Serial.println("size too large");
