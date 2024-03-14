@@ -280,6 +280,10 @@ void loop()
       {
         Serial.println("adding");
         cached_samples_sd[meMatConv][i] = sd_palette[palbut];
+        meMat[meMatConv][i] = -1;
+        meMat[meMatConv][i + 1] = -1;
+        meMat[meMatConv][i + 2] = -1;
+
         stopSD = 1;
       }
     }
@@ -302,6 +306,7 @@ void loop()
         meMat[meMatConv][i] = channel;
         meMat[meMatConv][i + 1] = instr;
         meMat[meMatConv][i + 2] = note;
+        cached_samples_sd[meMatConv][i] =nullptr;
         stop = 1;
         // Serial.println("here");
       }
