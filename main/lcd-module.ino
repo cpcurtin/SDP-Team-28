@@ -12,7 +12,7 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
   const char *lcd_init_message[] = {
       "     Welcome to     ",
       "      Moduloop      ",
-      "",
+      "                    ",
       "    SDP team 28    "};
 
   LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg->i2c, cfg->columns, cfg->rows);
@@ -67,7 +67,7 @@ void array_scroll(lcd_nav *nav, int direction)
     else
     {
 
-      nav->lcd_state[row] = strdup("");
+      nav->lcd_state[row] = strdup("                         ");
     }
   }
 }
