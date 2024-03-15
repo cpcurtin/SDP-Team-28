@@ -255,7 +255,7 @@ void save_track(const char *filename, track &config)
   doc["bpm"] = config.bpm;
   doc["measure_steps"] = config.measure_steps;
   doc["measure_beats"] = config.measure_beats;
-  
+
   // Serialize JSON to file
   if (serializeJson(doc, file) == 0)
   {

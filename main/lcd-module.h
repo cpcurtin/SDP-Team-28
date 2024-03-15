@@ -11,7 +11,6 @@
 #define MAX_MEASURE_STEPS 6
 #define MAX_MEASURE_BEATS 4
 
-
 struct nav_config
 {
     struct array_with_size *sounds_custom;
@@ -62,7 +61,7 @@ const char *note_names[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A"
 const char *selected_sound[] = {"SELECTED SOUND:", "", "", "ASSIGN TO PALLETE"};
 const char *selected_effect[] = {"SELECTED EFFECT:", "", "", ""};
 const char *error_psram_full[] = {"PALETTE CACHE FULL", "YOU MUST REMOVE A", "CUSTOM SOUND FROM", "PALETTE AND MEASURE"};
-
+const char *empty_row = "                   ";
 bool splash_screen_active = false;
 struct nav_config *nav_cfg = new struct nav_config;
 

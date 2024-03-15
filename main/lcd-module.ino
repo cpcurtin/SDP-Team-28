@@ -12,7 +12,7 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
   const char *lcd_init_message[] = {
       "     Welcome to     ",
       "      Moduloop      ",
-      "                    ",
+      "",
       "    SDP team 28    "};
 
   LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg->i2c, cfg->columns, cfg->rows);
@@ -67,7 +67,7 @@ void array_scroll(lcd_nav *nav, int direction)
     else
     {
 
-      nav->lcd_state[row] = strdup("                         ");
+      nav->lcd_state[row] = empty_row;
     }
   }
 }
@@ -154,7 +154,7 @@ lcd_nav *nav_init(struct nav_config *cfg)
   const char **tracks_preset_options_beats = new const char *[MAX_MEASURE_BEATS];
   for (int i = 0; i < MAX_MEASURE_BEATS; i++)
   {
-    tracks_preset_options_steps[i] = strdup("Beat");
+    tracks_preset_options_beats[i] = strdup("Beat");
   }
 
   const char **midi_preset_options = new const char *[2];
