@@ -1,6 +1,6 @@
 #ifndef MAIN_H
 #define MAIN_H
-#define BATTERY_OPERATED 0 // 1 if only on battery operation, 0 if not
+#define BATTERY_OPERATED 1 // 1 if only on battery operation, 0 if not
 #define USING_MAIN_PCB 1   // 1 for integrated DAC, 0 for daughter board DAC
 #define USING_PSRAM 1      // 1 for teesny 4.1 with solder psram, 0 otherwise
 /*
@@ -315,6 +315,8 @@ int dispInstrum = -1;
 int dispNote = -1;
 int dispFlag = 1;
 int dispBounce = 0;
+int effectReverse = 0;
+int effectReverseprevcount = 0;
 
 newdigate::audiosample *cached_samples_sd[24][4];
 newdigate::audiosample *sd_palette[12];
@@ -323,10 +325,10 @@ int meMat[][12] = { {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1
                    {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                    {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                    {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
-int palette[][3] = {{0, Crash1, -1},{0, MetBell, -1},{0, Maracas, -1},
-                    {0, Crash1, -1},{0, MetBell, -1},{0, Maracas, -1},
-                    {-1, -1, -1},{1, Flute, 60},{1, ElectricGuitarClean, 60},
-                    {-1, -1, -1},{1, Flute, 60},{1, ElectricGuitarClean, 60}};
+int palette[][3] = {{0, AcousticBassDrum, -1},{-1, -1, -1},{-1, -1, -1},
+                    {0, AcousticSnare, -1},{1, ElectricPiano2, 62},{0, OpenHiHat, -1},
+                    {-1, -1, -1},{1, ElectricPiano2, 64},{-1, -1, -1},
+                    {-1, -1, -1},{-1, -1, -1},{-1, -1, -1}};
 
 int palbut = -1;
 int stop = 1;

@@ -95,26 +95,59 @@ void loop()
   // Serial.println(SDmeMat[0][0]);
   if (ledMetro.check() == 1)
   {
-
     // turning off all midi sounds on last step
-    if (count_temp == 0)
+    if (effectReverse == 0)
     {
-      // prevCount = 23;
-      // 0  1  2  3  4  5
-      // 6  7  8  9  10 11
-      // 12 13 14 15 16 17
-      // 18 19 20 21 22 23
+      if (count_temp == 0)
+      {
+        // prevCount = 23;
+        // 0  1  2  3  4  5
+        // 6  7  8  9  10 11
+        // 12 13 14 15 16 17
+        // 18 19 20 21 22 23
 
-      prevCount = 17 + active_track.measure_steps;
+        prevCount = 17 + active_track.measure_steps;
+      }
+      else if ((count_temp) % 6 == 0)
+      {
+        prevCount = count_temp - (6 - (active_track.measure_steps - 1));
+      }
+      else
+      {
+        prevCount = count_temp - 1;
+      }
     }
-    else if ((count_temp) % 6 == 0)
+    if (effectReverse == 1)
     {
-      prevCount = count_temp - (6 - (active_track.measure_steps - 1));
+      if (count_temp == 23 - (6 - active_track.measure_steps))
+      {
+        // prevCount = 23;
+        // 0  1  2  3  4  5
+        // 6  7  8  9  10 11
+        // 12 13 14 15 16 17
+        // 18 19 20 21 22 23
+
+        prevCount = 0;
+      }
+      else if (count_temp % 6 > active_track.measure_steps - 1)
+      {
+        prevCount = count_temp + (6 - (active_track.measure_steps));
+      }
+      else
+      {
+        prevCount = count_temp + 1;
+      }
     }
-    else
+    if (effectReverseprevcount == 0 && effectReverse == 1)
     {
-      prevCount = count_temp - 1;
+      Serial.print("here");
+      int newPrevCount = prevCount - 2;
+      LED_Off(MeMat_LEDindex[newPrevCount][0], MeMat_LEDindex[newPrevCount][1]);
     }
+    Serial.print("count ");
+    Serial.println(count_temp);
+    Serial.print("prevcount ");
+    Serial.println(prevCount);
 
     // TURN MIDI NOTES OFF
     for (int i = 0; i < 12; i += 3)
@@ -134,6 +167,12 @@ void loop()
     // Turn on and off measure matrix LEDs
 
     if (stop == 1 && stopSD == 1 && dispFlag == 1)
+    {
+      LED_Off(MeMat_LEDindex[prevCount][0], MeMat_LEDindex[prevCount][1]);
+      LED_On(MeMat_LEDindex[count_temp][0], MeMat_LEDindex[count_temp][1]);
+    }
+
+    if (stop == 1 && stopSD == 1 && dispFlag == 4)
     {
       LED_Off(MeMat_LEDindex[prevCount][0], MeMat_LEDindex[prevCount][1]);
       LED_On(MeMat_LEDindex[count_temp][0], MeMat_LEDindex[count_temp][1]);
@@ -175,7 +214,6 @@ void loop()
         // currBank = 1;
       }
     }
-    count_temp++;
 
     // ledMetro.reset();
 
@@ -186,15 +224,39 @@ void loop()
     // 6  7  8  9  10 11
     // 12 13 14 15 16 17
     // 18 19 20 21 22 23
-
-    if (count_temp % 6 > active_track.measure_steps - 1)
+    if (effectReverse == 0)
     {
-      count_temp = count_temp + (6 - active_track.measure_steps);
+      count_temp++;
+      if (count_temp % 6 > active_track.measure_steps-1)  //If it is the last step in the beat
+      {
+        count_temp = count_temp + (6 - active_track.measure_steps);
+      }
+      if (count_temp == 24)
+      // if (count_temp == (active_track.measure_steps * 4))
+      {
+        count_temp = 0;
+      }
     }
-    if (count_temp == 24)
-    // if (count_temp == (active_track.measure_steps * 4))
+    if (effectReverse == 1)
     {
-      count_temp = 0;
+      if(effectReverseprevcount == 0)
+      {
+        //count_temp--;
+      }
+      count_temp--;
+      if ((count_temp+1) % 6 == 0)
+      {
+        count_temp = count_temp - (6 - active_track.measure_steps);
+      }
+      if (count_temp < 0)
+      {
+        count_temp = 23 - (6 - active_track.measure_steps);
+      }
+      effectReverseprevcount++;
+    }
+    if (effectReverse == 2)
+    {
+      
     }
     /*************************     UPDATE TEMPO     *************************/
 
@@ -209,7 +271,27 @@ void loop()
     /*************************     STEP STATEMENT ENDS     *************************/
   }
 
-  if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9)
+  if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9 && Current_Button_State[0] == 3)
+  {
+    if (Current_Button_State[1] == 6)
+    {
+      effectReverse = 1;
+      dispFlag = 4;
+    }
+    if (Current_Button_State[1] == 7)
+    {
+      effectReverse = 2;
+      dispFlag = 5;
+    }
+    if (Current_Button_State[1] == 8)
+    {
+      effectReverse = 2;
+      dispFlag = 6;
+    }
+
+  }
+
+  if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9 && Current_Button_State[0] < 3)
   {
     // Serial.println("palette pushed");
     Current_Row = Current_Button_State[0];
@@ -234,6 +316,7 @@ void loop()
       palette[palbut][0] = dispBank;
       palette[palbut][1] = dispInstrum;
       palette[palbut][2] = dispNote;
+      sd_palette[palbut] = nullptr;
       splash_screen_active = false;
       lcd_display(lcd, nav_state->lcd_state);
       dispFlag = 2;
@@ -242,12 +325,32 @@ void loop()
     {
       sd_palette[palbut] = temp_sample;
       splash_screen_active = false;
+      palette[palbut][0] = -1;
+      palette[palbut][1] = -1;
+      palette[palbut][2] = -1;
       lcd_display(lcd, nav_state->lcd_state);
       dispFlag = 2;
     }
   }
   if (dispFlag == 2 && Current_Button_State[0] == 9 && Current_Button_State[1] == 9)
   {
+    dispFlag = 1;
+  }
+  if (dispFlag == 4 && Current_Button_State[0] == 9 && Current_Button_State[1] == 9)
+  {
+    effectReverse = 0;
+    effectReverseprevcount = 0;
+    dispFlag = 1;
+  }
+  if (dispFlag == 5 && Current_Button_State[0] == 9 && Current_Button_State[1] == 9)
+  {
+    effectReverse = 0;
+    dispFlag = 1;
+    count_temp = 0;
+  }
+  if (dispFlag == 6 && Current_Button_State[0] == 9 && Current_Button_State[1] == 9)
+  {
+    effectReverse = 0;
     dispFlag = 1;
   }
   if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palbut != -1)
