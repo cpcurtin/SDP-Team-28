@@ -177,7 +177,7 @@ void loop()
     {
       count_temp = 0;
     }
-    ledMetro.reset();
+    //ledMetro.reset();
   }
 
   if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9)
