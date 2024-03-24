@@ -260,7 +260,8 @@ void loop()
     }
     /*************************     UPDATE TEMPO     *************************/
 
-    active_track.bpm = read_tempo();
+    //active_track.bpm = read_tempo();
+    active_track.bpm = 40;
 
     if (splash_screen_active == false)
     {
