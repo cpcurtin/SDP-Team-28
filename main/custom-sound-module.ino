@@ -22,7 +22,6 @@ char temp_str[MAX_FILENAME_LENGTH]; // Adjust MAX_FILENAME_LENGTH as needed
 
 int playFile(newdigate::audiosample *cached_sound)
 {
-  
 
   int mixer = -1;
 
@@ -66,13 +65,24 @@ int playFile(newdigate::audiosample *cached_sound)
 void stopFile(int mixer)
 {
   if (mixer == 0)
+  {
+    if (rraw_a1.isPlaying())
     {
-      // Serial.println("Stopping 1");
       rraw_a1.stop();
+    }
+    if (rraw_a2.isPlaying())
+    {
       rraw_a2.stop();
+    }
+    if (rraw_a3.isPlaying())
+    {
       rraw_a3.stop();
+    }
+    if (rraw_a4.isPlaying())
+    {
       rraw_a4.stop();
     }
+  }
   if (mixer == 1)
   {
     // Serial.println("Stopping 1");

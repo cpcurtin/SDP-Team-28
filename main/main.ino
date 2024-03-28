@@ -152,6 +152,11 @@ void loop()
     // TURN MIDI NOTES OFF
     for (int i = 0; i < 12; i += 3)
     {
+      if (meMat[prevCount][i] == -1)
+      {
+        // SOUND NOT SET
+        continue;
+      }
       currBank = meMat[prevCount][i];
       if (currBank == 0)
       {
@@ -227,7 +232,7 @@ void loop()
     if (effectReverse == 0)
     {
       count_temp++;
-      if (count_temp % 6 > active_track.measure_steps-1)  //If it is the last step in the beat
+      if (count_temp % 6 > active_track.measure_steps - 1) // If it is the last step in the beat
       {
         count_temp = count_temp + (6 - active_track.measure_steps);
       }
@@ -239,12 +244,12 @@ void loop()
     }
     if (effectReverse == 1)
     {
-      if(effectReverseprevcount == 0)
+      if (effectReverseprevcount == 0)
       {
-        //count_temp--;
+        // count_temp--;
       }
       count_temp--;
-      if ((count_temp+1) % 6 == 0)
+      if ((count_temp + 1) % 6 == 0)
       {
         count_temp = count_temp - (6 - active_track.measure_steps);
       }
@@ -256,7 +261,6 @@ void loop()
     }
     if (effectReverse == 2)
     {
-      
     }
     /*************************     UPDATE TEMPO     *************************/
 
@@ -288,7 +292,6 @@ void loop()
       effectReverse = 2;
       dispFlag = 6;
     }
-
   }
 
   if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9 && Current_Button_State[0] < 3)
@@ -407,7 +410,7 @@ void loop()
         // Serial.println("here");
       }
     }
-    
+
     // Play note at current palette to see whats there
     // MUST ADD STOPING CURRENT MIDI AND CUSTOM SOUNDS TO WORK
     // if (palette[palbut][0] != -1)
