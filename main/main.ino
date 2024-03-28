@@ -264,7 +264,7 @@ void loop()
     }
     /*************************     UPDATE TEMPO     *************************/
 
-    //active_track.bpm = read_tempo();
+    // active_track.bpm = read_tempo();
     active_track.bpm = 50;
 
     if (splash_screen_active == false)
@@ -275,9 +275,7 @@ void loop()
     ledMetro.interval(metro_active_tempo);
     /*************************     STEP STATEMENT ENDS     *************************/
 
-
-
-    //delay(5000);
+    // delay(5000);
   }
 
   if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9 && Current_Button_State[0] == 3)

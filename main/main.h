@@ -321,14 +321,8 @@ int effectReverseprevcount = 0;
 newdigate::audiosample *cached_samples_sd[24][4];
 newdigate::audiosample *sd_palette[12];
 
-int meMat[][12] = { {0, ClosedHiHat, -1, 0, AcousticBassDrum, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                   {0, ClosedHiHat, -1, 0, AcousticSnare, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                   {0, ClosedHiHat, -1, 0, AcousticBassDrum, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                   {0, ClosedHiHat, -1, 0, AcousticSnare, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
-int palette[][3] = {{0, AcousticBassDrum, -1},{-1, -1, -1},{-1, -1, -1},
-                    {0, AcousticSnare, -1},{1, ElectricPiano2, 62},{0, OpenHiHat, -1},
-                    {-1, -1, -1},{1, ElectricPiano2, 64},{-1, -1, -1},
-                    {-1, -1, -1},{-1, -1, -1},{-1, -1, -1}};
+int meMat[][12] = {{0, ClosedHiHat, -1, 0, AcousticBassDrum, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, 0, AcousticSnare, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, 0, AcousticBassDrum, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, 0, AcousticSnare, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
+int palette[][3] = {{0, AcousticBassDrum, -1}, {-1, -1, -1}, {-1, -1, -1}, {0, AcousticSnare, -1}, {1, ElectricPiano2, 62}, {0, OpenHiHat, -1}, {-1, -1, -1}, {1, ElectricPiano2, 64}, {-1, -1, -1}, {-1, -1, -1}, {-1, -1, -1}, {-1, -1, -1}};
 
 int palbut = -1;
 int stop = 1;
@@ -337,6 +331,38 @@ int stopSD = 1;
 /**************************
 PROGRAM STRUCTS
 **************************/
+typedef struct Sound
+{
+  int bank;
+  int instrument;
+  int note;
+  newdigate::audiosample *sd_cached_sound;
+
+} Sound;
+
+typedef struct Step
+{
+  int id;
+  int active_sounds;
+  struct Sound sound_list[4];
+
+} Step;
+
+typedef struct Beat
+{
+  int id;
+  int active_steps;
+  struct Step step_list[6];
+
+} Beat;
+
+typedef struct Measure
+{
+  int id;
+  int active_beats;
+  struct Beat beat_list[4];
+
+} Measure;
 
 int serial_init(void);
 
