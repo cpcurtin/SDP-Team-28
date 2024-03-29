@@ -62,7 +62,7 @@ const int LED_colcount = 9;
 
 int Previous_Button_State[] = {9, 9};
 int Current_Button_State[] = {9, 9};
-int Last_Pushed_State[] = {9, 9};
+int Last_Pushed_State[] = {9, 9}; // row column
 int Pressed = 0;
 
 unsigned long previousMillis = 0;

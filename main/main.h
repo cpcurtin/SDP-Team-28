@@ -1,8 +1,9 @@
 #ifndef MAIN_H
 #define MAIN_H
-#define BATTERY_OPERATED 1 // 1 if only on battery operation, 0 if not
+#define BATTERY_OPERATED 0 // 1 if only on battery operation, 0 if not
 #define USING_MAIN_PCB 1   // 1 for integrated DAC, 0 for daughter board DAC
 #define USING_PSRAM 1      // 1 for teesny 4.1 with solder psram, 0 otherwise
+#define USING_NEW_DS 1
 /*
 
  *       MODULOOP MAIN CONFIGURATIONS
@@ -172,6 +173,7 @@ MODULE LINKING
 #include "custom-sound-module.h"
 #include "midi-sound-module.h"
 #include "effect-module.h"
+#include "measure-module.h"
 #include <Metro.h>
 
 /**************************
@@ -272,6 +274,12 @@ HARDWARE CONFIGURATIONS
 #define NAV_UP -1
 #define NAV_DOWN 1
 
+// MISC
+
+/**************************
+PROGRAM STRUCTS
+**************************/
+
 /**************************
 PROGRAM VARIABLES
 **************************/
@@ -327,42 +335,6 @@ int palette[][3] = {{0, AcousticBassDrum, -1}, {-1, -1, -1}, {-1, -1, -1}, {0, A
 int palbut = -1;
 int stop = 1;
 int stopSD = 1;
-
-/**************************
-PROGRAM STRUCTS
-**************************/
-typedef struct Sound
-{
-  int bank;
-  int instrument;
-  int note;
-  newdigate::audiosample *sd_cached_sound;
-
-} Sound;
-
-typedef struct Step
-{
-  int id;
-  int active_sounds;
-  struct Sound sound_list[4];
-
-} Step;
-
-typedef struct Beat
-{
-  int id;
-  int active_steps;
-  struct Step step_list[6];
-
-} Beat;
-
-typedef struct Measure
-{
-  int id;
-  int active_beats;
-  struct Beat beat_list[4];
-
-} Measure;
 
 int serial_init(void);
 

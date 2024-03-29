@@ -86,6 +86,7 @@ void setup()
   sd_palette[9] = cached_samples[1];
 
   // Serial.println(SDmeMat[0][0]);
+  measure_palette_init();
 }
 
 /* Main subroutine: follow software block diagram */
@@ -278,6 +279,7 @@ void loop()
     // delay(5000);
   }
 
+  // palette effect button pressed
   if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9 && Current_Button_State[0] == 3)
   {
     if (Current_Button_State[1] == 6)
@@ -297,6 +299,7 @@ void loop()
     }
   }
 
+  // palette sound button pressed
   if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9 && Current_Button_State[0] < 3)
   {
     // Serial.println("palette pushed");
@@ -311,6 +314,7 @@ void loop()
       }
     }
 
+    // palette effect button pressed
     if (dispFlag == 1)
     {
       LED_On(Current_Row, Current_Column);
@@ -359,6 +363,23 @@ void loop()
     effectReverse = 0;
     dispFlag = 1;
   }
+
+#if USING_NEW_DS == 1
+  // palette button already pressed and depressed
+
+  // measure press
+
+  // measure depress
+  // pressed button is Last_Pushed_State
+
+  if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palbut != -1)
+  {
+    Step *temp_step_select = &button_to_step(Last_Pushed_State);
+  }
+
+#endif
+
+#if USING_NEW_DS == 0
   if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palbut != -1)
   {
     // Serial.println("measure pushed");
@@ -439,6 +460,8 @@ void loop()
     // }
     palbut = -1;
   }
+
+#endif
 
   unsigned long currentMillis_matrix = millis();
 
@@ -577,6 +600,12 @@ void loop()
       dispNote = midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index];
       dispFlag = 0;
 
+      new_sound.bank = sounds_midi_nav->index;
+      new_sound.instrument = midi_melodic_values[sounds_midi_melodic_nav->index];
+      new_sound.note = midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index];
+      new_sound.sd_cached_sound = nullptr;
+      new_sound_assignment = true;
+
       Serial.println(dispBank);
       Serial.println(dispInstrum);
       Serial.println(dispNote);
@@ -607,6 +636,12 @@ void loop()
       dispNote = -1;
       dispFlag = 0;
 
+      new_sound.bank = sounds_midi_nav->index;
+      new_sound.instrument = midi_percussion_values[sounds_midi_percussion_nav->index];
+      new_sound.note = -1;
+      new_sound.sd_cached_sound = nullptr;
+      new_sound_assignment = true;
+
       Serial.println(dispBank);
       Serial.println(dispInstrum);
       Serial.println(dispNote);
@@ -625,6 +660,12 @@ void loop()
       if (temp_sample != nullptr)
       {
         dispFlag = 3;
+
+        new_sound.bank = -1;
+        new_sound.instrument = -1;
+        new_sound.note = -1;
+        new_sound.sd_cached_sound = temp_sample;
+        new_sound_assignment = true;
         lcd_splash(lcd, nav_state, selected_sound);
       }
       else
