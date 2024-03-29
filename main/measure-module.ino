@@ -35,6 +35,7 @@ void measure_palette_init(void)
                 temp_sound->instrument = -1;
                 temp_sound->note = -1;
                 temp_sound->sd_cached_sound = nullptr;
+                temp_sound->empty = true;
             }
         }
     }
@@ -42,18 +43,100 @@ void measure_palette_init(void)
     // INIT PALETTE
     for (int i = 0; i < PALETTE_SIZE; i++)
     {
-        testing_palette[i] = {-1, -1, -1, nullptr};
+        testing_palette[i] = {-1, -1, -1, nullptr, true};
     }
 }
 
 Step button_to_step(int actuated_button[])
 {
-    if (actuated_button[0] != 9 && actuated_button[1] < 6)
+    if (actuated_button[ROW] < 4 && actuated_button[COLUMN] < 6)
     {
-        return (testing_measure.beat_list[actuated_button[0]]).step_list[actuated_button[1]];
+        return (testing_measure.beat_list[actuated_button[ROW]]).step_list[actuated_button[COLUMN]];
     }
     else
     {
         return defaultStep;
     }
+}
+
+Step next_step(Measure measure)
+{
+    step++;
+    if (step == measure.beat_list[beat].active_steps)
+    {
+        step = 0;
+        beat++;
+        if (beat == measure.active_beats)
+        {
+            beat = 0;
+        }
+    }
+    return measure.beat_list[beat].step_list[step];
+}
+
+int stop_step(Step step_end)
+{
+    for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
+    {
+        if (step_end.sound_list[sound].empty == false)
+        {
+            if (step_end.sound_list[sound].bank != MIDI_NULL)
+            {
+                if (step_end.sound_list[sound].note != MIDI_NULL)
+                {
+                    // MELODIC
+                    midiNoteOff(step_end.sound_list[sound].bank, step_end.sound_list[sound].note, 127);
+                }
+                else
+                {
+                    // PERCUSSION
+                    midiNoteOff(step_end.sound_list[sound].bank, step_end.sound_list[sound].instrument, 127);
+                }
+            }
+            else
+            {
+                // SD
+                stopFile(0);
+            }
+        }
+    }
+
+    return 0;
+}
+
+int play_step(Step step_play)
+{
+    for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
+    {
+        if (step_play.sound_list[sound].empty == false)
+        {
+            if (step_play.sound_list[sound].bank != MIDI_NULL)
+            {
+                if (step_play.sound_list[sound].note != MIDI_NULL)
+                {
+                    // MELODIC
+                    midiSetInstrument(step_play.sound_list[sound].bank, 128);
+                    midiNoteOn(step_play.sound_list[sound].bank, step_play.sound_list[sound].note, 127);
+                }
+                else
+                {
+                    // PERCUSSION
+                    midiSetInstrument(step_play.sound_list[sound].bank, 128);
+                    midiNoteOn(step_play.sound_list[sound].bank, step_play.sound_list[sound].instrument, 127);
+                }
+            }
+            else
+            {
+                // SD
+                playFile(step_play.sound_list[sound].sd_cached_sound);
+            }
+        }
+    }
+
+    return 0;
+}
+
+float step_interval_calc(Measure measure)
+{
+    return (60000 / (active_track.bpm * measure.beat_list[beat].active_steps));
 }

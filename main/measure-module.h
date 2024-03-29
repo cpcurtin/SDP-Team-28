@@ -29,7 +29,17 @@ typedef struct Sound
     int instrument;
     int note;
     newdigate::audiosample *sd_cached_sound;
+    bool empty;
 
+    // Overload the equality operator
+    bool operator==(const Sound &other) const
+    {
+        return bank == other.bank &&
+               instrument == other.instrument &&
+               note == other.note &&
+               sd_cached_sound == other.sd_cached_sound &&
+               empty == other.empty;
+    }
 } Sound;
 
 typedef struct Step
@@ -57,13 +67,29 @@ typedef struct Measure
 } Measure;
 
 Measure testing_measure;
+
+Step defaultStep = {999};
+Step active_step;
+Step last_step;
+
 Sound testing_palette[PALETTE_SIZE];
 Sound new_sound;
-Step defaultStep; // Define a default Step object
+Sound empty_sound = {-1, -1, -1, nullptr, true};
+
 bool new_sound_assignment = false;
+bool measure_edit = false;
+
+int beat = 0;
+int step = 0;
 
 // functions, extern variables, structs go here
 void measure_palette_init(void);
+
 Step button_to_step(int actuated_button[]);
+Step next_step(Measure measure);
+
+int stop_step(Step step_end);
+int play_step(Step step_play);
+float step_interval_calc(Measure measure);
 
 #endif // EXAMPLE_MODULE_H

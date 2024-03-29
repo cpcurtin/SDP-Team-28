@@ -93,6 +93,99 @@ void setup()
 void loop()
 {
 
+#if USING_NEW_DS == 1
+  if (ledMetro.check() == 1)
+  {
+    // ON STEP, PLAY SOUNDS AND FLASH LED
+
+    stop_step(last_step);
+    play_step(active_step);
+    last_step = active_step;
+
+    // FETCH NEXT STEP
+    active_step = next_step(testing_measure);
+
+    active_track.bpm = read_tempo();
+
+    if (splash_screen_active == false)
+    {
+      update_tempo(lcd);
+    }
+    ledMetro.interval(step_interval_calc(testing_measure));
+
+    // UPDATE TIMER INTERVAL
+  }
+
+  //  NEW SOUND TO ASSIGN TO PALETTE
+  if (Current_Button_State[COLUMN] > LAST_MEASURE_COLUMN && Current_Button_State[COLUMN] != BUTTON_FLOATING && Current_Button_State[ROW] < EFFECTS_ROW)
+  {
+    // get palette index
+    for (int i = 0; i < 12; i++)
+    {
+      if (Palette_LEDMatrix[i][0] == Current_Button_State[ROW] && Palette_LEDMatrix[i][1] == Current_Button_State[COLUMN])
+      {
+        palbut = i;
+      }
+    }
+    if (new_sound_assignment)
+    {
+      // SAVE NEW SOUND FROM NAV TO PALETTE BUTTON
+      testing_palette[palbut] = new_sound;
+      lcd_display(lcd, nav_state->lcd_state);
+      new_sound_assignment = false;
+    }
+    else
+    {
+      // EVOKES add/remove sounds to measure steps
+      measure_edit = true;
+    }
+  }
+
+  // MEASURE MATRIX BUTTON IS PRESSED   add/remove sounds to measure steps
+  if (measure_edit)
+  {
+    if (Current_Button_State[ROW] < MEASURE_MATRIX_ROWS && Current_Button_State[COLUMN] < MEASURE_MATRIX_COLUMNS)
+    {
+      // MEASURE BUTTON PRESSED
+
+      bool sound_exists = false;
+      for (int i = 0; i < MAX_STEP_SOUNDS; i++)
+      {
+
+        if (testing_palette[i] == testing_measure.beat_list[Current_Button_State[ROW]].step_list[Current_Button_State[COLUMN]].sound_list[i])
+        {
+          // SELECTED PALETTE SOUND EXISTS ON CURRENT STEP
+          // REMOVE FROM MEASURE STEP
+          testing_measure.beat_list[Current_Button_State[ROW]].step_list[Current_Button_State[COLUMN]].sound_list[i] = empty_sound;
+          sound_exists = true;
+        }
+      }
+      if (sound_exists == false && testing_measure.beat_list[Current_Button_State[ROW]].step_list[Current_Button_State[COLUMN]].active_sounds < MAX_STEP_SOUNDS)
+      {
+        // SELECTED STEP HAS AVAILABLE SOUND SLOTS
+        for (int i = 0; i < MAX_STEP_SOUNDS; i++)
+        {
+          if (testing_measure.beat_list[Current_Button_State[ROW]].step_list[Current_Button_State[COLUMN]].sound_list[i].empty)
+          {
+            // ASSIGN PALETTE SOUND TO FIRST AVAILABLE STEP SOUND SLOT
+            testing_measure.beat_list[Current_Button_State[ROW]].step_list[Current_Button_State[COLUMN]].sound_list[i] = testing_palette[palbut];
+            break;
+          }
+        }
+      }
+      else
+      {
+        // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
+      }
+
+      measure_edit = false; // chain sound assignment in future starting here
+    }
+  }
+
+#endif
+
+#if USING_NEW_DS == 0
+
   // Serial.println(SDmeMat[0][0]);
   if (ledMetro.check() == 1)
   {
@@ -299,31 +392,6 @@ void loop()
     }
   }
 
-#if USING_NEW_DS == 1
-  //  NEW SOUND TO ASSIGN TO PALETTE
-  if (new_sound_assignment)
-  {
-    if (Current_Button_State[COLUMN] > LAST_MEASURE_COLUMN && Current_Button_State[COLUMN] != BUTTON_FLOATING && Current_Button_State[ROW] < EFFECTS_ROW)
-    {
-      // get palette index
-      for (int i = 0; i < 12; i++)
-      {
-        if (Palette_LEDMatrix[i][0] == Current_Button_State[ROW] && Palette_LEDMatrix[i][1] == Current_Button_State[COLUMN])
-        {
-          palbut = i;
-        }
-      }
-
-      testing_palette[palbut] = new_sound;
-
-      lcd_display(lcd, nav_state->lcd_state);
-    }
-  }
-
-#endif
-
-#if USING_NEW_DS == 0
-
   // palette sound button pressed
   if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9 && Current_Button_State[0] < 3)
   {
@@ -368,12 +436,11 @@ void loop()
     }
   }
 
-#endif
-
   if (dispFlag == 2 && Current_Button_State[0] == 9 && Current_Button_State[1] == 9)
   {
     dispFlag = 1;
   }
+
   if (dispFlag == 4 && Current_Button_State[0] == 9 && Current_Button_State[1] == 9)
   {
     effectReverse = 0;
@@ -392,22 +459,6 @@ void loop()
     dispFlag = 1;
   }
 
-#if USING_NEW_DS == 1
-  // palette button already pressed and depressed
-
-  // measure press
-
-  // measure depress
-  // pressed button is Last_Pushed_State
-
-  // if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palbut != -1)
-  // {
-  //   Step *temp_step_select = &button_to_step(Last_Pushed_State);
-  // }
-
-#endif
-
-#if USING_NEW_DS == 0
   if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palbut != -1)
   {
     // Serial.println("measure pushed");
