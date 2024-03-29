@@ -299,6 +299,31 @@ void loop()
     }
   }
 
+#if USING_NEW_DS == 1
+  //  NEW SOUND TO ASSIGN TO PALETTE
+  if (new_sound_assignment)
+  {
+    if (Current_Button_State[COLUMN] > LAST_MEASURE_COLUMN && Current_Button_State[COLUMN] != BUTTON_FLOATING && Current_Button_State[ROW] < EFFECTS_ROW)
+    {
+      // get palette index
+      for (int i = 0; i < 12; i++)
+      {
+        if (Palette_LEDMatrix[i][0] == Current_Button_State[ROW] && Palette_LEDMatrix[i][1] == Current_Button_State[COLUMN])
+        {
+          palbut = i;
+        }
+      }
+
+      testing_palette[palbut] = new_sound;
+
+      lcd_display(lcd, nav_state->lcd_state);
+    }
+  }
+
+#endif
+
+#if USING_NEW_DS == 0
+
   // palette sound button pressed
   if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9 && Current_Button_State[0] < 3)
   {
@@ -342,6 +367,9 @@ void loop()
       dispFlag = 2;
     }
   }
+
+#endif
+
   if (dispFlag == 2 && Current_Button_State[0] == 9 && Current_Button_State[1] == 9)
   {
     dispFlag = 1;
@@ -372,10 +400,10 @@ void loop()
   // measure depress
   // pressed button is Last_Pushed_State
 
-  if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palbut != -1)
-  {
-    Step *temp_step_select = &button_to_step(Last_Pushed_State);
-  }
+  // if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palbut != -1)
+  // {
+  //   Step *temp_step_select = &button_to_step(Last_Pushed_State);
+  // }
 
 #endif
 

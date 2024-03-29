@@ -14,6 +14,15 @@
 #define MAX_STEPS 6
 #define MAX_STEP_SOUNDS 4
 
+#define ROW 0
+#define COLUMN 1
+
+#define LAST_MEASURE_COLUMN 5
+#define BUTTON_FLOATING 9
+#define EFFECTS_ROW 3
+
+#define MIDI_NULL -1
+
 typedef struct Sound
 {
     int bank;
@@ -50,6 +59,7 @@ typedef struct Measure
 Measure testing_measure;
 Sound testing_palette[PALETTE_SIZE];
 Sound new_sound;
+Step defaultStep; // Define a default Step object
 bool new_sound_assignment = false;
 
 // functions, extern variables, structs go here

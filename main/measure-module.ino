@@ -54,6 +54,6 @@ Step button_to_step(int actuated_button[])
     }
     else
     {
-        return NULL;
+        return defaultStep;
     }
 }
