@@ -15,6 +15,8 @@
 #define DPAD_DOWN 3
 #define DPAD_UP 4
 
+#define MATRIX_BUTTON_DEBOUNCE 50
+
 struct button_maxtrix_pin_config
 {
     size_t width;   // The length of the array
@@ -23,18 +25,16 @@ struct button_maxtrix_pin_config
     int columns[7]; // Flexible array member
 };
 
-struct palette_cell
+typedef struct Button
 {
-    char *sound;
-    int available;
-};
+    int row;
+    int column;
+    bool valid;
+    bool waiting;
+    unsigned long debounce_interval;
+    unsigned long current_interval;
 
-struct palette_matrix
-{
-    struct palette_cell ***cells;
-    int rows;
-    int columns;
-};
+} Button;
 
 const int selectPin1_button = 12; // select bit A
 const int selectPin2_button = 11; // select bit B
@@ -81,6 +81,14 @@ int dpad_press_return = 0;
 int dpad_pressed = 0;
 unsigned long dpad_last_pressed;
 
+Button matrix_button = {
+    9,
+    9,
+    false,
+    false,
+    MATRIX_BUTTON_DEBOUNCE,
+    0}; // matrix button info
+
 int dpad_init(void);
 
 int dpad_read(void);
@@ -100,6 +108,10 @@ void selectColumn_button(int Column);
 void selectColumn_LED(int Column);
 void selectRow_LED(int Row);
 
-// void set_matrix_led(struct matrix_coordinate, int state);
+// TESTING ZONE
+// TESTING ZONE
+// TESTING ZONE
+void testing_button_abstract(void);
+void testing_read_matrix(void);
 
 #endif // EXAMPLE_MODULE_H

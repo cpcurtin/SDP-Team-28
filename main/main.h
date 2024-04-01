@@ -326,6 +326,8 @@ int dispBounce = 0;
 int effectReverse = 0;
 int effectReverseprevcount = 0;
 
+unsigned long currentMillis_matrix = 0;
+
 newdigate::audiosample *cached_samples_sd[24][4];
 newdigate::audiosample *sd_palette[12];
 
@@ -337,5 +339,6 @@ int stop = 1;
 int stopSD = 1;
 
 int serial_init(void);
-
+// void printMemory(void);
+// uint32_t getFreeMemory(void);
 #endif // MAIN_H

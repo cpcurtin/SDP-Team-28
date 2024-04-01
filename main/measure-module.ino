@@ -140,3 +140,26 @@ float step_interval_calc(Measure measure)
 {
     return (60000 / (active_track.bpm * measure.beat_list[beat].active_steps));
 }
+
+void print_measure(Measure measure)
+{
+    Beat *temp_beat;
+    Step *temp_step;
+    Sound *temp_sound;
+    Serial.println("\n\n");
+    Serial.print("Beat: ");
+    Serial.print(beat);
+    Serial.print("\tStep: ");
+    Serial.println(step);
+
+    for (int i = 0; i < MAX_STEP_SOUNDS; i++)
+    {
+
+        Serial.print("B: ");
+        Serial.print(measure.beat_list[beat].step_list[step].sound_list[i].bank);
+        Serial.print("\tI: ");
+        Serial.print(measure.beat_list[beat].step_list[step].sound_list[i].instrument);
+        Serial.print("\tN: ");
+        Serial.println(measure.beat_list[beat].step_list[step].sound_list[i].note);
+    }
+}

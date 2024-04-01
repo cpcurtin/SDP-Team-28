@@ -91,5 +91,6 @@ Step next_step(Measure measure);
 int stop_step(Step step_end);
 int play_step(Step step_play);
 float step_interval_calc(Measure measure);
+void print_measure(Measure measure);
 
 #endif // EXAMPLE_MODULE_H

@@ -147,7 +147,10 @@ void check_rows(int colIndex)
 
       Current_Button_State[0] = rowIndex;
       Current_Button_State[1] = colIndex;
+
+      matrix_button.valid = false;
       Pressed = 1;
+
       // Serial.print("Push");
       // Serial.print(rowIndex);
       Serial.println(colIndex);
@@ -201,6 +204,13 @@ void Button_Released(int Current_State[], int Previous_State[])
 
   previousMillis = millis();
   // LED_Off(Previous_State[0], Previous_State[1]);
+
+  // NEW BUTTON TESTING ABSTRACTION
+  matrix_button.row = Current_State[ROW];
+  matrix_button.column = Current_State[COLUMN];
+  matrix_button.current_interval = previousMillis;
+  matrix_button.waiting = true;
+
   Current_State[0] = 9;
   Current_State[1] = 9;
 }
@@ -316,4 +326,11 @@ Calculate the difference in time unsigned long time_diff = end_time - start_time
   */
 
   return 0;
+}
+
+void testing_button_abstract(void)
+{
+}
+void testing_read_matrix(void)
+{
 }

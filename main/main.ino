@@ -96,7 +96,12 @@ void loop()
 #if USING_NEW_DS == 1
   if (ledMetro.check() == 1)
   {
+    // printMemory();
     // ON STEP, PLAY SOUNDS AND FLASH LED
+    print_measure(testing_measure);
+
+    LED_Off(beat, step);
+    LED_On(beat, step);
 
     stop_step(last_step);
     play_step(active_step);
@@ -105,13 +110,14 @@ void loop()
     // FETCH NEXT STEP
     active_step = next_step(testing_measure);
 
-    active_track.bpm = read_tempo();
+    // active_track.bpm = read_tempo();
 
     if (splash_screen_active == false)
     {
       update_tempo(lcd);
     }
-    ledMetro.interval(step_interval_calc(testing_measure));
+    // ledMetro.interval(step_interval_calc(testing_measure));
+    ledMetro.interval(60000 / (4 * 20));
 
     // UPDATE TIMER INTERVAL
   }
@@ -119,6 +125,11 @@ void loop()
   //  NEW SOUND TO ASSIGN TO PALETTE
   if (Current_Button_State[COLUMN] > LAST_MEASURE_COLUMN && Current_Button_State[COLUMN] != BUTTON_FLOATING && Current_Button_State[ROW] < EFFECTS_ROW)
   {
+    Serial.println("PALLETE BUTTON PRSSED");
+    Serial.print("R: ");
+    Serial.print(Current_Button_State[ROW]);
+    Serial.print("\tC: ");
+    Serial.println(Current_Button_State[COLUMN]);
     // get palette index
     for (int i = 0; i < 12; i++)
     {
@@ -131,8 +142,10 @@ void loop()
     {
       // SAVE NEW SOUND FROM NAV TO PALETTE BUTTON
       testing_palette[palbut] = new_sound;
-      lcd_display(lcd, nav_state->lcd_state);
+
       new_sound_assignment = false;
+      splash_screen_active = false;
+      lcd_display(lcd, nav_state->lcd_state);
     }
     else
     {
@@ -542,24 +555,35 @@ void loop()
 
 #endif
 
-  unsigned long currentMillis_matrix = millis();
+  currentMillis_matrix = millis();
 
   if (currentMillis_matrix - previousMillis >= interval)
   {
 
     if (Pressed == 0)
     {
+      // cycles matrix, sets Current_Button_State to press button, sets pressed flag
       readMatrix();
     }
 
     if (Pressed == 1)
     {
+      //
       Button_Pressed(Current_Button_State, Previous_Button_State);
+    }
+    if (matrix_button.waiting)
+    {
+      matrix_button.waiting = false;
+      matrix_button.valid = true;
     }
 
     Previous_Button_State[0] = Current_Button_State[0];
     Previous_Button_State[1] = Current_Button_State[1];
   }
+
+  // NEW BUTTON READ CODE
+
+  // NEW BUTTON READ CODE
 
   /*************************     READ DPAD INPUTS     *************************/
   dpad_pressed = dpad_read();
@@ -779,3 +803,34 @@ int serial_init(void)
   Serial.println("\n\n\n\n\nSerial Initialized<<<<<<<<<<<<<<");
   return 0;
 }
+
+// void printMemory(void)
+// {
+//   // Get total memory size
+//   uint32_t total_memory = 0;
+//   uint32_t free_memory = 0;
+
+//   total_memory = RAM_SIZE; // RAM_SIZE is a macro defined in Teensy's core libraries
+
+//   // Get free memory size
+//   free_memory = getFreeMemory();
+
+//   // Print total and free memory
+//   Serial.print("Total Memory: ");
+//   Serial.print(total_memory);
+//   Serial.println(" bytes");
+//   Serial.print("Free Memory: ");
+//   Serial.print(free_memory);
+//   Serial.println(" bytes");
+// }
+
+// uint32_t getFreeMemory(void)
+// {
+//   // Calculate free memory
+//   char *stack_top = (char *)0x20008000; // Teensy 4.1 stack pointer
+//   char *heap_top = _sbrk(0);            // Current heap pointer
+
+//   uint32_t free_memory = stack_top - heap_top;
+
+//   return free_memory;
+// }
