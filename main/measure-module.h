@@ -68,13 +68,13 @@ typedef struct Measure
 
 Measure testing_measure;
 
-Step defaultStep = {999};
-Step active_step;
-Step last_step;
+Step *active_step;
+Step *last_step;
 
 Sound testing_palette[PALETTE_SIZE];
 Sound new_sound;
 Sound empty_sound = {-1, -1, -1, nullptr, true};
+bool sound_exists = false;
 
 bool new_sound_assignment = false;
 bool measure_edit = false;
@@ -85,12 +85,14 @@ int step = 0;
 // functions, extern variables, structs go here
 void measure_palette_init(void);
 
-Step button_to_step(int actuated_button[]);
-Step next_step(Measure measure);
+Step *button_to_step(int actuated_button[]);
+Step *next_step(Measure *measure);
+Step *button_step_lookup(Measure *measure);
 
-int stop_step(Step step_end);
-int play_step(Step step_play);
-float step_interval_calc(Measure measure);
-void print_measure(Measure measure);
+int stop_step(Step *step_end);
+int play_step(Step *step_play);
+float step_interval_calc(Measure *measure);
+void print_step(Measure *measure);
+void print_palette(int palette_index);
 
 #endif // EXAMPLE_MODULE_H

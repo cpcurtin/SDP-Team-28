@@ -80,13 +80,14 @@ void setup()
   cached_samples[1] = cache_sd_sound((nav_cfg->sounds_custom)->array[1]);
   cached_samples[2] = cache_sd_sound((nav_cfg->sounds_custom)->array[2]);
   cached_samples[3] = cache_sd_sound((nav_cfg->sounds_custom)->array[3]);
-  Serial.println("PROGRAM LOOP BEGINS");
 
   // sd_palette[6] = cached_samples[0];
   sd_palette[9] = cached_samples[1];
 
   // Serial.println(SDmeMat[0][0]);
+  Serial.println("BEFORE PALETTE INIT");
   measure_palette_init();
+  Serial.println("PROGRAM LOOP BEGINS");
 }
 
 /* Main subroutine: follow software block diagram */
@@ -96,9 +97,9 @@ void loop()
 #if USING_NEW_DS == 1
   if (ledMetro.check() == 1)
   {
-    // printMemory();
+
     // ON STEP, PLAY SOUNDS AND FLASH LED
-    print_measure(testing_measure);
+    print_step(&testing_measure);
 
     LED_Off(beat, step);
     LED_On(beat, step);
@@ -108,32 +109,29 @@ void loop()
     last_step = active_step;
 
     // FETCH NEXT STEP
-    active_step = next_step(testing_measure);
+    active_step = next_step(&testing_measure);
 
-    // active_track.bpm = read_tempo();
+    active_track.bpm = read_tempo();
 
     if (splash_screen_active == false)
     {
       update_tempo(lcd);
     }
-    // ledMetro.interval(step_interval_calc(testing_measure));
-    ledMetro.interval(60000 / (4 * 20));
+    ledMetro.interval(step_interval_calc(&testing_measure));
+    // ledMetro.interval(60000 / (4 * 5)); // TESTING STATIC TEMPO
 
     // UPDATE TIMER INTERVAL
   }
 
   //  NEW SOUND TO ASSIGN TO PALETTE
-  if (Current_Button_State[COLUMN] > LAST_MEASURE_COLUMN && Current_Button_State[COLUMN] != BUTTON_FLOATING && Current_Button_State[ROW] < EFFECTS_ROW)
+  if (palette_pressed())
+  // if (matrix_button.column > LAST_MEASURE_COLUMN && matrix_button.column != BUTTON_FLOATING && matrix_button.row < EFFECTS_ROW)
   {
-    Serial.println("PALLETE BUTTON PRSSED");
-    Serial.print("R: ");
-    Serial.print(Current_Button_State[ROW]);
-    Serial.print("\tC: ");
-    Serial.println(Current_Button_State[COLUMN]);
+
     // get palette index
     for (int i = 0; i < 12; i++)
     {
-      if (Palette_LEDMatrix[i][0] == Current_Button_State[ROW] && Palette_LEDMatrix[i][1] == Current_Button_State[COLUMN])
+      if (Palette_LEDMatrix[i][0] == matrix_button.row && Palette_LEDMatrix[i][1] == matrix_button.column)
       {
         palbut = i;
       }
@@ -141,11 +139,13 @@ void loop()
     if (new_sound_assignment)
     {
       // SAVE NEW SOUND FROM NAV TO PALETTE BUTTON
+      Serial.println("NAV TO PALETTE ASSIGNED");
       testing_palette[palbut] = new_sound;
 
       new_sound_assignment = false;
       splash_screen_active = false;
       lcd_display(lcd, nav_state->lcd_state);
+      print_palette(PALETTE_SIZE);
     }
     else
     {
@@ -157,31 +157,35 @@ void loop()
   // MEASURE MATRIX BUTTON IS PRESSED   add/remove sounds to measure steps
   if (measure_edit)
   {
-    if (Current_Button_State[ROW] < MEASURE_MATRIX_ROWS && Current_Button_State[COLUMN] < MEASURE_MATRIX_COLUMNS)
+    if (measure_pressed())
     {
       // MEASURE BUTTON PRESSED
+      Serial.println("PALETTE TO MEASURE ADD/REMOVE");
+      print_palette(palbut);
 
-      bool sound_exists = false;
+      sound_exists = false;
       for (int i = 0; i < MAX_STEP_SOUNDS; i++)
       {
 
-        if (testing_palette[i] == testing_measure.beat_list[Current_Button_State[ROW]].step_list[Current_Button_State[COLUMN]].sound_list[i])
+        if (testing_palette[palbut] == button_step_lookup(&testing_measure)->sound_list[i])
         {
+          Serial.println("MEASURE REMOVE SOUND");
           // SELECTED PALETTE SOUND EXISTS ON CURRENT STEP
           // REMOVE FROM MEASURE STEP
-          testing_measure.beat_list[Current_Button_State[ROW]].step_list[Current_Button_State[COLUMN]].sound_list[i] = empty_sound;
+          button_step_lookup(&testing_measure)->sound_list[i] = empty_sound;
           sound_exists = true;
         }
       }
-      if (sound_exists == false && testing_measure.beat_list[Current_Button_State[ROW]].step_list[Current_Button_State[COLUMN]].active_sounds < MAX_STEP_SOUNDS)
+      if (sound_exists == false && button_step_lookup(&testing_measure)->active_sounds < MAX_STEP_SOUNDS)
       {
+        Serial.println("MEASURE ADD SOUND");
         // SELECTED STEP HAS AVAILABLE SOUND SLOTS
         for (int i = 0; i < MAX_STEP_SOUNDS; i++)
         {
-          if (testing_measure.beat_list[Current_Button_State[ROW]].step_list[Current_Button_State[COLUMN]].sound_list[i].empty)
+          if (button_step_lookup(&testing_measure)->sound_list[i].empty)
           {
             // ASSIGN PALETTE SOUND TO FIRST AVAILABLE STEP SOUND SLOT
-            testing_measure.beat_list[Current_Button_State[ROW]].step_list[Current_Button_State[COLUMN]].sound_list[i] = testing_palette[palbut];
+            button_step_lookup(&testing_measure)->sound_list[i] = testing_palette[palbut];
             break;
           }
         }
@@ -555,8 +559,10 @@ void loop()
 
 #endif
 
+  /*****************************************************************************
+   ************************     READ MATRIX BUTTONS     ************************
+   *****************************************************************************/
   currentMillis_matrix = millis();
-
   if (currentMillis_matrix - previousMillis >= interval)
   {
 
@@ -571,18 +577,36 @@ void loop()
       //
       Button_Pressed(Current_Button_State, Previous_Button_State);
     }
-    if (matrix_button.waiting)
-    {
-      matrix_button.waiting = false;
-      matrix_button.valid = true;
-    }
 
     Previous_Button_State[0] = Current_Button_State[0];
     Previous_Button_State[1] = Current_Button_State[1];
   }
 
   // NEW BUTTON READ CODE
+  if (matrix_button.waiting)
+  {
 
+    if (matrix_button.debounce_interval < millis() - matrix_button.current_interval)
+    {
+      matrix_button.waiting = false;
+      matrix_button.valid = true;
+    }
+  }
+
+  // if (matrix_button.valid)
+  // {
+  //   Serial.println("1 input read: ");
+  //   Serial.print("valid: ");
+  //   Serial.print(matrix_button.valid);
+  //   Serial.print("\twaiting: ");
+  //   Serial.print(matrix_button.waiting);
+  //   Serial.print("\tR: ");
+  //   Serial.print(matrix_button.row);
+  //   Serial.print("\tC: ");
+  //   Serial.println(matrix_button.column);
+
+  //   matrix_button.valid = false;
+  // }
   // NEW BUTTON READ CODE
 
   /*************************     READ DPAD INPUTS     *************************/
@@ -760,6 +784,7 @@ void loop()
       // currently selected custom sound
       // sounds_custom_nav->data_array[sounds_custom_nav->index];
       temp_sample = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index]);
+      // new_sound.sd_cached_sound = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index]);
       if (temp_sample != nullptr)
       {
         dispFlag = 3;
@@ -767,12 +792,24 @@ void loop()
         new_sound.bank = -1;
         new_sound.instrument = -1;
         new_sound.note = -1;
-        new_sound.sd_cached_sound = temp_sample;
         new_sound_assignment = true;
+        new_sound.sd_cached_sound = temp_sample;
         lcd_splash(lcd, nav_state, selected_sound);
+        // Serial.print("expected: ");
+        // Serial.println(reinterpret_cast<uintptr_t>(temp_sample), HEX));
+        // Serial.print("test: ");
+        // Serial.println(reinterpret_cast<uintptr_t>(new_sound.sd_cached_sound), HEX));
+
+        char str[20];
+        sprintf(str, "%p", (void *)temp_sample); // Using sprintf to format the pointer address
+        Serial.println("\tEXPECTED: " + String(str));
+
+        sprintf(str, "%p", (void *)new_sound.sd_cached_sound); // Using sprintf to format the pointer address
+        Serial.println("\tACTUAL: " + String(str));
       }
       else
       {
+        new_sound.sd_cached_sound = nullptr;
         // NO SIZE ON PSRAM TO CACHE SOUND
         lcd_splash(lcd, nullptr, error_psram_full);
       }

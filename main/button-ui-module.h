@@ -113,5 +113,7 @@ void selectRow_LED(int Row);
 // TESTING ZONE
 void testing_button_abstract(void);
 void testing_read_matrix(void);
+bool palette_pressed(void);
+bool measure_pressed(void);
 
 #endif // EXAMPLE_MODULE_H

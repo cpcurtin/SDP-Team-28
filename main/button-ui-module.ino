@@ -117,7 +117,6 @@ void readMatrix()
     {
 
       digitalWrite(enablePin_columns, LOW);
-
       pinMode(Button_column8, OUTPUT);
       digitalWrite(Button_column8, LOW);
       check_rows(colIndex);
@@ -333,4 +332,32 @@ void testing_button_abstract(void)
 }
 void testing_read_matrix(void)
 {
+}
+
+bool palette_pressed(void)
+{
+  if (matrix_button.valid && matrix_button.column > LAST_MEASURE_COLUMN)
+  {
+    Serial.println("PALETTE BUTTON PRESSED");
+    matrix_button.valid = false;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool measure_pressed(void)
+{
+  if (matrix_button.valid && matrix_button.column <= LAST_MEASURE_COLUMN)
+  {
+    Serial.println("MEASURE BUTTON PRESSED");
+    matrix_button.valid = false;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
