@@ -18,35 +18,35 @@ int dpad_init()
 }
 int button_matrix_init(void)
 {
-  digitalWrite(enablePin_columns, LOW);
-  digitalWrite(enablePin_rows, LOW);
+  digitalWrite(ENABLE_PIN_COLUMNS, LOW);
+  digitalWrite(ENABLE_PIN_ROWS, LOW);
 
-  for (int x = 0; x < rowCount; x++)
+  for (int x = 0; x < MATRIX_ROWS; x++)
   {
     pinMode(rows[x], INPUT_PULLUP);
     Serial.println(rows[x]);
   }
 
-  pinMode(Button_column8, INPUT_PULLUP);
+  pinMode(BUTTON_COLUMN_8, INPUT_PULLUP);
 
   pinMode(LED_column8, OUTPUT);
   digitalWrite(LED_column8, LOW);
 
-  pinMode(selectPin1_button, OUTPUT);
-  pinMode(selectPin2_button, OUTPUT);
-  pinMode(selectPin3_button, OUTPUT);
-  pinMode(enablePin_columns, OUTPUT);
-  digitalWrite(enablePin_columns, HIGH);
+  pinMode(BUTTON_SELECT_PIN_1, OUTPUT);
+  pinMode(BUTTON_SELECT_PIN_2, OUTPUT);
+  pinMode(BUTTON_SELECT_PIN_3, OUTPUT);
+  pinMode(ENABLE_PIN_COLUMNS, OUTPUT);
+  digitalWrite(ENABLE_PIN_COLUMNS, HIGH);
 
   pinMode(selectPin1_LED, OUTPUT);
   pinMode(selectPin2_LED, OUTPUT);
   pinMode(selectPin3_LED, OUTPUT);
 
-  pinMode(selectPin1_rows, OUTPUT);
-  pinMode(selectPin2_rows, OUTPUT);
-  pinMode(selectPin3_rows, OUTPUT);
-  pinMode(enablePin_rows, OUTPUT);
-  digitalWrite(enablePin_rows, HIGH);
+  pinMode(SELECT_ROW_PIN_1, OUTPUT);
+  pinMode(SELECT_ROW_PIN_2, OUTPUT);
+  pinMode(SELECT_ROW_PIN_3, OUTPUT);
+  pinMode(ENABLE_PIN_ROWS, OUTPUT);
+  digitalWrite(ENABLE_PIN_ROWS, HIGH);
 
   selectRow_LED(7);
 
@@ -110,19 +110,19 @@ void measure_matrix_init(struct button_maxtrix_pin_config &button_cfg, struct bu
 void readMatrix()
 {
   // iterate the columns
-  for (int colIndex = 0; colIndex < colCount; colIndex++)
+  for (int colIndex = 0; colIndex < MATRIX_COLUMNS; colIndex++)
   {
 
     if (colIndex == 8)
     {
 
-      digitalWrite(enablePin_columns, LOW);
-      pinMode(Button_column8, OUTPUT);
-      digitalWrite(Button_column8, LOW);
+      digitalWrite(ENABLE_PIN_COLUMNS, LOW);
+      pinMode(BUTTON_COLUMN_8, OUTPUT);
+      digitalWrite(BUTTON_COLUMN_8, LOW);
       check_rows(colIndex);
 
-      pinMode(Button_column8, INPUT_PULLUP);
-      digitalWrite(enablePin_columns, HIGH);
+      pinMode(BUTTON_COLUMN_8, INPUT_PULLUP);
+      digitalWrite(ENABLE_PIN_COLUMNS, HIGH);
     }
 
     else
@@ -137,7 +137,7 @@ void readMatrix()
 void check_rows(int colIndex)
 {
   // row: interate through the rows
-  for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
+  for (int rowIndex = 0; rowIndex < MATRIX_ROWS; rowIndex++)
   {
     // byte rowCol = rows[rowIndex];
 
@@ -168,8 +168,8 @@ void Button_Pressed(int Current_State[], int Previous_State[])
     if (Current_State[1] == 8)
     {
 
-      pinMode(Button_column8, OUTPUT);
-      digitalWrite(Button_column8, LOW);
+      pinMode(BUTTON_COLUMN_8, OUTPUT);
+      digitalWrite(BUTTON_COLUMN_8, LOW);
 
       if (digitalRead(rows[Current_State[0]]) == 1)
       {
@@ -178,7 +178,7 @@ void Button_Pressed(int Current_State[], int Previous_State[])
         Button_Released(Current_State, Previous_State);
       }
 
-      pinMode(Button_column8, INPUT_PULLUP);
+      pinMode(BUTTON_COLUMN_8, INPUT_PULLUP);
     }
     else
     {
@@ -214,61 +214,14 @@ void Button_Released(int Current_State[], int Previous_State[])
   Current_State[1] = 9;
 }
 
-void LED_On(int Row, int Column)
-{
-
-  if (Column == 8)
-  {
-
-    digitalWrite(enablePin_columns, LOW);
-    digitalWrite(LED_column8, HIGH);
-    selectRow_LED(Row);
-  }
-
-  else
-  {
-    digitalWrite(LED_column8, LOW);
-    selectColumn_LED(Column);
-    selectRow_LED(Row);
-  }
-}
-
-void LED_Off(int Row, int Column)
-{
-
-  if (Column == 8)
-  {
-
-    digitalWrite(LED_column8, LOW);
-    digitalWrite(enablePin_columns, HIGH);
-  }
-
-  selectRow_LED(7);
-}
-
 void selectColumn_button(int Column)
 {
 
-  digitalWrite(selectPin1_button, bitRead(Column, 0));
-  digitalWrite(selectPin2_button, bitRead(Column, 1));
-  digitalWrite(selectPin3_button, bitRead(Column, 2));
+  digitalWrite(BUTTON_SELECT_PIN_1, bitRead(Column, 0));
+  digitalWrite(BUTTON_SELECT_PIN_2, bitRead(Column, 1));
+  digitalWrite(BUTTON_SELECT_PIN_3, bitRead(Column, 2));
 }
 
-void selectColumn_LED(int Column)
-{
-
-  digitalWrite(selectPin1_LED, bitRead(Column, 0));
-  digitalWrite(selectPin2_LED, bitRead(Column, 1));
-  digitalWrite(selectPin3_LED, bitRead(Column, 2));
-}
-
-void selectRow_LED(int Row)
-{
-
-  digitalWrite(selectPin1_rows, bitRead(Row, 0));
-  digitalWrite(selectPin2_rows, bitRead(Row, 1));
-  digitalWrite(selectPin3_rows, bitRead(Row, 2));
-}
 int read_tempo(void)
 {
   int raw_avg = 0;

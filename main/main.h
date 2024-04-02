@@ -174,6 +174,8 @@ MODULE LINKING
 #include "midi-sound-module.h"
 #include "effect-module.h"
 #include "measure-module.h"
+#include "led-module.h"
+#include "nav-module.h"
 #include <Metro.h>
 
 /**************************
@@ -288,9 +290,9 @@ LiquidCrystal_I2C *lcd;
 
 char **lcd_state = new char *[LCD_ROWS];
 int lcd_index = 0;
-// lcd_nav *sounds;
-// lcd_nav *nav_data_structure;
-// lcd_nav *nav_state;
+// Nav *sounds;
+// Nav *nav_data_structure;
+// Nav *nav_state;
 // struct palette_matrix *palette;
 // struct button_maxtrix_pin_config measure_matrix_button;
 // struct button_maxtrix_pin_config measure_matrix_led;

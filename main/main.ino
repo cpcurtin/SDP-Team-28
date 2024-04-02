@@ -71,17 +71,6 @@ void setup()
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
-  // for (int i = 0; i < 4; i++)
-  // {
-  //   cached_samples[i] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
-  // }
-
-  cached_samples[0] = cache_sd_sound((nav_cfg->sounds_custom)->array[0]);
-  cached_samples[1] = cache_sd_sound((nav_cfg->sounds_custom)->array[1]);
-  cached_samples[2] = cache_sd_sound((nav_cfg->sounds_custom)->array[2]);
-  cached_samples[3] = cache_sd_sound((nav_cfg->sounds_custom)->array[3]);
-  sd_palette[9] = cached_samples[1];
-
   measure_palette_init();
   Serial.println("PROGRAM LOOP BEGINS");
 }
