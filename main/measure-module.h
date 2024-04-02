@@ -82,6 +82,8 @@ bool measure_edit = false;
 
 int beat = 0;
 int step = 0;
+int temp_last_step = 0;
+int temp_last_beat = 0;
 
 // functions, extern variables, structs go here
 void measure_palette_init(void);

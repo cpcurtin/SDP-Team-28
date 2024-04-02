@@ -49,7 +49,7 @@ void setup()
   }
 
   lcd = lcd_init(&lcd_cfg);
-  delay(3000); // 3 second splash strart screen
+  delay(1000); // 3 second splash strart screen
 
   /* POPULATE DYNAMIC LISTS */
   nav_cfg->sounds_custom = sd_fetch_sounds();
@@ -72,6 +72,7 @@ void setup()
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
   measure_palette_init();
+  step_timer.interval(60000 / (4 * 50)); // TESTING STATIC TEMPO
   Serial.println("PROGRAM LOOP BEGINS");
 }
 
@@ -84,25 +85,27 @@ void loop()
   {
 
     // ON STEP, PLAY SOUNDS AND FLASH LED
-    print_step(&testing_measure);
+    // print_step(&testing_measure);
 
-    LED_Off(testing_measure.beat, testing_measure.step);
+    LED_Off(temp_last_beat, temp_last_step);
     LED_On(testing_measure.beat, testing_measure.step);
 
-    stop_step(last_step);
-    play_step(active_step);
+    // stop_step(last_step);
+    // play_step(active_step);
 
     // FETCH NEXT STEP
     last_step = active_step;
+    temp_last_step = testing_measure.step;
+    temp_last_beat = testing_measure.beat;
     active_step = next_step(&testing_measure);
 
-    active_track.bpm = read_tempo();
+    // active_track.bpm = read_tempo();
 
-    if (splash_screen_active == false)
-    {
-      update_tempo(lcd);
-    }
-    step_timer.interval(step_interval_calc(&testing_measure));
+    // if (splash_screen_active == false)
+    // {
+    //   update_tempo(lcd);
+    // }
+    // step_timer.interval(step_interval_calc(&testing_measure));
     // step_timer.interval(60000 / (4 * 5)); // TESTING STATIC TEMPO
 
     // UPDATE TIMER INTERVAL

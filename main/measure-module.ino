@@ -50,6 +50,8 @@ void measure_palette_init(void)
 
     active_step = &(temp_measure->beat_list[0].step_list[0]);
     last_step = &(temp_measure->beat_list[3].step_list[5]);
+    temp_last_step = 5;
+    temp_last_beat = 3;
 
     // INIT PALETTE
     for (int i = 0; i < PALETTE_SIZE; i++)
