@@ -63,6 +63,8 @@ typedef struct Measure
     int id;
     int active_beats;
     struct Beat beat_list[4];
+    int step;
+    int beat;
 
 } Measure;
 
@@ -74,7 +76,6 @@ Step *last_step;
 Sound testing_palette[PALETTE_SIZE];
 Sound new_sound;
 Sound empty_sound = {-1, -1, -1, nullptr, true};
-bool sound_exists = false;
 
 bool new_sound_assignment = false;
 bool measure_edit = false;
@@ -92,6 +93,7 @@ Step *button_step_lookup(Measure *measure);
 int stop_step(Step *step_end);
 int play_step(Step *step_play);
 float step_interval_calc(Measure *measure);
+int add_remove_measure_sound(Measure *measure);
 void print_step(Measure *measure);
 void print_palette(int palette_index);
 

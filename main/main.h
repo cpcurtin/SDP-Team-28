@@ -303,7 +303,7 @@ const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
 // create 2D array of palette_cell structs
 
 // Metronome Definition
-Metro ledMetro = Metro(100);
+Metro step_timer = Metro(100);
 int count_temp = 0;
 
 int mixer_1;
@@ -341,4 +341,5 @@ int stopSD = 1;
 int serial_init(void);
 // void printMemory(void);
 // uint32_t getFreeMemory(void);
+void print_ptr(void *ptr);
 #endif // MAIN_H

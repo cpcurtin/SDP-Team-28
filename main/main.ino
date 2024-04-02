@@ -80,12 +80,8 @@ void setup()
   cached_samples[1] = cache_sd_sound((nav_cfg->sounds_custom)->array[1]);
   cached_samples[2] = cache_sd_sound((nav_cfg->sounds_custom)->array[2]);
   cached_samples[3] = cache_sd_sound((nav_cfg->sounds_custom)->array[3]);
-
-  // sd_palette[6] = cached_samples[0];
   sd_palette[9] = cached_samples[1];
 
-  // Serial.println(SDmeMat[0][0]);
-  Serial.println("BEFORE PALETTE INIT");
   measure_palette_init();
   Serial.println("PROGRAM LOOP BEGINS");
 }
@@ -95,20 +91,20 @@ void loop()
 {
 
 #if USING_NEW_DS == 1
-  if (ledMetro.check() == 1)
+  if (step_timer.check() == 1)
   {
 
     // ON STEP, PLAY SOUNDS AND FLASH LED
     print_step(&testing_measure);
 
-    LED_Off(beat, step);
-    LED_On(beat, step);
+    LED_Off(testing_measure.beat, testing_measure.step);
+    LED_On(testing_measure.beat, testing_measure.step);
 
     stop_step(last_step);
     play_step(active_step);
-    last_step = active_step;
 
     // FETCH NEXT STEP
+    last_step = active_step;
     active_step = next_step(&testing_measure);
 
     active_track.bpm = read_tempo();
@@ -117,17 +113,15 @@ void loop()
     {
       update_tempo(lcd);
     }
-    ledMetro.interval(step_interval_calc(&testing_measure));
-    // ledMetro.interval(60000 / (4 * 5)); // TESTING STATIC TEMPO
+    step_timer.interval(step_interval_calc(&testing_measure));
+    // step_timer.interval(60000 / (4 * 5)); // TESTING STATIC TEMPO
 
     // UPDATE TIMER INTERVAL
   }
 
-  //  NEW SOUND TO ASSIGN TO PALETTE
+  //  PALETTE BUTTON PRESSED
   if (palette_pressed())
-  // if (matrix_button.column > LAST_MEASURE_COLUMN && matrix_button.column != BUTTON_FLOATING && matrix_button.row < EFFECTS_ROW)
   {
-
     // get palette index
     for (int i = 0; i < 12; i++)
     {
@@ -154,7 +148,7 @@ void loop()
     }
   }
 
-  // MEASURE MATRIX BUTTON IS PRESSED   add/remove sounds to measure steps
+  //  MEASURE BUTTON PRESSED
   if (measure_edit)
   {
     if (measure_pressed())
@@ -163,34 +157,7 @@ void loop()
       Serial.println("PALETTE TO MEASURE ADD/REMOVE");
       print_palette(palbut);
 
-      sound_exists = false;
-      for (int i = 0; i < MAX_STEP_SOUNDS; i++)
-      {
-
-        if (testing_palette[palbut] == button_step_lookup(&testing_measure)->sound_list[i])
-        {
-          Serial.println("MEASURE REMOVE SOUND");
-          // SELECTED PALETTE SOUND EXISTS ON CURRENT STEP
-          // REMOVE FROM MEASURE STEP
-          button_step_lookup(&testing_measure)->sound_list[i] = empty_sound;
-          sound_exists = true;
-        }
-      }
-      if (sound_exists == false && button_step_lookup(&testing_measure)->active_sounds < MAX_STEP_SOUNDS)
-      {
-        Serial.println("MEASURE ADD SOUND");
-        // SELECTED STEP HAS AVAILABLE SOUND SLOTS
-        for (int i = 0; i < MAX_STEP_SOUNDS; i++)
-        {
-          if (button_step_lookup(&testing_measure)->sound_list[i].empty)
-          {
-            // ASSIGN PALETTE SOUND TO FIRST AVAILABLE STEP SOUND SLOT
-            button_step_lookup(&testing_measure)->sound_list[i] = testing_palette[palbut];
-            break;
-          }
-        }
-      }
-      else
+      if (add_remove_measure_sound(&testing_measure))
       {
         // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
       }
@@ -204,7 +171,7 @@ void loop()
 #if USING_NEW_DS == 0
 
   // Serial.println(SDmeMat[0][0]);
-  if (ledMetro.check() == 1)
+  if (step_timer.check() == 1)
   {
     // turning off all midi sounds on last step
     if (effectReverse == 0)
@@ -331,7 +298,7 @@ void loop()
       }
     }
 
-    // ledMetro.reset();
+    // step_timer.reset();
 
     //  == ((active_track.measure_steps-1) % 6)
     // steps =4
@@ -383,7 +350,7 @@ void loop()
       update_tempo(lcd);
     }
     metro_active_tempo = (60000 / (active_track.bpm * active_track.measure_steps));
-    ledMetro.interval(metro_active_tempo);
+    step_timer.interval(metro_active_tempo);
     /*************************     STEP STATEMENT ENDS     *************************/
 
     // delay(5000);
@@ -561,7 +528,7 @@ void loop()
 
   /*****************************************************************************
    ************************     READ MATRIX BUTTONS     ************************
-   *****************************************************************************/
+   ****************************************************************************/
   currentMillis_matrix = millis();
   if (currentMillis_matrix - previousMillis >= interval)
   {
@@ -592,29 +559,13 @@ void loop()
       matrix_button.valid = true;
     }
   }
+  /*****************************************************************************
+   **************************     READ DPAD INPUTS     *************************
+   ****************************************************************************/
 
-  // if (matrix_button.valid)
-  // {
-  //   Serial.println("1 input read: ");
-  //   Serial.print("valid: ");
-  //   Serial.print(matrix_button.valid);
-  //   Serial.print("\twaiting: ");
-  //   Serial.print(matrix_button.waiting);
-  //   Serial.print("\tR: ");
-  //   Serial.print(matrix_button.row);
-  //   Serial.print("\tC: ");
-  //   Serial.println(matrix_button.column);
-
-  //   matrix_button.valid = false;
-  // }
-  // NEW BUTTON READ CODE
-
-  /*************************     READ DPAD INPUTS     *************************/
   dpad_pressed = dpad_read();
 
-  /*****************************************************************************
-  ******************************     DPAD LEFT     *****************************
-  *****************************************************************************/
+  /****************************     DPAD LEFT      ****************************/
   if (dpad_pressed == BUTTON_DPAD_LEFT) // return / exit
   {
     nav_state = nav_selection(nav_state, NAV_BACKWARD);
@@ -622,31 +573,25 @@ void loop()
     lcd_display(lcd, nav_state->lcd_state);
   }
 
-  /*****************************************************************************
-  ******************************     DPAD DOWN     *****************************
-  *****************************************************************************/
+  /****************************     DPAD DOWN      ****************************/
   if (dpad_pressed == BUTTON_DPAD_DOWN) // scroll down
   {
     array_scroll(nav_state, NAV_DOWN);
     lcd_display(lcd, nav_state->lcd_state);
   }
 
-  /*****************************************************************************
-  ******************************     DPAD UP       *****************************
-  *****************************************************************************/
+  /****************************     DPAD UP        ****************************/
   if (dpad_pressed == BUTTON_DPAD_UP) // scroll up
   {
     array_scroll(nav_state, NAV_UP);
     lcd_display(lcd, nav_state->lcd_state);
   }
 
-  /*****************************************************************************
-  ******************************     DPAD RIGHT    *****************************
-  *****************************************************************************/
+  /****************************     DPAD RIGHT      ***************************/
   if (dpad_pressed == BUTTON_DPAD_RIGHT) // select
   {
 
-    /**************************     TRACKS OPTIONS     **************************/
+    /*************************     TRACKS OPTIONS     *************************/
 
     /*
     SAVE TRACK
@@ -795,10 +740,6 @@ void loop()
         new_sound_assignment = true;
         new_sound.sd_cached_sound = temp_sample;
         lcd_splash(lcd, nav_state, selected_sound);
-        // Serial.print("expected: ");
-        // Serial.println(reinterpret_cast<uintptr_t>(temp_sample), HEX));
-        // Serial.print("test: ");
-        // Serial.println(reinterpret_cast<uintptr_t>(new_sound.sd_cached_sound), HEX));
 
         char str[20];
         sprintf(str, "%p", (void *)temp_sample); // Using sprintf to format the pointer address
@@ -871,3 +812,10 @@ int serial_init(void)
 
 //   return free_memory;
 // }
+
+void print_ptr(void *ptr)
+{
+  char str[20];
+  sprintf(str, "%p", ptr); // Using sprintf to format the pointer address
+  Serial.print(String(str));
+}

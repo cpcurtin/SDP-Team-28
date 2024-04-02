@@ -47,8 +47,9 @@ void measure_palette_init(void)
     }
 
     // SET DEFAULT LAST STEP
-    last_step = temp_step;
-    active_step = next_step(temp_measure);
+
+    active_step = &(temp_measure->beat_list[0].step_list[0]);
+    last_step = &(temp_measure->beat_list[3].step_list[5]);
 
     // INIT PALETTE
     for (int i = 0; i < PALETTE_SIZE; i++)
@@ -71,17 +72,17 @@ Step *button_to_step(Measure *measure, int actuated_button[])
 
 Step *next_step(Measure *measure)
 {
-    step++;
-    if (step == measure->beat_list[beat].active_steps)
+    measure->step++;
+    if (measure->step == measure->beat_list[measure->beat].active_steps)
     {
-        step = 0;
-        beat++;
-        if (beat == measure->active_beats)
+        measure->step = 0;
+        measure->beat++;
+        if (measure->beat == measure->active_beats)
         {
-            beat = 0;
+            measure->beat = 0;
         }
     }
-    return &(measure->beat_list[beat].step_list[step]);
+    return &(measure->beat_list[measure->beat].step_list[measure->step]);
 }
 
 Step *button_step_lookup(Measure *measure)
@@ -159,8 +160,42 @@ float step_interval_calc(Measure *measure)
     return (60000 / (active_track.bpm * measure->beat_list[beat].active_steps));
 }
 
-int add_remove_measure_sound(void)
+int add_remove_measure_sound(Measure *measure)
 {
+
+    bool sound_exists = false;
+    for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
+    {
+
+        if (testing_palette[palbut] == button_step_lookup(measure)->sound_list[sound])
+        {
+            Serial.println("MEASURE REMOVE SOUND");
+            // SELECTED PALETTE SOUND EXISTS ON CURRENT STEP
+            // REMOVE FROM MEASURE STEP
+            button_step_lookup(&testing_measure)->sound_list[sound] = empty_sound;
+            sound_exists = true;
+        }
+    }
+    if (sound_exists == false && button_step_lookup(&testing_measure)->active_sounds < MAX_STEP_SOUNDS)
+    {
+        Serial.println("MEASURE ADD SOUND");
+        // SELECTED STEP HAS AVAILABLE SOUND SLOTS
+        for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
+        {
+            if (button_step_lookup(&testing_measure)->sound_list[sound].empty)
+            {
+                // ASSIGN PALETTE SOUND TO FIRST AVAILABLE STEP SOUND SLOT
+                button_step_lookup(&testing_measure)->sound_list[sound] = testing_palette[palbut];
+                break;
+            }
+        }
+    }
+    else
+    {
+        // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
+        return 1;
+    }
+    return 0;
 }
 
 void print_step(Measure *measure)
@@ -168,9 +203,9 @@ void print_step(Measure *measure)
 
     Serial.println("\n\n");
     Serial.print("Beat: ");
-    Serial.print(beat);
+    Serial.print(measure->beat);
     Serial.print("\tStep: ");
-    Serial.println(step);
+    Serial.println(measure->step);
 
     for (int i = 0; i < MAX_STEP_SOUNDS; i++)
     {
