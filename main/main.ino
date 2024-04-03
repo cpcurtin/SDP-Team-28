@@ -70,22 +70,22 @@ void setup()
   Serial.println(active_track.measure_steps);
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
+  Serial.println("PRINTING SD SOUNDS:");
+  for (int i = 0; i < (nav_cfg->sounds_custom)->size; i++)
+  {
+    Serial.println((nav_cfg->sounds_custom)->array[i]);
+  }
 
-  // for (int i = 0; i < 4; i++)
-  // {
-  //   cached_samples[i] = cache_sd_sound((nav_cfg->sounds_custom)->array[12]);
-  // }
 
-  cached_samples[0] = cache_sd_sound((nav_cfg->sounds_custom)->array[0]);
-  cached_samples[1] = cache_sd_sound((nav_cfg->sounds_custom)->array[1]);
-  cached_samples[2] = cache_sd_sound((nav_cfg->sounds_custom)->array[2]);
-  cached_samples[3] = cache_sd_sound((nav_cfg->sounds_custom)->array[3]);
+  // PRESET SOUNDS:
+  temp_sound_cache = cache_sd_sound((nav_cfg->sounds_custom)->array[5]);
+
+  cached_samples_sd[0][3] = temp_sound_cache;
+  cached_samples_sd[6][3] = temp_sound_cache;
+  cached_samples_sd[12][3] = temp_sound_cache;
+  cached_samples_sd[18][3] = temp_sound_cache;
+
   Serial.println("PROGRAM LOOP BEGINS");
-
-  // sd_palette[6] = cached_samples[0];
-  sd_palette[9] = cached_samples[1];
-
-  // Serial.println(SDmeMat[0][0]);
 }
 
 /* Main subroutine: follow software block diagram */
@@ -264,7 +264,7 @@ void loop()
     }
     /*************************     UPDATE TEMPO     *************************/
 
-    //active_track.bpm = read_tempo();
+    // active_track.bpm = read_tempo();
     active_track.bpm = 50;
 
     if (splash_screen_active == false)
@@ -275,9 +275,7 @@ void loop()
     ledMetro.interval(metro_active_tempo);
     /*************************     STEP STATEMENT ENDS     *************************/
 
-
-
-    //delay(5000);
+    // delay(5000);
   }
 
   if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9 && Current_Button_State[0] == 3)
