@@ -3,6 +3,7 @@
 #define BATTERY_OPERATED 1 // 1 if only on battery operation, 0 if not
 #define USING_MAIN_PCB 1   // 1 for integrated DAC, 0 for daughter board DAC
 #define USING_PSRAM 1      // 1 for teesny 4.1 with solder psram, 0 otherwise
+#define USING_NEW_DS 1     // 1 for new ds, 0 for old
 /*
 
  *       MODULOOP MAIN CONFIGURATIONS
@@ -172,6 +173,9 @@ MODULE LINKING
 #include "custom-sound-module.h"
 #include "midi-sound-module.h"
 #include "effect-module.h"
+#include "measure-module.h"
+#include "led-module.h"
+#include "nav-module.h"
 #include <Metro.h>
 
 /**************************
@@ -272,6 +276,12 @@ HARDWARE CONFIGURATIONS
 #define NAV_UP -1
 #define NAV_DOWN 1
 
+// MISC
+
+/**************************
+PROGRAM STRUCTS
+**************************/
+
 /**************************
 PROGRAM VARIABLES
 **************************/
@@ -280,9 +290,9 @@ LiquidCrystal_I2C *lcd;
 
 char **lcd_state = new char *[LCD_ROWS];
 int lcd_index = 0;
-// lcd_nav *sounds;
-// lcd_nav *nav_data_structure;
-// lcd_nav *nav_state;
+// Nav *sounds;
+// Nav *nav_data_structure;
+// Nav *nav_state;
 // struct palette_matrix *palette;
 // struct button_maxtrix_pin_config measure_matrix_button;
 // struct button_maxtrix_pin_config measure_matrix_led;
@@ -295,7 +305,7 @@ const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
 // create 2D array of palette_cell structs
 
 // Metronome Definition
-Metro ledMetro = Metro(100);
+Metro step_timer = Metro(100);
 int count_temp = 0;
 
 int mixer_1;
@@ -318,26 +328,20 @@ int dispBounce = 0;
 int effectReverse = 0;
 int effectReverseprevcount = 0;
 
+unsigned long currentMillis_matrix = 0;
+
 newdigate::audiosample *cached_samples_sd[24][4];
 newdigate::audiosample *sd_palette[12];
 
-int meMat[][12] = { {0, ClosedHiHat, -1, 0, AcousticBassDrum, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                   {0, ClosedHiHat, -1, 0, AcousticSnare, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                   {0, ClosedHiHat, -1, 0, AcousticBassDrum, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                   {0, ClosedHiHat, -1, 0, AcousticSnare, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
-int palette[][3] = {{0, AcousticBassDrum, -1},{-1, -1, -1},{-1, -1, -1},
-                    {0, AcousticSnare, -1},{1, ElectricPiano2, 62},{0, OpenHiHat, -1},
-                    {-1, -1, -1},{1, ElectricPiano2, 64},{-1, -1, -1},
-                    {-1, -1, -1},{-1, -1, -1},{-1, -1, -1}};
+int meMat[][12] = {{0, ClosedHiHat, -1, 0, AcousticBassDrum, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, 0, AcousticSnare, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, 0, AcousticBassDrum, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, 0, AcousticSnare, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
+int palette[][3] = {{0, AcousticBassDrum, -1}, {-1, -1, -1}, {-1, -1, -1}, {0, AcousticSnare, -1}, {1, ElectricPiano2, 62}, {0, OpenHiHat, -1}, {-1, -1, -1}, {1, ElectricPiano2, 64}, {-1, -1, -1}, {-1, -1, -1}, {-1, -1, -1}, {-1, -1, -1}};
 
 int palbut = -1;
 int stop = 1;
 int stopSD = 1;
 
-/**************************
-PROGRAM STRUCTS
-**************************/
-
 int serial_init(void);
-
+// void printMemory(void);
+// uint32_t getFreeMemory(void);
+void print_ptr(void *ptr);
 #endif // MAIN_H
