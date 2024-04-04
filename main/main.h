@@ -1,6 +1,6 @@
 #ifndef MAIN_H
 #define MAIN_H
-#define BATTERY_OPERATED 1 // 1 if only on battery operation, 0 if not
+#define BATTERY_OPERATED 0 // 1 if only on battery operation, 0 if not
 #define USING_MAIN_PCB 1   // 1 for integrated DAC, 0 for daughter board DAC
 #define USING_PSRAM 1      // 1 for teesny 4.1 with solder psram, 0 otherwise
 #define USING_NEW_DS 1     // 1 for new ds, 0 for old
@@ -336,7 +336,7 @@ newdigate::audiosample *sd_palette[12];
 int meMat[][12] = {{0, ClosedHiHat, -1, 0, AcousticBassDrum, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, 0, AcousticSnare, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, 0, AcousticBassDrum, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, 0, AcousticSnare, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {0, ClosedHiHat, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
 int palette[][3] = {{0, AcousticBassDrum, -1}, {-1, -1, -1}, {-1, -1, -1}, {0, AcousticSnare, -1}, {1, ElectricPiano2, 62}, {0, OpenHiHat, -1}, {-1, -1, -1}, {1, ElectricPiano2, 64}, {-1, -1, -1}, {-1, -1, -1}, {-1, -1, -1}, {-1, -1, -1}};
 
-int palbut = -1;
+int palette_index = -1;
 int stop = 1;
 int stopSD = 1;
 

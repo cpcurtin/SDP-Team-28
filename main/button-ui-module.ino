@@ -147,7 +147,9 @@ void check_rows(int colIndex)
       Current_Button_State[0] = rowIndex;
       Current_Button_State[1] = colIndex;
 
-      matrix_button.valid = false;
+      matrix_button.waiting = true;
+      matrix_button.row = rowIndex;
+      matrix_button.column = colIndex;
       Pressed = 1;
 
       // Serial.print("Push");
@@ -205,10 +207,10 @@ void Button_Released(int Current_State[], int Previous_State[])
   // LED_Off(Previous_State[0], Previous_State[1]);
 
   // NEW BUTTON TESTING ABSTRACTION
-  matrix_button.row = Current_State[ROW];
-  matrix_button.column = Current_State[COLUMN];
+
   matrix_button.current_interval = previousMillis;
-  matrix_button.waiting = true;
+  matrix_button.waiting = false;
+  matrix_button.valid = true;
 
   Current_State[0] = 9;
   Current_State[1] = 9;
@@ -280,37 +282,86 @@ Calculate the difference in time unsigned long time_diff = end_time - start_time
   return 0;
 }
 
-void testing_button_abstract(void)
+bool matrix_pressed(int type, int held)
 {
-}
-void testing_read_matrix(void)
-{
-}
+  switch (type)
+  {
+  case BUTTON_MEASURE:
+    if (matrix_button.column <= LAST_MEASURE_COLUMN)
+    {
+      if ((held == BUTTON_NOT_HELD) && matrix_button.valid)
+      {
+        matrix_button.valid = false;
+        return true;
+      }
+      else if ((held == BUTTON_HELD) && matrix_button.waiting)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
 
-bool palette_pressed(void)
-{
-  if (matrix_button.valid && matrix_button.column > LAST_MEASURE_COLUMN)
-  {
-    Serial.println("PALETTE BUTTON PRESSED");
-    matrix_button.valid = false;
-    return true;
-  }
-  else
-  {
+    break;
+  case BUTTON_PALETTE:
+    if (matrix_button.column > LAST_MEASURE_COLUMN)
+    {
+      if ((held == BUTTON_NOT_HELD) && matrix_button.valid)
+      {
+        matrix_button.valid = false;
+        return true;
+      }
+      else if ((held == BUTTON_HELD) && matrix_button.waiting)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    break;
+  case BUTTON_SOUND:
+    if ((matrix_button.column > LAST_MEASURE_COLUMN) && (matrix_button.row != EFFECT_PALETTE_ROW))
+    {
+      if ((held == BUTTON_NOT_HELD) && matrix_button.valid)
+      {
+        matrix_button.valid = false;
+        return true;
+      }
+      else if ((held == BUTTON_HELD) && matrix_button.waiting)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    break;
+  case BUTTON_EFFECT:
+    if ((matrix_button.column > LAST_MEASURE_COLUMN) && (matrix_button.row == EFFECT_PALETTE_ROW))
+    {
+      if ((held == BUTTON_NOT_HELD) && matrix_button.valid)
+      {
+        matrix_button.valid = false;
+        return true;
+      }
+      else if ((held == BUTTON_HELD) && matrix_button.waiting)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    break;
+  default:
     return false;
+    break;
   }
-}
-
-bool measure_pressed(void)
-{
-  if (matrix_button.valid && matrix_button.column <= LAST_MEASURE_COLUMN)
-  {
-    Serial.println("MEASURE BUTTON PRESSED");
-    matrix_button.valid = false;
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return false;
 }
