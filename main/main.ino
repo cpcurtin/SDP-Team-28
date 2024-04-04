@@ -83,11 +83,6 @@ void loop()
 #if USING_NEW_DS == 1
   if (step_timer.check() == 1)
   {
-    LED_Off(temp_last_beat, temp_last_step);
-    LED_On(testing_measure.beat, testing_measure.step);
-
-    stop_step(last_step);
-    play_step(active_step);
 
     if (testing_measure.effect_mode)
     {
@@ -96,14 +91,20 @@ void loop()
     else
     {
       // DEFAULT BEHAVIOR
+
       last_step = active_step;
       temp_last_step = testing_measure.step;
       temp_last_beat = testing_measure.beat;
       active_step = next_step(&testing_measure);
     }
+    LED_Off(temp_last_beat, temp_last_step);
+    LED_On(testing_measure.beat, testing_measure.step);
+    print_step(&testing_measure);
+
+    stop_step(last_step);
+    play_step(active_step);
 
     // ON STEP, PLAY SOUNDS AND FLASH LED
-    // print_step(&testing_measure);
 
     // active_track.bpm = read_tempo();
 
@@ -169,6 +170,7 @@ void loop()
   // EFFECT
   if (matrix_pressed(BUTTON_EFFECT, BUTTON_HELD))
   {
+    // SET EFFECT TOGGLE FLAG ON
     if (testing_measure.effect_mode == false)
     {
       Serial.println("BEGIN EFFECT");
@@ -178,14 +180,31 @@ void loop()
   }
   else
   {
+    // SET EFFECT TOGGLE FLAG OFF
     if (testing_measure.effect_mode)
     {
       Serial.println("END EFFECT");
       testing_measure.effect_mode = false;
+
+      // SET STEP STATE TO STEP WHEN EFFECT FIRST PRESSED
+      if (effect_return_state == EFFECT_RETURN_SAVE)
+      {
+        testing_measure.beat = saved_beat;
+        testing_measure.step = saved_step;
+      }
+
+      // SET STEP STATE TO BEAT=0 STEP=0
+      else if (effect_return_state == EFFECT_RETURN_RESET)
+      {
+        testing_measure.beat = 0;
+        testing_measure.step = 0;
+      }
+
+      // ELSE, LEAVE STEP STATE AT LAST EFFECT
     }
   }
 
-  // // EFFECT MODE
+  // // EXAMPLES OF BUTTON PRESSES TYPES AMD HOLDS
   // if (matrix_pressed(PALETTE_EFFECT, BUTTON_HELD))
   // {
   //   Serial.println("\nPALETTE EFFECT HELD\n");

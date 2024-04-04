@@ -10,11 +10,15 @@
 /* EFFECT CODES */
 #define EFFECT_NONE 0
 #define EFFECT_REPLAY 6
-#define EFFECT_REVERSE_RESET 7
-#define EFFECT_REVERSE_CURRENT 8
+#define EFFECT_REVERSE_CURRENT 7
+#define EFFECT_REVERSE_RESET 8
+
+#define EFFECT_RETURN_SAVE 0
+#define EFFECT_RETURN_CURRENT 1
+#define EFFECT_RETURN_RESET 2
 
 int effect;
-
+int effect_return_state;
 int saved_step;
 int saved_beat;
 

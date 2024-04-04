@@ -95,9 +95,10 @@ Step *previous_step(Measure *measure)
 
         if (measure->beat < 0)
         {
-            measure->step = measure->beat_list[measure->beat].active_steps - 1;
+
             measure->beat = measure->active_beats - 1;
         }
+        measure->step = measure->beat_list[measure->beat].active_steps - 1;
     }
     return &(measure->beat_list[measure->beat].step_list[measure->step]);
 }
