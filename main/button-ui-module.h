@@ -15,6 +15,31 @@
 #define DPAD_DOWN 3
 #define DPAD_UP 4
 
+#define MATRIX_BUTTON_DEBOUNCE 50
+
+#define BUTTON_SELECT_PIN_1 12 // select bit A
+#define BUTTON_SELECT_PIN_2 11 // select bit B
+#define BUTTON_SELECT_PIN_3 10 // select bit C
+#define ENABLE_PIN_COLUMNS 24  // enable bit
+
+#define SELECT_ROW_PIN_1 32 // select bit A
+#define SELECT_ROW_PIN_2 31 // select bit B
+#define SELECT_ROW_PIN_3 30 // select bit C
+#define ENABLE_PIN_ROWS 29
+
+#define BUTTON_COLUMN_8 8
+
+#define BUTTON_HELD 1
+#define BUTTON_NOT_HELD 0
+#define EFFECT_PALETTE_ROW 3
+#define PALETTE_SOUND 0
+#define PALETTE_EFFECT 1
+
+#define BUTTON_MEASURE 0
+#define BUTTON_PALETTE 1
+#define BUTTON_SOUND 2
+#define BUTTON_EFFECT 3
+
 struct button_maxtrix_pin_config
 {
     size_t width;   // The length of the array
@@ -23,55 +48,27 @@ struct button_maxtrix_pin_config
     int columns[7]; // Flexible array member
 };
 
-struct palette_cell
+typedef struct Button
 {
-    char *sound;
-    int available;
-};
+    int row;
+    int column;
+    bool valid;
+    bool waiting;
+    unsigned long debounce_interval;
+    unsigned long current_interval;
 
-struct palette_matrix
-{
-    struct palette_cell ***cells;
-    int rows;
-    int columns;
-};
-
-const int selectPin1_button = 12; // select bit A
-const int selectPin2_button = 11; // select bit B
-const int selectPin3_button = 10; // select bit C
-const int enablePin_columns = 24; // enable bit
-
-const int selectPin1_LED = 27; // select bit A
-const int selectPin2_LED = 26; // select bit B
-const int selectPin3_LED = 25; // select bit C
-
-const int selectPin1_rows = 32; // select bit A
-const int selectPin2_rows = 31; // select bit B
-const int selectPin3_rows = 30; // select bit C
-const int enablePin_rows = 29;
-
-const int Button_column8 = 8;
-const int LED_column8 = 28;
+} Button;
 
 byte rows[] = {33, 34, 35, 36};
 
-const int rowCount = 4;
-const int colCount = 9;
-const int LED_rowcount = 4;
-const int LED_colcount = 9;
-
 int Previous_Button_State[] = {9, 9};
 int Current_Button_State[] = {9, 9};
-int Last_Pushed_State[] = {9, 9};
+int Last_Pushed_State[] = {9, 9}; // row column
 int Pressed = 0;
 
 unsigned long previousMillis = 0;
 unsigned long interval = 50;
 int loop_counter = 0;
-
-int MeMat_LEDindex[][2] = {{0, 0}, {0, 1}, {0, 2}, {0, 3}, {0, 4}, {0, 5}, {1, 0}, {1, 1}, {1, 2}, {1, 3}, {1, 4}, {1, 5}, {2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}, {2, 5}, {3, 0}, {3, 1}, {3, 2}, {3, 3}, {3, 4}, {3, 5}};
-
-int Palette_LEDMatrix[][2] = {{0, 6}, {0, 7}, {0, 8}, {1, 6}, {1, 7}, {1, 8}, {2, 6}, {2, 7}, {2, 8}, {3, 6}, {3, 7}, {3, 8}};
 
 int Current_Row = 0;
 int Current_Column = 0;
@@ -80,6 +77,14 @@ int dpad_button_pressed = 0;
 int dpad_press_return = 0;
 int dpad_pressed = 0;
 unsigned long dpad_last_pressed;
+
+Button matrix_button = {
+    9,
+    9,
+    false,
+    false,
+    MATRIX_BUTTON_DEBOUNCE,
+    0}; // matrix button info
 
 int dpad_init(void);
 
@@ -94,12 +99,12 @@ void readMatrix();
 void check_rows(int colIndex);
 void Button_Pressed(int Current_State[], int Previous_State[]);
 void Button_Released(int Current_State[], int Previous_State[]);
-void LED_On(int Row, int Column);
-void LED_Off(int Row, int Column);
-void selectColumn_button(int Column);
-void selectColumn_LED(int Column);
-void selectRow_LED(int Row);
 
-// void set_matrix_led(struct matrix_coordinate, int state);
+void selectColumn_button(int Column);
+
+// TESTING ZONE
+// TESTING ZONE
+// TESTING ZONE
+bool matrix_pressed(int type, int held);
 
 #endif // EXAMPLE_MODULE_H

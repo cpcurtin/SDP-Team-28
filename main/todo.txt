@@ -1,2 +1,4 @@
-pitched midi sounds, hold to select pitch
+just added measure_Beats,
 
+implement adjustable beats per measure
+    does it require changing tempo

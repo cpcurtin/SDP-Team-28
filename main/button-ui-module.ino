@@ -6,47 +6,57 @@
  */
 #include "button-ui-module.h"
 // const struct dpad_pin_config dpad_cfg;
+#if USING_CDR_PCB == 1 // CDR PCB uses external pulldown
+  int dpad_init()
+  {
+    pinMode(BUTTON_DPAD_LEFT, INPUT);
+    pinMode(BUTTON_DPAD_RIGHT, INPUT);
+    pinMode(BUTTON_DPAD_DOWN, INPUT);
+    pinMode(BUTTON_DPAD_UP, INPUT);
 
-int dpad_init()
-{
-  pinMode(BUTTON_DPAD_LEFT, INPUT);
-  pinMode(BUTTON_DPAD_RIGHT, INPUT);
-  pinMode(BUTTON_DPAD_DOWN, INPUT);
-  pinMode(BUTTON_DPAD_UP, INPUT);
-
-  return 0;
-}
+    return 0;
+  }
+#endif
+#if USING_CDR_PCB == 0 // New design uses internal pullup
+  int dpad_init()
+  {
+    pinMode(BUTTON_DPAD_LEFT, INPUT_PULLUP);
+    pinMode(BUTTON_DPAD_RIGHT, INPUT_PULLUP);
+    pinMode(BUTTON_DPAD_DOWN, INPUT_PULLUP);
+    pinMode(BUTTON_DPAD_UP, INPUT_PULLUP);
+  }
+#endif
 int button_matrix_init(void)
 {
-  digitalWrite(enablePin_columns, LOW);
-  digitalWrite(enablePin_rows, LOW);
+  digitalWrite(ENABLE_PIN_COLUMNS, LOW);
+  digitalWrite(ENABLE_PIN_ROWS, LOW);
 
-  for (int x = 0; x < rowCount; x++)
+  for (int x = 0; x < MATRIX_ROWS; x++)
   {
     pinMode(rows[x], INPUT_PULLUP);
     Serial.println(rows[x]);
   }
 
-  pinMode(Button_column8, INPUT_PULLUP);
+  pinMode(BUTTON_COLUMN_8, INPUT_PULLUP);
 
   pinMode(LED_column8, OUTPUT);
   digitalWrite(LED_column8, LOW);
 
-  pinMode(selectPin1_button, OUTPUT);
-  pinMode(selectPin2_button, OUTPUT);
-  pinMode(selectPin3_button, OUTPUT);
-  pinMode(enablePin_columns, OUTPUT);
-  digitalWrite(enablePin_columns, HIGH);
+  pinMode(BUTTON_SELECT_PIN_1, OUTPUT);
+  pinMode(BUTTON_SELECT_PIN_2, OUTPUT);
+  pinMode(BUTTON_SELECT_PIN_3, OUTPUT);
+  pinMode(ENABLE_PIN_COLUMNS, OUTPUT);
+  digitalWrite(ENABLE_PIN_COLUMNS, HIGH);
 
   pinMode(selectPin1_LED, OUTPUT);
   pinMode(selectPin2_LED, OUTPUT);
   pinMode(selectPin3_LED, OUTPUT);
 
-  pinMode(selectPin1_rows, OUTPUT);
-  pinMode(selectPin2_rows, OUTPUT);
-  pinMode(selectPin3_rows, OUTPUT);
-  pinMode(enablePin_rows, OUTPUT);
-  digitalWrite(enablePin_rows, HIGH);
+  pinMode(SELECT_ROW_PIN_1, OUTPUT);
+  pinMode(SELECT_ROW_PIN_2, OUTPUT);
+  pinMode(SELECT_ROW_PIN_3, OUTPUT);
+  pinMode(ENABLE_PIN_ROWS, OUTPUT);
+  digitalWrite(ENABLE_PIN_ROWS, HIGH);
 
   selectRow_LED(7);
 
@@ -110,20 +120,19 @@ void measure_matrix_init(struct button_maxtrix_pin_config &button_cfg, struct bu
 void readMatrix()
 {
   // iterate the columns
-  for (int colIndex = 0; colIndex < colCount; colIndex++)
+  for (int colIndex = 0; colIndex < MATRIX_COLUMNS; colIndex++)
   {
 
     if (colIndex == 8)
     {
 
-      digitalWrite(enablePin_columns, LOW);
-
-      pinMode(Button_column8, OUTPUT);
-      digitalWrite(Button_column8, LOW);
+      digitalWrite(ENABLE_PIN_COLUMNS, LOW);
+      pinMode(BUTTON_COLUMN_8, OUTPUT);
+      digitalWrite(BUTTON_COLUMN_8, LOW);
       check_rows(colIndex);
 
-      pinMode(Button_column8, INPUT_PULLUP);
-      digitalWrite(enablePin_columns, HIGH);
+      pinMode(BUTTON_COLUMN_8, INPUT_PULLUP);
+      digitalWrite(ENABLE_PIN_COLUMNS, HIGH);
     }
 
     else
@@ -138,7 +147,7 @@ void readMatrix()
 void check_rows(int colIndex)
 {
   // row: interate through the rows
-  for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
+  for (int rowIndex = 0; rowIndex < MATRIX_ROWS; rowIndex++)
   {
     // byte rowCol = rows[rowIndex];
 
@@ -147,7 +156,12 @@ void check_rows(int colIndex)
 
       Current_Button_State[0] = rowIndex;
       Current_Button_State[1] = colIndex;
+
+      matrix_button.waiting = true;
+      matrix_button.row = rowIndex;
+      matrix_button.column = colIndex;
       Pressed = 1;
+
       // Serial.print("Push");
       // Serial.print(rowIndex);
       Serial.println(colIndex);
@@ -166,8 +180,8 @@ void Button_Pressed(int Current_State[], int Previous_State[])
     if (Current_State[1] == 8)
     {
 
-      pinMode(Button_column8, OUTPUT);
-      digitalWrite(Button_column8, LOW);
+      pinMode(BUTTON_COLUMN_8, OUTPUT);
+      digitalWrite(BUTTON_COLUMN_8, LOW);
 
       if (digitalRead(rows[Current_State[0]]) == 1)
       {
@@ -176,7 +190,7 @@ void Button_Pressed(int Current_State[], int Previous_State[])
         Button_Released(Current_State, Previous_State);
       }
 
-      pinMode(Button_column8, INPUT_PULLUP);
+      pinMode(BUTTON_COLUMN_8, INPUT_PULLUP);
     }
     else
     {
@@ -201,65 +215,25 @@ void Button_Released(int Current_State[], int Previous_State[])
 
   previousMillis = millis();
   // LED_Off(Previous_State[0], Previous_State[1]);
+
+  // NEW BUTTON TESTING ABSTRACTION
+
+  matrix_button.current_interval = previousMillis;
+  matrix_button.waiting = false;
+  matrix_button.valid = true;
+
   Current_State[0] = 9;
   Current_State[1] = 9;
-}
-
-void LED_On(int Row, int Column)
-{
-
-  if (Column == 8)
-  {
-
-    digitalWrite(enablePin_columns, LOW);
-    digitalWrite(LED_column8, HIGH);
-    selectRow_LED(Row);
-  }
-
-  else
-  {
-    digitalWrite(LED_column8, LOW);
-    selectColumn_LED(Column);
-    selectRow_LED(Row);
-  }
-}
-
-void LED_Off(int Row, int Column)
-{
-
-  if (Column == 8)
-  {
-
-    digitalWrite(LED_column8, LOW);
-    digitalWrite(enablePin_columns, HIGH);
-  }
-
-  selectRow_LED(7);
 }
 
 void selectColumn_button(int Column)
 {
 
-  digitalWrite(selectPin1_button, bitRead(Column, 0));
-  digitalWrite(selectPin2_button, bitRead(Column, 1));
-  digitalWrite(selectPin3_button, bitRead(Column, 2));
+  digitalWrite(BUTTON_SELECT_PIN_1, bitRead(Column, 0));
+  digitalWrite(BUTTON_SELECT_PIN_2, bitRead(Column, 1));
+  digitalWrite(BUTTON_SELECT_PIN_3, bitRead(Column, 2));
 }
 
-void selectColumn_LED(int Column)
-{
-
-  digitalWrite(selectPin1_LED, bitRead(Column, 0));
-  digitalWrite(selectPin2_LED, bitRead(Column, 1));
-  digitalWrite(selectPin3_LED, bitRead(Column, 2));
-}
-
-void selectRow_LED(int Row)
-{
-
-  digitalWrite(selectPin1_rows, bitRead(Row, 0));
-  digitalWrite(selectPin2_rows, bitRead(Row, 1));
-  digitalWrite(selectPin3_rows, bitRead(Row, 2));
-}
 int read_tempo(void)
 {
   int raw_avg = 0;
@@ -275,45 +249,173 @@ int read_tempo(void)
 
   // Delay for readability (adjust as needed)
 }
+#if USING_CDR_PCB == 1 // Button has external pulldown. When high, button pushed
+  int dpad_read(void)
+  {
 
-int dpad_read(void)
+    if (dpad_button_pressed)
+    {
+      if (millis() - dpad_last_pressed > 50 && digitalRead(dpad_button_pressed) == LOW)
+      {
+        dpad_press_return = dpad_button_pressed;
+        dpad_button_pressed = 0;
+        return dpad_press_return;
+      }
+    }
+    else
+    {
+      if (digitalRead(BUTTON_DPAD_LEFT) == HIGH)
+      {
+        dpad_button_pressed = BUTTON_DPAD_LEFT;
+      }
+      if (digitalRead(BUTTON_DPAD_DOWN) == HIGH)
+      {
+        dpad_button_pressed = BUTTON_DPAD_DOWN;
+      }
+      if (digitalRead(BUTTON_DPAD_UP) == HIGH)
+      {
+        dpad_button_pressed = BUTTON_DPAD_UP;
+      }
+      if (digitalRead(BUTTON_DPAD_RIGHT) == HIGH)
+      {
+        dpad_button_pressed = BUTTON_DPAD_RIGHT;
+      }
+      dpad_last_pressed = millis();
+    }
+
+    /*
+  unsigned long start_time = millis();
+  unsigned long end_time = millis();
+  Calculate the difference in time unsigned long time_diff = end_time - start_time;
+    */
+
+    return 0;
+  }
+#endif
+
+#if USING_CDR_PCB == 0 // Button using input pullup. When low, button pushed
+  int dpad_read(void)
+  {
+
+    if (dpad_button_pressed)
+    {
+      if (millis() - dpad_last_pressed > 50 && digitalRead(dpad_button_pressed) == LOW)
+      {
+        dpad_press_return = dpad_button_pressed;
+        dpad_button_pressed = 0;
+        return dpad_press_return;
+      }
+    }
+    else
+    {
+      if (digitalRead(BUTTON_DPAD_LEFT) == LOW)
+      {
+        dpad_button_pressed = BUTTON_DPAD_LEFT;
+      }
+      if (digitalRead(BUTTON_DPAD_DOWN) == LOW)
+      {
+        dpad_button_pressed = BUTTON_DPAD_DOWN;
+      }
+      if (digitalRead(BUTTON_DPAD_UP) == LOW)
+      {
+        dpad_button_pressed = BUTTON_DPAD_UP;
+      }
+      if (digitalRead(BUTTON_DPAD_RIGHT) == LOW)
+      {
+        dpad_button_pressed = BUTTON_DPAD_RIGHT;
+      }
+      dpad_last_pressed = millis();
+    }
+
+    /*
+  unsigned long start_time = millis();
+  unsigned long end_time = millis();
+  Calculate the difference in time unsigned long time_diff = end_time - start_time;
+    */
+
+    return 0;
+  }
+#endif
+bool matrix_pressed(int type, int held)
 {
-
-  if (dpad_button_pressed)
+  switch (type)
   {
-    if (millis() - dpad_last_pressed > 50 && digitalRead(dpad_button_pressed) == LOW)
+  case BUTTON_MEASURE:
+    if (matrix_button.column <= LAST_MEASURE_COLUMN)
     {
-      dpad_press_return = dpad_button_pressed;
-      dpad_button_pressed = 0;
-      return dpad_press_return;
+      if ((held == BUTTON_NOT_HELD) && matrix_button.valid)
+      {
+        matrix_button.valid = false;
+        return true;
+      }
+      else if ((held == BUTTON_HELD) && matrix_button.waiting)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
-  }
-  else
-  {
-    if (digitalRead(BUTTON_DPAD_LEFT) == HIGH)
-    {
-      dpad_button_pressed = BUTTON_DPAD_LEFT;
-    }
-    if (digitalRead(BUTTON_DPAD_DOWN) == HIGH)
-    {
-      dpad_button_pressed = BUTTON_DPAD_DOWN;
-    }
-    if (digitalRead(BUTTON_DPAD_UP) == HIGH)
-    {
-      dpad_button_pressed = BUTTON_DPAD_UP;
-    }
-    if (digitalRead(BUTTON_DPAD_RIGHT) == HIGH)
-    {
-      dpad_button_pressed = BUTTON_DPAD_RIGHT;
-    }
-    dpad_last_pressed = millis();
-  }
 
-  /*
-unsigned long start_time = millis();
-unsigned long end_time = millis();
-Calculate the difference in time unsigned long time_diff = end_time - start_time;
-  */
-
-  return 0;
+    break;
+  case BUTTON_PALETTE:
+    if (matrix_button.column > LAST_MEASURE_COLUMN)
+    {
+      if ((held == BUTTON_NOT_HELD) && matrix_button.valid)
+      {
+        matrix_button.valid = false;
+        return true;
+      }
+      else if ((held == BUTTON_HELD) && matrix_button.waiting)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    break;
+  case BUTTON_SOUND:
+    if ((matrix_button.column > LAST_MEASURE_COLUMN) && (matrix_button.row != EFFECT_PALETTE_ROW))
+    {
+      if ((held == BUTTON_NOT_HELD) && matrix_button.valid)
+      {
+        matrix_button.valid = false;
+        return true;
+      }
+      else if ((held == BUTTON_HELD) && matrix_button.waiting)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    break;
+  case BUTTON_EFFECT:
+    if ((matrix_button.column > LAST_MEASURE_COLUMN) && (matrix_button.row == EFFECT_PALETTE_ROW))
+    {
+      if ((held == BUTTON_NOT_HELD) && matrix_button.valid)
+      {
+        matrix_button.valid = false;
+        return true;
+      }
+      else if ((held == BUTTON_HELD) && matrix_button.waiting)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    break;
+  default:
+    return false;
+    break;
+  }
+  return false;
 }

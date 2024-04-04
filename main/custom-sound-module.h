@@ -14,7 +14,7 @@
 #include "flashloader.h"
 #include <SerialFlash.h>
 
-#define DAC_GAIN 0.7
+#define DAC_GAIN 1.0
 struct dac_pin_config
 {
     const int din;
@@ -71,6 +71,8 @@ AudioPlayArrayResmp rraw_a2; // xy=321,513
 AudioPlayArrayResmp rraw_a1; // xy=321,513
 AudioMixer4 mixer1;          // xy=426,163
 AudioMixer4 mixer2;          // xy=429,266
+AudioAmplifier amp1;         // xy=605,194
+AudioAmplifier amp2;         // xy=606,289
 AudioOutputPT8211 pt8211_1;  // I2s1
 AudioConnection patchCord1(rraw_a3, 0, mixer1, 2);
 AudioConnection patchCord2(rraw_a3, 1, mixer2, 2);

@@ -19,13 +19,14 @@ typedef struct track
   int id;
   int bpm;
   int measure_steps;
+  int measure_beats;
 } track;
 
 array_with_size *custom_sound_list = new array_with_size;
 array_with_size *track_list = new array_with_size;
 
 track active_track = {
-    "DEFAULT.json", 1, 120, 6};
+    "DEFAULT.json", 1, 120, 6, 4};
 track default_track = active_track;
 int sd_init(void);
 array_with_size *sd_fetch_sounds(void);

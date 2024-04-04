@@ -16,3 +16,38 @@ array_with_size *fetch_effects(void)
     effect_list->size = 2;
     return effect_list;
 }
+
+void run_effect(int effect)
+{
+    switch (effect)
+    {
+    case EFFECT_REPLAY:
+        Serial.println("REPLAY EFFECT");
+        effect_return_state = EFFECT_RETURN_CURRENT;
+        last_step = active_step;
+        temp_last_step = testing_measure.step;
+        temp_last_beat = testing_measure.beat;
+        // active_step = next_step(&testing_measure);
+
+        break;
+    case EFFECT_REVERSE_CURRENT:
+        effect_return_state = EFFECT_RETURN_CURRENT;
+        last_step = active_step;
+        temp_last_step = testing_measure.step;
+        temp_last_beat = testing_measure.beat;
+        active_step = previous_step(&testing_measure);
+        break;
+    case EFFECT_REVERSE_RESET:
+        effect_return_state = EFFECT_RETURN_RESET;
+        last_step = active_step;
+        temp_last_step = testing_measure.step;
+        temp_last_beat = testing_measure.beat;
+        saved_step = testing_measure.step;
+        saved_beat = testing_measure.beat;
+        active_step = previous_step(&testing_measure);
+
+        break;
+    default:
+        break;
+    }
+}
