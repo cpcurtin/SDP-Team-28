@@ -65,6 +65,9 @@ typedef struct Measure
     struct Beat beat_list[4];
     int step;
     int beat;
+    bool effect_mode;
+    struct Step current_step;
+    struct Step prior_step;
 
 } Measure;
 
@@ -90,6 +93,7 @@ void measure_palette_init(void);
 
 Step *button_to_step(int actuated_button[]);
 Step *next_step(Measure *measure);
+Step *previous_step(Measure *measure);
 Step *button_step_lookup(Measure *measure);
 
 int stop_step(Step *step_end);

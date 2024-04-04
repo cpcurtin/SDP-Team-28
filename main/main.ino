@@ -84,20 +84,27 @@ void loop()
   if (step_timer.check() == 1)
   {
 
-    // ON STEP, PLAY SOUNDS AND FLASH LED
-    // print_step(&testing_measure);
+    if (testing_measure.effect_mode)
+    {
+      run_effect(effect);
+    }
+    else
+    {
+      // DEFAULT BEHAVIOR
 
+      last_step = active_step;
+      temp_last_step = testing_measure.step;
+      temp_last_beat = testing_measure.beat;
+      active_step = next_step(&testing_measure);
+    }
     LED_Off(temp_last_beat, temp_last_step);
     LED_On(testing_measure.beat, testing_measure.step);
+    print_step(&testing_measure);
 
-    // stop_step(last_step);
-    // play_step(active_step);
+    stop_step(last_step);
+    play_step(active_step);
 
-    // FETCH NEXT STEP
-    last_step = active_step;
-    temp_last_step = testing_measure.step;
-    temp_last_beat = testing_measure.beat;
-    active_step = next_step(&testing_measure);
+    // ON STEP, PLAY SOUNDS AND FLASH LED
 
     // active_track.bpm = read_tempo();
 
@@ -111,22 +118,24 @@ void loop()
     // UPDATE TIMER INTERVAL
   }
 
-  //  PALETTE BUTTON PRESSED
-  if (palette_pressed())
+  //  PALETTE BUTTON PRESSED (SOUNDS)
+  if (matrix_pressed(BUTTON_SOUND, BUTTON_NOT_HELD))
   {
+    Serial.println("PALETTE SOUND PRESSED");
+
     // get palette index
     for (int i = 0; i < 12; i++)
     {
       if (Palette_LEDMatrix[i][0] == matrix_button.row && Palette_LEDMatrix[i][1] == matrix_button.column)
       {
-        palbut = i;
+        palette_index = i;
       }
     }
     if (new_sound_assignment)
     {
       // SAVE NEW SOUND FROM NAV TO PALETTE BUTTON
       Serial.println("NAV TO PALETTE ASSIGNED");
-      testing_palette[palbut] = new_sound;
+      testing_palette[palette_index] = new_sound;
 
       new_sound_assignment = false;
       splash_screen_active = false;
@@ -143,11 +152,11 @@ void loop()
   //  MEASURE BUTTON PRESSED
   if (measure_edit)
   {
-    if (measure_pressed())
+    if (matrix_pressed(BUTTON_MEASURE, BUTTON_NOT_HELD))
     {
       // MEASURE BUTTON PRESSED
       Serial.println("PALETTE TO MEASURE ADD/REMOVE");
-      print_palette(palbut);
+      print_palette(palette_index);
 
       if (add_remove_measure_sound(&testing_measure))
       {
@@ -157,6 +166,82 @@ void loop()
       measure_edit = false; // chain sound assignment in future starting here
     }
   }
+
+  // EFFECT
+  if (matrix_pressed(BUTTON_EFFECT, BUTTON_HELD))
+  {
+    // SET EFFECT TOGGLE FLAG ON
+    if (testing_measure.effect_mode == false)
+    {
+      Serial.println("BEGIN EFFECT");
+      testing_measure.effect_mode = true;
+      effect = matrix_button.column;
+    }
+  }
+  else
+  {
+    // SET EFFECT TOGGLE FLAG OFF
+    if (testing_measure.effect_mode)
+    {
+      Serial.println("END EFFECT");
+      testing_measure.effect_mode = false;
+
+      // SET STEP STATE TO STEP WHEN EFFECT FIRST PRESSED
+      if (effect_return_state == EFFECT_RETURN_SAVE)
+      {
+        testing_measure.beat = saved_beat;
+        testing_measure.step = saved_step;
+      }
+
+      // SET STEP STATE TO BEAT=0 STEP=0
+      else if (effect_return_state == EFFECT_RETURN_RESET)
+      {
+        testing_measure.beat = 0;
+        testing_measure.step = 0;
+      }
+
+      // ELSE, LEAVE STEP STATE AT LAST EFFECT
+    }
+  }
+
+  // // EXAMPLES OF BUTTON PRESSES TYPES AMD HOLDS
+  // if (matrix_pressed(PALETTE_EFFECT, BUTTON_HELD))
+  // {
+  //   Serial.println("\nPALETTE EFFECT HELD\n");
+  // }
+  // if (matrix_pressed(BUTTON_MEASURE, BUTTON_HELD))
+  // {
+  //   Serial.println("\nBUTTON_MEASURE HELD\n");
+  // }
+  // if (matrix_pressed(BUTTON_PALETTE, BUTTON_HELD))
+  // {
+  //   Serial.println("\nBUTTON_PALETTE HELD\n");
+  // }
+  // if (matrix_pressed(BUTTON_SOUND, BUTTON_HELD))
+  // {
+  //   Serial.println("\nBUTTON_SOUND HELD\n");
+  // }
+  // if (matrix_pressed(BUTTON_EFFECT, BUTTON_HELD))
+  // {
+  //   Serial.println("\nBUTTON_EFFECT HELD\n");
+  // }
+  // single press
+  // if (matrix_pressed(BUTTON_MEASURE, BUTTON_NOT_HELD))
+  // {
+  //   Serial.println("\nBUTTON_MEASURE BUTTON_NOT_HELD\n");
+  // }
+  // if (matrix_pressed(BUTTON_PALETTE, BUTTON_NOT_HELD))
+  // {
+  //   Serial.println("\nBUTTON_PALETTE BUTTON_NOT_HELD\n");
+  // }
+  // if (matrix_pressed(BUTTON_SOUND, BUTTON_NOT_HELD))
+  // {
+  //   Serial.println("\nBUTTON_SOUND BUTTON_NOT_HELD\n");
+  // }
+  // if (matrix_pressed(BUTTON_EFFECT, BUTTON_NOT_HELD))
+  // {
+  //   Serial.println("\nBUTTON_EFFECT BUTTON_NOT_HELD\n");
+  // }
 
 #endif
 
@@ -379,7 +464,7 @@ void loop()
     {
       if (Palette_LEDMatrix[i][0] == Current_Row && Palette_LEDMatrix[i][1] == Current_Column)
       {
-        palbut = i;
+        palette_index = i;
       }
     }
 
@@ -392,21 +477,21 @@ void loop()
     }
     if (dispFlag == 0)
     {
-      palette[palbut][0] = dispBank;
-      palette[palbut][1] = dispInstrum;
-      palette[palbut][2] = dispNote;
-      sd_palette[palbut] = nullptr;
+      palette[palette_index][0] = dispBank;
+      palette[palette_index][1] = dispInstrum;
+      palette[palette_index][2] = dispNote;
+      sd_palette[palette_index] = nullptr;
       splash_screen_active = false;
       lcd_display(lcd, nav_state->lcd_state);
       dispFlag = 2;
     }
     if (dispFlag == 3)
     {
-      sd_palette[palbut] = temp_sample;
+      sd_palette[palette_index] = temp_sample;
       splash_screen_active = false;
-      palette[palbut][0] = -1;
-      palette[palbut][1] = -1;
-      palette[palbut][2] = -1;
+      palette[palette_index][0] = -1;
+      palette[palette_index][1] = -1;
+      palette[palette_index][2] = -1;
       lcd_display(lcd, nav_state->lcd_state);
       dispFlag = 2;
     }
@@ -435,7 +520,7 @@ void loop()
     dispFlag = 1;
   }
 
-  if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palbut != -1)
+  if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palette_index != -1)
   {
     // Serial.println("measure pushed");
     Serial.println("test");
@@ -443,14 +528,14 @@ void loop()
     int Current_Column1 = Current_Button_State[1];
     int meMatConv = 6 * Current_Row1 + Current_Column1;
     LED_Off(Current_Row, Current_Column);
-    int channel = palette[palbut][0];
-    int instr = palette[palbut][1];
-    int note = palette[palbut][2];
+    int channel = palette[palette_index][0];
+    int instr = palette[palette_index][1];
+    int note = palette[palette_index][2];
 
     // Assigning SD sounds to measure matrix
     for (int i = 0; i < 4; i++)
     {
-      if (cached_samples_sd[meMatConv][i] == sd_palette[palbut] && stopSD == 0)
+      if (cached_samples_sd[meMatConv][i] == sd_palette[palette_index] && stopSD == 0)
       {
         Serial.println("deleting");
         cached_samples_sd[meMatConv][i] = nullptr;
@@ -462,7 +547,7 @@ void loop()
       if (cached_samples_sd[meMatConv][i] == nullptr && stopSD == 0)
       {
         Serial.println("adding");
-        cached_samples_sd[meMatConv][i] = sd_palette[palbut];
+        cached_samples_sd[meMatConv][i] = sd_palette[palette_index];
         stopSD = 1;
       }
     }
@@ -492,28 +577,28 @@ void loop()
 
     // Play note at current palette to see whats there
     // MUST ADD STOPING CURRENT MIDI AND CUSTOM SOUNDS TO WORK
-    // if (palette[palbut][0] != -1)
+    // if (palette[palette_index][0] != -1)
     // {
 
-    //   if (palette[palbut][0])
+    //   if (palette[palette_index][0])
     //   {
     //     // Play melodic
-    //     midiSetInstrument(palette[palbut][0], palette[palbut][1]);
-    //     midiNoteOn(palette[palbut][0], palette[palbut][2], 127);
+    //     midiSetInstrument(palette[palette_index][0], palette[palette_index][1]);
+    //     midiNoteOn(palette[palette_index][0], palette[palette_index][2], 127);
     //   }
     //   else
     //   {
     //     // play percussion
-    //     midiSetInstrument(palette[palbut][0], 128);
-    //     midiNoteOn(palette[palbut][0], palette[palbut][1], 127);
+    //     midiSetInstrument(palette[palette_index][0], 128);
+    //     midiNoteOn(palette[palette_index][0], palette[palette_index][1], 127);
     //   }
     // }
-    // else if (sd_palette[palbut] != nullptr)
+    // else if (sd_palette[palette_index] != nullptr)
     // {
     //   // play custom sound
-    //   playFile(sd_palette[palbut]);
+    //   playFile(sd_palette[palette_index]);
     // }
-    palbut = -1;
+    palette_index = -1;
   }
 
 #endif
@@ -541,16 +626,6 @@ void loop()
     Previous_Button_State[1] = Current_Button_State[1];
   }
 
-  // NEW BUTTON READ CODE
-  if (matrix_button.waiting)
-  {
-
-    if (matrix_button.debounce_interval < millis() - matrix_button.current_interval)
-    {
-      matrix_button.waiting = false;
-      matrix_button.valid = true;
-    }
-  }
   /*****************************************************************************
    **************************     READ DPAD INPUTS     *************************
    ****************************************************************************/

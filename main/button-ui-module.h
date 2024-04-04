@@ -29,6 +29,17 @@
 
 #define BUTTON_COLUMN_8 8
 
+#define BUTTON_HELD 1
+#define BUTTON_NOT_HELD 0
+#define EFFECT_PALETTE_ROW 3
+#define PALETTE_SOUND 0
+#define PALETTE_EFFECT 1
+
+#define BUTTON_MEASURE 0
+#define BUTTON_PALETTE 1
+#define BUTTON_SOUND 2
+#define BUTTON_EFFECT 3
+
 struct button_maxtrix_pin_config
 {
     size_t width;   // The length of the array
@@ -94,9 +105,6 @@ void selectColumn_button(int Column);
 // TESTING ZONE
 // TESTING ZONE
 // TESTING ZONE
-void testing_button_abstract(void);
-void testing_read_matrix(void);
-bool palette_pressed(void);
-bool measure_pressed(void);
+bool matrix_pressed(int type, int held);
 
 #endif // EXAMPLE_MODULE_H

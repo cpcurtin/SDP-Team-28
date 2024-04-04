@@ -86,6 +86,22 @@ Step *next_step(Measure *measure)
     }
     return &(measure->beat_list[measure->beat].step_list[measure->step]);
 }
+Step *previous_step(Measure *measure)
+{
+    measure->step--;
+    if (measure->step < 0)
+    {
+        measure->beat--;
+
+        if (measure->beat < 0)
+        {
+
+            measure->beat = measure->active_beats - 1;
+        }
+        measure->step = measure->beat_list[measure->beat].active_steps - 1;
+    }
+    return &(measure->beat_list[measure->beat].step_list[measure->step]);
+}
 
 Step *button_step_lookup(Measure *measure)
 {
@@ -169,13 +185,14 @@ int add_remove_measure_sound(Measure *measure)
     for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
     {
 
-        if (testing_palette[palbut] == button_step_lookup(measure)->sound_list[sound])
+        if (testing_palette[palette_index] == button_step_lookup(measure)->sound_list[sound])
         {
             Serial.println("MEASURE REMOVE SOUND");
             // SELECTED PALETTE SOUND EXISTS ON CURRENT STEP
             // REMOVE FROM MEASURE STEP
             button_step_lookup(&testing_measure)->sound_list[sound] = empty_sound;
             sound_exists = true;
+            break;
         }
     }
     if (sound_exists == false && button_step_lookup(&testing_measure)->active_sounds < MAX_STEP_SOUNDS)
@@ -187,7 +204,7 @@ int add_remove_measure_sound(Measure *measure)
             if (button_step_lookup(&testing_measure)->sound_list[sound].empty)
             {
                 // ASSIGN PALETTE SOUND TO FIRST AVAILABLE STEP SOUND SLOT
-                button_step_lookup(&testing_measure)->sound_list[sound] = testing_palette[palbut];
+                button_step_lookup(&testing_measure)->sound_list[sound] = testing_palette[palette_index];
                 break;
             }
         }
