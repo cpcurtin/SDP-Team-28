@@ -111,7 +111,6 @@ Step *button_step_lookup(Measure *measure)
 
 int stop_step(Step *step_end)
 {
-
     for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
     {
         if (step_end->sound_list[sound].empty == false)
@@ -152,7 +151,7 @@ int play_step(Step *step_play)
                 if (step_play->sound_list[sound].note != MIDI_NULL)
                 {
                     // MELODIC
-                    midiSetInstrument(step_play->sound_list[sound].bank, 128);
+                    midiSetInstrument(step_play->sound_list[sound].bank, step_play->sound_list[sound].instrument);
                     midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].note, 127);
                 }
                 else

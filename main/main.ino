@@ -86,7 +86,6 @@ void loop()
 #if USING_NEW_DS == 1
   if (step_timer.check() == 1)
   {
-
     last_step = active_step;
     temp_last_step = testing_measure.step;
     temp_last_beat = testing_measure.beat;
@@ -98,44 +97,50 @@ void loop()
     else
     {
       // DEFAULT BEHAVIOR
-
       active_step = next_step(&testing_measure);
     }
+
     if (LED_mode == LED_DEFAULT_MODE)
     {
+
+      // ON STEP, PLAY SOUNDS AND FLASH LED
       LED_Off(temp_last_beat, temp_last_step);
       LED_On(testing_measure.beat, testing_measure.step);
     }
 
-    // print_step(&testing_measure);
-
     stop_step(last_step);
-
     play_step(active_step);
 
-    // ON STEP, PLAY SOUNDS AND FLASH LED
-
     active_track.bpm = read_tempo();
-
     if (splash_screen_active == false)
     {
       update_tempo(lcd);
     }
 
-    step_timer.interval(step_interval_calc(&testing_measure));
-    // step_timer.interval(60000 / (4 * 5)); // TESTING STATIC TEMPO
-
     // UPDATE TIMER INTERVAL
+    step_timer.interval(step_interval_calc(&testing_measure));
+  }
+
+  //  LED ASSIGN NAV TO PALETTE
+  if (new_sound_assignment)
+  {
+    LED_mode = LED_PALETTE_SELECT;
   }
 
   //  PALETTE BUTTON PRESSED (SOUNDS)
-
-  if (new_sound_assignment)
-    LED_mode = LED_PALETTE_SELECT;
   if (matrix_pressed(BUTTON_SOUND, BUTTON_NOT_HELD))
   {
-
     Serial.println("PALETTE SOUND PRESSED");
+    if (LED_mode == LED_PALETTE_SELECT)
+    {
+      // UNSELECT PALETTE BUTTON
+      LED_mode = LED_DEFAULT_MODE;
+    }
+    else
+    {
+      // SELECT PALETTE BUTTON
+      LED_mode = LED_PALETTE_SELECT;
+    }
 
     // get palette index
     for (int i = 0; i < 12; i++)
@@ -145,9 +150,10 @@ void loop()
         palette_index = i;
       }
     }
+
     if (new_sound_assignment)
     {
-      LED_mode = LED_DEFAULT_MODE;
+
       // SAVE NEW SOUND FROM NAV TO PALETTE BUTTON
       Serial.println("NAV TO PALETTE ASSIGNED");
       testing_palette[palette_index] = new_sound;
@@ -159,13 +165,15 @@ void loop()
     }
     else
     {
-      // EVOKES add/remove sounds to measure steps
-      measure_edit = true;
-      LED_mode = LED_PALETTE_SELECT;
-      LED_last_row = matrix_button.row;
-      LED_last_column = matrix_button.column;
-      LED_Off(temp_last_beat, temp_last_step);
-      LED_On(matrix_button.row, matrix_button.column);
+      if (LED_mode == LED_PALETTE_SELECT)
+      {
+        // EVOKES add/remove sounds to measure steps
+        measure_edit = true;
+        LED_last_row = matrix_button.row;
+        LED_last_column = matrix_button.column;
+        LED_Off(temp_last_beat, temp_last_step);
+        LED_On(matrix_button.row, matrix_button.column);
+      }
     }
   }
 
@@ -220,8 +228,8 @@ void loop()
       // SET STEP STATE TO BEAT=0 STEP=0
       else if (effect_return_state == EFFECT_RETURN_RESET)
       {
-        testing_measure.beat = testing_measure.active_beats - 1;
-        testing_measure.step = testing_measure.beat_list[testing_measure.active_beats].active_steps - 1;
+        testing_measure.beat = 0;
+        testing_measure.step = 0;
       }
 
       // ELSE, LEAVE STEP STATE AT LAST EFFECT
