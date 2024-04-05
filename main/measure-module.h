@@ -75,6 +75,7 @@ Measure testing_measure;
 
 Step *active_step;
 Step *last_step;
+Sound temp_adding_sound;
 
 Sound testing_palette[PALETTE_SIZE];
 Sound new_sound;
@@ -102,5 +103,7 @@ float step_interval_calc(Measure *measure);
 int add_remove_measure_sound(Measure *measure);
 void print_step(Measure *measure);
 void print_palette(int palette_index);
+
+void populate_default_measure(void);
 
 #endif // EXAMPLE_MODULE_H

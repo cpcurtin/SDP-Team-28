@@ -165,7 +165,10 @@ int play_step(Step *step_play)
             else
             {
                 // SD
-                playFile(step_play->sound_list[sound].sd_cached_sound);
+                if (step_play->sound_list[sound].sd_cached_sound != nullptr)
+                {
+                    playFile(step_play->sound_list[sound].sd_cached_sound);
+                }
             }
         }
     }
@@ -276,4 +279,36 @@ void print_palette(int palette_index)
         Serial.print("\tE: ");
         Serial.println(testing_palette[palette_index].empty);
     }
+}
+
+void populate_default_measure(void)
+{
+
+    int temp_populate_step = 0;
+    for (int b = 0; b < MAX_BEATS; b++)
+    {
+
+        for (int s = 0; s < MAX_STEPS; s++)
+        {
+
+            for (int i = 0; i < MAX_STEP_SOUNDS; i++)
+            {
+                temp_adding_sound.bank = meMat[temp_populate_step][(i * 3) + 0];
+                temp_adding_sound.instrument = meMat[temp_populate_step][(i * 3) + 1];
+                temp_adding_sound.note = meMat[temp_populate_step][(i * 3) + 2];
+                temp_adding_sound.sd_cached_sound = nullptr;
+                temp_adding_sound.empty = false;
+                // temp_sound = empty_sound;
+
+                (&(testing_measure.beat_list[b].step_list[s]))->sound_list[i] = temp_adding_sound;
+            }
+
+            temp_populate_step++;
+        }
+    }
+
+    active_step = &(testing_measure.beat_list[0].step_list[0]);
+    last_step = &(testing_measure.beat_list[3].step_list[5]);
+    temp_last_step = 5;
+    temp_last_beat = 3;
 }

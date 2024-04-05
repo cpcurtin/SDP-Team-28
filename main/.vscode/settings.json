@@ -19,6 +19,7 @@
     "typeinfo": "cpp",
     "chrono": "cpp",
     "cstddef": "cpp",
-    "sstream": "cpp"
+    "sstream": "cpp",
+    "__node_handle": "cpp"
   }
 }

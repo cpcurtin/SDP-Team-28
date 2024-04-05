@@ -72,7 +72,10 @@ void setup()
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
   measure_palette_init();
-  step_timer.interval(60000 / (4 * 50)); // TESTING STATIC TEMPO
+  step_timer.interval(60000 / (4 * 10)); // TESTING STATIC TEMPO
+  // populate_default_measure();
+  // testing_measure.beat = 0;
+  // testing_measure.step = 0;
   Serial.println("PROGRAM LOOP BEGINS");
 }
 
@@ -83,6 +86,7 @@ void loop()
 #if USING_NEW_DS == 1
   if (step_timer.check() == 1)
   {
+
     last_step = active_step;
     temp_last_step = testing_measure.step;
     temp_last_beat = testing_measure.beat;
@@ -102,9 +106,11 @@ void loop()
       LED_Off(temp_last_beat, temp_last_step);
       LED_On(testing_measure.beat, testing_measure.step);
     }
+
     // print_step(&testing_measure);
 
     stop_step(last_step);
+
     play_step(active_step);
 
     // ON STEP, PLAY SOUNDS AND FLASH LED
