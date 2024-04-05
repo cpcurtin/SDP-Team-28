@@ -83,6 +83,9 @@ void loop()
 #if USING_NEW_DS == 1
   if (step_timer.check() == 1)
   {
+    last_step = active_step;
+    temp_last_step = testing_measure.step;
+    temp_last_beat = testing_measure.beat;
 
     if (testing_measure.effect_mode)
     {
@@ -92,35 +95,40 @@ void loop()
     {
       // DEFAULT BEHAVIOR
 
-      last_step = active_step;
-      temp_last_step = testing_measure.step;
-      temp_last_beat = testing_measure.beat;
       active_step = next_step(&testing_measure);
     }
-    LED_Off(temp_last_beat, temp_last_step);
-    LED_On(testing_measure.beat, testing_measure.step);
-    print_step(&testing_measure);
+    if (LED_mode == LED_DEFAULT_MODE)
+    {
+      LED_Off(temp_last_beat, temp_last_step);
+      LED_On(testing_measure.beat, testing_measure.step);
+    }
+    // print_step(&testing_measure);
 
     stop_step(last_step);
     play_step(active_step);
 
     // ON STEP, PLAY SOUNDS AND FLASH LED
 
-    // active_track.bpm = read_tempo();
+    active_track.bpm = read_tempo();
 
-    // if (splash_screen_active == false)
-    // {
-    //   update_tempo(lcd);
-    // }
-    // step_timer.interval(step_interval_calc(&testing_measure));
+    if (splash_screen_active == false)
+    {
+      update_tempo(lcd);
+    }
+
+    step_timer.interval(step_interval_calc(&testing_measure));
     // step_timer.interval(60000 / (4 * 5)); // TESTING STATIC TEMPO
 
     // UPDATE TIMER INTERVAL
   }
 
   //  PALETTE BUTTON PRESSED (SOUNDS)
+
+  if (new_sound_assignment)
+    LED_mode = LED_PALETTE_SELECT;
   if (matrix_pressed(BUTTON_SOUND, BUTTON_NOT_HELD))
   {
+
     Serial.println("PALETTE SOUND PRESSED");
 
     // get palette index
@@ -133,6 +141,7 @@ void loop()
     }
     if (new_sound_assignment)
     {
+      LED_mode = LED_DEFAULT_MODE;
       // SAVE NEW SOUND FROM NAV TO PALETTE BUTTON
       Serial.println("NAV TO PALETTE ASSIGNED");
       testing_palette[palette_index] = new_sound;
@@ -146,6 +155,11 @@ void loop()
     {
       // EVOKES add/remove sounds to measure steps
       measure_edit = true;
+      LED_mode = LED_PALETTE_SELECT;
+      LED_last_row = matrix_button.row;
+      LED_last_column = matrix_button.column;
+      LED_Off(temp_last_beat, temp_last_step);
+      LED_On(matrix_button.row, matrix_button.column);
     }
   }
 
@@ -157,6 +171,9 @@ void loop()
       // MEASURE BUTTON PRESSED
       Serial.println("PALETTE TO MEASURE ADD/REMOVE");
       print_palette(palette_index);
+
+      LED_mode = LED_DEFAULT_MODE;
+      LED_Off(LED_last_row, LED_last_column);
 
       if (add_remove_measure_sound(&testing_measure))
       {
@@ -175,7 +192,7 @@ void loop()
     {
       Serial.println("BEGIN EFFECT");
       testing_measure.effect_mode = true;
-      effect = matrix_button.column;
+      effect = active_palette_effects[2 - (8 - matrix_button.column)];
     }
   }
   else
@@ -191,13 +208,14 @@ void loop()
       {
         testing_measure.beat = saved_beat;
         testing_measure.step = saved_step;
+        active_step = &testing_measure.beat_list[saved_beat].step_list[saved_step];
       }
 
       // SET STEP STATE TO BEAT=0 STEP=0
       else if (effect_return_state == EFFECT_RETURN_RESET)
       {
-        testing_measure.beat = 0;
-        testing_measure.step = 0;
+        testing_measure.beat = testing_measure.active_beats - 1;
+        testing_measure.step = testing_measure.beat_list[testing_measure.active_beats].active_steps - 1;
       }
 
       // ELSE, LEAVE STEP STATE AT LAST EFFECT
@@ -717,6 +735,10 @@ void loop()
     else if (strcmp(nav_state->name, "tracks_set_steps") == 0)
     {
       active_track.measure_steps = nav_state->index + 1;
+      for (int i = 0; i < 4; i++)
+      {
+        testing_measure.beat_list[i].active_steps = active_track.measure_steps;
+      }
     }
     /*************************     SOUNDS SELECT     **************************/
     /*

@@ -75,11 +75,11 @@ Step *button_to_step(Measure *measure, int actuated_button[])
 Step *next_step(Measure *measure)
 {
     measure->step++;
-    if (measure->step == measure->beat_list[measure->beat].active_steps)
+    if (measure->step >= measure->beat_list[measure->beat].active_steps)
     {
         measure->step = 0;
         measure->beat++;
-        if (measure->beat == measure->active_beats)
+        if (measure->beat >= measure->active_beats)
         {
             measure->beat = 0;
         }
@@ -89,11 +89,11 @@ Step *next_step(Measure *measure)
 Step *previous_step(Measure *measure)
 {
     measure->step--;
-    if (measure->step < 0)
+    if ((measure->step < 0) || (measure->step >= measure->beat_list[measure->beat].active_steps))
     {
         measure->beat--;
 
-        if (measure->beat < 0)
+        if ((measure->beat < 0) || (measure->step >= measure->active_beats))
         {
 
             measure->beat = measure->active_beats - 1;

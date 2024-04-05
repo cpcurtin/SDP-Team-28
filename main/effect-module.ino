@@ -21,29 +21,38 @@ void run_effect(int effect)
 {
     switch (effect)
     {
-    case EFFECT_REPLAY:
-        Serial.println("REPLAY EFFECT");
-        effect_return_state = EFFECT_RETURN_CURRENT;
-        last_step = active_step;
-        temp_last_step = testing_measure.step;
-        temp_last_beat = testing_measure.beat;
-        // active_step = next_step(&testing_measure);
+    case EFFECT_REPLAY_SAVE:
+        Serial.println("EFFECT_REPLAY_SAVE");
+        effect_return_state = EFFECT_RETURN_SAVE;
 
         break;
-    case EFFECT_REVERSE_CURRENT:
+    case EFFECT_REPLAY_CURRENT:
+        Serial.println("EFFECT_REPLAY_CURRENT");
         effect_return_state = EFFECT_RETURN_CURRENT;
-        last_step = active_step;
-        temp_last_step = testing_measure.step;
-        temp_last_beat = testing_measure.beat;
+
+        break;
+    case EFFECT_REPLAY_RESET:
+        Serial.println("EFFECT_REPLAY_RESET");
+        effect_return_state = EFFECT_RETURN_RESET;
+
+        break;
+    case EFFECT_REVERSE_SAVE:
+        Serial.println("EFFECT_REVERSE_SAVE");
+        effect_return_state = EFFECT_RETURN_SAVE;
+
+        saved_step = testing_measure.step;
+        saved_beat = testing_measure.beat;
+        active_step = previous_step(&testing_measure);
+        break;
+    case EFFECT_REVERSE_CURRENT:
+        Serial.println("EFFECT_REVERSE_CURRENT");
+        effect_return_state = EFFECT_RETURN_CURRENT;
+
         active_step = previous_step(&testing_measure);
         break;
     case EFFECT_REVERSE_RESET:
+        Serial.println("EFFECT_REVERSE_RESET");
         effect_return_state = EFFECT_RETURN_RESET;
-        last_step = active_step;
-        temp_last_step = testing_measure.step;
-        temp_last_beat = testing_measure.beat;
-        saved_step = testing_measure.step;
-        saved_beat = testing_measure.beat;
         active_step = previous_step(&testing_measure);
 
         break;
