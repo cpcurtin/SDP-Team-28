@@ -21,6 +21,7 @@
     "cstddef": "cpp",
     "sstream": "cpp",
     "__node_handle": "cpp",
-    "__locale": "cpp"
+    "__locale": "cpp",
+    "random": "cpp"
   }
 }

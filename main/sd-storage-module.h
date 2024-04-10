@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <SD.h>
 #include <ArduinoJson.h>
+#include <vector>
 
 #define CUSTOM_SOUNDS_DIRECTORY "/sounds/"
 #define TRACKS_DIRECTORY "/tracks/"
@@ -21,17 +22,20 @@ typedef struct Track
   int active_measures;
   int measure_beats;
   int measure_steps;
+  int current_measure_id;
+  struct Measure *current_measure;
   struct Measure *measure_list;
 } Track;
 
 array_with_size *custom_sound_list = new array_with_size;
 array_with_size *track_list = new array_with_size;
 
-// Track active_track = {
+// Track current_track = {
 //     "DEFAULT.json", 0, 50, 1, 4, 6};
-Track active_track;
+Track current_track;
 
 int sd_init(void);
+int track_init(void);
 array_with_size *sd_fetch_sounds(void);
 void freeArrayOfStrings(char **stringArray, size_t numStrings);
 void listfiles(void);
@@ -55,7 +59,7 @@ int sd_delete_track(const char *filename);
         "id": 0,
         "measure_steps": 0,
         "measure_beats": 0,
-        "measures": [
+        "measure_list": [
             {
                 "id": 0,
                 "active_beats": 4,

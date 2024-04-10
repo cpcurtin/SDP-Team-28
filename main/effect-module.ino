@@ -40,20 +40,20 @@ void run_effect(int effect)
         Serial.println("EFFECT_REVERSE_SAVE");
         effect_return_state = EFFECT_RETURN_SAVE;
 
-        saved_step = current_measure.step;
-        saved_beat = current_measure.beat;
-        active_step = previous_step(&current_measure);
+        saved_step = current_measure->step;
+        saved_beat = current_measure->beat;
+        active_step = previous_step(current_measure);
         break;
     case EFFECT_REVERSE_CURRENT:
         Serial.println("EFFECT_REVERSE_CURRENT");
         effect_return_state = EFFECT_RETURN_CURRENT;
 
-        active_step = previous_step(&current_measure);
+        active_step = previous_step(current_measure);
         break;
     case EFFECT_REVERSE_RESET:
         Serial.println("EFFECT_REVERSE_RESET");
         effect_return_state = EFFECT_RETURN_RESET;
-        active_step = previous_step(&current_measure);
+        active_step = previous_step(current_measure);
 
         break;
     default:

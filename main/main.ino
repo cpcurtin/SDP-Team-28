@@ -25,21 +25,6 @@ void setup()
   }
 #endif
 
-  strcpy(active_track.filename, "DEFAULT.json");
-  active_track.id = 0;
-  active_track.bpm = 120;
-  active_track.active_measures = 2;
-  active_track.measure_beats = 4;
-  active_track.measure_steps = 6;
-  active_track.measure_list = new Measure[5];
-
-  // Initialize the measure_list
-  // Example initialization for the id of each measure
-  for (int i = 0; i < 5; ++i)
-  {
-    active_track.measure_list[i] = *measure_create(i);
-  }
-
   if (sd_init())
   {
     Serial.println("SD INIT FAILED");
@@ -62,6 +47,14 @@ void setup()
   {
     Serial.println("DAC INIT FAILED");
   }
+  if (track_init())
+  {
+    Serial.println("TRACK INIT FAILED");
+  }
+  if (measure_palette_init())
+  {
+    Serial.println("MEASURE PALETTE INIT FAILED");
+  }
 
   lcd = lcd_init(&lcd_cfg);
   delay(1000); // 3 second splash strart screen
@@ -76,20 +69,18 @@ void setup()
 
   Serial.println("default Track stats:");
   Serial.print("filename: ");
-  Serial.println(active_track.filename);
+  Serial.println(current_track.filename);
   Serial.print("id: ");
-  Serial.println(active_track.id);
+  Serial.println(current_track.id);
   Serial.print("bpm: ");
-  Serial.println(active_track.bpm);
+  Serial.println(current_track.bpm);
   Serial.print("measure steps: ");
-  Serial.println(active_track.measure_steps);
+  Serial.println(current_track.measure_steps);
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
-  measure_palette_init();
-  // active_track.measure_list[0] = active
   step_timer.interval(60000 / (4 * 10)); // TESTING STATIC TEMPO
-  // populate_default_measure();
+  populate_default_measure();
   Serial.println("PROGRAM LOOP BEGINS");
 }
 
@@ -101,17 +92,17 @@ void loop()
   if (step_timer.check() == 1)
   {
     last_step = active_step;
-    temp_last_step = current_measure.step;
-    temp_last_beat = current_measure.beat;
+    temp_last_step = current_measure->step;
+    temp_last_beat = current_measure->beat;
 
-    if (current_measure.effect_mode)
+    if (current_measure->effect_mode)
     {
       run_effect(effect);
     }
     else
     {
       // DEFAULT BEHAVIOR
-      active_step = next_step(&current_measure);
+      active_step = next_step(current_measure);
     }
 
     if (LED_mode == LED_DEFAULT_MODE)
@@ -119,23 +110,23 @@ void loop()
 
       // ON STEP, PLAY SOUNDS AND FLASH LED
       LED_Off(temp_last_beat, temp_last_step);
-      LED_On(current_measure.beat, current_measure.step);
+      LED_On(current_measure->beat, current_measure->step);
     }
 
-    // print_step(&current_measure);
+    // print_step(current_measure);
     print_step(active_step);
 
     stop_step(last_step);
     play_step(active_step);
 
-    active_track.bpm = read_tempo();
+    current_track.bpm = read_tempo();
     if (splash_screen_active == false)
     {
       update_tempo(lcd);
     }
 
     // UPDATE TIMER INTERVAL
-    step_timer.interval(step_interval_calc(&current_measure));
+    step_timer.interval(step_interval_calc(current_measure));
   }
 
   //  LED ASSIGN NAV TO PALETTE
@@ -206,7 +197,7 @@ void loop()
       LED_mode = LED_DEFAULT_MODE;
       LED_Off(LED_last_row, LED_last_column);
 
-      if (add_remove_measure_sound(&current_measure))
+      if (add_remove_measure_sound(current_measure))
       {
         // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
       }
@@ -219,34 +210,34 @@ void loop()
   if (matrix_pressed(BUTTON_EFFECT, BUTTON_HELD))
   {
     // SET EFFECT TOGGLE FLAG ON
-    if (current_measure.effect_mode == false)
+    if (current_measure->effect_mode == false)
     {
       Serial.println("BEGIN EFFECT");
-      current_measure.effect_mode = true;
+      current_measure->effect_mode = true;
       effect = active_palette_effects[2 - (8 - matrix_button.column)];
     }
   }
   else
   {
     // SET EFFECT TOGGLE FLAG OFF
-    if (current_measure.effect_mode)
+    if (current_measure->effect_mode)
     {
       Serial.println("END EFFECT");
-      current_measure.effect_mode = false;
+      current_measure->effect_mode = false;
 
       // SET STEP STATE TO STEP WHEN EFFECT FIRST PRESSED
       if (effect_return_state == EFFECT_RETURN_SAVE)
       {
-        current_measure.beat = saved_beat;
-        current_measure.step = saved_step;
-        active_step = &current_measure.beat_list[saved_beat].step_list[saved_step];
+        current_measure->beat = saved_beat;
+        current_measure->step = saved_step;
+        active_step = &(current_measure->beat_list[saved_beat].step_list[saved_step]);
       }
 
       // SET STEP STATE TO BEAT=0 STEP=0
       else if (effect_return_state == EFFECT_RETURN_RESET)
       {
-        current_measure.beat = 0;
-        current_measure.step = 0;
+        current_measure->beat = 0;
+        current_measure->step = 0;
       }
 
       // ELSE, LEAVE STEP STATE AT LAST EFFECT
@@ -310,11 +301,11 @@ void loop()
         // 12 13 14 15 16 17
         // 18 19 20 21 22 23
 
-        prevCount = 17 + active_track.measure_steps;
+        prevCount = 17 + current_track.measure_steps;
       }
       else if ((count_temp) % 6 == 0)
       {
-        prevCount = count_temp - (6 - (active_track.measure_steps - 1));
+        prevCount = count_temp - (6 - (current_track.measure_steps - 1));
       }
       else
       {
@@ -323,7 +314,7 @@ void loop()
     }
     if (effectReverse == 1)
     {
-      if (count_temp == 23 - (6 - active_track.measure_steps))
+      if (count_temp == 23 - (6 - current_track.measure_steps))
       {
         // prevCount = 23;
         // 0  1  2  3  4  5
@@ -333,9 +324,9 @@ void loop()
 
         prevCount = 0;
       }
-      else if (count_temp % 6 > active_track.measure_steps - 1)
+      else if (count_temp % 6 > current_track.measure_steps - 1)
       {
-        prevCount = count_temp + (6 - (active_track.measure_steps));
+        prevCount = count_temp + (6 - (current_track.measure_steps));
       }
       else
       {
@@ -426,7 +417,7 @@ void loop()
 
     // step_timer.reset();
 
-    //  == ((active_track.measure_steps-1) % 6)
+    //  == ((current_track.measure_steps-1) % 6)
     // steps =4
     //              V
     // 0  1  2  3  4  5
@@ -436,12 +427,12 @@ void loop()
     if (effectReverse == 0)
     {
       count_temp++;
-      if (count_temp % 6 > active_track.measure_steps - 1) // If it is the last step in the beat
+      if (count_temp % 6 > current_track.measure_steps - 1) // If it is the last step in the beat
       {
-        count_temp = count_temp + (6 - active_track.measure_steps);
+        count_temp = count_temp + (6 - current_track.measure_steps);
       }
       if (count_temp == 24)
-      // if (count_temp == (active_track.measure_steps * 4))
+      // if (count_temp == (current_track.measure_steps * 4))
       {
         count_temp = 0;
       }
@@ -455,11 +446,11 @@ void loop()
       count_temp--;
       if ((count_temp + 1) % 6 == 0)
       {
-        count_temp = count_temp - (6 - active_track.measure_steps);
+        count_temp = count_temp - (6 - current_track.measure_steps);
       }
       if (count_temp < 0)
       {
-        count_temp = 23 - (6 - active_track.measure_steps);
+        count_temp = 23 - (6 - current_track.measure_steps);
       }
       effectReverseprevcount++;
     }
@@ -468,14 +459,14 @@ void loop()
     }
     /*************************     UPDATE TEMPO     *************************/
 
-    // active_track.bpm = read_tempo();
-    active_track.bpm = 50;
+    // current_track.bpm = read_tempo();
+    current_track.bpm = 50;
 
     if (splash_screen_active == false)
     {
       update_tempo(lcd);
     }
-    metro_active_tempo = (60000 / (active_track.bpm * active_track.measure_steps));
+    metro_active_tempo = (60000 / (current_track.bpm * current_track.measure_steps));
     step_timer.interval(metro_active_tempo);
     /*************************     STEP STATEMENT ENDS     *************************/
 
@@ -716,11 +707,11 @@ void loop()
     {
       char *new_track_filename = (char *)malloc(LCD_COLUMNS + NULL_TERMINATION);
       snprintf(new_track_filename, LCD_COLUMNS + NULL_TERMINATION, "TRACK%d.json", (nav_state->child[2])->size);
-      strncpy(active_track.filename, new_track_filename, 63); // Copy up to 63 characters to ensure null-termination
-      active_track.filename[63] = '\0';
+      strncpy(current_track.filename, new_track_filename, 63); // Copy up to 63 characters to ensure null-termination
+      current_track.filename[63] = '\0';
 
-      active_track.id = (nav_state->child[2])->size;
-      save_track(new_track_filename, active_track);
+      current_track.id = (nav_state->child[2])->size;
+      save_track(new_track_filename, current_track);
 
       track_list = sd_fetch_tracks();
       (nav_state->child[2])->data_array = track_list->array;
@@ -735,12 +726,12 @@ void loop()
     else if (strcmp(nav_state->data_array[nav_state->index], "Delete Track") == 0)
     {
       char *delete_track_filename = (char *)malloc(LCD_COLUMNS + NULL_TERMINATION);
-      snprintf(delete_track_filename, LCD_COLUMNS + NULL_TERMINATION, "TRACK%d.json", active_track.id);
+      snprintf(delete_track_filename, LCD_COLUMNS + NULL_TERMINATION, "TRACK%d.json", current_track.id);
 
       if (sd_delete_track(delete_track_filename))
       {
         // Serial.print("FAILED TO DELETE: ");
-        Serial.println(active_track.filename);
+        Serial.println(current_track.filename);
       }
       else
       {
@@ -749,7 +740,7 @@ void loop()
         (nav_state->child[2])->size = track_list->size;
         (nav_state->child[2])->index = 0;
         array_scroll(nav_state->child[2], 0);
-        read_track((nav_state->child[2])->data_array[(nav_state->child[2])->size - 1], active_track);
+        read_track((nav_state->child[2])->data_array[(nav_state->child[2])->size - 1], current_track);
       }
       free(delete_track_filename);
     }
@@ -758,17 +749,17 @@ void loop()
     */
     else if (strcmp(nav_state->name, "tracks_load") == 0)
     {
-      read_track(nav_state->data_array[nav_state->index], active_track);
+      read_track(nav_state->data_array[nav_state->index], current_track);
     }
     /*
     SET TRACK STEPS
     */
     else if (strcmp(nav_state->name, "tracks_set_steps") == 0)
     {
-      active_track.measure_steps = nav_state->index + 1;
+      current_track.measure_steps = nav_state->index + 1;
       for (int i = 0; i < 4; i++)
       {
-        current_measure.beat_list[i].active_steps = active_track.measure_steps;
+        current_measure->beat_list[i].active_steps = current_track.measure_steps;
       }
     }
     /*************************     SOUNDS SELECT     **************************/

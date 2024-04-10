@@ -6,52 +6,13 @@
  */
 #include "measure-module.h"
 
-void measure_palette_init(void)
+int measure_palette_init(void)
 {
     memset(empty_sound.filename, 0, sizeof(empty_sound.filename));
-    Measure *temp_measure = &current_measure;
-    Beat *temp_beat;
-    Step *temp_step;
-    Sound *temp_sound;
-
-    // INIT STARTING MEASURE
-    temp_measure->active_beats = MAX_BEATS;
-
-    for (int i = 0; i < MAX_BEATS; i++)
-    {
-
-        // Initialize measure beats
-        temp_beat = &(temp_measure->beat_list[i]);
-        temp_beat->active_steps = MAX_STEPS;
-        temp_beat->id = i;
-
-        for (int j = 0; j < MAX_STEPS; j++)
-        {
-
-            // Initialize beat steps
-            temp_step = &(temp_beat->step_list[j]);
-            temp_step->active_sounds = 0;
-            temp_step->id = (MAX_STEPS * i) + j;
-            for (int k = 0; k < MAX_STEP_SOUNDS; k++)
-            {
-
-                // Initialize beat steps
-                temp_sound = &(temp_step->sound_list[k]);
-                temp_sound->bank = -1;
-                temp_sound->instrument = -1;
-                temp_sound->note = -1;
-                temp_sound->sd_cached_sound = nullptr;
-                memset(temp_sound->filename, 0, sizeof(temp_sound->filename));
-                temp_sound->empty = true;
-                // temp_sound = empty_sound;
-            }
-        }
-    }
 
     // SET DEFAULT LAST STEP
-
-    active_step = &(temp_measure->beat_list[0].step_list[0]);
-    last_step = &(temp_measure->beat_list[3].step_list[5]);
+    active_step = &(current_measure->beat_list[0].step_list[0]);
+    last_step = &(current_measure->beat_list[3].step_list[5]);
     temp_last_step = 5;
     temp_last_beat = 3;
 
@@ -60,6 +21,8 @@ void measure_palette_init(void)
     {
         testing_palette[i] = {-1, -1, -1, nullptr, true};
     }
+
+    return 0;
 }
 
 Measure *measure_create(int id)
@@ -117,7 +80,7 @@ Step *button_to_step(Measure *measure, int actuated_button[])
 {
     if (actuated_button[ROW] < 4 && actuated_button[COLUMN] < 6)
     {
-        return &(current_measure.beat_list[actuated_button[ROW]]).step_list[actuated_button[COLUMN]];
+        return &(current_measure->beat_list[actuated_button[ROW]]).step_list[actuated_button[COLUMN]];
     }
     else
     {
@@ -141,6 +104,7 @@ Step *next_step(Measure *measure)
 }
 Step *previous_step(Measure *measure)
 {
+    bool measure_change = false;
     measure->step--;
     if ((measure->step < 0) || (measure->step >= measure->beat_list[measure->beat].active_steps))
     {
@@ -150,9 +114,15 @@ Step *previous_step(Measure *measure)
         {
 
             measure->beat = measure->active_beats - 1;
+            measure_change = true;
         }
         measure->step = measure->beat_list[measure->beat].active_steps - 1;
     }
+    // if (measure_change)
+    // {
+    //     current_measure =
+    // }
+
     return &(measure->beat_list[measure->beat].step_list[measure->step]);
 }
 
@@ -230,7 +200,7 @@ int play_step(Step *step_play)
 
 float step_interval_calc(Measure *measure)
 {
-    return (60000 / (active_track.bpm * measure->beat_list[beat].active_steps));
+    return (60000 / (current_track.bpm * measure->beat_list[beat].active_steps));
 }
 
 int add_remove_measure_sound(Measure *measure)
@@ -245,21 +215,21 @@ int add_remove_measure_sound(Measure *measure)
             Serial.println("MEASURE REMOVE SOUND");
             // SELECTED PALETTE SOUND EXISTS ON CURRENT STEP
             // REMOVE FROM MEASURE STEP
-            button_step_lookup(&current_measure)->sound_list[sound] = empty_sound;
+            button_step_lookup(current_measure)->sound_list[sound] = empty_sound;
             sound_exists = true;
             break;
         }
     }
-    if (sound_exists == false && button_step_lookup(&current_measure)->active_sounds < MAX_STEP_SOUNDS)
+    if (sound_exists == false && button_step_lookup(current_measure)->active_sounds < MAX_STEP_SOUNDS)
     {
         Serial.println("MEASURE ADD SOUND");
         // SELECTED STEP HAS AVAILABLE SOUND SLOTS
         for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
         {
-            if (button_step_lookup(&current_measure)->sound_list[sound].empty)
+            if (button_step_lookup(current_measure)->sound_list[sound].empty)
             {
                 // ASSIGN PALETTE SOUND TO FIRST AVAILABLE STEP SOUND SLOT
-                button_step_lookup(&current_measure)->sound_list[sound] = testing_palette[palette_index];
+                button_step_lookup(current_measure)->sound_list[sound] = testing_palette[palette_index];
                 break;
             }
         }
@@ -277,9 +247,9 @@ void print_step(Step *step)
 
     Serial.println("\n\n");
     Serial.print("Beat: ");
-    Serial.print(current_measure.beat);
+    Serial.print(current_measure->beat);
     Serial.print("\tStep: ");
-    Serial.println(current_measure.step);
+    Serial.println(current_measure->step);
 
     for (int i = 0; i < MAX_STEP_SOUNDS; i++)
     {
@@ -355,18 +325,26 @@ void populate_default_measure(void)
                 temp_adding_sound.instrument = meMat[temp_populate_step][(i * 3) + 1];
                 temp_adding_sound.note = meMat[temp_populate_step][(i * 3) + 2];
                 temp_adding_sound.sd_cached_sound = nullptr;
-                temp_adding_sound.empty = false;
+                memset(temp_adding_sound.filename, 0, sizeof(temp_adding_sound.filename));
+                if (meMat[temp_populate_step][(i * 3) + 0] == MIDI_NULL)
+                {
+                    temp_adding_sound.empty = true;
+                }
+                else
+                {
+                    temp_adding_sound.empty = false;
+                }
                 // temp_sound = empty_sound;
 
-                (&(current_measure.beat_list[b].step_list[s]))->sound_list[i] = temp_adding_sound;
+                (&(current_measure->beat_list[b].step_list[s]))->sound_list[i] = temp_adding_sound;
             }
 
             temp_populate_step++;
         }
     }
 
-    active_step = &(current_measure.beat_list[0].step_list[0]);
-    last_step = &(current_measure.beat_list[3].step_list[5]);
+    active_step = &(current_measure->beat_list[0].step_list[0]);
+    last_step = &(current_measure->beat_list[3].step_list[5]);
     temp_last_step = 5;
     temp_last_beat = 3;
 }

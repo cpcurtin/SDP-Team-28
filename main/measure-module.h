@@ -73,7 +73,7 @@ typedef struct Measure
 
 } Measure;
 
-Measure current_measure;
+Measure *current_measure;
 
 Step *active_step;
 Step *last_step;
@@ -93,7 +93,7 @@ int temp_last_step = 0;
 int temp_last_beat = 0;
 
 // functions, extern variables, structs go here
-void measure_palette_init(void);
+int measure_palette_init(void);
 Measure *measure_create(int id);
 
 Step *button_to_step(int actuated_button[]);
