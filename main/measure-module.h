@@ -23,6 +23,7 @@
 
 #define MIDI_NULL -1
 
+
 typedef struct Sound
 {
     int bank;
@@ -88,6 +89,7 @@ int beat = 0;
 int step = 0;
 int temp_last_step = 0;
 int temp_last_beat = 0;
+int volume = 127;
 
 // functions, extern variables, structs go here
 void measure_palette_init(void);

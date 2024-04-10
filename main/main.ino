@@ -73,7 +73,7 @@ void setup()
 
   measure_palette_init();
   step_timer.interval(60000 / (4 * 10)); // TESTING STATIC TEMPO
-  // populate_default_measure();
+  populate_default_measure();
   // testing_measure.beat = 0;
   // testing_measure.step = 0;
   Serial.println("PROGRAM LOOP BEGINS");
@@ -228,8 +228,8 @@ void loop()
       // SET STEP STATE TO BEAT=0 STEP=0
       else if (effect_return_state == EFFECT_RETURN_RESET)
       {
-        testing_measure.beat = 0;
-        testing_measure.step = 0;
+        testing_measure.beat = 3;
+        testing_measure.step = 5;
       }
 
       // ELSE, LEAVE STEP STATE AT LAST EFFECT

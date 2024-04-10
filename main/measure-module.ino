@@ -120,12 +120,12 @@ int stop_step(Step *step_end)
                 if (step_end->sound_list[sound].note != MIDI_NULL)
                 {
                     // MELODIC
-                    midiNoteOff(step_end->sound_list[sound].bank, step_end->sound_list[sound].note, 127);
+                    midiNoteOff(step_end->sound_list[sound].bank, step_end->sound_list[sound].note, volume);
                 }
                 else
                 {
                     // PERCUSSION
-                    midiNoteOff(step_end->sound_list[sound].bank, step_end->sound_list[sound].instrument, 127);
+                    midiNoteOff(step_end->sound_list[sound].bank, step_end->sound_list[sound].instrument, volume);
                 }
             }
             else
@@ -152,13 +152,13 @@ int play_step(Step *step_play)
                 {
                     // MELODIC
                     midiSetInstrument(step_play->sound_list[sound].bank, step_play->sound_list[sound].instrument);
-                    midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].note, 127);
+                    midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].note, volume);
                 }
                 else
                 {
                     // PERCUSSION
                     midiSetInstrument(step_play->sound_list[sound].bank, 128);
-                    midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].instrument, 127);
+                    midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].instrument, volume);
                 }
             }
             else
@@ -296,7 +296,7 @@ void populate_default_measure(void)
                 temp_adding_sound.instrument = meMat[temp_populate_step][(i * 3) + 1];
                 temp_adding_sound.note = meMat[temp_populate_step][(i * 3) + 2];
                 temp_adding_sound.sd_cached_sound = nullptr;
-                temp_adding_sound.empty = false;
+                
                 // temp_sound = empty_sound;
 
                 (&(testing_measure.beat_list[b].step_list[s]))->sound_list[i] = temp_adding_sound;
