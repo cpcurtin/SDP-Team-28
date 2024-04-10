@@ -296,8 +296,14 @@ void populate_default_measure(void)
                 temp_adding_sound.instrument = meMat[temp_populate_step][(i * 3) + 1];
                 temp_adding_sound.note = meMat[temp_populate_step][(i * 3) + 2];
                 temp_adding_sound.sd_cached_sound = nullptr;
-                
-                // temp_sound = empty_sound;
+                if (meMat[temp_populate_step][(i * 3) + 0] == MIDI_NULL)
+                {
+                    temp_adding_sound.empty = true;
+                }
+                else
+                {
+                    temp_adding_sound.empty = false;
+                }
 
                 (&(testing_measure.beat_list[b].step_list[s]))->sound_list[i] = temp_adding_sound;
             }
