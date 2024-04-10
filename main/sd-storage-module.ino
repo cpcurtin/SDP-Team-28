@@ -177,7 +177,7 @@ void printTime(const DateTimeFields tm)
   Serial.print(tm.year + 1900);
 }
 
-void read_track(const char *filename, track &config)
+void read_track(const char *filename, Track &config)
 {
   // Calculate the length of the string
   size_t filename_len = strlen(filename);
@@ -218,7 +218,7 @@ void read_track(const char *filename, track &config)
 }
 
 // Saves the configuration to a file
-void save_track(const char *filename, track &config)
+void save_track(const char *filename, Track &config)
 {
 
   // Calculate the length of the string
@@ -249,13 +249,88 @@ void save_track(const char *filename, track &config)
   JsonDocument doc;
 
   // Set the values in the document
-  doc["filename"] = config.filename;
-  doc["id"] = config.id;
-  doc["bpm"] = config.bpm;
-  doc["measure_steps"] = config.measure_steps;
+  // doc["filename"] = config.filename;
+  // doc["id"] = config.id;
+  // doc["bpm"] = config.bpm;
+  // doc["measure_steps"] = config.measure_steps;
+  /*===================================================================================================================================================================*/
+  JsonObject track = doc["track"].to<JsonObject>();
+  track["filename"] = config.filename;
+  track["id"] = config.id;
+  track["active_measures"] = config.active_measures;
+  track["measure_beats"] = config.measure_beats;
+  track["measure_steps"] = config.measure_steps;
+  JsonArray measure_list = track["measure_list"].to<JsonArray>();
+
+  for (int m = 0; m < config.active_measures; m++)
+  {
+    JsonObject measure = track["measure"].add<JsonObject>();
+    measure["id"] = config.measure_list[m].id;
+    measure["active_beats"] = config.measure_list[m].active_beats;
+    measure["step"] = config.measure_list[m].step;
+    measure["beat"] = config.measure_list[m].beat;
+    measure["effect_mode"] = config.measure_list[m].effect_mode;
+
+    JsonObject current_step = measure["current_step"].add<JsonObject>();
+    current_step["id"] = config.measure_list[m].current_step.id;
+    current_step["active_sounds"] = config.measure_list[m].current_step.active_sounds;
+    JsonArray current_step_sound_list = current_step["sound_list"].to<JsonArray>();
+    for (int i = 0; i < MAX_STEP_SOUNDS; i++)
+    {
+      JsonObject current_step_sound_list_sound = current_step_sound_list.add<JsonObject>();
+      current_step_sound_list_sound["bank"] = config.measure_list[m].current_step.sound_list[i].bank;
+      current_step_sound_list_sound["instrument"] = config.measure_list[m].current_step.sound_list[i].instrument;
+      current_step_sound_list_sound["note"] = config.measure_list[m].current_step.sound_list[i].note;
+      current_step_sound_list_sound["filename"] = config.measure_list[m].current_step.sound_list[i].filename;
+      current_step_sound_list_sound["empty"] = config.measure_list[m].current_step.sound_list[i].empty;
+    }
+
+    JsonObject prior_step = measure["prior_step"].add<JsonObject>();
+    prior_step["id"] = config.measure_list[m].prior_step.id;
+    prior_step["active_sounds"] = config.measure_list[m].prior_step.active_sounds;
+    JsonArray sound_list_prior_step = prior_step["sound_list"].to<JsonArray>();
+    for (int i = 0; i < MAX_STEP_SOUNDS; i++)
+    {
+      JsonObject sound_list_prior_step_sound = sound_list_prior_step.add<JsonObject>();
+      sound_list_prior_step_sound["bank"] = config.measure_list[m].prior_step.sound_list[i].bank;
+      sound_list_prior_step_sound["instrument"] = config.measure_list[m].prior_step.sound_list[i].instrument;
+      sound_list_prior_step_sound["note"] = config.measure_list[m].prior_step.sound_list[i].note;
+      sound_list_prior_step_sound["filename"] = config.measure_list[m].prior_step.sound_list[i].filename;
+      sound_list_prior_step_sound["empty"] = config.measure_list[m].prior_step.sound_list[i].empty;
+    }
+
+    JsonArray beat_list = measure["beat_list"].to<JsonArray>();
+    for (int b = 0; b < MAX_BEATS; b++)
+    {
+      JsonObject beat = beat_list.add<JsonObject>();
+      beat["id"] = config.measure_list[m].beat_list[b].id;
+      beat["active_steps"] = config.measure_list[m].beat_list[b].active_steps;
+
+      JsonArray step_list = beat["step_list"].to<JsonArray>();
+      for (int s = 0; s < MAX_STEPS; s++)
+      {
+        JsonObject step = step_list.add<JsonObject>();
+        step["id"] = config.measure_list[m].beat_list[b].step_list[s].id;
+        step["active_steps"] = config.measure_list[m].beat_list[b].step_list[s].active_sounds;
+
+        JsonArray sound_list = step["sound_list"].to<JsonArray>();
+        for (int i = 0; i < MAX_STEP_SOUNDS; i++)
+        {
+          JsonObject sound = sound_list.add<JsonObject>();
+          sound["bank"] = config.measure_list[m].beat_list[b].step_list[s].sound_list[i].bank;
+          sound["instrument"] = config.measure_list[m].beat_list[b].step_list[s].sound_list[i].instrument;
+          sound["note"] = config.measure_list[m].beat_list[b].step_list[s].sound_list[i].note;
+          sound["filename"] = config.measure_list[m].beat_list[b].step_list[s].sound_list[i].filename;
+          sound["empty"] = config.measure_list[m].beat_list[b].step_list[s].sound_list[i].empty;
+        }
+      }
+    }
+  }
+  /*===================================================================================================================================================================*/
 
   // Serialize JSON to file
-  if (serializeJson(doc, file) == 0)
+  // if (serializeJsonPretty(doc, file) == 0)
+  // if (serializeJson(doc, file) == 0)
   {
     Serial.println(F("Failed to write to file"));
   }

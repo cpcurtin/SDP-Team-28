@@ -25,6 +25,21 @@ void setup()
   }
 #endif
 
+  strcpy(active_track.filename, "DEFAULT.json");
+  active_track.id = 0;
+  active_track.bpm = 120;
+  active_track.active_measures = 2;
+  active_track.measure_beats = 4;
+  active_track.measure_steps = 6;
+  active_track.measure_list = new Measure[5];
+
+  // Initialize the measure_list
+  // Example initialization for the id of each measure
+  for (int i = 0; i < 5; ++i)
+  {
+    active_track.measure_list[i] = *measure_create(i);
+  }
+
   if (sd_init())
   {
     Serial.println("SD INIT FAILED");
@@ -59,7 +74,7 @@ void setup()
   nav_cfg->sounds_midi_percussion = fetch_midi_percussion_sounds();
   nav_state = nav_init(nav_cfg);
 
-  Serial.println("default track stats:");
+  Serial.println("default Track stats:");
   Serial.print("filename: ");
   Serial.println(active_track.filename);
   Serial.print("id: ");
@@ -72,10 +87,9 @@ void setup()
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
   measure_palette_init();
+  // active_track.measure_list[0] = active
   step_timer.interval(60000 / (4 * 10)); // TESTING STATIC TEMPO
   // populate_default_measure();
-  // testing_measure.beat = 0;
-  // testing_measure.step = 0;
   Serial.println("PROGRAM LOOP BEGINS");
 }
 
@@ -87,17 +101,17 @@ void loop()
   if (step_timer.check() == 1)
   {
     last_step = active_step;
-    temp_last_step = testing_measure.step;
-    temp_last_beat = testing_measure.beat;
+    temp_last_step = current_measure.step;
+    temp_last_beat = current_measure.beat;
 
-    if (testing_measure.effect_mode)
+    if (current_measure.effect_mode)
     {
       run_effect(effect);
     }
     else
     {
       // DEFAULT BEHAVIOR
-      active_step = next_step(&testing_measure);
+      active_step = next_step(&current_measure);
     }
 
     if (LED_mode == LED_DEFAULT_MODE)
@@ -105,8 +119,11 @@ void loop()
 
       // ON STEP, PLAY SOUNDS AND FLASH LED
       LED_Off(temp_last_beat, temp_last_step);
-      LED_On(testing_measure.beat, testing_measure.step);
+      LED_On(current_measure.beat, current_measure.step);
     }
+
+    // print_step(&current_measure);
+    print_step(active_step);
 
     stop_step(last_step);
     play_step(active_step);
@@ -118,7 +135,7 @@ void loop()
     }
 
     // UPDATE TIMER INTERVAL
-    step_timer.interval(step_interval_calc(&testing_measure));
+    step_timer.interval(step_interval_calc(&current_measure));
   }
 
   //  LED ASSIGN NAV TO PALETTE
@@ -189,7 +206,7 @@ void loop()
       LED_mode = LED_DEFAULT_MODE;
       LED_Off(LED_last_row, LED_last_column);
 
-      if (add_remove_measure_sound(&testing_measure))
+      if (add_remove_measure_sound(&current_measure))
       {
         // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
       }
@@ -202,34 +219,34 @@ void loop()
   if (matrix_pressed(BUTTON_EFFECT, BUTTON_HELD))
   {
     // SET EFFECT TOGGLE FLAG ON
-    if (testing_measure.effect_mode == false)
+    if (current_measure.effect_mode == false)
     {
       Serial.println("BEGIN EFFECT");
-      testing_measure.effect_mode = true;
+      current_measure.effect_mode = true;
       effect = active_palette_effects[2 - (8 - matrix_button.column)];
     }
   }
   else
   {
     // SET EFFECT TOGGLE FLAG OFF
-    if (testing_measure.effect_mode)
+    if (current_measure.effect_mode)
     {
       Serial.println("END EFFECT");
-      testing_measure.effect_mode = false;
+      current_measure.effect_mode = false;
 
       // SET STEP STATE TO STEP WHEN EFFECT FIRST PRESSED
       if (effect_return_state == EFFECT_RETURN_SAVE)
       {
-        testing_measure.beat = saved_beat;
-        testing_measure.step = saved_step;
-        active_step = &testing_measure.beat_list[saved_beat].step_list[saved_step];
+        current_measure.beat = saved_beat;
+        current_measure.step = saved_step;
+        active_step = &current_measure.beat_list[saved_beat].step_list[saved_step];
       }
 
       // SET STEP STATE TO BEAT=0 STEP=0
       else if (effect_return_state == EFFECT_RETURN_RESET)
       {
-        testing_measure.beat = 0;
-        testing_measure.step = 0;
+        current_measure.beat = 0;
+        current_measure.step = 0;
       }
 
       // ELSE, LEAVE STEP STATE AT LAST EFFECT
@@ -751,7 +768,7 @@ void loop()
       active_track.measure_steps = nav_state->index + 1;
       for (int i = 0; i < 4; i++)
       {
-        testing_measure.beat_list[i].active_steps = active_track.measure_steps;
+        current_measure.beat_list[i].active_steps = active_track.measure_steps;
       }
     }
     /*************************     SOUNDS SELECT     **************************/
@@ -779,6 +796,7 @@ void loop()
       new_sound.instrument = midi_melodic_values[sounds_midi_melodic_nav->index];
       new_sound.note = midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index];
       new_sound.sd_cached_sound = nullptr;
+      memset(new_sound.filename, 0, sizeof(new_sound.filename));
       new_sound_assignment = true;
 
       Serial.println(dispBank);
@@ -815,6 +833,7 @@ void loop()
       new_sound.instrument = midi_percussion_values[sounds_midi_percussion_nav->index];
       new_sound.note = -1;
       new_sound.sd_cached_sound = nullptr;
+      memset(new_sound.filename, 0, sizeof(new_sound.filename));
       new_sound_assignment = true;
 
       Serial.println(dispBank);
@@ -842,6 +861,12 @@ void loop()
         new_sound.note = -1;
         new_sound_assignment = true;
         new_sound.sd_cached_sound = temp_sample;
+
+        // Copy the content of originalFilename to mySound.filename
+
+        strncpy(new_sound.filename, sounds_custom_nav->data_array[sounds_custom_nav->index], sizeof(new_sound.filename));
+        new_sound.filename[sizeof(new_sound.filename) - 1] = '\0'; // Ensure null termination
+
         lcd_splash(lcd, nav_state, selected_sound);
 
         char str[20];
@@ -853,7 +878,11 @@ void loop()
       }
       else
       {
+        new_sound.bank = -1;
+        new_sound.instrument = -1;
+        new_sound.note = -1;
         new_sound.sd_cached_sound = nullptr;
+        memset(new_sound.filename, 0, sizeof(new_sound.filename));
         // NO SIZE ON PSRAM TO CACHE SOUND
         lcd_splash(lcd, nullptr, error_psram_full);
       }
