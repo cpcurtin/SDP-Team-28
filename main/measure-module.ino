@@ -8,7 +8,8 @@
 
 int measure_palette_init(void)
 {
-    memset(empty_sound.filename, 0, sizeof(empty_sound.filename));
+    // memset(empty_sound.filename, 0, sizeof(empty_sound.filename));
+    empty_sound.filename = nullptr;
 
     // SET DEFAULT LAST STEP
     active_step = &(current_measure->beat_list[0].step_list[0]);
@@ -19,7 +20,7 @@ int measure_palette_init(void)
     // INIT PALETTE
     for (int i = 0; i < PALETTE_SIZE; i++)
     {
-        testing_palette[i] = {-1, -1, -1, nullptr, true};
+        testing_palette[i] = {-1, -1, -1, nullptr, "", true};
     }
 
     return 0;
@@ -64,7 +65,8 @@ Measure *measure_create(int id)
                 temp_sound->instrument = -1;
                 temp_sound->note = -1;
                 temp_sound->sd_cached_sound = nullptr;
-                memset(temp_sound->filename, 0, sizeof(temp_sound->filename));
+                temp_sound->filename = nullptr;
+                // memset(temp_sound->filename, 0, sizeof(temp_sound->filename));
                 temp_sound->empty = true;
                 // temp_sound = empty_sound;
             }
@@ -216,6 +218,7 @@ int add_remove_measure_sound(Measure *measure)
             // SELECTED PALETTE SOUND EXISTS ON CURRENT STEP
             // REMOVE FROM MEASURE STEP
             button_step_lookup(current_measure)->sound_list[sound] = empty_sound;
+            button_step_lookup(current_measure)->active_sounds++;
             sound_exists = true;
             break;
         }
@@ -230,6 +233,7 @@ int add_remove_measure_sound(Measure *measure)
             {
                 // ASSIGN PALETTE SOUND TO FIRST AVAILABLE STEP SOUND SLOT
                 button_step_lookup(current_measure)->sound_list[sound] = testing_palette[palette_index];
+                button_step_lookup(current_measure)->active_sounds--;
                 break;
             }
         }
@@ -325,10 +329,12 @@ void populate_default_measure(void)
                 temp_adding_sound.instrument = meMat[temp_populate_step][(i * 3) + 1];
                 temp_adding_sound.note = meMat[temp_populate_step][(i * 3) + 2];
                 temp_adding_sound.sd_cached_sound = nullptr;
-                memset(temp_adding_sound.filename, 0, sizeof(temp_adding_sound.filename));
+                // memset(temp_adding_sound.filename, 0, sizeof(temp_adding_sound.filename));
+                temp_adding_sound.filename = nullptr;
                 if (meMat[temp_populate_step][(i * 3) + 0] == MIDI_NULL)
                 {
                     temp_adding_sound.empty = true;
+                    (&(current_measure->beat_list[b].step_list[s]))->active_sounds++;
                 }
                 else
                 {

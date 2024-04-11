@@ -199,10 +199,19 @@ TEMPO WHEEL PIN ASSIGNMENTS
 /**************************
 DPAD BUTTONS PIN ASSIGNMENTS
 **************************/
+
+#if USING_CDR_PCB == 1 // CDR
 #define BUTTON_DPAD_LEFT 17
 #define BUTTON_DPAD_DOWN 16
 #define BUTTON_DPAD_UP 15
 #define BUTTON_DPAD_RIGHT 14
+#endif
+#if USING_CDR_PCB == 0 // New design uses internal pullup
+#define BUTTON_DPAD_LEFT 14
+#define BUTTON_DPAD_DOWN 15
+#define BUTTON_DPAD_UP 16
+#define BUTTON_DPAD_RIGHT 17
+#endif
 
 /**************************
 MATRIX BUTTON PIN ASSIGNMENTS

@@ -19,42 +19,46 @@ void setup()
 // READ THIS!!!!!!! - If you are trying to run on battery power, take out the serial_init() below!!!!!!!!
 #if BATTERY_OPERATED == 0
   if (serial_init())
-  {
-
     Serial.println("SERIAL INIT FAILED");
-  }
+  else
+    Serial.println("SERIAL INIT SUCCESS");
+
 #endif
 
   if (sd_init())
-  {
     Serial.println("SD INIT FAILED");
-  }
+  else
+    Serial.println("SD INIT SUCCESS");
 
   if (midi_init())
-  {
     Serial.println("MIDI INIT FAILED");
-  }
+  else
+    Serial.println("MIDI INIT SUCCESS");
+
   if (dpad_init())
-  {
     Serial.println("DPAD INIT FAILED");
-  }
+  else
+    Serial.println("DPAD INIT SUCCESS");
+
   if (button_matrix_init())
-  {
     Serial.println("BUTTON MATRIX INIT FAILED");
-  }
+  else
+    Serial.println("BUTTON MATRIX INIT SUCCESS");
 
   if (dac_init())
-  {
     Serial.println("DAC INIT FAILED");
-  }
+  else
+    Serial.println("DAC INIT SUCCESS");
+
   if (track_init())
-  {
     Serial.println("TRACK INIT FAILED");
-  }
+  else
+    Serial.println("TRACK INIT SUCCESS");
+
   if (measure_palette_init())
-  {
     Serial.println("MEASURE PALETTE INIT FAILED");
-  }
+  else
+    Serial.println("MEASURE PALETTE INIT SUCCESS");
 
   lcd = lcd_init(&lcd_cfg);
   delay(1000); // 3 second splash strart screen
@@ -79,8 +83,8 @@ void setup()
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
-  step_timer.interval(60000 / (4 * 10)); // TESTING STATIC TEMPO
-  populate_default_measure();
+  step_timer.interval(60000 / (4 * 30)); // TESTING STATIC TEMPO
+  // populate_default_measure();
   Serial.println("PROGRAM LOOP BEGINS");
 }
 
@@ -91,9 +95,12 @@ void loop()
 #if USING_NEW_DS == 1
   if (step_timer.check() == 1)
   {
+    Serial.println("testing 0");
     last_step = active_step;
+    Serial.println("testing 1");
     temp_last_step = current_measure->step;
     temp_last_beat = current_measure->beat;
+    Serial.println("testing 2");
 
     if (current_measure->effect_mode)
     {
@@ -104,6 +111,7 @@ void loop()
       // DEFAULT BEHAVIOR
       active_step = next_step(current_measure);
     }
+    Serial.println("testing 3");
 
     if (LED_mode == LED_DEFAULT_MODE)
     {
@@ -112,6 +120,7 @@ void loop()
       LED_Off(temp_last_beat, temp_last_step);
       LED_On(current_measure->beat, current_measure->step);
     }
+    Serial.println("testing 4");
 
     // print_step(current_measure);
     print_step(active_step);
@@ -124,9 +133,10 @@ void loop()
     {
       update_tempo(lcd);
     }
+    Serial.println("testing 5");
 
     // UPDATE TIMER INTERVAL
-    step_timer.interval(step_interval_calc(current_measure));
+    // step_timer.interval(step_interval_calc(current_measure));
   }
 
   //  LED ASSIGN NAV TO PALETTE
@@ -219,6 +229,7 @@ void loop()
   }
   else
   {
+
     // SET EFFECT TOGGLE FLAG OFF
     if (current_measure->effect_mode)
     {
@@ -242,403 +253,6 @@ void loop()
 
       // ELSE, LEAVE STEP STATE AT LAST EFFECT
     }
-  }
-
-  // // EXAMPLES OF BUTTON PRESSES TYPES AMD HOLDS
-  // if (matrix_pressed(PALETTE_EFFECT, BUTTON_HELD))
-  // {
-  //   Serial.println("\nPALETTE EFFECT HELD\n");
-  // }
-  // if (matrix_pressed(BUTTON_MEASURE, BUTTON_HELD))
-  // {
-  //   Serial.println("\nBUTTON_MEASURE HELD\n");
-  // }
-  // if (matrix_pressed(BUTTON_PALETTE, BUTTON_HELD))
-  // {
-  //   Serial.println("\nBUTTON_PALETTE HELD\n");
-  // }
-  // if (matrix_pressed(BUTTON_SOUND, BUTTON_HELD))
-  // {
-  //   Serial.println("\nBUTTON_SOUND HELD\n");
-  // }
-  // if (matrix_pressed(BUTTON_EFFECT, BUTTON_HELD))
-  // {
-  //   Serial.println("\nBUTTON_EFFECT HELD\n");
-  // }
-  // single press
-  // if (matrix_pressed(BUTTON_MEASURE, BUTTON_NOT_HELD))
-  // {
-  //   Serial.println("\nBUTTON_MEASURE BUTTON_NOT_HELD\n");
-  // }
-  // if (matrix_pressed(BUTTON_PALETTE, BUTTON_NOT_HELD))
-  // {
-  //   Serial.println("\nBUTTON_PALETTE BUTTON_NOT_HELD\n");
-  // }
-  // if (matrix_pressed(BUTTON_SOUND, BUTTON_NOT_HELD))
-  // {
-  //   Serial.println("\nBUTTON_SOUND BUTTON_NOT_HELD\n");
-  // }
-  // if (matrix_pressed(BUTTON_EFFECT, BUTTON_NOT_HELD))
-  // {
-  //   Serial.println("\nBUTTON_EFFECT BUTTON_NOT_HELD\n");
-  // }
-
-#endif
-
-#if USING_NEW_DS == 0
-
-  // Serial.println(SDmeMat[0][0]);
-  if (step_timer.check() == 1)
-  {
-    // turning off all midi sounds on last step
-    if (effectReverse == 0)
-    {
-      if (count_temp == 0)
-      {
-        // prevCount = 23;
-        // 0  1  2  3  4  5
-        // 6  7  8  9  10 11
-        // 12 13 14 15 16 17
-        // 18 19 20 21 22 23
-
-        prevCount = 17 + current_track.measure_steps;
-      }
-      else if ((count_temp) % 6 == 0)
-      {
-        prevCount = count_temp - (6 - (current_track.measure_steps - 1));
-      }
-      else
-      {
-        prevCount = count_temp - 1;
-      }
-    }
-    if (effectReverse == 1)
-    {
-      if (count_temp == 23 - (6 - current_track.measure_steps))
-      {
-        // prevCount = 23;
-        // 0  1  2  3  4  5
-        // 6  7  8  9  10 11
-        // 12 13 14 15 16 17
-        // 18 19 20 21 22 23
-
-        prevCount = 0;
-      }
-      else if (count_temp % 6 > current_track.measure_steps - 1)
-      {
-        prevCount = count_temp + (6 - (current_track.measure_steps));
-      }
-      else
-      {
-        prevCount = count_temp + 1;
-      }
-    }
-    if (effectReverseprevcount == 0 && effectReverse == 1)
-    {
-      Serial.print("here");
-      int newPrevCount = prevCount - 2;
-      LED_Off(MeMat_LEDindex[newPrevCount][0], MeMat_LEDindex[newPrevCount][1]);
-    }
-    Serial.print("count ");
-    Serial.println(count_temp);
-    Serial.print("prevcount ");
-    Serial.println(prevCount);
-
-    // TURN MIDI NOTES OFF
-    for (int i = 0; i < 12; i += 3)
-    {
-      if (meMat[prevCount][i] == -1)
-      {
-        // SOUND NOT SET
-        continue;
-      }
-      currBank = meMat[prevCount][i];
-      if (currBank == 0)
-      {
-        currNote = meMat[prevCount][i + 1];
-      }
-      if (currBank == 1)
-      {
-        currNote = meMat[prevCount][i + 2];
-      }
-      midiNoteOff(currBank, currNote, 127);
-    }
-
-    // Turn on and off measure matrix LEDs
-
-    if (stop == 1 && stopSD == 1 && dispFlag == 1)
-    {
-      LED_Off(MeMat_LEDindex[prevCount][0], MeMat_LEDindex[prevCount][1]);
-      LED_On(MeMat_LEDindex[count_temp][0], MeMat_LEDindex[count_temp][1]);
-    }
-
-    if (stop == 1 && stopSD == 1 && dispFlag == 4)
-    {
-      LED_Off(MeMat_LEDindex[prevCount][0], MeMat_LEDindex[prevCount][1]);
-      LED_On(MeMat_LEDindex[count_temp][0], MeMat_LEDindex[count_temp][1]);
-    }
-
-    // turning off all SD sounds on last step
-    stopFile(0);
-
-    // play SD sounds on measure matrix
-    for (int i = 0; i < 4; i++)
-    {
-      if (cached_samples_sd[count_temp][i] != nullptr)
-      {
-        playFile(cached_samples_sd[count_temp][i]);
-      }
-    }
-    // play MIDI sounds on measure matrix
-    for (int i = 0; i < 12; i += 3)
-    {
-      if (meMat[count_temp][i] == 0)
-      {
-        // play percussion
-        midiSetInstrument(0, 128);
-        int channel = meMat[count_temp][i];
-        int note = meMat[count_temp][i + 1];
-        midiNoteOn(channel, note, 127);
-        // currNote = note;
-        // currBank = 0;
-      }
-      if (meMat[count_temp][i] == 1)
-      {
-        // play melodic
-        int instrum = meMat[count_temp][i + 1];
-        midiSetInstrument(1, instrum);
-        int channel = meMat[count_temp][i];
-        int note = meMat[count_temp][i + 2];
-        midiNoteOn(channel, note, 127);
-        // currNote = note;
-        // currBank = 1;
-      }
-    }
-
-    // step_timer.reset();
-
-    //  == ((current_track.measure_steps-1) % 6)
-    // steps =4
-    //              V
-    // 0  1  2  3  4  5
-    // 6  7  8  9  10 11
-    // 12 13 14 15 16 17
-    // 18 19 20 21 22 23
-    if (effectReverse == 0)
-    {
-      count_temp++;
-      if (count_temp % 6 > current_track.measure_steps - 1) // If it is the last step in the beat
-      {
-        count_temp = count_temp + (6 - current_track.measure_steps);
-      }
-      if (count_temp == 24)
-      // if (count_temp == (current_track.measure_steps * 4))
-      {
-        count_temp = 0;
-      }
-    }
-    if (effectReverse == 1)
-    {
-      if (effectReverseprevcount == 0)
-      {
-        // count_temp--;
-      }
-      count_temp--;
-      if ((count_temp + 1) % 6 == 0)
-      {
-        count_temp = count_temp - (6 - current_track.measure_steps);
-      }
-      if (count_temp < 0)
-      {
-        count_temp = 23 - (6 - current_track.measure_steps);
-      }
-      effectReverseprevcount++;
-    }
-    if (effectReverse == 2)
-    {
-    }
-    /*************************     UPDATE TEMPO     *************************/
-
-    // current_track.bpm = read_tempo();
-    current_track.bpm = 50;
-
-    if (splash_screen_active == false)
-    {
-      update_tempo(lcd);
-    }
-    metro_active_tempo = (60000 / (current_track.bpm * current_track.measure_steps));
-    step_timer.interval(metro_active_tempo);
-    /*************************     STEP STATEMENT ENDS     *************************/
-
-    // delay(5000);
-  }
-
-  // palette effect button pressed
-  if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9 && Current_Button_State[0] == 3)
-  {
-    if (Current_Button_State[1] == 6)
-    {
-      effectReverse = 1;
-      dispFlag = 4;
-    }
-    if (Current_Button_State[1] == 7)
-    {
-      effectReverse = 2;
-      dispFlag = 5;
-    }
-    if (Current_Button_State[1] == 8)
-    {
-      effectReverse = 2;
-      dispFlag = 6;
-    }
-  }
-
-  // palette sound button pressed
-  if (Current_Button_State[1] > 5 && Current_Button_State[1] != 9 && Current_Button_State[0] < 3)
-  {
-    // Serial.println("palette pushed");
-    Current_Row = Current_Button_State[0];
-    Current_Column = Current_Button_State[1];
-
-    for (int i = 0; i < 12; i++)
-    {
-      if (Palette_LEDMatrix[i][0] == Current_Row && Palette_LEDMatrix[i][1] == Current_Column)
-      {
-        palette_index = i;
-      }
-    }
-
-    // palette effect button pressed
-    if (dispFlag == 1)
-    {
-      LED_On(Current_Row, Current_Column);
-      stop = 0;
-      stopSD = 0;
-    }
-    if (dispFlag == 0)
-    {
-      palette[palette_index][0] = dispBank;
-      palette[palette_index][1] = dispInstrum;
-      palette[palette_index][2] = dispNote;
-      sd_palette[palette_index] = nullptr;
-      splash_screen_active = false;
-      lcd_display(lcd, nav_state->lcd_state);
-      dispFlag = 2;
-    }
-    if (dispFlag == 3)
-    {
-      sd_palette[palette_index] = temp_sample;
-      splash_screen_active = false;
-      palette[palette_index][0] = -1;
-      palette[palette_index][1] = -1;
-      palette[palette_index][2] = -1;
-      lcd_display(lcd, nav_state->lcd_state);
-      dispFlag = 2;
-    }
-  }
-
-  if (dispFlag == 2 && Current_Button_State[0] == 9 && Current_Button_State[1] == 9)
-  {
-    dispFlag = 1;
-  }
-
-  if (dispFlag == 4 && Current_Button_State[0] == 9 && Current_Button_State[1] == 9)
-  {
-    effectReverse = 0;
-    effectReverseprevcount = 0;
-    dispFlag = 1;
-  }
-  if (dispFlag == 5 && Current_Button_State[0] == 9 && Current_Button_State[1] == 9)
-  {
-    effectReverse = 0;
-    dispFlag = 1;
-    count_temp = 0;
-  }
-  if (dispFlag == 6 && Current_Button_State[0] == 9 && Current_Button_State[1] == 9)
-  {
-    effectReverse = 0;
-    dispFlag = 1;
-  }
-
-  if (Current_Button_State[1] <= 5 && Current_Button_State[1] != 9 && palette_index != -1)
-  {
-    // Serial.println("measure pushed");
-    Serial.println("test");
-    int Current_Row1 = Current_Button_State[0];
-    int Current_Column1 = Current_Button_State[1];
-    int meMatConv = 6 * Current_Row1 + Current_Column1;
-    LED_Off(Current_Row, Current_Column);
-    int channel = palette[palette_index][0];
-    int instr = palette[palette_index][1];
-    int note = palette[palette_index][2];
-
-    // Assigning SD sounds to measure matrix
-    for (int i = 0; i < 4; i++)
-    {
-      if (cached_samples_sd[meMatConv][i] == sd_palette[palette_index] && stopSD == 0)
-      {
-        Serial.println("deleting");
-        cached_samples_sd[meMatConv][i] = nullptr;
-        stopSD = 1;
-      }
-    }
-    for (int i = 0; i < 4; i++)
-    {
-      if (cached_samples_sd[meMatConv][i] == nullptr && stopSD == 0)
-      {
-        Serial.println("adding");
-        cached_samples_sd[meMatConv][i] = sd_palette[palette_index];
-        stopSD = 1;
-      }
-    }
-
-    // Assigning MIDI sounds to measure matrix
-    for (int i = 0; i < 12; i += 3)
-    {
-      if (meMat[meMatConv][i] == channel && meMat[meMatConv][i + 1] == instr && meMat[meMatConv][i + 2] == note && stop == 0)
-      {
-        meMat[meMatConv][i] = -1;
-        meMat[meMatConv][i + 1] = -1;
-        meMat[meMatConv][i + 2] = -1;
-        stop = 1;
-      }
-    }
-    for (int i = 0; i < 12; i += 3)
-    {
-      if (meMat[meMatConv][i] == -1 && stop == 0)
-      {
-        meMat[meMatConv][i] = channel;
-        meMat[meMatConv][i + 1] = instr;
-        meMat[meMatConv][i + 2] = note;
-        stop = 1;
-        // Serial.println("here");
-      }
-    }
-
-    // Play note at current palette to see whats there
-    // MUST ADD STOPING CURRENT MIDI AND CUSTOM SOUNDS TO WORK
-    // if (palette[palette_index][0] != -1)
-    // {
-
-    //   if (palette[palette_index][0])
-    //   {
-    //     // Play melodic
-    //     midiSetInstrument(palette[palette_index][0], palette[palette_index][1]);
-    //     midiNoteOn(palette[palette_index][0], palette[palette_index][2], 127);
-    //   }
-    //   else
-    //   {
-    //     // play percussion
-    //     midiSetInstrument(palette[palette_index][0], 128);
-    //     midiNoteOn(palette[palette_index][0], palette[palette_index][1], 127);
-    //   }
-    // }
-    // else if (sd_palette[palette_index] != nullptr)
-    // {
-    //   // play custom sound
-    //   playFile(sd_palette[palette_index]);
-    // }
-    palette_index = -1;
   }
 
 #endif
@@ -697,7 +311,6 @@ void loop()
   /****************************     DPAD RIGHT      ***************************/
   if (dpad_pressed == BUTTON_DPAD_RIGHT) // select
   {
-
     /*************************     TRACKS OPTIONS     *************************/
 
     /*
@@ -749,7 +362,9 @@ void loop()
     */
     else if (strcmp(nav_state->name, "tracks_load") == 0)
     {
+      Serial.println("START LOAD TRACK");
       read_track(nav_state->data_array[nav_state->index], current_track);
+      Serial.println("RETURN LOAD TRACK");
     }
     /*
     SET TRACK STEPS
@@ -787,7 +402,9 @@ void loop()
       new_sound.instrument = midi_melodic_values[sounds_midi_melodic_nav->index];
       new_sound.note = midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index];
       new_sound.sd_cached_sound = nullptr;
-      memset(new_sound.filename, 0, sizeof(new_sound.filename));
+      // memset(new_sound.filename, 0, sizeof(new_sound.filename));
+      new_sound.filename = nullptr;
+      // new_sound.filename = "";
       new_sound_assignment = true;
 
       Serial.println(dispBank);
@@ -824,7 +441,8 @@ void loop()
       new_sound.instrument = midi_percussion_values[sounds_midi_percussion_nav->index];
       new_sound.note = -1;
       new_sound.sd_cached_sound = nullptr;
-      memset(new_sound.filename, 0, sizeof(new_sound.filename));
+      // memset(new_sound.filename, 0, sizeof(new_sound.filename));
+      new_sound.filename = nullptr;
       new_sound_assignment = true;
 
       Serial.println(dispBank);
@@ -853,10 +471,10 @@ void loop()
         new_sound_assignment = true;
         new_sound.sd_cached_sound = temp_sample;
 
-        // Copy the content of originalFilename to mySound.filename
-
-        strncpy(new_sound.filename, sounds_custom_nav->data_array[sounds_custom_nav->index], sizeof(new_sound.filename));
-        new_sound.filename[sizeof(new_sound.filename) - 1] = '\0'; // Ensure null termination
+        new_sound.filename = sounds_custom_nav->data_array[sounds_custom_nav->index];
+        // strlcpy(new_sound.filename,                                      // <- destination
+        //         sounds_custom_nav->data_array[sounds_custom_nav->index], // <- source
+        //         sizeof(new_sound.filename));
 
         lcd_splash(lcd, nav_state, selected_sound);
 
@@ -873,7 +491,8 @@ void loop()
         new_sound.instrument = -1;
         new_sound.note = -1;
         new_sound.sd_cached_sound = nullptr;
-        memset(new_sound.filename, 0, sizeof(new_sound.filename));
+        // memset(new_sound.filename, 0, sizeof(new_sound.filename));
+        new_sound.filename = nullptr;
         // NO SIZE ON PSRAM TO CACHE SOUND
         lcd_splash(lcd, nullptr, error_psram_full);
       }

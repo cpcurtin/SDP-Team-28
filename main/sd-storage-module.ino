@@ -201,7 +201,11 @@ void printTime(const DateTimeFields tm)
 
 void read_track(const char *filename, Track &config)
 {
-  vector<char[64]> files_to_cache;
+  vector<pair<const char *, newdigate::audiosample *>> cached_files;
+  pair<const char *, newdigate::audiosample *> cached_file;
+
+  bool file_found = false;
+  bool already_cached = false;
   // Calculate the length of the string
   size_t filename_len = strlen(filename);
 
@@ -232,54 +236,217 @@ void read_track(const char *filename, Track &config)
     Serial.println(error.c_str());
     return;
   }
-
-  JsonObject track = doc["track"];
-  strlcpy(config.filename,   // <- destination
-          track["filename"], // <- source
-          sizeof(config.filename));
-
-  config.id = track["id"];                           // 4
-  config.active_measures = track["active_measures"]; // 1
-  config.measure_beats = track["measure_beats"];     // 4
-  config.measure_steps = track["measure_steps"];     // 6
-  JsonArray measure_list = track["measure_list"].to<JsonArray>();
-  for (int m = 0; m < config.active_measures; m++)
+  else
   {
-    JsonObject measure = measure_list[m];
-    config.measure_list[m].id = measure["id"];                     // 0
-    config.measure_list[m].active_beats = measure["active_beats"]; // 4
-    config.measure_list[m].step = measure["step"];                 // 5
-    config.measure_list[m].beat = measure["beat"];                 // 1
-    config.measure_list[m].effect_mode = measure["effect_mode"];   // false
-    JsonArray beat_list = measure["beat_list"].to<JsonArray>();
+    Serial.println("DESERIALIZE PASSED TRACK");
+  }
+  Track *new_track = new Track;
+  Measure *new_measure;
+  Beat *new_beat;
+  Step *new_step;
+  Sound *new_sound;
+  JsonObject track = doc["track"];
+  Serial.println("TRACK MADE");
+  strlcpy(new_track->filename, // <- destination
+          track["filename"],   // <- source
+          sizeof(new_track->filename));
+  Serial.println("TRACK FILENAME");
+
+  new_track->id = track["id"];                           // 4
+  new_track->bpm = 50;                                   // 4
+  new_track->active_measures = track["active_measures"]; // 1
+  new_track->measure_beats = track["measure_beats"];     // 4
+  new_track->measure_steps = track["measure_steps"];     // 6
+  new_track->current_measure_id = 0;
+  // JsonArray measure_list = track["measure_list"].to<JsonArray>();
+  Serial.print("id: ");
+  Serial.print(new_track->id);
+  Serial.print("\ta: ");
+  Serial.print(new_track->active_measures);
+  Serial.print("\tf: ");
+  Serial.println(new_track->filename);
+  new_track->measure_list = new Measure[new_track->active_measures];
+  for (int i = 0; i < new_track->active_measures; i++)
+  {
+    new_track->measure_list[i] = *measure_create(i);
+  }
+
+  Serial.println("TRACK ARRAY PASSED");
+  for (int m = 0; m < new_track->active_measures; m++)
+  {
+    new_measure = &(new_track->measure_list[m]);
+    // JsonObject measure = measure_list[m];
+    JsonObject measure = track["measure_list"][m];
+
+    Serial.println("MEASURE PASSED");
+    new_measure->id = measure["id"];                     // 0
+    new_measure->active_beats = measure["active_beats"]; // 4
+    new_measure->step = 0;
+    new_measure->step = 0;
+    new_measure->effect_mode = false;
+    new_measure->current_step = new_measure->beat_list[0].step_list[0];
+    new_measure->prior_step = new_measure->beat_list[3].step_list[5];
+    Serial.print("measure id: ");
+    Serial.println(new_measure->id);
+    Serial.print("measure active_beats: ");
+    Serial.println(new_measure->active_beats);
+    // new_measure->step = measure["step"];                 // 5
+    // new_measure->beat = measure["beat"];                 // 1
+    // new_measure->effect_mode = measure["effect_mode"]; // false
+    // JsonArray beat_list = measure["beat_list"].to<JsonArray>();
+    Serial.println("MEASURE ARRAY PASSED");
 
     for (int b = 0; b < MAX_BEATS; b++)
     {
-      JsonObject beat = beat_list[b];
-      config.measure_list[m].beat_list[b].id = measure["id"];                     // 0
-      config.measure_list[m].beat_list[b].active_steps = measure["active_steps"]; // 4
-      JsonArray step_list = beat["step_list"].to<JsonArray>();
+      Serial.println("BEAT PASSED");
+      // JsonObject beat = beat_list[b];
+      JsonObject beat = measure["beat_list"][b];
 
+      new_beat = &(new_measure->beat_list[b]);
+
+      new_beat->id = beat["id"];                     // 0
+      new_beat->active_steps = beat["active_steps"]; // 4
+
+      Serial.print("beat id: ");
+      Serial.println(new_beat->id);
+      Serial.print("beat active_steps: ");
+      Serial.println(new_beat->active_steps);
+
+      // JsonArray step_list = beat["step_list"].to<JsonArray>();
+      Serial.println("BEAT ARRAY PASSED");
       for (int s = 0; s < MAX_STEPS; s++)
       {
-        JsonObject step = step_list[s];
-        config.measure_list[m].beat_list[b].step_list[s].id = step["id"];                       // 0
-        config.measure_list[m].beat_list[b].step_list[s].active_sounds = step["active_sounds"]; // 0
-        JsonArray sound_list = step["sound_list"].to<JsonArray>();
+        Serial.println("STEP PASSED");
+
+        // JsonObject step = step_list[s];
+        JsonObject step = beat["step_list"][s];
+        new_step = &(new_beat->step_list[s]);
+
+        new_step->id = step["id"];                       // 0
+        new_step->active_sounds = step["active_sounds"]; // 0
+
+        Serial.print("step id: ");
+        Serial.println(new_step->id);
+        Serial.print("step active_sounds: ");
+        Serial.println(new_step->active_sounds);
+
+        // JsonArray sound_list = step["sound_list"].to<JsonArray>();
+        Serial.println("STEP ARRAY PASSED");
         for (int i = 0; i < MAX_STEP_SOUNDS; i++)
         {
-          JsonObject sound = sound_list[i];
-          config.measure_list[m].beat_list[b].step_list[s].sound_list[i].bank = sound["bank"];             // 0
-          config.measure_list[m].beat_list[b].step_list[s].sound_list[i].instrument = sound["instrument"]; // 0
-          config.measure_list[m].beat_list[b].step_list[s].sound_list[i].note = sound["note"];             // 0
-          strlcpy(config.measure_list[m].beat_list[b].step_list[s].sound_list[i].filename,                 // <- destination
-                  sound["filename"],                                                                       // <- source
-                  sizeof(config.measure_list[m].beat_list[b].step_list[s].sound_list[i].filename));
-          config.measure_list[m].beat_list[b].step_list[s].sound_list[i].empty = sound["empty"]; // 0
+          Serial.println("SOUND PASSED");
 
-          if (config.measure_list[m].beat_list[b].step_list[s].sound_list[i].filename != empty_sound.filename)
+          // JsonObject sound = sound_list[i];
+          JsonObject sound = step["sound_list"][i];
+
+          new_sound = &(new_step->sound_list[i]);
+
+          Sound temp_sound;
+          new_sound->bank = sound["bank"];             // 0
+          new_sound->instrument = sound["instrument"]; // 0
+          new_sound->note = sound["note"];             // 0
+          new_sound->filename = sound["filename"];     // 0
+
+          // strlcpy(new_sound->filename, // <- destination
+          //         sound["filename"],   // <- source
+          //         sizeof(new_sound->filename));
+
+          new_sound->empty = sound["empty"]; // 0
+                                             // Serial.println("SOUND PASSED");
+
+          Serial.print("B: ");
+          Serial.print(new_sound->bank);
+          Serial.print("\tI: ");
+          Serial.print(new_sound->instrument);
+          Serial.print("\tN: ");
+          Serial.print(new_sound->note);
+          Serial.print("\tf: ");
+          if (new_sound->filename != nullptr)
+            Serial.print(new_sound->filename);
+          else
+            Serial.print("x");
+          Serial.print("\tE: ");
+          Serial.println(new_sound->empty);
+          if (new_sound->filename != nullptr)
+          // if (new_sound->filename != empty_sound.filename)
           {
-            
+            Serial.println("filename != null");
+            already_cached = false;
+            for (auto cache_file : cached_files)
+            {
+              if (strcmp(new_sound->filename, cache_file.first) == 0)
+              // if (new_sound->filename == cache_file.first)
+              {
+                Serial.println("filename found");
+                already_cached = true;
+                new_sound->sd_cached_sound = cache_file.second;
+              }
+            }
+            if (already_cached == false)
+            {
+              Serial.println("filename not cached");
+
+              File root = SD.open(CUSTOM_SOUNDS_DIRECTORY);
+              file_found = false;
+              Serial.print("checking for: ");
+              Serial.print(new_sound->filename);
+              // Serial.print("\ttype: ");
+              // Serial.print(typeid(new_sound->filename).name());
+              Serial.print("\tsize: ");
+              Serial.println(sizeof(new_sound->filename));
+
+              while (true)
+              {
+                File entry = root.openNextFile();
+                if (!entry)
+                {
+                  break;
+                }
+                if (!strncmp(entry.name(), "._", 2))
+                {
+                  continue;
+                }
+                Serial.print("file: ");
+                Serial.print(entry.name());
+                // Serial.print("\ttype: ");
+                // Serial.print(typeid(entry.name()).name());
+                Serial.print("\tsize: ");
+                Serial.print(sizeof(entry.name()));
+
+                if (strcmp(entry.name(), new_sound->filename) == 0)
+                {
+                  file_found = true;
+                  Serial.println("\tEQUAL");
+                  break;
+                }
+                else
+                {
+                  Serial.println("\tNOT EQUAL");
+                }
+                entry.close();
+              }
+              if (file_found)
+              {
+                Serial.println("filename exists on sd");
+                temp_sample = cache_sd_sound(new_sound->filename);
+                if (temp_sample == nullptr)
+                {
+                  temp_sample = nullptr;
+                }
+                else
+                {
+                  // char temp_cache_filename[64];
+                  new_sound->sd_cached_sound = temp_sample;
+                  cached_file = make_pair(new_sound->filename, new_sound->sd_cached_sound);
+                  cached_files.push_back(cached_file);
+                }
+              }
+              else
+              {
+                Serial.println("filename doesnt exit on sd");
+              }
+              root.close();
+            }
           }
         }
       }
@@ -287,6 +454,23 @@ void read_track(const char *filename, Track &config)
   }
 
   file.close();
+  Serial.println("here1");
+  current_track = *new_track;
+  Serial.println("here2");
+  current_measure = &(current_track.measure_list[current_track.current_measure_id]);
+  Serial.println("here3");
+  Serial.println("test new track stuff");
+  Serial.print("f: ");
+  Serial.print(current_track.filename);
+  Serial.print("\tcurrent: ");
+  Serial.print(current_track.current_measure_id);
+  Serial.print("\tbpm: ");
+  Serial.println(current_track.bpm);
+  Serial.println("current_measure stuff:");
+  Serial.print("id: ");
+  Serial.print(current_measure->id);
+  Serial.print("\tact: ");
+  Serial.println(current_measure->active_beats);
 }
 
 // Saves the configuration to a file
@@ -340,9 +524,9 @@ void save_track(const char *filename, Track &config)
     JsonObject measure = measure_list.add<JsonObject>();
     measure["id"] = config.measure_list[m].id;
     measure["active_beats"] = config.measure_list[m].active_beats;
-    measure["step"] = config.measure_list[m].step;
-    measure["beat"] = config.measure_list[m].beat;
-    measure["effect_mode"] = config.measure_list[m].effect_mode;
+    // measure["step"] = config.measure_list[m].step;
+    // measure["beat"] = config.measure_list[m].beat;
+    // measure["effect_mode"] = config.measure_list[m].effect_mode;
 
     JsonArray beat_list = measure["beat_list"].to<JsonArray>();
     for (int b = 0; b < MAX_BEATS; b++)
@@ -356,7 +540,7 @@ void save_track(const char *filename, Track &config)
       {
         JsonObject step = step_list.add<JsonObject>();
         step["id"] = config.measure_list[m].beat_list[b].step_list[s].id;
-        step["active_steps"] = config.measure_list[m].beat_list[b].step_list[s].active_sounds;
+        step["active_sounds"] = config.measure_list[m].beat_list[b].step_list[s].active_sounds;
 
         JsonArray sound_list = step["sound_list"].to<JsonArray>();
         for (int i = 0; i < MAX_STEP_SOUNDS; i++)

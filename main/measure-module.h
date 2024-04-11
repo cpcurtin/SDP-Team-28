@@ -29,7 +29,7 @@ typedef struct Sound
     int instrument;
     int note;
     newdigate::audiosample *sd_cached_sound;
-    char filename[64];
+    const char *filename;
     bool empty;
 
     // Overload the equality operator
