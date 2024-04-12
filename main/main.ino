@@ -83,8 +83,11 @@ void setup()
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
-  step_timer.interval(60000 / (4 * 30)); // TESTING STATIC TEMPO
+  measure_palette_init();
+  step_timer.interval(60000 / (4 * 10)); // TESTING STATIC TEMPO
   // populate_default_measure();
+  // testing_measure.beat = 0;
+  // testing_measure.step = 0;
   Serial.println("PROGRAM LOOP BEGINS");
 }
 
@@ -128,7 +131,17 @@ void loop()
     stop_step(last_step);
     play_step(active_step);
 
-    current_track.bpm = read_tempo();
+    if (effect_return_state != DOUBLE_REPEAT)
+    {
+      current_track.bpm = read_tempo();
+      Serial.println(current_track.bpm);
+    }
+    else if (evenodd == 1)
+    {
+      current_track.bpm = current_track.bpm*2;
+      Serial.println(current_track.bpm);
+    }
+
     if (splash_screen_active == false)
     {
       update_tempo(lcd);
@@ -136,7 +149,7 @@ void loop()
     Serial.println("testing 5");
 
     // UPDATE TIMER INTERVAL
-    // step_timer.interval(step_interval_calc(current_measure));
+     step_timer.interval(step_interval_calc(current_measure));
   }
 
   //  LED ASSIGN NAV TO PALETTE
