@@ -368,84 +368,28 @@ void read_track(const char *filename, Track &config)
           Serial.print("\tE: ");
           Serial.println(new_sound->empty);
           if (new_sound->filename != nullptr)
-          // if (new_sound->filename != empty_sound.filename)
           {
             Serial.println("filename != null");
             already_cached = false;
             for (auto cache_file : cached_files)
             {
               if (strcmp(new_sound->filename, cache_file.first) == 0)
-              // if (new_sound->filename == cache_file.first)
               {
-                Serial.println("filename found");
+                Serial.println("filename found in cache");
                 already_cached = true;
                 new_sound->sd_cached_sound = cache_file.second;
               }
             }
             if (already_cached == false)
             {
-              Serial.println("filename not cached");
-
-              File root = SD.open(CUSTOM_SOUNDS_DIRECTORY);
-              file_found = false;
-              Serial.print("checking for: ");
-              Serial.print(new_sound->filename);
-              // Serial.print("\ttype: ");
-              // Serial.print(typeid(new_sound->filename).name());
-              Serial.print("\tsize: ");
-              Serial.println(sizeof(new_sound->filename));
-
-              while (true)
+              if (find_sd_sound(new_sound->filename))
               {
-                File entry = root.openNextFile();
-                if (!entry)
-                {
-                  break;
-                }
-                if (!strncmp(entry.name(), "._", 2))
-                {
-                  continue;
-                }
-                Serial.print("file: ");
-                Serial.print(entry.name());
-                // Serial.print("\ttype: ");
-                // Serial.print(typeid(entry.name()).name());
-                Serial.print("\tsize: ");
-                Serial.print(sizeof(entry.name()));
-
-                if (strcmp(entry.name(), new_sound->filename) == 0)
-                {
-                  file_found = true;
-                  Serial.println("\tEQUAL");
-                  break;
-                }
-                else
-                {
-                  Serial.println("\tNOT EQUAL");
-                }
-                entry.close();
-              }
-              if (file_found)
-              {
-                Serial.println("filename exists on sd");
-                temp_sample = cache_sd_sound(new_sound->filename);
-                if (temp_sample == nullptr)
-                {
-                  temp_sample = nullptr;
-                }
-                else
-                {
-                  // char temp_cache_filename[64];
-                  new_sound->sd_cached_sound = temp_sample;
-                  cached_file = make_pair(new_sound->filename, new_sound->sd_cached_sound);
-                  cached_files.push_back(cached_file);
-                }
+                new_sound->sd_cached_sound = cache_sd_sound(new_sound->filename);
               }
               else
               {
-                Serial.println("filename doesnt exit on sd");
+                new_sound->empty = true;
               }
-              root.close();
             }
           }
         }
@@ -673,4 +617,48 @@ int sd_delete_track(const char *filename)
     return 0;
   }
   return 1;
+}
+
+bool find_sd_sound(const char *filename)
+{
+  Serial.println("filename not cached");
+
+  File root = SD.open(CUSTOM_SOUNDS_DIRECTORY);
+  Serial.print("checking for: ");
+  Serial.print(filename);
+  Serial.print("\tsize: ");
+  Serial.println(sizeof(filename));
+
+  while (true)
+  {
+    File entry = root.openNextFile();
+    if (!entry)
+    {
+      break;
+    }
+    if (!strncmp(entry.name(), "._", 2))
+    {
+      continue;
+    }
+    Serial.print("file: ");
+    Serial.print(entry.name());
+    Serial.print("\tsize: ");
+    Serial.print(sizeof(entry.name()));
+
+    if (strcmp(entry.name(), filename) == 0)
+    {
+      Serial.println("\tEQUAL");
+      return true;
+    }
+    else
+    {
+      Serial.println("\tNOT EQUAL");
+    }
+    entry.close();
+  }
+
+  Serial.println("file not found on sd");
+  root.close();
+
+  return false;
 }

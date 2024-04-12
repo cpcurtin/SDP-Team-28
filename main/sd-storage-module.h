@@ -49,6 +49,7 @@ void print_JSON(const char *filename);
 array_with_size *sd_fetch_tracks(void);
 
 int sd_delete_track(const char *filename);
+bool find_sd_sound(const char *filename);
 
 #endif // SD_STORAGE_MODULE_H
 
