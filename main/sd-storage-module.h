@@ -4,6 +4,7 @@
 #include <SD.h>
 #include <ArduinoJson.h>
 #include <vector>
+#include <queue>
 
 #define CUSTOM_SOUNDS_DIRECTORY "/sounds/"
 #define TRACKS_DIRECTORY "/tracks/"
@@ -25,6 +26,7 @@ typedef struct Track
   int current_measure_id;
   struct Measure *current_measure;
   struct Measure *measure_list;
+  std::queue<struct Sound> cached_sounds;
 } Track;
 
 array_with_size *custom_sound_list = new array_with_size;
@@ -50,6 +52,7 @@ array_with_size *sd_fetch_tracks(void);
 
 int sd_delete_track(const char *filename);
 bool find_sd_sound(const char *filename);
+int free_track(Track *track);
 
 #endif // SD_STORAGE_MODULE_H
 

@@ -363,6 +363,11 @@ void loop()
     else if (strcmp(nav_state->name, "tracks_load") == 0)
     {
       Serial.println("START LOAD TRACK");
+      Serial.println("free cached sounds");
+      free_cached_sounds(&current_track);
+      // Serial.println("free previous track");
+      // free_track(&current_track);
+      Serial.println("load new track");
       read_track(nav_state->data_array[nav_state->index], current_track);
       Serial.println("RETURN LOAD TRACK");
     }
@@ -484,6 +489,8 @@ void loop()
 
         sprintf(str, "%p", (void *)new_sound.sd_cached_sound); // Using sprintf to format the pointer address
         Serial.println("\tACTUAL: " + String(str));
+
+        current_track.cached_sounds.push(new_sound);
       }
       else
       {

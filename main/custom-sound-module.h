@@ -89,7 +89,7 @@ AudioConnection patchCord11(amp1, 0, pt8211_1, 0);
 AudioConnection patchCord12(amp2, 0, pt8211_1, 1);
 #endif
 
-#define MAX_FILENAME_LENGTH 50
+#define MAX_FILENAME_LENGTH 64
 #define MAX_SOUNDS 16
 newdigate::audiosample *cached_samples[MAX_SOUNDS];
 newdigate::audiosample *temp_sample;
@@ -104,5 +104,6 @@ int dac_init(void);
 int playFile(newdigate::audiosample *cached_sound);
 newdigate::audiosample *cache_sd_sound(const char *filename);
 void stopFile(int mixer);
+int free_cached_sounds(Track *track);
 
 #endif // CUSTOM_SOUND_MODULE_H

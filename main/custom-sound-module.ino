@@ -129,3 +129,14 @@ newdigate::audiosample *cache_sd_sound(const char *filename)
   Serial.println(filename);
   return loader.loadSample(temp_str);
 }
+
+int free_cached_sounds(Track *track)
+{
+  while (track->cached_sounds.empty() != false)
+  {
+    delete track->cached_sounds.front().sd_cached_sound;
+    track->cached_sounds.pop();
+  }
+
+  return 0;
+}

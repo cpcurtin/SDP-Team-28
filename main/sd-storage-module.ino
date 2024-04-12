@@ -258,7 +258,6 @@ void read_track(const char *filename, Track &config)
   new_track->measure_beats = track["measure_beats"];     // 4
   new_track->measure_steps = track["measure_steps"];     // 6
   new_track->current_measure_id = 0;
-  // JsonArray measure_list = track["measure_list"].to<JsonArray>();
   Serial.print("id: ");
   Serial.print(new_track->id);
   Serial.print("\ta: ");
@@ -275,7 +274,6 @@ void read_track(const char *filename, Track &config)
   for (int m = 0; m < new_track->active_measures; m++)
   {
     new_measure = &(new_track->measure_list[m]);
-    // JsonObject measure = measure_list[m];
     JsonObject measure = track["measure_list"][m];
 
     Serial.println("MEASURE PASSED");
@@ -290,16 +288,11 @@ void read_track(const char *filename, Track &config)
     Serial.println(new_measure->id);
     Serial.print("measure active_beats: ");
     Serial.println(new_measure->active_beats);
-    // new_measure->step = measure["step"];                 // 5
-    // new_measure->beat = measure["beat"];                 // 1
-    // new_measure->effect_mode = measure["effect_mode"]; // false
-    // JsonArray beat_list = measure["beat_list"].to<JsonArray>();
     Serial.println("MEASURE ARRAY PASSED");
 
     for (int b = 0; b < MAX_BEATS; b++)
     {
       Serial.println("BEAT PASSED");
-      // JsonObject beat = beat_list[b];
       JsonObject beat = measure["beat_list"][b];
 
       new_beat = &(new_measure->beat_list[b]);
@@ -311,14 +304,10 @@ void read_track(const char *filename, Track &config)
       Serial.println(new_beat->id);
       Serial.print("beat active_steps: ");
       Serial.println(new_beat->active_steps);
-
-      // JsonArray step_list = beat["step_list"].to<JsonArray>();
       Serial.println("BEAT ARRAY PASSED");
       for (int s = 0; s < MAX_STEPS; s++)
       {
         Serial.println("STEP PASSED");
-
-        // JsonObject step = step_list[s];
         JsonObject step = beat["step_list"][s];
         new_step = &(new_beat->step_list[s]);
 
@@ -329,14 +318,11 @@ void read_track(const char *filename, Track &config)
         Serial.println(new_step->id);
         Serial.print("step active_sounds: ");
         Serial.println(new_step->active_sounds);
-
-        // JsonArray sound_list = step["sound_list"].to<JsonArray>();
         Serial.println("STEP ARRAY PASSED");
         for (int i = 0; i < MAX_STEP_SOUNDS; i++)
         {
           Serial.println("SOUND PASSED");
 
-          // JsonObject sound = sound_list[i];
           JsonObject sound = step["sound_list"][i];
 
           new_sound = &(new_step->sound_list[i]);
@@ -346,10 +332,6 @@ void read_track(const char *filename, Track &config)
           new_sound->instrument = sound["instrument"]; // 0
           new_sound->note = sound["note"];             // 0
           new_sound->filename = sound["filename"];     // 0
-
-          // strlcpy(new_sound->filename, // <- destination
-          //         sound["filename"],   // <- source
-          //         sizeof(new_sound->filename));
 
           new_sound->empty = sound["empty"]; // 0
                                              // Serial.println("SOUND PASSED");
@@ -447,13 +429,6 @@ void save_track(const char *filename, Track &config)
 
   // Allocate a temporary JsonDocument
   JsonDocument doc;
-
-  // Set the values in the document
-  // doc["filename"] = config.filename;
-  // doc["id"] = config.id;
-  // doc["bpm"] = config.bpm;
-  // doc["measure_steps"] = config.measure_steps;
-  /*===================================================================================================================================================================*/
   JsonObject track = doc["track"].to<JsonObject>();
   track["filename"] = config.filename;
   track["id"] = config.id;
@@ -468,9 +443,6 @@ void save_track(const char *filename, Track &config)
     JsonObject measure = measure_list.add<JsonObject>();
     measure["id"] = config.measure_list[m].id;
     measure["active_beats"] = config.measure_list[m].active_beats;
-    // measure["step"] = config.measure_list[m].step;
-    // measure["beat"] = config.measure_list[m].beat;
-    // measure["effect_mode"] = config.measure_list[m].effect_mode;
 
     JsonArray beat_list = measure["beat_list"].to<JsonArray>();
     for (int b = 0; b < MAX_BEATS; b++)
@@ -499,8 +471,6 @@ void save_track(const char *filename, Track &config)
       }
     }
   }
-  /*===================================================================================================================================================================*/
-
   // Serialize JSON to file
   if (serializeJsonPretty(doc, file) == 0)
   // if (serializeJson(doc, file) == 0)
@@ -662,3 +632,43 @@ bool find_sd_sound(const char *filename)
 
   return false;
 }
+
+int free_track(Track *track)
+{
+  for (int m = 0; m < track->active_measures; m++)
+  {
+    for (int b = 0; b < MAX_BEATS; b++)
+    {
+      for (int s = 0; s < MAX_STEPS; s++)
+      {
+
+        for (int i = 0; i < MAX_STEP_SOUNDS; i++)
+        {
+          Serial.print("deleting: i=");
+          Serial.println(i);
+          delete &(track->measure_list[m].beat_list[b].step_list[s].sound_list[i]);
+        }
+        Serial.print("deleting: s=");
+        Serial.println(s);
+
+        delete &(track->measure_list[m].beat_list[b].step_list[s]);
+      }
+      Serial.print("deleting: b=");
+      Serial.println(b);
+      delete &(track->measure_list[m].beat_list[b]);
+    }
+    Serial.print("deleting: m=");
+    Serial.println(m);
+    delete &(track->measure_list[m]);
+  }
+
+  return 0;
+}
+
+/*
+TODO:
+proper track deload / free
+
+store track cached sounds
+
+*/
