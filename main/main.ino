@@ -111,14 +111,26 @@ void loop()
     stop_step(last_step);
     play_step(active_step);
 
-    active_track.bpm = read_tempo();
+    if (effect_return_state != DOUBLE_REPEAT)
+    {
+      active_track.bpm = read_tempo();
+      Serial.println(active_track.bpm);
+    }
+    else if (evenodd == 1)
+    {
+      active_track.bpm = active_track.bpm*2;
+      Serial.println(active_track.bpm);
+    }
+
     if (splash_screen_active == false)
     {
       update_tempo(lcd);
     }
 
     // UPDATE TIMER INTERVAL
+
     step_timer.interval(step_interval_calc(&testing_measure));
+
   }
 
   //  LED ASSIGN NAV TO PALETTE
@@ -230,6 +242,29 @@ void loop()
       {
         testing_measure.beat = 3;
         testing_measure.step = 5;
+      }
+
+      else if (effect_return_state == ECHO)
+      {
+        volume = 127;
+        dac_vol = 1.0;
+        amp1.gain(dac_vol);
+        amp2.gain(dac_vol);
+      }
+
+      else if (effect_return_state == PAUSE_SOUNDS)
+      {
+        silent = 0;
+      }
+
+      else if (effect_return_state == SCRATCH)
+      {
+        evenodd = 0;
+      }
+      else if (effect_return_state == DOUBLE_REPEAT)
+      {
+        evenodd = 0;
+        effect_return_state = -1;
       }
 
       // ELSE, LEAVE STEP STATE AT LAST EFFECT

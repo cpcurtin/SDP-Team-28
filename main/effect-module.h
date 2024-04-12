@@ -15,6 +15,10 @@
 #define EFFECT_REVERSE_SAVE 4
 #define EFFECT_REVERSE_CURRENT 5
 #define EFFECT_REVERSE_RESET 6
+#define ECHO 7
+#define PAUSE_SOUNDS 8
+#define SCRATCH 9
+#define DOUBLE_REPEAT 10
 
 #define EFFECT_RETURN_SAVE 0
 #define EFFECT_RETURN_CURRENT 1
@@ -26,7 +30,7 @@ int saved_step;
 int saved_beat;
 
 // TEMMP
-int active_palette_effects[3] = {EFFECT_REPLAY_CURRENT, EFFECT_REPLAY_RESET, EFFECT_REVERSE_CURRENT};
+int active_palette_effects[3] = {DOUBLE_REPEAT, EFFECT_REPLAY_RESET, EFFECT_REVERSE_CURRENT};
 // TEMMP
 
 // functions, extern variables, structs go here

@@ -14,7 +14,7 @@
 #include "flashloader.h"
 #include <SerialFlash.h>
 
-#define DAC_GAIN 1.0
+float dac_vol = 1.0;
 struct dac_pin_config
 {
     const int din;

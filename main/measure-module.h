@@ -90,6 +90,8 @@ int step = 0;
 int temp_last_step = 0;
 int temp_last_beat = 0;
 int volume = 127;
+int silent = 0;
+int evenodd = 0;
 
 // functions, extern variables, structs go here
 void measure_palette_init(void);

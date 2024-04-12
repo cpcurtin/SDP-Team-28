@@ -141,36 +141,44 @@ int stop_step(Step *step_end)
 
 int play_step(Step *step_play)
 {
-
-    for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
-    {
-        if (step_play->sound_list[sound].empty == false)
-        {
-            if (step_play->sound_list[sound].bank != MIDI_NULL)
-            {
-                if (step_play->sound_list[sound].note != MIDI_NULL)
-                {
-                    // MELODIC
-                    midiSetInstrument(step_play->sound_list[sound].bank, step_play->sound_list[sound].instrument);
-                    midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].note, volume);
-                }
-                else
-                {
-                    // PERCUSSION
-                    midiSetInstrument(step_play->sound_list[sound].bank, 128);
-                    midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].instrument, volume);
-                }
-            }
-            else
-            {
-                // SD
-                if (step_play->sound_list[sound].sd_cached_sound != nullptr)
-                {
-                    playFile(step_play->sound_list[sound].sd_cached_sound);
-                }
-            }
-        }
-    }
+      for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
+      {
+          if (step_play->sound_list[sound].empty == false)
+          {
+              if (step_play->sound_list[sound].bank != MIDI_NULL)
+              {
+                  if (step_play->sound_list[sound].note != MIDI_NULL)
+                  {
+                      // MELODIC
+                      midiSetInstrument(step_play->sound_list[sound].bank, step_play->sound_list[sound].instrument);
+                      if (silent == 0)
+                      {
+                        midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].note, volume);
+                      }
+                  }
+                  else
+                  {
+                      // PERCUSSION
+                      midiSetInstrument(step_play->sound_list[sound].bank, 128);
+                      if (silent == 0)
+                      {
+                        midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].instrument, volume);
+                      }
+                  }
+              }
+              else
+              {
+                  // SD
+                  if (step_play->sound_list[sound].sd_cached_sound != nullptr)
+                  {
+                    if (silent == 0)
+                    {
+                      playFile(step_play->sound_list[sound].sd_cached_sound);
+                    }
+                  }
+              }
+          }
+      }
 
     return 0;
 }

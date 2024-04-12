@@ -56,6 +56,53 @@ void run_effect(int effect)
         active_step = previous_step(&testing_measure);
 
         break;
+    case ECHO:
+        Serial.println("ECHO");
+        effect_return_state = ECHO;
+        if (volume != 7 && volume != 0)
+        {
+          volume = volume - 10;
+        }
+        if (volume == 7)
+        {
+          volume = 0;
+        }
+        if (dac_vol != 0)
+        {
+          dac_vol = dac_vol - 0.1;
+        }
+
+        amp1.gain(dac_vol);
+        amp2.gain(dac_vol);
+
+    case PAUSE_SOUNDS:
+        Serial.println("PAUSE_SOUNDS");
+        effect_return_state = PAUSE_SOUNDS;
+        silent = 1;
+        active_step = next_step(&testing_measure);
+
+    case SCRATCH:
+        Serial.println("SCRATCH");
+        effect_return_state = SCRATCH;
+        if ((evenodd % 2) == 0)
+        {
+          active_step = previous_step(&testing_measure);
+        }
+        else
+        {
+          active_step = next_step(&testing_measure);
+        }
+        evenodd++;
+
+    case DOUBLE_REPEAT:
+        Serial.println("DOUBLE_REPEAT");
+        effect_return_state = DOUBLE_REPEAT;
+        if ((evenodd % 2) == 1)
+        {
+          active_step = next_step(&testing_measure);
+        }
+        evenodd++;
+
     default:
         break;
     }

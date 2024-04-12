@@ -10,8 +10,8 @@ int dac_init(void)
 {
   AudioMemory(10);
   rraw_a1.enableInterpolation(true);
-  amp1.gain(DAC_GAIN);
-  amp2.gain(DAC_GAIN);
+  amp1.gain(dac_vol);
+  amp2.gain(dac_vol);
 
   Serial.println("onboard dac initialized");
   return 0;
@@ -66,6 +66,11 @@ void stopFile(int mixer)
 {
   if (mixer == 0)
   {
+    rraw_a1.stop();
+    rraw_a2.stop();
+    rraw_a3.stop();
+    rraw_a4.stop();
+    /*
     if (rraw_a1.isPlaying())
     {
       rraw_a1.stop();
@@ -103,6 +108,8 @@ void stopFile(int mixer)
     // Serial.println("Stopping 4");
     rraw_a4.stop();
   }
+  */
+  
 }
 newdigate::audiosample *cache_sd_sound(const char *filename)
 {
