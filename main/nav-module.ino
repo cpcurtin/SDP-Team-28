@@ -285,9 +285,9 @@ const char *tracks_update(void)
     }
 
     // spacing, enumerated
-    if (current_track.bpm != 0)
+    if (current_track->bpm != 0)
     {
-        snprintf(temp_str, LCD_COLUMNS + NULL_TERMINATION, "BPM:%d STEPS:%d ID:%d ", current_track.bpm, current_track.measure_steps, current_track.id);
+        snprintf(temp_str, LCD_COLUMNS + NULL_TERMINATION, "BPM:%d STEPS:%d ID:%d ", current_track->bpm, current_track->measure_steps, current_track->id);
     }
     else
     {

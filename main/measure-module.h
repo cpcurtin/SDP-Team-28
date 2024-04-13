@@ -23,7 +23,6 @@
 
 #define MIDI_NULL -1
 
-
 typedef struct Sound
 {
     int bank;

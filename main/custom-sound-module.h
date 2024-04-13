@@ -98,6 +98,7 @@ newdigate::audiosample *temp_sample;
 // newdigate::audiosample *player3;
 // newdigate::audiosample *player4;
 newdigate::flashloader loader;
+char temp_str[MAX_FILENAME_LENGTH]; // Adjust MAX_FILENAME_LENGTH as needed
 
 // functions, extern variables, structs go here
 int dac_init(void);

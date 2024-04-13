@@ -4,29 +4,30 @@
 #include <SD.h>
 #include <ArduinoJson.h>
 #include <vector>
-#include <queue>
+#include <deque>
 
 #define CUSTOM_SOUNDS_DIRECTORY "/sounds/"
 #define TRACKS_DIRECTORY "/tracks/"
+#define FILENAME_MAX_SIZE 64
 
 typedef struct array_with_size
 {
-  const char **array;
-  size_t size;
+    const char **array;
+    size_t size;
 } array_with_size;
 
 typedef struct Track
 {
-  char filename[64];
-  int id;
-  int bpm;
-  int active_measures;
-  int measure_beats;
-  int measure_steps;
-  int current_measure_id;
-  struct Measure *current_measure;
-  struct Measure *measure_list;
-  std::queue<struct Sound> cached_sounds;
+    char filename[64];
+    int id;
+    int bpm;
+    int active_measures;
+    int measure_beats;
+    int measure_steps;
+    int current_measure_id;
+    struct Measure *current_measure;
+    struct Measure *measure_list;
+    std::deque<struct Sound> cached_sounds;
 } Track;
 
 array_with_size *custom_sound_list = new array_with_size;
@@ -34,7 +35,7 @@ array_with_size *track_list = new array_with_size;
 
 // Track current_track = {
 //     "DEFAULT.json", 0, 50, 1, 4, 6};
-Track current_track;
+Track *current_track;
 
 int sd_init(void);
 int track_init(void);
@@ -45,8 +46,8 @@ void printDirectory(File dir, int numSpaces);
 void printSpaces(int num);
 void printTime(const DateTimeFields tm);
 
-void read_track(const char *filename, Track &config);
-void save_track(const char *filename, Track &config);
+void read_track(const char *filename, Track *config);
+void save_track(const char *filename, Track *config);
 void print_JSON(const char *filename);
 array_with_size *sd_fetch_tracks(void);
 

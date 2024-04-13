@@ -106,7 +106,7 @@ Step *next_step(Measure *measure)
 }
 Step *previous_step(Measure *measure)
 {
-    bool measure_change = false;
+    // bool measure_change = false;
     measure->step--;
     if ((measure->step < 0) || (measure->step >= measure->beat_list[measure->beat].active_steps))
     {
@@ -116,7 +116,7 @@ Step *previous_step(Measure *measure)
         {
 
             measure->beat = measure->active_beats - 1;
-            measure_change = true;
+            // measure_change = true;
         }
         measure->step = measure->beat_list[measure->beat].active_steps - 1;
     }
@@ -166,51 +166,51 @@ int stop_step(Step *step_end)
 
 int play_step(Step *step_play)
 {
-      for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
-      {
-          if (step_play->sound_list[sound].empty == false)
-          {
-              if (step_play->sound_list[sound].bank != MIDI_NULL)
-              {
-                  if (step_play->sound_list[sound].note != MIDI_NULL)
-                  {
-                      // MELODIC
-                      midiSetInstrument(step_play->sound_list[sound].bank, step_play->sound_list[sound].instrument);
-                      if (silent == 0)
-                      {
-                        midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].note, volume);
-                      }
-                  }
-                  else
-                  {
-                      // PERCUSSION
-                      midiSetInstrument(step_play->sound_list[sound].bank, 128);
-                      if (silent == 0)
-                      {
-                        midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].instrument, volume);
-                      }
-                  }
-              }
-              else
-              {
-                  // SD
-                  if (step_play->sound_list[sound].sd_cached_sound != nullptr)
-                  {
+    for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
+    {
+        if (step_play->sound_list[sound].empty == false)
+        {
+            if (step_play->sound_list[sound].bank != MIDI_NULL)
+            {
+                if (step_play->sound_list[sound].note != MIDI_NULL)
+                {
+                    // MELODIC
+                    midiSetInstrument(step_play->sound_list[sound].bank, step_play->sound_list[sound].instrument);
                     if (silent == 0)
                     {
-                      playFile(step_play->sound_list[sound].sd_cached_sound);
+                        midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].note, volume);
                     }
-                  }
-              }
-          }
-      }
+                }
+                else
+                {
+                    // PERCUSSION
+                    midiSetInstrument(step_play->sound_list[sound].bank, 128);
+                    if (silent == 0)
+                    {
+                        midiNoteOn(step_play->sound_list[sound].bank, step_play->sound_list[sound].instrument, volume);
+                    }
+                }
+            }
+            else
+            {
+                // SD
+                if (step_play->sound_list[sound].sd_cached_sound != nullptr)
+                {
+                    if (silent == 0)
+                    {
+                        playFile(step_play->sound_list[sound].sd_cached_sound);
+                    }
+                }
+            }
+        }
+    }
 
     return 0;
 }
 
 float step_interval_calc(Measure *measure)
 {
-    return (60000 / (current_track.bpm * measure->beat_list[beat].active_steps));
+    return (60000 / (current_track->bpm * measure->beat_list[beat].active_steps));
 }
 
 int add_remove_measure_sound(Measure *measure)
@@ -226,7 +226,7 @@ int add_remove_measure_sound(Measure *measure)
             // SELECTED PALETTE SOUND EXISTS ON CURRENT STEP
             // REMOVE FROM MEASURE STEP
             button_step_lookup(current_measure)->sound_list[sound] = empty_sound;
-            button_step_lookup(current_measure)->active_sounds++;
+            button_step_lookup(current_measure)->active_sounds--;
             sound_exists = true;
             break;
         }
@@ -241,7 +241,7 @@ int add_remove_measure_sound(Measure *measure)
             {
                 // ASSIGN PALETTE SOUND TO FIRST AVAILABLE STEP SOUND SLOT
                 button_step_lookup(current_measure)->sound_list[sound] = testing_palette[palette_index];
-                button_step_lookup(current_measure)->active_sounds--;
+                button_step_lookup(current_measure)->active_sounds++;
                 break;
             }
         }

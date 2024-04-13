@@ -73,13 +73,13 @@ void setup()
 
   Serial.println("default Track stats:");
   Serial.print("filename: ");
-  Serial.println(current_track.filename);
+  Serial.println(current_track->filename);
   Serial.print("id: ");
-  Serial.println(current_track.id);
+  Serial.println(current_track->id);
   Serial.print("bpm: ");
-  Serial.println(current_track.bpm);
+  Serial.println(current_track->bpm);
   Serial.print("measure steps: ");
-  Serial.println(current_track.measure_steps);
+  Serial.println(current_track->measure_steps);
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
@@ -133,13 +133,13 @@ void loop()
 
     if (effect_return_state != DOUBLE_REPEAT)
     {
-      current_track.bpm = read_tempo();
-      Serial.println(current_track.bpm);
+      current_track->bpm = read_tempo();
+      Serial.println(current_track->bpm);
     }
     else if (evenodd == 1)
     {
-      current_track.bpm = current_track.bpm*2;
-      Serial.println(current_track.bpm);
+      current_track->bpm = current_track->bpm * 2;
+      // Serial.println(current_track->bpm);
     }
 
     if (splash_screen_active == false)
@@ -149,7 +149,7 @@ void loop()
     Serial.println("testing 5");
 
     // UPDATE TIMER INTERVAL
-     step_timer.interval(step_interval_calc(current_measure));
+    step_timer.interval(step_interval_calc(current_measure));
   }
 
   //  LED ASSIGN NAV TO PALETTE
@@ -333,10 +333,10 @@ void loop()
     {
       char *new_track_filename = (char *)malloc(LCD_COLUMNS + NULL_TERMINATION);
       snprintf(new_track_filename, LCD_COLUMNS + NULL_TERMINATION, "TRACK%d.json", (nav_state->child[2])->size);
-      strncpy(current_track.filename, new_track_filename, 63); // Copy up to 63 characters to ensure null-termination
-      current_track.filename[63] = '\0';
+      strncpy(current_track->filename, new_track_filename, 63); // Copy up to 63 characters to ensure null-termination
+      current_track->filename[63] = '\0';
 
-      current_track.id = (nav_state->child[2])->size;
+      current_track->id = (nav_state->child[2])->size;
       save_track(new_track_filename, current_track);
 
       track_list = sd_fetch_tracks();
@@ -352,12 +352,12 @@ void loop()
     else if (strcmp(nav_state->data_array[nav_state->index], "Delete Track") == 0)
     {
       char *delete_track_filename = (char *)malloc(LCD_COLUMNS + NULL_TERMINATION);
-      snprintf(delete_track_filename, LCD_COLUMNS + NULL_TERMINATION, "TRACK%d.json", current_track.id);
+      snprintf(delete_track_filename, LCD_COLUMNS + NULL_TERMINATION, "TRACK%d.json", current_track->id);
 
       if (sd_delete_track(delete_track_filename))
       {
         // Serial.print("FAILED TO DELETE: ");
-        Serial.println(current_track.filename);
+        Serial.println(current_track->filename);
       }
       else
       {
@@ -377,9 +377,10 @@ void loop()
     {
       Serial.println("START LOAD TRACK");
       Serial.println("free cached sounds");
-      free_cached_sounds(&current_track);
-      // Serial.println("free previous track");
-      // free_track(&current_track);
+      free_cached_sounds(current_track);
+      Serial.println("free previous track");
+      delete current_track;
+      // free_track(current_track);
       Serial.println("load new track");
       read_track(nav_state->data_array[nav_state->index], current_track);
       Serial.println("RETURN LOAD TRACK");
@@ -389,10 +390,10 @@ void loop()
     */
     else if (strcmp(nav_state->name, "tracks_set_steps") == 0)
     {
-      current_track.measure_steps = nav_state->index + 1;
+      current_track->measure_steps = nav_state->index + 1;
       for (int i = 0; i < 4; i++)
       {
-        current_measure->beat_list[i].active_steps = current_track.measure_steps;
+        current_measure->beat_list[i].active_steps = current_track->measure_steps;
       }
     }
     /*************************     SOUNDS SELECT     **************************/
@@ -503,7 +504,7 @@ void loop()
         sprintf(str, "%p", (void *)new_sound.sd_cached_sound); // Using sprintf to format the pointer address
         Serial.println("\tACTUAL: " + String(str));
 
-        current_track.cached_sounds.push(new_sound);
+        current_track->cached_sounds.push_back(new_sound);
       }
       else
       {

@@ -27,23 +27,25 @@ int sd_init(void)
 
 int track_init(void)
 {
-
-  strcpy(current_track.filename, "DEFAULT.json");
-  current_track.id = 0;
-  current_track.bpm = 120;
-  current_track.active_measures = 1;
-  current_track.measure_beats = 4;
-  current_track.measure_steps = 6;
-  current_track.current_measure_id = 0;
-  current_track.measure_list = new Measure[current_track.active_measures];
+  Track *new_track = new Track;
+  strcpy(new_track->filename, "DEFAULT.json");
+  new_track->id = 0;
+  new_track->bpm = 120;
+  new_track->active_measures = 1;
+  new_track->measure_beats = 4;
+  new_track->measure_steps = 6;
+  new_track->current_measure_id = 0;
+  new_track->measure_list = new Measure[new_track->active_measures];
 
   // Initialize the measure_list
   // Example initialization for the id of each measure
-  for (int i = 0; i < current_track.active_measures; i++)
+  for (int i = 0; i < new_track->active_measures; i++)
   {
-    current_track.measure_list[i] = *measure_create(i);
+    new_track->measure_list[i] = *measure_create(i);
   }
-  current_measure = &(current_track.measure_list[current_track.current_measure_id]);
+  // new_track->cached_sounds = new std::deque<struct Sound>;
+  current_measure = &(new_track->measure_list[new_track->current_measure_id]);
+  current_track = new_track;
   return 0;
 }
 
@@ -199,10 +201,10 @@ void printTime(const DateTimeFields tm)
   Serial.print(tm.year + 1900);
 }
 
-void read_track(const char *filename, Track &config)
+void read_track(const char *filename, Track *config)
 {
-  vector<pair<const char *, newdigate::audiosample *>> cached_files;
-  pair<const char *, newdigate::audiosample *> cached_file;
+  // vector<pair<const char *, newdigate::audiosample *>> cached_files;
+  // pair<const char *, newdigate::audiosample *> cached_file;
 
   bool file_found = false;
   bool already_cached = false;
@@ -240,6 +242,9 @@ void read_track(const char *filename, Track &config)
   {
     Serial.println("DESERIALIZE PASSED TRACK");
   }
+  int btp = 0;
+  int stp = 0;
+  int sp = 0;
   Track *new_track = new Track;
   Measure *new_measure;
   Beat *new_beat;
@@ -264,15 +269,12 @@ void read_track(const char *filename, Track &config)
   Serial.print(new_track->active_measures);
   Serial.print("\tf: ");
   Serial.println(new_track->filename);
-  new_track->measure_list = new Measure[new_track->active_measures];
-  for (int i = 0; i < new_track->active_measures; i++)
-  {
-    new_track->measure_list[i] = *measure_create(i);
-  }
 
+  new_track->measure_list = new Measure[new_track->active_measures];
   Serial.println("TRACK ARRAY PASSED");
   for (int m = 0; m < new_track->active_measures; m++)
   {
+    new_track->measure_list[m] = *measure_create(m);
     new_measure = &(new_track->measure_list[m]);
     JsonObject measure = track["measure_list"][m];
 
@@ -331,10 +333,13 @@ void read_track(const char *filename, Track &config)
           new_sound->bank = sound["bank"];             // 0
           new_sound->instrument = sound["instrument"]; // 0
           new_sound->note = sound["note"];             // 0
-          new_sound->filename = sound["filename"];     // 0
-
-          new_sound->empty = sound["empty"]; // 0
-                                             // Serial.println("SOUND PASSED");
+          // new_sound->filename = sound["filename"];     //
+          new_sound->filename = sound["filename"].as<const char *>();
+          // strncpy(new_sound->filename, // <- destination
+          //         sound["filename"],   // <- source
+          //         FILENAME_MAX_SIZE - 1);
+          new_sound->sd_cached_sound = nullptr;
+          new_sound->empty = sound["empty"];
 
           Serial.print("B: ");
           Serial.print(new_sound->bank);
@@ -344,29 +349,41 @@ void read_track(const char *filename, Track &config)
           Serial.print(new_sound->note);
           Serial.print("\tf: ");
           if (new_sound->filename != nullptr)
+          {
             Serial.print(new_sound->filename);
+          }
           else
+          {
             Serial.print("x");
+          }
           Serial.print("\tE: ");
           Serial.println(new_sound->empty);
           if (new_sound->filename != nullptr)
           {
             Serial.println("filename != null");
+            btp = b;
+            stp = s;
+            sp = i;
             already_cached = false;
-            for (auto cache_file : cached_files)
+            auto cache_file_iter = new_track->cached_sounds.begin();
+            while (cache_file_iter != new_track->cached_sounds.end())
             {
-              if (strcmp(new_sound->filename, cache_file.first) == 0)
+              Sound cache_file = *cache_file_iter;
+              if (strcmp(new_sound->filename, cache_file.filename) == 0)
               {
-                Serial.println("filename found in cache");
                 already_cached = true;
-                new_sound->sd_cached_sound = cache_file.second;
+                Serial.println("filename found in cache");
+                new_sound->sd_cached_sound = cache_file.sd_cached_sound;
               }
+              cache_file_iter++;
             }
+
             if (already_cached == false)
             {
               if (find_sd_sound(new_sound->filename))
               {
                 new_sound->sd_cached_sound = cache_sd_sound(new_sound->filename);
+                new_track->cached_sounds.push_back(*new_sound);
               }
               else
               {
@@ -381,26 +398,31 @@ void read_track(const char *filename, Track &config)
 
   file.close();
   Serial.println("here1");
-  current_track = *new_track;
+  current_track = new_track;
   Serial.println("here2");
-  current_measure = &(current_track.measure_list[current_track.current_measure_id]);
+  current_measure = &(current_track->measure_list[current_track->current_measure_id]);
   Serial.println("here3");
   Serial.println("test new track stuff");
   Serial.print("f: ");
-  Serial.print(current_track.filename);
+  Serial.print(current_track->filename);
   Serial.print("\tcurrent: ");
-  Serial.print(current_track.current_measure_id);
+  Serial.print(current_track->current_measure_id);
   Serial.print("\tbpm: ");
-  Serial.println(current_track.bpm);
+  Serial.println(current_track->bpm);
   Serial.println("current_measure stuff:");
   Serial.print("id: ");
   Serial.print(current_measure->id);
   Serial.print("\tact: ");
   Serial.println(current_measure->active_beats);
+
+  Serial.print("previous filename: ");
+  Serial.println(new_track->measure_list[0].beat_list[btp].step_list[stp].sound_list[sp].filename);
+  Serial.print("new filename: ");
+  Serial.println(current_track->measure_list[0].beat_list[btp].step_list[stp].sound_list[sp].filename);
 }
 
 // Saves the configuration to a file
-void save_track(const char *filename, Track &config)
+void save_track(const char *filename, Track *config)
 {
 
   // Calculate the length of the string
@@ -430,43 +452,42 @@ void save_track(const char *filename, Track &config)
   // Allocate a temporary JsonDocument
   JsonDocument doc;
   JsonObject track = doc["track"].to<JsonObject>();
-  track["filename"] = config.filename;
-  track["id"] = config.id;
-  track["active_measures"] = config.active_measures;
-  track["measure_beats"] = config.measure_beats;
-  track["measure_steps"] = config.measure_steps;
-  // JsonObject measure_list = track["measure_list"].add<JsonObject>();
+  track["filename"] = config->filename;
+  track["id"] = config->id;
+  track["active_measures"] = config->active_measures;
+  track["measure_beats"] = config->measure_beats;
+  track["measure_steps"] = config->measure_steps;
   JsonArray measure_list = track["measure_list"].to<JsonArray>();
 
-  for (int m = 0; m < config.active_measures; m++)
+  for (int m = 0; m < config->active_measures; m++)
   {
     JsonObject measure = measure_list.add<JsonObject>();
-    measure["id"] = config.measure_list[m].id;
-    measure["active_beats"] = config.measure_list[m].active_beats;
+    measure["id"] = config->measure_list[m].id;
+    measure["active_beats"] = config->measure_list[m].active_beats;
 
     JsonArray beat_list = measure["beat_list"].to<JsonArray>();
     for (int b = 0; b < MAX_BEATS; b++)
     {
       JsonObject beat = beat_list.add<JsonObject>();
-      beat["id"] = config.measure_list[m].beat_list[b].id;
-      beat["active_steps"] = config.measure_list[m].beat_list[b].active_steps;
+      beat["id"] = config->measure_list[m].beat_list[b].id;
+      beat["active_steps"] = config->measure_list[m].beat_list[b].active_steps;
 
       JsonArray step_list = beat["step_list"].to<JsonArray>();
       for (int s = 0; s < MAX_STEPS; s++)
       {
         JsonObject step = step_list.add<JsonObject>();
-        step["id"] = config.measure_list[m].beat_list[b].step_list[s].id;
-        step["active_sounds"] = config.measure_list[m].beat_list[b].step_list[s].active_sounds;
+        step["id"] = config->measure_list[m].beat_list[b].step_list[s].id;
+        step["active_sounds"] = config->measure_list[m].beat_list[b].step_list[s].active_sounds;
 
         JsonArray sound_list = step["sound_list"].to<JsonArray>();
         for (int i = 0; i < MAX_STEP_SOUNDS; i++)
         {
           JsonObject sound = sound_list.add<JsonObject>();
-          sound["bank"] = config.measure_list[m].beat_list[b].step_list[s].sound_list[i].bank;
-          sound["instrument"] = config.measure_list[m].beat_list[b].step_list[s].sound_list[i].instrument;
-          sound["note"] = config.measure_list[m].beat_list[b].step_list[s].sound_list[i].note;
-          sound["filename"] = config.measure_list[m].beat_list[b].step_list[s].sound_list[i].filename;
-          sound["empty"] = config.measure_list[m].beat_list[b].step_list[s].sound_list[i].empty;
+          sound["bank"] = config->measure_list[m].beat_list[b].step_list[s].sound_list[i].bank;
+          sound["instrument"] = config->measure_list[m].beat_list[b].step_list[s].sound_list[i].instrument;
+          sound["note"] = config->measure_list[m].beat_list[b].step_list[s].sound_list[i].note;
+          sound["filename"] = config->measure_list[m].beat_list[b].step_list[s].sound_list[i].filename;
+          sound["empty"] = config->measure_list[m].beat_list[b].step_list[s].sound_list[i].empty;
         }
       }
     }
@@ -664,11 +685,3 @@ int free_track(Track *track)
 
   return 0;
 }
-
-/*
-TODO:
-proper track deload / free
-
-store track cached sounds
-
-*/

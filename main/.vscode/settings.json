@@ -8,7 +8,7 @@
     "bitset": "cpp",
     "deque": "cpp",
     "initializer_list": "cpp",
-    "queue": "cpp",
+    "deque": "cpp",
     "span": "cpp",
     "stack": "cpp",
     "string": "cpp",
@@ -23,6 +23,7 @@
     "__node_handle": "cpp",
     "__locale": "cpp",
     "random": "cpp",
-    "locale": "cpp"
+    "locale": "cpp",
+    "__bit_reference": "cpp"
   }
 }

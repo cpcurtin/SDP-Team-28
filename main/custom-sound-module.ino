@@ -2,7 +2,7 @@
  *	example function library
  *
  *
- *
+ * double check what is happening when playing custom sound
  */
 #include "custom-sound-module.h"
 
@@ -18,7 +18,6 @@ int dac_init(void)
 }
 
 // Define a fixed-size buffer for temp_str
-char temp_str[MAX_FILENAME_LENGTH]; // Adjust MAX_FILENAME_LENGTH as needed
 
 int playFile(newdigate::audiosample *cached_sound)
 {
@@ -93,11 +92,19 @@ newdigate::audiosample *cache_sd_sound(const char *filename)
 
 int free_cached_sounds(Track *track)
 {
-  while (track->cached_sounds.empty() != false)
+  Serial.println("enter func");
+  while (track->cached_sounds.size() != 0)
   {
+    Serial.println("loop");
+    Serial.println(track->cached_sounds.front().filename);
+    Serial.println("loop");
+
     delete track->cached_sounds.front().sd_cached_sound;
-    track->cached_sounds.pop();
+    Serial.println("post free");
+    track->cached_sounds.pop_front();
+    Serial.println("pop");
   }
+  Serial.println("end");
 
   return 0;
 }
