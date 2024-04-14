@@ -42,7 +42,9 @@ Nav *nav_selection(Nav *nav, int direction)
 
 void array_scroll(Nav *nav, int direction)
 {
-
+    Serial.print(nav->name.c_str());
+    Serial.print(" S=");
+    Serial.println(nav->data_array.size());
     int new_index;
     // new index changes +/- and goes from end to 0
     new_index = (nav->index + direction + nav->data_array.size()) % nav->data_array.size();
@@ -51,7 +53,7 @@ void array_scroll(Nav *nav, int direction)
     nav->lcd_state[0] = format_row(nav->data_array, new_index, 1).c_str();
 
     // THIS IS WHERE IT REPEATS
-    for (int row = 1; row < LCD_ROWS - 1; row++)
+    for (size_t row = 1; row < LCD_ROWS - 1; row++)
     {
         if (row < nav->data_array.size())
         {
@@ -61,39 +63,52 @@ void array_scroll(Nav *nav, int direction)
         else
         {
 
-            nav->lcd_state[row] = "";
+            nav->lcd_state[row] = "                    ";
         }
     }
 }
 
-std::string format_row(std::vector<const char *> data_array, int index, int format)
+std::string format_row(std::vector<std::string> data_array, int index, int format)
 {
+    std::string rt_st;
 
     // spacing, enumerated
     if (format == 0)
     {
-        return " " + std::to_string(index + 1) + " " + std::string(data_array[index]);
+        rt_st = " " + std::to_string(index + 1) + " " + std::string(data_array[index]);
     }
     else if (format == 1)
     {
-        return ">" + std::to_string(index + 1) + " " + std::string(data_array[index]);
+        rt_st = ">" + std::to_string(index + 1) + " " + std::string(data_array[index]);
     }
-    return "";
+
+    Serial.println(rt_st.c_str());
+    Serial.println("RESIZE");
+    rt_st.resize(20);
+    rt_st.shrink_to_fit();
+    Serial.println(rt_st.c_str());
+    return rt_st;
 }
 
 std::string tracks_update(void)
 {
-    // const int max_length = LCD_COLUMNS; // Assuming LCD_COLUMNS + NULL_TERMINATION = 20
+    std::string rt_st;
 
     // spacing, enumerated
     if (current_track->bpm != 0)
     {
-        return "BPM:" + std::to_string(current_track->bpm) + " STEPS:" + std::to_string(current_track->measure_steps) + " ID:" + std::to_string(current_track->id) + " ";
+        rt_st = "BPM:" + std::to_string(current_track->bpm) + " STEPS:" + std::to_string(current_track->measure_steps) + " ID:" + std::to_string(current_track->id) + " ";
     }
     else
     {
-        return "NO TRACK SELECTED";
+        rt_st = "NO TRACK SELECTED";
     }
+    Serial.println(rt_st.c_str());
+    Serial.println("RESIZE");
+    rt_st.resize(20);
+    rt_st.shrink_to_fit();
+    Serial.println(rt_st.c_str());
+    return rt_st;
 }
 
 Nav *nav_init(struct nav_config *cfg)
@@ -119,7 +134,7 @@ Nav *nav_init(struct nav_config *cfg)
     // tracks_child[3] = DELETE TRACK
 
     // Main presets
-    std::vector<const char *> main_preset_options = {"Sounds", "Effects", "Tracks"};
+    std::vector<std::string> main_preset_options = {"Sounds", "Effects", "Tracks"};
 
     main_nav->name = "main";
     main_nav->data_array = std::move(main_preset_options);
@@ -130,7 +145,7 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(main_nav, 0);
 
     // Sounds presets
-    std::vector<const char *> sounds_preset_options = {"Custom Sounds", "MIDI Sounds"};
+    std::vector<std::string> sounds_preset_options = {"Custom Sounds", "MIDI Sounds"};
 
     sounds_nav->name = "sounds";
     sounds_nav->data_array = std::move(sounds_preset_options);
@@ -151,7 +166,7 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(effects_nav, 0);
 
     // Tracks presets
-    std::vector<const char *> tracks_preset_options = {"Set # steps", "Save Track", "Load Track", "Delete Track"};
+    std::vector<std::string> tracks_preset_options = {"Set # steps", "Save Track", "Load Track", "Delete Track"};
 
     tracks_nav->name = "tracks";
     tracks_nav->data_array = std::move(tracks_preset_options);
@@ -172,7 +187,7 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(tracks_load_nav, 0);
 
     // Tracks Set Steps presets
-    std::vector<const char *> tracks_preset_options_steps;
+    std::vector<std::string> tracks_preset_options_steps;
     for (int i = 0; i < MAX_MEASURE_STEPS; ++i)
     {
         tracks_preset_options_steps.push_back("Step");
@@ -197,7 +212,7 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(sounds_custom_nav, 0);
 
     // MIDI Sounds presets
-    std::vector<const char *> midi_preset_options = {"Percussion Instruments", "Melodic Instruments"};
+    std::vector<std::string> midi_preset_options = {"Percussion Instruments", "Melodic Instruments"};
 
     sounds_midi_nav->name = "sounds_midi";
     sounds_midi_nav->data_array = std::move(midi_preset_options);
@@ -283,7 +298,7 @@ void dpad_nav_routine(int dpad_pressed)
         /*
         SAVE TRACK
         */
-        if (strcmp(nav_state->data_array[nav_state->index], "Save Track") == 0)
+        if (nav_state->data_array[nav_state->index] == "Save Track")
 
         {
             std::string new_track_filename = "TRACK" + std::to_string((nav_state->child[2])->data_array.size()) + ".json";
@@ -300,7 +315,7 @@ void dpad_nav_routine(int dpad_pressed)
         DELETE TRACK
         */
 
-        else if (strcmp(nav_state->data_array[nav_state->index], "Delete Track") == 0)
+        else if (nav_state->data_array[nav_state->index] == "Delete Track")
         {
             std::string delete_track_filename = "TRACK" + std::to_string(current_track->id) + ".json";
             if (sd_delete_track(delete_track_filename))
@@ -321,8 +336,7 @@ void dpad_nav_routine(int dpad_pressed)
         /*
         LOAD TRACKS
         */
-        else if (strcmp(nav_state->name.c_str(), "tracks_load") == 0)
-
+        else if (nav_state->name == "tracks_load")
         {
             Serial.println("START LOAD TRACK");
             Serial.println("free cached sounds");
@@ -337,7 +351,8 @@ void dpad_nav_routine(int dpad_pressed)
         /*
         SET TRACK STEPS
         */
-        else if (strcmp(nav_state->name.c_str(), "tracks_set_steps") == 0)
+
+        else if (nav_state->name == "tracks_set_steps")
         {
             current_track->measure_steps = nav_state->index + 1;
             for (int i = 0; i < 4; i++)
@@ -349,15 +364,16 @@ void dpad_nav_routine(int dpad_pressed)
         /*
         SELECTED MELODIC MIDI SOUND
         */
-        else if (strcmp(nav_state->name.c_str(), "sounds_midi_notes") == 0)
+
+        else if (nav_state->name == "sounds_midi_notes")
         {
             Serial.println("MIDI SOUNDS SELECTION:");
             Serial.print("BANK: ");
             Serial.println(((nav_state->parent)->parent)->name.c_str());
             Serial.print("Octave: ");
-            Serial.println((nav_state->parent)->data_array[(nav_state->parent)->index]);
+            Serial.println((nav_state->parent)->data_array[(nav_state->parent)->index].c_str());
             Serial.print("Note: ");
-            Serial.println(nav_state->data_array[nav_state->index]);
+            Serial.println(nav_state->data_array[nav_state->index].c_str());
             Serial.print("TEST: ");
             Serial.println(midi_mapping[nav_state->index][(nav_state->parent)->index]);
 
@@ -365,28 +381,17 @@ void dpad_nav_routine(int dpad_pressed)
             new_sound.instrument = midi_melodic_values[sounds_midi_melodic_nav->index];
             new_sound.note = midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index];
             new_sound.sd_cached_sound = nullptr;
-            new_sound.filename = nullptr;
+            new_sound.filename = "";
             new_sound_assignment = true;
 
-            Serial.println(dispBank);
-            Serial.println(dispInstrum);
-            Serial.println(dispNote);
-
-            // BANK
-            // sounds_midi_nav->index;
-
-            // melodic sound
-            // midi_melodic_values[sounds_midi_melodic_nav->index];
-
-            // midi standard mapping (octave & note)
-            // midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index]
             lcd_splash(lcd, nav_state, selected_sound);
             nav_state = main_nav;
         }
         /*
         SELECTED PERCUSSION MIDI SOUND
         */
-        else if (strcmp(nav_state->name.c_str(), "sounds_midi_percussion") == 0)
+
+        else if (nav_state->name == "sounds_midi_percussion")
         {
 
             new_sound.bank = sounds_midi_nav->index;
@@ -394,12 +399,8 @@ void dpad_nav_routine(int dpad_pressed)
             new_sound.note = -1;
             new_sound.sd_cached_sound = nullptr;
             // memset(new_sound.filename, 0, sizeof(new_sound.filename));
-            new_sound.filename = nullptr;
+            new_sound.filename = "";
             new_sound_assignment = true;
-
-            Serial.println(dispBank);
-            Serial.println(dispInstrum);
-            Serial.println(dispNote);
 
             lcd_splash(lcd, nav_state, selected_sound);
             nav_state = main_nav;
@@ -407,12 +408,10 @@ void dpad_nav_routine(int dpad_pressed)
         /*
         SELECTED CUSTOM SOUND
         */
-        else if (strcmp(nav_state->name.c_str(), "custom_sounds") == 0)
+
+        else if (nav_state->name == "custom_sounds")
         {
-            // currently selected custom sound
-            // sounds_custom_nav->data_array[sounds_custom_nav->index];
-            temp_sample = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index]);
-            // new_sound.sd_cached_sound = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index]);
+            temp_sample = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index].c_str());
             if (temp_sample != nullptr)
             {
                 dispFlag = 3;
@@ -446,7 +445,7 @@ void dpad_nav_routine(int dpad_pressed)
                 new_sound.note = -1;
                 new_sound.sd_cached_sound = nullptr;
                 // memset(new_sound.filename, 0, sizeof(new_sound.filename));
-                new_sound.filename = nullptr;
+                new_sound.filename = "";
                 // NO SIZE ON PSRAM TO CACHE SOUND
                 lcd_splash(lcd, nullptr, error_psram_full);
             }

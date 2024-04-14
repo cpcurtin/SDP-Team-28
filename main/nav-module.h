@@ -17,28 +17,28 @@
 
 struct nav_config
 {
-    std::vector<const char *> sounds_custom;
-    std::vector<const char *> effects;
-    std::vector<const char *> tracks_load;
-    std::vector<const char *> sounds_midi_melodic;
-    std::vector<const char *> sounds_midi_percussion;
+    std::vector<std::string> sounds_custom;
+    std::vector<std::string> effects;
+    std::vector<std::string> tracks_load;
+    std::vector<std::string> sounds_midi_melodic;
+    std::vector<std::string> sounds_midi_percussion;
 };
 
 typedef struct Nav
 {
     std::string name;
-    std::vector<const char *> data_array;
+    std::vector<std::string> data_array;
     struct Nav *parent;
     struct Nav **child;
-    std::vector<const char *> lcd_state;
+    std::vector<std::string> lcd_state;
     int index;
 
 } Nav;
 
 Nav *nav_init(struct nav_config *cfg);
 
-std::vector<const char *> octaves = {"-2 LOWEST", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8 HIGHEST"};
-std::vector<const char *> note_names = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+std::vector<std::string> octaves = {"-2 LOWEST", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8 HIGHEST"};
+std::vector<std::string> note_names = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
 #else // unsafe - old
 
@@ -94,7 +94,7 @@ void nav_add(Nav *node);
 #if USING_SAFE_STRINGS == 1
 
 void array_scroll(Nav *nav, int direction);
-std::string format_row(std::vector<const char *> data_array, int index, int format);
+std::string format_row(std::vector<std::string> data_array, int index, int format);
 std::string tracks_update(void);
 
 #else

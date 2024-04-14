@@ -503,8 +503,8 @@ int midi_init(void);
 
 #if USING_SAFE_STRINGS == 1 // safe - new
 
-std::vector<const char *> fetch_midi_melodic_sounds(void);
-std::vector<const char *> fetch_midi_percussion_sounds(void);
+std::vector<std::string> fetch_midi_melodic_sounds(void);
+std::vector<std::string> fetch_midi_percussion_sounds(void);
 #else // unsafe - old
 
 array_with_size *midi_melodic_sound_list = new array_with_size;

@@ -16,11 +16,11 @@
 
 #if USING_SAFE_STRINGS == 1 // safe - new
 
-std::vector<const char *> track_list;
+std::vector<std::string> track_list;
 
 typedef struct array_with_size
 {
-    std::vector<const char *> array;
+    std::vector<std::string> array;
 } array_with_size;
 
 typedef struct Track
@@ -37,10 +37,12 @@ typedef struct Track
     std::deque<struct Sound> cached_sounds;
 } Track;
 
-std::vector<const char *> sd_fetch_sounds(void);
-std::vector<const char *> sd_fetch_tracks(void);
+std::vector<std::string> sd_fetch_sounds(void);
+std::vector<std::string> sd_fetch_tracks(void);
 bool find_sd_sound(std::string filename);
 int sd_delete_track(std::string filename);
+void read_track(std::string filename, Track *config);
+void save_track(std::string filename, Track *config);
 
 #else // unsafe - old
 
@@ -70,6 +72,8 @@ array_with_size *sd_fetch_sounds(void);
 array_with_size *sd_fetch_tracks(void);
 bool find_sd_sound(const char *filename);
 int sd_delete_track(const char *filename);
+void read_track(const char *filename, Track *config);
+void save_track(const char *filename, Track *config);
 
 #endif
 
@@ -84,8 +88,6 @@ void printDirectory(File dir, int numSpaces);
 void printSpaces(int num);
 void printTime(const DateTimeFields tm);
 
-void read_track(const char *filename, Track *config);
-void save_track(const char *filename, Track *config);
 void print_JSON(const char *filename);
 
 int free_track(Track *track);

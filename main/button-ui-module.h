@@ -7,6 +7,10 @@
 #ifndef BUTTON_UI_MODULE_H
 #define BUTTON_UI_MODULE_H
 
+#ifndef USING_CDR_PCB
+#define USING_CDR_PCB 1
+#endif
+
 #define TEMPO_KNOB_MIN 20
 #define TEMPO_KNOB_MAX 150
 #define SMOOTHING_SAMPLES 100

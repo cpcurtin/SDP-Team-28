@@ -7,9 +7,9 @@
 #include "effect-module.h"
 
 #if USING_SAFE_STRINGS == 1 // safe - new
-std::vector<const char *> fetch_effects(void)
+std::vector<std::string> fetch_effects(void)
 {
-    std::vector<const char *> nav_effects = {"effect1", "effect2"};
+    std::vector<std::string> nav_effects = {"effect1", "effect2"};
     return nav_effects;
 }
 

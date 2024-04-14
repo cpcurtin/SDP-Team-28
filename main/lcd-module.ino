@@ -34,24 +34,23 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 
 #if USING_SAFE_STRINGS == 1 // safe - new
 
-void lcd_display(LiquidCrystal_I2C *lcd, std::vector<const char *> print_arr)
+void lcd_display(LiquidCrystal_I2C *lcd, std::vector<std::string> print_arr)
 {
   lcd->clear();
 
+  Serial.println("XXXXLCD DISPLAYXXXXX");
   for (int row = 0; row < LCD_ROWS - 1; row++)
   {
     lcd->setCursor(0, row); // set cursor to row 0
-
-    lcd->print(print_arr[row]); // print to row 0
+    Serial.println(print_arr[row].c_str());
+    lcd->print(print_arr[row].c_str()); // print to row 0
   }
+  Serial.println("XXXXXXXXXXXXXXXXXXXX");
 
   lcd->home();
 }
 
-#include <string>
-#include <vector>
-
-void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<const char *> print_arr)
+void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std::string> print_arr)
 {
   splash_screen_active = true;
   state_splash_screen.clear();
@@ -89,12 +88,14 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<con
   }
 
   lcd->clear();
-
+  Serial.println("XXXXXXXSPLASHXXXXXXX");
   for (size_t row = 0; row < state_splash_screen.size(); row++)
   {
-    lcd->setCursor(0, row);               // Set cursor to current row
-    lcd->print(state_splash_screen[row]); // Print current row
+    lcd->setCursor(0, row); // Set cursor to current row
+    Serial.println(state_splash_screen[row].c_str());
+    lcd->print(state_splash_screen[row].c_str()); // Print current row
   }
+  Serial.println("XXXXXXXXXXXXXXXXXXXX");
 
   lcd->home();
 }

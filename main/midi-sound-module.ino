@@ -31,16 +31,16 @@ int midi_init(void)
 
 #if USING_SAFE_STRINGS == 1 // safe - new
 
-std::vector<const char *> fetch_midi_melodic_sounds(void)
+std::vector<std::string> fetch_midi_melodic_sounds(void)
 {
   constexpr int array_size = sizeof(midi_melodic_sounds) / sizeof(midi_melodic_sounds[0]);
-  return std::vector<const char *>(midi_melodic_sounds, midi_melodic_sounds + array_size);
+  return std::vector<std::string>(midi_melodic_sounds, midi_melodic_sounds + array_size);
 }
 
-std::vector<const char *> fetch_midi_percussion_sounds(void)
+std::vector<std::string> fetch_midi_percussion_sounds(void)
 {
   constexpr int array_size = sizeof(midi_percussion_sounds) / sizeof(midi_percussion_sounds[0]);
-  return std::vector<const char *>(midi_percussion_sounds, midi_percussion_sounds + array_size);
+  return std::vector<std::string>(midi_percussion_sounds, midi_percussion_sounds + array_size);
 }
 
 #else // unsafe - old

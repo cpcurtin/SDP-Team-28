@@ -6,78 +6,6 @@
  */
 #include "measure-module.h"
 
-int measure_palette_init(void)
-{
-    // memset(empty_sound.filename, 0, sizeof(empty_sound.filename));
-    empty_sound.filename = nullptr;
-
-    // SET DEFAULT LAST STEP
-    active_step = &(current_measure->beat_list[0].step_list[0]);
-    last_step = &(current_measure->beat_list[3].step_list[5]);
-    temp_last_step = 5;
-    temp_last_beat = 3;
-
-    // INIT PALETTE
-    for (int i = 0; i < PALETTE_SIZE; i++)
-    {
-        testing_palette[i] = {-1, -1, -1, nullptr, "", true};
-    }
-
-    return 0;
-}
-
-Measure *measure_create(int id)
-{
-
-    Measure *temp_measure = new Measure;
-    Beat *temp_beat;
-    Step *temp_step;
-    Sound *temp_sound;
-
-    // INIT STARTING MEASURE
-    temp_measure->active_beats = MAX_BEATS;
-    temp_measure->id = id;
-    temp_measure->step = 0;
-    temp_measure->beat = 0;
-    temp_measure->effect_mode = false;
-
-    for (int i = 0; i < MAX_BEATS; i++)
-    {
-
-        // Initialize measure beats
-        temp_beat = &(temp_measure->beat_list[i]);
-        temp_beat->active_steps = MAX_STEPS;
-        temp_beat->id = i;
-
-        for (int j = 0; j < MAX_STEPS; j++)
-        {
-
-            // Initialize beat steps
-            temp_step = &(temp_beat->step_list[j]);
-            temp_step->active_sounds = 0;
-            temp_step->id = (MAX_STEPS * i) + j;
-            for (int k = 0; k < MAX_STEP_SOUNDS; k++)
-            {
-
-                // Initialize beat steps
-                temp_sound = &(temp_step->sound_list[k]);
-                temp_sound->bank = -1;
-                temp_sound->instrument = -1;
-                temp_sound->note = -1;
-                temp_sound->sd_cached_sound = nullptr;
-                temp_sound->filename = nullptr;
-                // memset(temp_sound->filename, 0, sizeof(temp_sound->filename));
-                temp_sound->empty = true;
-                // temp_sound = empty_sound;
-            }
-        }
-    }
-    // SET DEFAULT LAST STEP
-    temp_measure->current_step = temp_measure->beat_list[0].step_list[0];
-    temp_measure->prior_step = temp_measure->beat_list[3].step_list[5];
-    return temp_measure;
-}
-
 Step *button_to_step(Measure *measure, int actuated_button[])
 {
     if (actuated_button[ROW] < 4 && actuated_button[COLUMN] < 6)
@@ -106,7 +34,6 @@ Step *next_step(Measure *measure)
 }
 Step *previous_step(Measure *measure)
 {
-    // bool measure_change = false;
     measure->step--;
     if ((measure->step < 0) || (measure->step >= measure->beat_list[measure->beat].active_steps))
     {
@@ -116,14 +43,9 @@ Step *previous_step(Measure *measure)
         {
 
             measure->beat = measure->active_beats - 1;
-            // measure_change = true;
         }
         measure->step = measure->beat_list[measure->beat].active_steps - 1;
     }
-    // if (measure_change)
-    // {
-    //     current_measure =
-    // }
 
     return &(measure->beat_list[measure->beat].step_list[measure->step]);
 }
@@ -256,6 +178,76 @@ int add_remove_measure_sound(Measure *measure)
 
 #if USING_SAFE_STRINGS == 1 // safe - new
 
+// Function to initialize measure palette
+int measure_palette_init(void)
+{
+
+    // SET DEFAULT LAST STEP
+    active_step = &(current_measure->beat_list[0].step_list[0]);
+    last_step = &(current_measure->beat_list[3].step_list[5]);
+    temp_last_step = 5;
+    temp_last_beat = 3;
+
+    // INIT PALETTE
+    for (int i = 0; i < PALETTE_SIZE; i++)
+    {
+        testing_palette[i] = {-1, -1, -1, nullptr, "", true};
+    }
+
+    return 0;
+}
+
+Measure *measure_create(int id)
+{
+
+    Measure *temp_measure = new Measure;
+    Beat *temp_beat;
+    Step *temp_step;
+    Sound *temp_sound;
+
+    // INIT STARTING MEASURE
+    temp_measure->active_beats = MAX_BEATS;
+    temp_measure->id = id;
+    temp_measure->step = 0;
+    temp_measure->beat = 0;
+    temp_measure->effect_mode = false;
+
+    for (int i = 0; i < MAX_BEATS; i++)
+    {
+
+        // Initialize measure beats
+        temp_beat = &(temp_measure->beat_list[i]);
+        temp_beat->active_steps = MAX_STEPS;
+        temp_beat->id = i;
+
+        for (int j = 0; j < MAX_STEPS; j++)
+        {
+
+            // Initialize beat steps
+            temp_step = &(temp_beat->step_list[j]);
+            temp_step->active_sounds = 0;
+            temp_step->id = (MAX_STEPS * i) + j;
+            for (int k = 0; k < MAX_STEP_SOUNDS; k++)
+            {
+
+                // Initialize beat steps
+                temp_sound = &(temp_step->sound_list[k]);
+                temp_sound->bank = -1;
+                temp_sound->instrument = -1;
+                temp_sound->note = -1;
+                temp_sound->sd_cached_sound = nullptr;
+                temp_sound->filename = "";
+                temp_sound->empty = true;
+                // temp_sound = empty_sound;
+            }
+        }
+    }
+    // SET DEFAULT LAST STEP
+    temp_measure->current_step = temp_measure->beat_list[0].step_list[0];
+    temp_measure->prior_step = temp_measure->beat_list[3].step_list[5];
+    return temp_measure;
+}
+
 void print_step(Step *step)
 {
 
@@ -322,10 +314,29 @@ void print_palette(int palette_index)
         Serial.println(testing_palette[palette_index].empty);
     }
 }
+
 #else // unsafe - old
 
 void print_step(Step *step)
 {
+    int measure_palette_init(void)
+    {
+        empty_sound.filename = nullptr;
+
+        // SET DEFAULT LAST STEP
+        active_step = &(current_measure->beat_list[0].step_list[0]);
+        last_step = &(current_measure->beat_list[3].step_list[5]);
+        temp_last_step = 5;
+        temp_last_beat = 3;
+
+        // INIT PALETTE
+        for (int i = 0; i < PALETTE_SIZE; i++)
+        {
+            testing_palette[i] = {-1, -1, -1, nullptr, "", true};
+        }
+
+        return 0;
+    }
 
     Serial.println("\n\n");
     Serial.print("Beat: ");
@@ -389,6 +400,58 @@ void print_palette(int palette_index)
         Serial.print("\tE: ");
         Serial.println(testing_palette[palette_index].empty);
     }
+}
+
+Measure *measure_create(int id)
+{
+
+    Measure *temp_measure = new Measure;
+    Beat *temp_beat;
+    Step *temp_step;
+    Sound *temp_sound;
+
+    // INIT STARTING MEASURE
+    temp_measure->active_beats = MAX_BEATS;
+    temp_measure->id = id;
+    temp_measure->step = 0;
+    temp_measure->beat = 0;
+    temp_measure->effect_mode = false;
+
+    for (int i = 0; i < MAX_BEATS; i++)
+    {
+
+        // Initialize measure beats
+        temp_beat = &(temp_measure->beat_list[i]);
+        temp_beat->active_steps = MAX_STEPS;
+        temp_beat->id = i;
+
+        for (int j = 0; j < MAX_STEPS; j++)
+        {
+
+            // Initialize beat steps
+            temp_step = &(temp_beat->step_list[j]);
+            temp_step->active_sounds = 0;
+            temp_step->id = (MAX_STEPS * i) + j;
+            for (int k = 0; k < MAX_STEP_SOUNDS; k++)
+            {
+
+                // Initialize beat steps
+                temp_sound = &(temp_step->sound_list[k]);
+                temp_sound->bank = -1;
+                temp_sound->instrument = -1;
+                temp_sound->note = -1;
+                temp_sound->sd_cached_sound = nullptr;
+                temp_sound->filename = nullptr;
+                // memset(temp_sound->filename, 0, sizeof(temp_sound->filename));
+                temp_sound->empty = true;
+                // temp_sound = empty_sound;
+            }
+        }
+    }
+    // SET DEFAULT LAST STEP
+    temp_measure->current_step = temp_measure->beat_list[0].step_list[0];
+    temp_measure->prior_step = temp_measure->beat_list[3].step_list[5];
+    return temp_measure;
 }
 #endif
 

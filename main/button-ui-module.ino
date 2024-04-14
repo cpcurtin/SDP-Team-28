@@ -16,9 +16,7 @@ int dpad_init()
 
   return 0;
 }
-#endif
-
-#if USING_CDR_PCB == 0 // New design uses internal pullup
+#else // regular
 int dpad_init()
 {
   pinMode(BUTTON_DPAD_LEFT, INPUT_PULLUP);

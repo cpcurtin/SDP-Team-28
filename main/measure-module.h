@@ -27,6 +27,10 @@
 
 #define MIDI_NULL -1
 
+#define DEFAULT_LAST_STEP_INDEX 0
+#define DEFAULT_LAST_BEAT_INDEX 3
+#define DEFAULT_LAST_STEP 5
+
 #if USING_SAFE_STRINGS == 1 // safe - new
 
 typedef struct Sound
@@ -49,6 +53,8 @@ typedef struct Sound
                empty == other.empty;
     }
 } Sound;
+
+Sound empty_sound = {-1, -1, -1, nullptr, "", true};
 #else // unsafe - old
 
 typedef struct Sound
@@ -71,6 +77,7 @@ typedef struct Sound
                empty == other.empty;
     }
 } Sound;
+Sound empty_sound = {-1, -1, -1, nullptr, "", true};
 #endif
 
 typedef struct Step
@@ -111,8 +118,6 @@ Sound temp_adding_sound;
 Sound testing_palette[PALETTE_SIZE];
 Sound new_sound;
 
-Sound empty_sound = {-1, -1, -1, nullptr, "", true};
-
 bool new_sound_assignment = false;
 bool measure_edit = false;
 
@@ -137,6 +142,7 @@ int stop_step(Step *step_end);
 int play_step(Step *step_play);
 float step_interval_calc(Measure *measure);
 int add_remove_measure_sound(Measure *measure);
+
 #if USING_SAFE_STRINGS == 1 // safe - new
 void print_step(Step *step);
 void print_palette(int palette_index);

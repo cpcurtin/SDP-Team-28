@@ -115,7 +115,7 @@ void setup()
 /* Main subroutine: follow software block diagram */
 void loop()
 {
-
+  // Serial.println(".");
 #if USING_NEW_DS == 1
   if (step_timer.check() == 1)
   {
@@ -123,6 +123,7 @@ void loop()
     last_step = active_step;
     Serial.println("testing 1");
     temp_last_step = current_measure->step;
+    Serial.println("testing x");
     temp_last_beat = current_measure->beat;
     Serial.println("testing 2");
 
@@ -330,7 +331,6 @@ int serial_init(void)
   {
     ; // wait for serial port to connect.
   }
-  Serial.println("\n\n\n\n\nSerial Initialized<<<<<<<<<<<<<<");
   return 0;
 }
 

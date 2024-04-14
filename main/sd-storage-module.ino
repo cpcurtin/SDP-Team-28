@@ -10,18 +10,12 @@
 
 int sd_init(void)
 {
-  const int chipSelect = BUILTIN_SDCARD;
 
-  // Serial.print("Initializing SD card...");
-
-  if (!SD.begin(chipSelect))
+  if (!SD.begin(BUILTIN_SDCARD))
   {
     Serial.println("initialization failed!");
     return 1;
   }
-  Serial.println("initialization done.");
-
-  // File root = SD.open("/");
   return 0;
 }
 
@@ -29,7 +23,16 @@ int sd_init(void)
 
 int track_init(void)
 {
-  Track *new_track = new Track;
+
+  // Allocate memory for the new Track
+  Track *new_track = new (std::nothrow) Track;
+  if (!new_track)
+  {
+    Serial.println("Error: Memory allocation failed for Track.");
+    return -1;
+  }
+
+  // Initialize the Track members
   new_track->filename = "DEFAULT.json";
   new_track->id = 0;
   new_track->bpm = 120;
@@ -37,23 +40,33 @@ int track_init(void)
   new_track->measure_beats = 4;
   new_track->measure_steps = 6;
   new_track->current_measure_id = 0;
-  new_track->measure_list = new Measure[new_track->active_measures];
 
-  // Initialize the measure_list
-  // Example initialization for the id of each measure
+  // Allocate memory for the measure_list
+  new_track->measure_list = new (std::nothrow) Measure[new_track->active_measures];
+  if (!new_track->measure_list)
+  {
+    Serial.println("Error: Memory allocation failed for Measure list.");
+    delete new_track; // Free allocated memory
+    return -1;
+  }
+
+  // Create measures and add them to the measure_list
   for (int i = 0; i < new_track->active_measures; i++)
   {
+
     new_track->measure_list[i] = *measure_create(i);
   }
-  // new_track->cached_sounds = new std::deque<struct Sound>;
+
   current_measure = &(new_track->measure_list[new_track->current_measure_id]);
   current_track = new_track;
-  return 0;
+  current_track->current_measure = current_measure;
+
+  return 0; // Indicate success
 }
 
-std::vector<const char *> sd_fetch_sounds(void)
+std::vector<std::string> sd_fetch_sounds(void)
 {
-  std::vector<const char *> filenames;
+  std::vector<std::string> filenames;
 
   File root = SD.open(CUSTOM_SOUNDS_DIRECTORY);
   if (!root)
@@ -88,9 +101,9 @@ std::vector<const char *> sd_fetch_sounds(void)
   return filenames;
 }
 
-std::vector<const char *> sd_fetch_tracks(void)
+std::vector<std::string> sd_fetch_tracks(void)
 {
-  std::vector<const char *> filenames;
+  std::vector<std::string> filenames;
 
   File root = SD.open(TRACKS_DIRECTORY);
   if (!root)
@@ -125,12 +138,12 @@ std::vector<const char *> sd_fetch_tracks(void)
   return filenames;
 }
 
-void read_track(const char *filename, Track *config)
+void read_track(std::string filename, Track *config)
 {
   bool file_found = false;
   bool already_cached = false;
 
-  std::string full_path = TRACKS_DIRECTORY + std::string(filename);
+  std::string full_path = TRACKS_DIRECTORY + filename;
   File file = SD.open(full_path.c_str());
 
   // Allocate a temporary JsonDocument
@@ -327,9 +340,9 @@ void read_track(const char *filename, Track *config)
 }
 
 // Saves the configuration to a file
-void save_track(const char *filename, Track *config)
+void save_track(std::string filename, Track *config)
 {
-  std::string full_path = TRACKS_DIRECTORY + std::string(filename);
+  std::string full_path = TRACKS_DIRECTORY + filename;
 
   SD.remove(full_path.c_str());
   File file = SD.open(full_path.c_str(), FILE_WRITE);

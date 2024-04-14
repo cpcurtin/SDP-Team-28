@@ -37,7 +37,7 @@ int active_palette_effects[3] = {DOUBLE_REPEAT, EFFECT_REPLAY_RESET, EFFECT_REVE
 // TEMMP
 
 #if USING_SAFE_STRINGS == 1 // safe - new
-std::vector<const char *> fetch_effects();
+std::vector<std::string> fetch_effects();
 #else // unsafe - old
 array_with_size *effect_list = new array_with_size;
 array_with_size *fetch_effects(void);

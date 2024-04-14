@@ -11,6 +11,10 @@
 #define USING_SAFE_STRINGS 1
 #endif
 
+#ifndef USING_MAIN_PCB
+#define USING_MAIN_PCB 1
+#endif
+
 #include <Audio.h>
 #include <Wire.h>
 #include <SPI.h>
