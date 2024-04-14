@@ -7,6 +7,10 @@
 #ifndef CUSTOM_SOUND_MODULE_H
 #define CUSTOM_SOUND_MODULE_H
 
+#ifndef USING_SAFE_STRINGS
+#define USING_SAFE_STRINGS 1
+#endif
+
 #include <Audio.h>
 #include <Wire.h>
 #include <SPI.h>
@@ -105,6 +109,11 @@ int dac_init(void);
 int playFile(newdigate::audiosample *cached_sound);
 newdigate::audiosample *cache_sd_sound(const char *filename);
 void stopFile(int mixer);
+
+#if USING_SAFE_STRINGS == 1 // safe - new
 int free_cached_sounds(Track *track);
+#else // unsafe - old
+int free_cached_sounds(Track *track);
+#endif
 
 #endif // CUSTOM_SOUND_MODULE_H

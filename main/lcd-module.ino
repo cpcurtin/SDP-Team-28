@@ -32,6 +32,75 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
   return lcd;
 }
 
+#if USING_SAFE_STRINGS == 1 // safe - new
+
+void lcd_display(LiquidCrystal_I2C *lcd, std::vector<const char *> print_arr)
+{
+  lcd->clear();
+
+  for (int row = 0; row < LCD_ROWS - 1; row++)
+  {
+    lcd->setCursor(0, row); // set cursor to row 0
+
+    lcd->print(print_arr[row]); // print to row 0
+  }
+
+  lcd->home();
+}
+
+#include <string>
+#include <vector>
+
+void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<const char *> print_arr)
+{
+  splash_screen_active = true;
+  state_splash_screen.clear();
+  std::copy(print_arr.begin(), print_arr.end(), std::back_inserter(state_splash_screen));
+
+  if (current_nav == nullptr)
+  {
+    Serial.println("size too large");
+    // Maybe find out what sounds are the largest and display them
+  }
+  else if (current_nav->name == "sounds_midi_notes")
+  {
+    if (state_splash_screen.size() >= 2)
+    {
+      state_splash_screen[1] = sounds_midi_melodic_nav->data_array[sounds_midi_melodic_nav->index];
+    }
+    if (state_splash_screen.size() >= 3)
+    {
+      state_splash_screen[2] = ("Octave:" + std::string(sounds_midi_octaves_nav->data_array[sounds_midi_octaves_nav->index]) + " Note:" + std::string(sounds_midi_notes_nav->data_array[sounds_midi_notes_nav->index])).c_str();
+    }
+  }
+  else if (current_nav->name == "sounds_midi_percussion")
+  {
+    if (state_splash_screen.size() >= 2)
+    {
+      state_splash_screen[1] = sounds_midi_percussion_nav->data_array[sounds_midi_percussion_nav->index];
+    }
+  }
+  else if (current_nav->name == "custom_sounds")
+  {
+    if (state_splash_screen.size() >= 2)
+    {
+      state_splash_screen[1] = sounds_custom_nav->data_array[sounds_custom_nav->index];
+    }
+  }
+
+  lcd->clear();
+
+  for (size_t row = 0; row < state_splash_screen.size(); row++)
+  {
+    lcd->setCursor(0, row);               // Set cursor to current row
+    lcd->print(state_splash_screen[row]); // Print current row
+  }
+
+  lcd->home();
+}
+
+#else // unsafe - old
+
 void lcd_display(LiquidCrystal_I2C *lcd, const char **print_arr)
 {
   lcd->clear();
@@ -84,9 +153,17 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, const char **pr
 
   lcd->home();
 }
+
+#endif
+
 void update_tempo(LiquidCrystal_I2C *lcd)
 {
   lcd->setCursor(0, LCD_ROWS - 1); // set cursor to row 0
-  lcd->print(tracks_update());     // print to row 0
+
+#if USING_SAFE_STRINGS == 1 // safe - new
+  lcd->print(tracks_update().c_str());
+#else // unsafe - old
+  lcd->print(tracks_update());
+#endif
   lcd->home();
 }

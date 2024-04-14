@@ -5,6 +5,7 @@
 #define USING_PSRAM 1      // 1 for teesny 4.1 with solder psram, 0 otherwise
 #define USING_NEW_DS 1     // 1 for new ds, 0 for old
 #define USING_CDR_PCB 1    // 1 for CDR board configuration, 0 for updated dpad logic
+#define USING_SAFE_STRINGS 1
 /*
 
  *       MODULOOP MAIN CONFIGURATIONS
@@ -178,6 +179,8 @@ MODULE LINKING
 #include "led-module.h"
 #include "nav-module.h"
 #include <Metro.h>
+#include <cstdlib>
+#include <string>
 
 /**************************
 DAC PIN ASSIGNMENTS

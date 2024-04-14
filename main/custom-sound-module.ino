@@ -90,6 +90,26 @@ newdigate::audiosample *cache_sd_sound(const char *filename)
   return loader.loadSample(temp_str);
 }
 
+#if USING_SAFE_STRINGS == 1 // safe - new
+int free_cached_sounds(Track *track)
+{
+  Serial.println("enter func");
+  while (track->cached_sounds.size() != 0)
+  {
+    Serial.println("loop");
+    Serial.println(track->cached_sounds.front().filename.c_str());
+    Serial.println("loop");
+
+    delete track->cached_sounds.front().sd_cached_sound;
+    Serial.println("post free");
+    track->cached_sounds.pop_front();
+    Serial.println("pop");
+  }
+  Serial.println("end");
+
+  return 0;
+}
+#else // unsafe - old
 int free_cached_sounds(Track *track)
 {
   Serial.println("enter func");
@@ -108,3 +128,4 @@ int free_cached_sounds(Track *track)
 
   return 0;
 }
+#endif

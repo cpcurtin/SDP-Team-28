@@ -254,6 +254,76 @@ int add_remove_measure_sound(Measure *measure)
     return 0;
 }
 
+#if USING_SAFE_STRINGS == 1 // safe - new
+
+void print_step(Step *step)
+{
+
+    Serial.println("\n\n");
+    Serial.print("Beat: ");
+    Serial.print(current_measure->beat);
+    Serial.print("\tStep: ");
+    Serial.println(current_measure->step);
+
+    for (int i = 0; i < MAX_STEP_SOUNDS; i++)
+    {
+
+        Serial.print("B: ");
+        Serial.print(step->sound_list[i].bank);
+        Serial.print("\tI: ");
+        Serial.print(step->sound_list[i].instrument);
+        Serial.print("\tN: ");
+        Serial.print(step->sound_list[i].note);
+        Serial.print("\tf: ");
+        Serial.print(step->sound_list[i].filename.c_str());
+        Serial.print("\tE: ");
+        Serial.print(step->sound_list[i].empty);
+
+        char str[20];
+        sprintf(str, "%p", (void *)step->sound_list[i].sd_cached_sound); // Using sprintf to format the pointer address
+        Serial.println("\tSD: " + String(str));
+    }
+}
+
+void print_palette(int palette_index)
+{
+
+    Serial.println("\n\n");
+    Serial.println("PALETTE");
+    if (palette_index >= PALETTE_SIZE)
+    {
+
+        for (int i = 0; i < PALETTE_SIZE; i++)
+        {
+
+            Serial.print("B: ");
+            Serial.print(testing_palette[i].bank);
+            Serial.print("\tI: ");
+            Serial.print(testing_palette[i].instrument);
+            Serial.print("\tN: ");
+            Serial.print(testing_palette[i].note);
+            Serial.print("\tf: ");
+            Serial.print(testing_palette[i].filename.c_str());
+            Serial.print("\tE: ");
+            Serial.println(testing_palette[i].empty);
+        }
+    }
+    else
+    {
+        Serial.print("B: ");
+        Serial.print(testing_palette[palette_index].bank);
+        Serial.print("\tI: ");
+        Serial.print(testing_palette[palette_index].instrument);
+        Serial.print("\tN: ");
+        Serial.print(testing_palette[palette_index].note);
+        Serial.print("\tf: ");
+        Serial.print(testing_palette[palette_index].filename.c_str());
+        Serial.print("\tE: ");
+        Serial.println(testing_palette[palette_index].empty);
+    }
+}
+#else // unsafe - old
+
 void print_step(Step *step)
 {
 
@@ -320,6 +390,7 @@ void print_palette(int palette_index)
         Serial.println(testing_palette[palette_index].empty);
     }
 }
+#endif
 
 void populate_default_measure(void)
 {

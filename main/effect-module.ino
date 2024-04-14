@@ -6,6 +6,15 @@
  */
 #include "effect-module.h"
 
+#if USING_SAFE_STRINGS == 1 // safe - new
+std::vector<const char *> fetch_effects(void)
+{
+    std::vector<const char *> nav_effects = {"effect1", "effect2"};
+    return nav_effects;
+}
+
+#else // unsafe - old
+
 array_with_size *fetch_effects(void)
 {
     const char **nav_effects = new const char *[2];
@@ -16,6 +25,7 @@ array_with_size *fetch_effects(void)
     effect_list->size = 2;
     return effect_list;
 }
+#endif
 
 void run_effect(int effect)
 {
