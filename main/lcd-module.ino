@@ -61,7 +61,8 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std
     Serial.println("size too large");
     // Maybe find out what sounds are the largest and display them
   }
-  else if (current_nav->name == "sounds_midi_notes")
+  // else if (current_nav->name == "sounds_midi_notes")
+  else if (current_nav->id == NAVIGATION_MIDI_NOTES)
   {
     if (state_splash_screen.size() >= 2)
     {
@@ -72,14 +73,16 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std
       state_splash_screen[2] = ("Octave:" + std::string(sounds_midi_octaves_nav->data_array[sounds_midi_octaves_nav->index]) + " Note:" + std::string(sounds_midi_notes_nav->data_array[sounds_midi_notes_nav->index])).c_str();
     }
   }
-  else if (current_nav->name == "sounds_midi_percussion")
+  // else if (current_nav->name == "sounds_midi_percussion")
+  else if (current_nav->id == NAVIGATION_SOUNDS_MIDI_PERCUSSION)
   {
     if (state_splash_screen.size() >= 2)
     {
       state_splash_screen[1] = sounds_midi_percussion_nav->data_array[sounds_midi_percussion_nav->index];
     }
   }
-  else if (current_nav->name == "custom_sounds")
+  // else if (current_nav->name == "custom_sounds")
+  else if (current_nav->id == NAVIGATION_SOUNDS_CUSTOM)
   {
     if (state_splash_screen.size() >= 2)
     {

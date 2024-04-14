@@ -11,7 +11,36 @@
 #define USING_SAFE_STRINGS 1
 #endif
 
+/*******************************************************************************
+****************************  NAVIGATION INSTANCES  ****************************
+*******************************************************************************/
+#define NAVIGATION_MAIN 0
+#define NAVIGATION_SOUNDS 1
+#define NAVIGATION_EFFECTS 2
+#define NAVIGATION_TRACKS 3
+#define NAVIGATION_TRACK_LOAD 4
+#define NAVIGATION_SET_GLOBAL_BEATS 5
+#define NAVIGATION_SET_GLOBAL_STEPS 6
+#define NAVIGATION_SET_LOCAL_STEPS 7
+#define NAVIGATION_SOUNDS_CUSTOM 8
+#define NAVIGATION_SOUNDS_MIDI 9
+#define NAVIGATION_SOUNDS_MIDI_PERCUSSION 10
+#define NAVIGATION_SOUNDS_MIDI_MELODIC 11
+#define NAVIGATION_MIDI_OCTAVES 12
+#define NAVIGATION_MIDI_NOTES 13
+/******************************************************************************/
+
+/*******************************************************************************
+***************************  LEAF SELECTION INDEXES  ***************************
+*******************************************************************************/
+#define LEAF_TRACKS_GLOBAL_STEPS 0
+#define LEAF_TRACKS_SAVE 1
+#define LEAF_TRACKS_LOAD 2
+#define LEAF_TRACKS_DELETE 3
+/******************************************************************************/
+
 #include <vector>
+#include <string>
 
 #if USING_SAFE_STRINGS == 1 // safe - new
 
@@ -26,7 +55,8 @@ struct nav_config
 
 typedef struct Nav
 {
-    std::string name;
+    // std::string name;
+    int id;
     std::vector<std::string> data_array;
     struct Nav *parent;
     struct Nav **child;
@@ -35,11 +65,9 @@ typedef struct Nav
 
 } Nav;
 
-Nav *nav_init(struct nav_config *cfg);
-
 std::vector<std::string> octaves = {"-2 LOWEST", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8 HIGHEST"};
 std::vector<std::string> note_names = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-
+// std::vector<std::string> track_list;
 #else // unsafe - old
 
 const char *octaves[] = {"-2 LOWEST", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8 HIGHEST"};
@@ -92,19 +120,20 @@ Nav *nav_selection(Nav *nav, int direction);
 
 void nav_add(Nav *node);
 #if USING_SAFE_STRINGS == 1
-
+Nav *nav_init(struct nav_config *cfg);
+void dpad_nav_routine(int dpad_pressed);
+int execute_leaf(void);
 void array_scroll(Nav *nav, int direction);
 std::string format_row(std::vector<std::string> data_array, int index, int format);
 std::string tracks_update(void);
+int track_options(void)
 
 #else
 
 void array_scroll(Nav *nav, int direction);
 const char *format_row(const char **data_array, int index, int format);
-
+void dpad_nav_routine(int dpad_pressed);
 const char *tracks_update(void);
 #endif
-
-void dpad_nav_routine(int dpad_pressed);
 
 #endif // EXAMPLE_MODULE_H

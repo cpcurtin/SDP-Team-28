@@ -178,9 +178,7 @@ MODULE LINKING
 #include "measure-module.h"
 #include "led-module.h"
 #include "nav-module.h"
-#include <Metro.h>
 #include <cstdlib>
-#include <string>
 
 /**************************
 DAC PIN ASSIGNMENTS
@@ -303,22 +301,13 @@ LiquidCrystal_I2C *lcd;
 
 char **lcd_state = new char *[LCD_ROWS];
 int lcd_index = 0;
-// Nav *sounds;
-// Nav *nav_data_structure;
-// Nav *nav_state;
-// struct palette_matrix *palette;
-// struct button_maxtrix_pin_config measure_matrix_button;
-// struct button_maxtrix_pin_config measure_matrix_led;
-// struct nav_config *nav_cfg;
 
 // const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
 const struct lcd_pin_config lcd_cfg = {LCD_I2C, LCD_ROWS, LCD_COLUMNS};
 const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
 
-// create 2D array of palette_cell structs
-
 // Metronome Definition
-Metro step_timer = Metro(100);
+
 int count_temp = 0;
 
 int mixer_1;

@@ -31,6 +31,9 @@
 #define DEFAULT_LAST_BEAT_INDEX 3
 #define DEFAULT_LAST_STEP 5
 
+#include <Metro.h>
+Metro step_timer = Metro(100);
+
 #if USING_SAFE_STRINGS == 1 // safe - new
 
 typedef struct Sound

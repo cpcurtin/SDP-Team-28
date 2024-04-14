@@ -50,4 +50,6 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, const char **pr
 #endif
 
 void update_tempo(LiquidCrystal_I2C *lcd);
+
+
 #endif // LCD_MODULE_H

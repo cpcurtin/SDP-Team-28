@@ -140,7 +140,7 @@ std::vector<std::string> sd_fetch_tracks(void)
 
 void read_track(std::string filename, Track *config)
 {
-  bool file_found = false;
+  // bool file_found = false;
   bool already_cached = false;
 
   std::string full_path = TRACKS_DIRECTORY + filename;

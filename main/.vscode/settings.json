@@ -69,5 +69,6 @@
     "type_traits": "cpp",
     "utility": "cpp",
     "cinttypes": "cpp"
-  }
+  },
+  "C_Cpp.errorSquiggles": "enabled"
 }

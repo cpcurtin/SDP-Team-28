@@ -104,12 +104,10 @@ void setup()
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
 
-  measure_palette_init();
-  step_timer.interval(60000 / (4 * 10)); // TESTING STATIC TEMPO
+  // measure_palette_init();
+  // step_timer.interval(60000 / (4 * 10)); // TESTING STATIC TEMPO
   // populate_default_measure();
-  // testing_measure.beat = 0;
-  // testing_measure.step = 0;
-  Serial.println("PROGRAM LOOP BEGINS");
+  // Serial.println("PROGRAM LOOP BEGINS");
 }
 
 /* Main subroutine: follow software block diagram */
@@ -119,13 +117,9 @@ void loop()
 #if USING_NEW_DS == 1
   if (step_timer.check() == 1)
   {
-    Serial.println("testing 0");
     last_step = active_step;
-    Serial.println("testing 1");
     temp_last_step = current_measure->step;
-    Serial.println("testing x");
     temp_last_beat = current_measure->beat;
-    Serial.println("testing 2");
 
     if (current_measure->effect_mode)
     {
@@ -136,16 +130,13 @@ void loop()
       // DEFAULT BEHAVIOR
       active_step = next_step(current_measure);
     }
-    Serial.println("testing 3");
 
     if (LED_mode == LED_DEFAULT_MODE)
     {
-
       // ON STEP, PLAY SOUNDS AND FLASH LED
       LED_Off(temp_last_beat, temp_last_step);
       LED_On(current_measure->beat, current_measure->step);
     }
-    Serial.println("testing 4");
 
     // print_step(current_measure);
     print_step(active_step);
@@ -161,16 +152,15 @@ void loop()
     else if (evenodd == 1)
     {
       current_track->bpm = current_track->bpm * 2;
-      // Serial.println(current_track->bpm);
     }
 
     if (splash_screen_active == false)
     {
       update_tempo(lcd);
     }
-    Serial.println("testing 5");
 
     // UPDATE TIMER INTERVAL
+
     step_timer.interval(step_interval_calc(current_measure));
   }
 
