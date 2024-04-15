@@ -16,7 +16,7 @@ void LED_On(int Row, int Column)
     if (Column == 8)
     {
 
-        digitalWrite(ENABLE_PIN_COLUMNS, LOW);
+        digitalWrite(ENABLE_PIN_LED, LOW);
         digitalWrite(LED_column8, HIGH);
         selectRow_LED(Row);
     }
@@ -36,7 +36,7 @@ void LED_Off(int Row, int Column)
     {
 
         digitalWrite(LED_column8, LOW);
-        digitalWrite(ENABLE_PIN_COLUMNS, HIGH);
+        digitalWrite(ENABLE_PIN_LED, HIGH);
     }
 
     selectRow_LED(7);

@@ -16,6 +16,7 @@ const int LED_column8 = 28;
 const int selectPin1_LED = 27; // select bit A
 const int selectPin2_LED = 26; // select bit B
 const int selectPin3_LED = 25; // select bit C
+const int ENABLE_PIN_LED = 24; // Enable Pin
 const int LED_rowcount = 4;
 const int LED_colcount = 9;
 int MeMat_LEDindex[][2] = {{0, 0}, {0, 1}, {0, 2}, {0, 3}, {0, 4}, {0, 5}, {1, 0}, {1, 1}, {1, 2}, {1, 3}, {1, 4}, {1, 5}, {2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}, {2, 5}, {3, 0}, {3, 1}, {3, 2}, {3, 3}, {3, 4}, {3, 5}};

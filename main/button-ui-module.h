@@ -20,7 +20,7 @@
 #define BUTTON_SELECT_PIN_1 12 // select bit A
 #define BUTTON_SELECT_PIN_2 11 // select bit B
 #define BUTTON_SELECT_PIN_3 10 // select bit C
-#define ENABLE_PIN_COLUMNS 24  // enable bit
+#define ENABLE_PIN_BUTTONS 24  // enable bit
 
 #define SELECT_ROW_PIN_1 32 // select bit A
 #define SELECT_ROW_PIN_2 31 // select bit B

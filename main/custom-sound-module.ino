@@ -109,6 +109,7 @@ void stopFile(int mixer)
     rraw_a4.stop();
   }
   */
+  }
   
 }
 newdigate::audiosample *cache_sd_sound(const char *filename)
