@@ -30,7 +30,7 @@ int dpad_init()
 
 int button_matrix_init(void)
 {
-  digitalWrite(ENABLE_PIN_COLUMNS, LOW);
+  digitalWrite(ENABLE_PIN_BUTTONS, LOW);
   digitalWrite(ENABLE_PIN_ROWS, LOW);
 
   for (int x = 0; x < MATRIX_ROWS; x++)
@@ -47,8 +47,8 @@ int button_matrix_init(void)
   pinMode(BUTTON_SELECT_PIN_1, OUTPUT);
   pinMode(BUTTON_SELECT_PIN_2, OUTPUT);
   pinMode(BUTTON_SELECT_PIN_3, OUTPUT);
-  pinMode(ENABLE_PIN_COLUMNS, OUTPUT);
-  digitalWrite(ENABLE_PIN_COLUMNS, HIGH);
+  pinMode(ENABLE_PIN_BUTTONS, OUTPUT);
+  digitalWrite(ENABLE_PIN_BUTTONS, HIGH);
 
   pinMode(selectPin1_LED, OUTPUT);
   pinMode(selectPin2_LED, OUTPUT);
@@ -128,13 +128,13 @@ void readMatrix()
     if (colIndex == 8)
     {
 
-      digitalWrite(ENABLE_PIN_COLUMNS, LOW);
+      digitalWrite(ENABLE_PIN_BUTTONS, LOW);
       pinMode(BUTTON_COLUMN_8, OUTPUT);
       digitalWrite(BUTTON_COLUMN_8, LOW);
       check_rows(colIndex);
 
       pinMode(BUTTON_COLUMN_8, INPUT_PULLUP);
-      digitalWrite(ENABLE_PIN_COLUMNS, HIGH);
+      digitalWrite(ENABLE_PIN_BUTTONS, HIGH);
     }
 
     else
