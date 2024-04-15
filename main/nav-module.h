@@ -39,9 +39,6 @@
 #define LEAF_TRACKS_DELETE 3
 /******************************************************************************/
 
-#include <vector>
-#include <string>
-
 #if USING_SAFE_STRINGS == 1 // safe - new
 
 struct nav_config
@@ -67,7 +64,7 @@ typedef struct Nav
 
 std::vector<std::string> octaves = {"-2 LOWEST", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8 HIGHEST"};
 std::vector<std::string> note_names = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-// std::vector<std::string> track_list;
+
 #else // unsafe - old
 
 const char *octaves[] = {"-2 LOWEST", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8 HIGHEST"};
@@ -95,7 +92,6 @@ typedef struct Nav
 
 } Nav;
 
-Nav *nav_init(struct nav_config *cfg);
 #endif
 
 // NAV STRUCT INITIALIZATION
@@ -117,18 +113,18 @@ Nav *sounds_midi_notes_nav = new Nav;
 struct nav_config *nav_cfg = new struct nav_config;
 // functions, extern variables, structs go here
 Nav *nav_selection(Nav *nav, int direction);
-
 void nav_add(Nav *node);
-#if USING_SAFE_STRINGS == 1
+
+#if USING_SAFE_STRINGS == 1 // safe - new
 Nav *nav_init(struct nav_config *cfg);
 void dpad_nav_routine(int dpad_pressed);
 int execute_leaf(void);
 void array_scroll(Nav *nav, int direction);
 std::string format_row(std::vector<std::string> data_array, int index, int format);
 std::string tracks_update(void);
-int track_options(void)
-
-#else
+int track_options(void);
+#else // unsafe - old
+Nav *nav_init(struct nav_config *cfg);
 
 void array_scroll(Nav *nav, int direction);
 const char *format_row(const char **data_array, int index, int format);

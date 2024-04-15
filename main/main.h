@@ -168,6 +168,9 @@ DAT3:   FLEXIO  PIN46
 /**************************
 MODULE LINKING
 **************************/
+#include <cstdlib>
+#include <vector>
+#include <string>
 
 #include "lcd-module.h"
 #include "sd-storage-module.h"
@@ -178,7 +181,6 @@ MODULE LINKING
 #include "measure-module.h"
 #include "led-module.h"
 #include "nav-module.h"
-#include <cstdlib>
 
 /**************************
 DAC PIN ASSIGNMENTS
@@ -206,8 +208,7 @@ DPAD BUTTONS PIN ASSIGNMENTS
 #define BUTTON_DPAD_DOWN 16
 #define BUTTON_DPAD_UP 15
 #define BUTTON_DPAD_RIGHT 14
-#endif
-#if USING_CDR_PCB == 0 // New design uses internal pullup
+#else
 #define BUTTON_DPAD_LEFT 14
 #define BUTTON_DPAD_DOWN 15
 #define BUTTON_DPAD_UP 16
@@ -287,19 +288,6 @@ HARDWARE CONFIGURATIONS
 #define NAV_UP -1
 #define NAV_DOWN 1
 
-// MISC
-
-/**************************
-PROGRAM STRUCTS
-**************************/
-
-/**************************
-PROGRAM VARIABLES
-**************************/
-
-LiquidCrystal_I2C *lcd;
-
-char **lcd_state = new char *[LCD_ROWS];
 int lcd_index = 0;
 
 // const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};

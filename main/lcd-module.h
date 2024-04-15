@@ -25,7 +25,7 @@ struct lcd_pin_config
 };
 
 bool splash_screen_active = false;
-
+LiquidCrystal_I2C *lcd;
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);
 
 #if USING_SAFE_STRINGS == 1 // safe - new
@@ -40,6 +40,7 @@ void lcd_display(LiquidCrystal_I2C *lcd, std::vector<std::string> print_arr);
 void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std::string> print_arr);
 
 #else // unsafe - old
+char **lcd_state = new char *[LCD_ROWS];
 
 const char **state_splash_screen = new const char *[4];
 const char *selected_sound[] = {"SELECTED SOUND:", "", "", "ASSIGN TO PALLETE"};
@@ -50,6 +51,5 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, const char **pr
 #endif
 
 void update_tempo(LiquidCrystal_I2C *lcd);
-
 
 #endif // LCD_MODULE_H

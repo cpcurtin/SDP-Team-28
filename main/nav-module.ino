@@ -17,16 +17,14 @@ Nav *nav_selection(Nav *nav, int direction)
     {
         if (nav->child != nullptr)
         {
-            nav = nav->child[nav->index];
-            return nav;
+            return nav->child[nav->index];
         }
     }
     else if (direction < 0)
     {
         if (nav->parent != nullptr)
         {
-            nav = nav->parent;
-            return nav;
+            return nav->parent;
         }
     }
     return nullptr;
@@ -37,10 +35,9 @@ void array_scroll(Nav *nav, int direction)
     // Serial.print(nav->name.c_str());
     Serial.print(" S=");
     Serial.println(nav->data_array.size());
-    int new_index;
-    // new index changes +/- and goes from end to 0
-    new_index = (nav->index + direction + nav->data_array.size()) % nav->data_array.size();
 
+    // new index changes +/- and goes from end to 0
+    int new_index = (nav->index + direction + nav->data_array.size()) % nav->data_array.size();
     nav->index = new_index;
     nav->lcd_state[0] = format_row(nav->data_array, new_index, 1).c_str();
 
@@ -54,7 +51,7 @@ void array_scroll(Nav *nav, int direction)
         }
         else
         {
-            nav->lcd_state[row] = std::string(20, ' ');
+            nav->lcd_state[row] = "                    ";
         }
     }
 }
@@ -275,8 +272,10 @@ void dpad_nav_routine(int dpad_pressed)
     switch (dpad_pressed)
     {
     case BUTTON_DPAD_LEFT:
-        if (nav_selection(nav_state, NAV_BACKWARD) != nullptr)
+    {
+        if (nav_state->parent != nullptr)
         {
+            nav_state = nav_state->parent;
             Serial.print("MOVED TO NODE:");
             Serial.println(nav_state->id);
         }
@@ -284,29 +283,43 @@ void dpad_nav_routine(int dpad_pressed)
         {
             Serial.print("ALREADY AT ROOT");
         }
+        lcd_display(lcd, nav_state->lcd_state);
         break;
+    }
     case BUTTON_DPAD_DOWN:
+    {
         array_scroll(nav_state, NAV_DOWN);
+        lcd_display(lcd, nav_state->lcd_state);
         break;
+    }
     case BUTTON_DPAD_UP:
+    {
         array_scroll(nav_state, NAV_UP);
-
+        lcd_display(lcd, nav_state->lcd_state);
         break;
+    }
+
     case BUTTON_DPAD_RIGHT:
-        if (nav_selection(nav_state, NAV_FORWARD) != nullptr)
+    {
+        if (nav_state->child != nullptr)
         {
+            nav_state = nav_state->child[nav_state->index];
             Serial.print("MOVED TO NODE:");
             Serial.println(nav_state->id);
+            lcd_display(lcd, nav_state->lcd_state);
         }
         else
         {
             Serial.print("REACHED SELECTION LEAF");
             execute_leaf();
         }
+
         break;
+    }
+
     default:
+        // lcd_display(lcd, nav_state->lcd_state);
         break;
-        lcd_display(lcd, nav_state->lcd_state);
     }
 }
 
@@ -315,13 +328,15 @@ int execute_leaf(void)
     switch (nav_state->id)
     {
     case NAVIGATION_TRACKS:
+    {
+        track_options();
         break;
+    }
     case NAVIGATION_SOUNDS_CUSTOM:
+    {
         temp_sample = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index].c_str());
         if (temp_sample != nullptr)
         {
-            dispFlag = 3;
-
             new_sound.bank = -1;
             new_sound.instrument = -1;
             new_sound.note = -1;
@@ -329,9 +344,6 @@ int execute_leaf(void)
             new_sound.sd_cached_sound = temp_sample;
 
             new_sound.filename = sounds_custom_nav->data_array[sounds_custom_nav->index];
-            // strlcpy(new_sound.filename,                                      // <- destination
-            //         sounds_custom_nav->data_array[sounds_custom_nav->index], // <- source
-            //         sizeof(new_sound.filename));
 
             lcd_splash(lcd, nav_state, selected_sound);
 
@@ -357,8 +369,9 @@ int execute_leaf(void)
         }
         nav_state = main_nav;
         break;
-
+    }
     case NAVIGATION_SOUNDS_MIDI_PERCUSSION:
+    {
         new_sound.bank = sounds_midi_nav->index;
         new_sound.instrument = midi_percussion_values[sounds_midi_percussion_nav->index];
         new_sound.note = -1;
@@ -370,16 +383,24 @@ int execute_leaf(void)
         lcd_splash(lcd, nav_state, selected_sound);
         nav_state = main_nav;
         break;
+    }
 
     case NAVIGATION_SOUNDS_MIDI_MELODIC:
+    {
         nav_state = sounds_midi_octaves_nav;
+        lcd_display(lcd, nav_state->lcd_state);
         break;
+    }
 
     case NAVIGATION_MIDI_OCTAVES:
+    {
         nav_state = sounds_midi_notes_nav;
+        lcd_display(lcd, nav_state->lcd_state);
         break;
+    }
 
     case NAVIGATION_MIDI_NOTES:
+    {
         Serial.println("MIDI SOUNDS SELECTION:");
         Serial.print("BANK: ");
         // Serial.println(((nav_state->parent)->parent)->name.c_str());
@@ -400,6 +421,29 @@ int execute_leaf(void)
         lcd_splash(lcd, nav_state, selected_sound);
         nav_state = main_nav;
         break;
+    }
+    case NAVIGATION_SET_GLOBAL_STEPS:
+    {
+        current_track->measure_steps = nav_state->index + 1;
+        for (int i = 0; i < 4; i++)
+        {
+            current_measure->beat_list[i].active_steps = current_track->measure_steps;
+        }
+        break;
+    }
+    case NAVIGATION_TRACK_LOAD:
+    {
+        Serial.println("START LOAD TRACK");
+        Serial.println("free cached sounds");
+        free_cached_sounds(current_track);
+        Serial.println("free previous track");
+        delete current_track;
+        // free_track(current_track);
+        Serial.println("load new track");
+        read_track(nav_state->data_array[nav_state->index], current_track);
+        Serial.println("RETURN LOAD TRACK");
+        break;
+    }
 
         // default:
         //     break;
@@ -413,14 +457,13 @@ int track_options(void)
     switch (nav_state->index)
     {
     case LEAF_TRACKS_GLOBAL_STEPS:
-        current_track->measure_steps = nav_state->index + 1;
-        for (int i = 0; i < 4; i++)
-        {
-            current_measure->beat_list[i].active_steps = current_track->measure_steps;
-        }
+    {
+        nav_state = tracks_set_steps_nav;
+        lcd_display(lcd, nav_state->lcd_state);
         break;
-
+    }
     case LEAF_TRACKS_SAVE:
+    {
         std::string new_track_filename = "TRACK" + std::to_string((nav_state->child[2])->data_array.size()) + ".json";
         current_track->id = (nav_state->child[2])->data_array.size();
         save_track(new_track_filename.c_str(), current_track);
@@ -430,21 +473,15 @@ int track_options(void)
         (nav_state->child[2])->index = 0;
         array_scroll(nav_state->child[2], 0);
         break;
-
+    }
     case LEAF_TRACKS_LOAD:
-
-        Serial.println("START LOAD TRACK");
-        Serial.println("free cached sounds");
-        free_cached_sounds(current_track);
-        Serial.println("free previous track");
-        delete current_track;
-        // free_track(current_track);
-        Serial.println("load new track");
-        read_track(nav_state->data_array[nav_state->index], current_track);
-        Serial.println("RETURN LOAD TRACK");
+    {
+        nav_state = tracks_load_nav;
+        lcd_display(lcd, nav_state->lcd_state);
         break;
-
+    }
     case LEAF_TRACKS_DELETE:
+    {
         std::string delete_track_filename = "TRACK" + std::to_string(current_track->id) + ".json";
         if (sd_delete_track(delete_track_filename))
         {
@@ -461,6 +498,7 @@ int track_options(void)
             read_track((nav_state->child[2])->data_array[(nav_state->child[2])->data_array.size() - 1], current_track);
         }
         break;
+    }
 
         // default:
 

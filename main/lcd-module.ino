@@ -160,14 +160,20 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, const char **pr
 
 #endif
 
+#if USING_SAFE_STRINGS == 1 // safe - new
 void update_tempo(LiquidCrystal_I2C *lcd)
 {
   lcd->setCursor(0, LCD_ROWS - 1); // set cursor to row 0
-
-#if USING_SAFE_STRINGS == 1 // safe - new
   lcd->print(tracks_update().c_str());
-#else // unsafe - old
-  lcd->print(tracks_update());
-#endif
   lcd->home();
 }
+#else // unsafe - old
+
+void update_tempo(LiquidCrystal_I2C *lcd)
+{
+  lcd->setCursor(0, LCD_ROWS - 1); // set cursor to row 0
+  lcd->print(tracks_update());     // print to row 0
+  lcd->home();
+}
+
+#endif

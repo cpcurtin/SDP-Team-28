@@ -1,5 +1,4 @@
 #include "main.h"
-
 /*
 
 PERFORMANCE TESTING
@@ -113,7 +112,6 @@ void setup()
 /* Main subroutine: follow software block diagram */
 void loop()
 {
-  // Serial.println(".");
 #if USING_NEW_DS == 1
   if (step_timer.check() == 1)
   {

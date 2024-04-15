@@ -27,6 +27,7 @@ int dpad_init()
   return 0;
 }
 #endif
+
 int button_matrix_init(void)
 {
   digitalWrite(ENABLE_PIN_COLUMNS, LOW);
