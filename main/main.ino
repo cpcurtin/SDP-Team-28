@@ -136,8 +136,9 @@ void loop()
       LED_On(current_measure->beat, current_measure->step);
     }
 
-    // print_step(current_measure);
+#if DEBUG_PRINT == 1 // VERBOSE PRINT
     print_step(active_step);
+#endif
 
     stop_step(last_step);
     play_step(active_step);

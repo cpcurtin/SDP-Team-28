@@ -6,6 +6,7 @@
 #define USING_NEW_DS 1     // 1 for new ds, 0 for old
 #define USING_CDR_PCB 1    // 1 for CDR board configuration, 0 for updated dpad logic
 #define USING_SAFE_STRINGS 1
+#define DEBUG_PRINT 1
 /*
 
  *       MODULOOP MAIN CONFIGURATIONS
