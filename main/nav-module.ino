@@ -112,7 +112,6 @@ Nav *nav_init(struct nav_config *cfg)
 
     // Main presets
     std::vector<std::string> main_preset_options = {"Sounds", "Effects", "Tracks"};
-
     // main_nav->name = "main";
     main_nav->id = NAVIGATION_MAIN;
     main_nav->data_array = std::move(main_preset_options);
@@ -124,7 +123,6 @@ Nav *nav_init(struct nav_config *cfg)
 
     // Sounds presets
     std::vector<std::string> sounds_preset_options = {"Custom Sounds", "MIDI Sounds"};
-
     // sounds_nav->name = "sounds";
     sounds_nav->id = NAVIGATION_SOUNDS;
     sounds_nav->data_array = std::move(sounds_preset_options);
@@ -135,7 +133,6 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(sounds_nav, 0);
 
     // Effects presets
-
     // effects_nav->name = "effects";
     effects_nav->id = NAVIGATION_EFFECTS;
     effects_nav->data_array = cfg->effects;
@@ -146,7 +143,7 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(effects_nav, 0);
 
     // Tracks presets
-    std::vector<std::string> tracks_preset_options = {"Set # steps", "Save Track", "Load Track", "Delete Track"};
+    std::vector<std::string> tracks_preset_options = {"Save Track", "Load Track", "Delete Track", "Set # beats", "Set # global steps", "Set # local steps"};
 
     // tracks_nav->name = "tracks";
     tracks_nav->id = NAVIGATION_TRACKS;
@@ -158,7 +155,6 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(tracks_nav, 0);
 
     // Tracks Load presets
-
     // tracks_load_nav->name = "tracks_load";
     tracks_load_nav->id = NAVIGATION_TRACK_LOAD;
     tracks_load_nav->data_array = cfg->tracks_load;
@@ -168,11 +164,19 @@ Nav *nav_init(struct nav_config *cfg)
     tracks_load_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(tracks_load_nav, 0);
 
-    // Tracks Set Steps presets
-    std::vector<std::string> tracks_preset_options_steps = {"Step", "Step", "Step", "Step", "Step", "Step"};
+    // Tracks Set Global Beats presets
+    std::vector<std::string> tracks_preset_options_beats = {" Beat", " Beat", " Beat", " Beat"};
+    tracks_set_beats_nav->id = NAVIGATION_SET_BEATS;
+    tracks_set_beats_nav->data_array = std::move(tracks_preset_options_beats);
+    tracks_set_beats_nav->parent = tracks_nav;
+    tracks_set_beats_nav->child = nullptr;
+    tracks_set_beats_nav->index = 0;
+    tracks_set_beats_nav->lcd_state.resize(LCD_ROWS);
+    array_scroll(tracks_set_beats_nav, 0);
 
-    // tracks_set_steps_nav->name = "tracks_set_steps";
-    tracks_set_steps_nav->id = NAVIGATION_SET_GLOBAL_STEPS;
+    // Tracks Set Global Steps presets
+    std::vector<std::string> tracks_preset_options_steps = {"Step", "Step", "Step", "Step", "Step", "Step"};
+    tracks_set_steps_nav->id = NAVIGATION_SET_STEPS;
     tracks_set_steps_nav->data_array = std::move(tracks_preset_options_steps);
     tracks_set_steps_nav->parent = tracks_nav;
     tracks_set_steps_nav->child = nullptr;
@@ -181,7 +185,6 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(tracks_set_steps_nav, 0);
 
     // Custom Sounds presets
-
     // sounds_custom_nav->name = "custom_sounds";
     sounds_custom_nav->id = NAVIGATION_SOUNDS_CUSTOM;
     sounds_custom_nav->data_array = cfg->sounds_custom;
@@ -193,7 +196,6 @@ Nav *nav_init(struct nav_config *cfg)
 
     // MIDI Sounds presets
     std::vector<std::string> midi_preset_options = {"Percussion Instruments", "Melodic Instruments"};
-
     // sounds_midi_nav->name = "sounds_midi";
     sounds_midi_nav->id = NAVIGATION_SOUNDS_MIDI;
     sounds_midi_nav->data_array = std::move(midi_preset_options);
@@ -204,7 +206,6 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(sounds_midi_nav, 0);
 
     // MIDI Percussion presets
-
     // sounds_midi_percussion_nav->name = "sounds_midi_percussion";
     sounds_midi_percussion_nav->id = NAVIGATION_SOUNDS_MIDI_PERCUSSION;
     sounds_midi_percussion_nav->data_array = cfg->sounds_midi_percussion;
@@ -215,7 +216,6 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(sounds_midi_percussion_nav, 0);
 
     // MIDI Melodic presets
-
     // sounds_midi_melodic_nav->name = "sounds_midi_melodic";
     sounds_midi_melodic_nav->id = NAVIGATION_SOUNDS_MIDI_MELODIC;
     sounds_midi_melodic_nav->data_array = cfg->sounds_midi_melodic;
@@ -226,7 +226,6 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(sounds_midi_melodic_nav, 0);
 
     // MIDI Octaves presets
-
     // sounds_midi_octaves_nav->name = "sounds_midi_octaves";
     sounds_midi_octaves_nav->id = NAVIGATION_MIDI_OCTAVES;
     sounds_midi_octaves_nav->data_array = std::move(octaves);
@@ -237,7 +236,6 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(sounds_midi_octaves_nav, 0);
 
     // MIDI Notes presets
-
     // sounds_midi_notes_nav->name = "sounds_midi_notes";
     sounds_midi_notes_nav->id = NAVIGATION_MIDI_NOTES;
     sounds_midi_notes_nav->data_array = std::move(note_names);
@@ -409,13 +407,39 @@ int execute_leaf(void)
         nav_state = main_nav;
         break;
     }
-    case NAVIGATION_SET_GLOBAL_STEPS:
+    case NAVIGATION_SET_BEATS:
     {
-        Serial.println("NAVIGATION_SET_GLOBAL_STEPS");
-        current_track->measure_steps = nav_state->index + 1;
-        for (int i = 0; i < 4; i++)
+        Serial.println("NAVIGATION_SET_BEATS");
+
+        if (tracks_nav->index == LEAF_TRACKS_GLOBAL_BEATS)
         {
-            current_measure->beat_list[i].active_steps = current_track->measure_steps;
+            current_track->measure_beats = tracks_set_beats_nav->index + 1;
+        }
+        else if (tracks_nav->index == LEAF_TRACKS_LOCAL_STEPS)
+        {
+            nav_state = tracks_set_steps_nav;
+            lcd_display(lcd, nav_state->lcd_state);
+        }
+
+        break;
+    }
+    case NAVIGATION_SET_STEPS:
+    {
+        Serial.println("NAVIGATION_SET_STEPS");
+        if (tracks_nav->index == LEAF_TRACKS_GLOBAL_STEPS)
+        {
+            current_track->measure_steps = nav_state->index + 1;
+            for (int i = 0; i < 4; i++)
+            {
+                current_measure->beat_list[i].active_steps = current_track->measure_steps;
+            }
+        }
+        else if (tracks_nav->index == LEAF_TRACKS_LOCAL_STEPS)
+        {
+            nav_state = tracks_set_steps_nav;
+
+            // COMPLETE
+            current_measure->beat_list[tracks_set_beats_nav->index].active_steps = tracks_set_steps_nav->index;
         }
         break;
     }
@@ -431,7 +455,6 @@ int execute_leaf(void)
         break;
     }
     }
-
     return 0;
 }
 int track_options(void)
@@ -439,13 +462,7 @@ int track_options(void)
 
     switch (nav_state->index)
     {
-    case LEAF_TRACKS_GLOBAL_STEPS:
-    {
-        Serial.println("LEAF_TRACKS_GLOBAL_STEPS");
-        nav_state = tracks_set_steps_nav;
-        lcd_display(lcd, nav_state->lcd_state);
-        break;
-    }
+
     case LEAF_TRACKS_SAVE:
     {
         Serial.println("LEAF_TRACKS_SAVE");
@@ -493,6 +510,29 @@ int track_options(void)
                 read_track(tracks_load_nav->data_array[0], current_track);
             }
         }
+        break;
+    }
+    case LEAF_TRACKS_GLOBAL_BEATS:
+    {
+        Serial.println("LEAF_TRACKS_GLOBAL_BEATS");
+        nav_state = tracks_set_beats_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        break;
+    }
+    case LEAF_TRACKS_GLOBAL_STEPS:
+    {
+        Serial.println("LEAF_TRACKS_GLOBAL_STEPS");
+        tracks_set_steps_nav->parent = tracks_nav;
+        nav_state = tracks_set_steps_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        break;
+    }
+    case LEAF_TRACKS_LOCAL_STEPS:
+    {
+        Serial.println("LEAF_TRACKS_LOCAL_STEPS");
+        tracks_set_steps_nav->parent = tracks_set_beats_nav;
+        nav_state = tracks_set_beats_nav;
+        lcd_display(lcd, nav_state->lcd_state);
         break;
     }
     }

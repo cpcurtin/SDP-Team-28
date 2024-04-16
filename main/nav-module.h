@@ -19,24 +19,26 @@
 #define NAVIGATION_EFFECTS 2
 #define NAVIGATION_TRACKS 3
 #define NAVIGATION_TRACK_LOAD 4
-#define NAVIGATION_SET_GLOBAL_BEATS 5
-#define NAVIGATION_SET_GLOBAL_STEPS 6
-#define NAVIGATION_SET_LOCAL_STEPS 7
-#define NAVIGATION_SOUNDS_CUSTOM 8
-#define NAVIGATION_SOUNDS_MIDI 9
-#define NAVIGATION_SOUNDS_MIDI_PERCUSSION 10
-#define NAVIGATION_SOUNDS_MIDI_MELODIC 11
-#define NAVIGATION_MIDI_OCTAVES 12
-#define NAVIGATION_MIDI_NOTES 13
+#define NAVIGATION_SET_BEATS 5
+#define NAVIGATION_SET_STEPS 6
+#define NAVIGATION_SOUNDS_CUSTOM 7
+#define NAVIGATION_SOUNDS_MIDI 8
+#define NAVIGATION_SOUNDS_MIDI_PERCUSSION 9
+#define NAVIGATION_SOUNDS_MIDI_MELODIC 10
+#define NAVIGATION_MIDI_OCTAVES 11
+#define NAVIGATION_MIDI_NOTES 12
 /******************************************************************************/
 
 /*******************************************************************************
-***************************  LEAF SELECTION INDEXES  ***************************
+***************************  LEAF SELECTION INDICES  ***************************
 *******************************************************************************/
-#define LEAF_TRACKS_GLOBAL_STEPS 0
-#define LEAF_TRACKS_SAVE 1
-#define LEAF_TRACKS_LOAD 2
-#define LEAF_TRACKS_DELETE 3
+#define LEAF_TRACKS_SAVE 0
+#define LEAF_TRACKS_LOAD 1
+#define LEAF_TRACKS_DELETE 2
+#define LEAF_TRACKS_GLOBAL_BEATS 3
+#define LEAF_TRACKS_GLOBAL_STEPS 4
+#define LEAF_TRACKS_LOCAL_STEPS 5
+
 /******************************************************************************/
 #include <vector>
 #include <string>
@@ -104,7 +106,10 @@ Nav *effects_nav = new Nav;
 Nav *tracks_nav = new Nav;
 Nav *sounds_custom_nav = new Nav;
 Nav *sounds_midi_nav = new Nav;
+
 Nav *tracks_load_nav = new Nav;
+Nav *tracks_set_measures_nav = new Nav;
+Nav *tracks_set_beats_nav = new Nav;
 Nav *tracks_set_steps_nav = new Nav;
 
 Nav *sounds_midi_melodic_nav = new Nav;

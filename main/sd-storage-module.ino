@@ -83,18 +83,15 @@ std::vector<std::string> sd_fetch_sounds(void)
     {
       break; // No more files
     }
-
     // Skip system files
     if (strncmp(entry.name(), "._", 2) == 0)
     {
       continue;
     }
-
     // Store the filename in the vector
     filenames.push_back(strdup(entry.name()));
     entry.close();
   }
-
   // Close the "sounds" directory
   root.close();
 
@@ -104,7 +101,6 @@ std::vector<std::string> sd_fetch_sounds(void)
 std::vector<std::string> sd_fetch_tracks(void)
 {
   std::vector<std::string> filenames;
-
   File root = SD.open(TRACKS_DIRECTORY);
   if (!root)
   {
@@ -120,13 +116,11 @@ std::vector<std::string> sd_fetch_tracks(void)
     {
       break; // No more files
     }
-
     // Skip system files
     if (strncmp(entry.name(), "._", 2) == 0)
     {
       continue;
     }
-
     // Store the filename in the vector
     filenames.push_back(strdup(entry.name()));
     entry.close();

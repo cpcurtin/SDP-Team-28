@@ -108,7 +108,6 @@ void run_effect(int effect)
         active_step = next_step(current_measure);
         break;
     }
-
     case SCRATCH:
     {
         Serial.println("SCRATCH");
