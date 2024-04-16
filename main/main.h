@@ -170,8 +170,6 @@ DAT3:   FLEXIO  PIN46
 MODULE LINKING
 **************************/
 #include <cstdlib>
-#include <vector>
-#include <string>
 
 #include "lcd-module.h"
 #include "sd-storage-module.h"

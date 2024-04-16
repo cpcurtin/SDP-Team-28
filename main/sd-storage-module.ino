@@ -162,9 +162,7 @@ void read_track(std::string filename, Track *config)
   {
     Serial.println("DESERIALIZE PASSED TRACK");
   }
-  int btp = 0;
-  int stp = 0;
-  int sp = 0;
+
   Track *new_track = new Track;
   Measure *new_measure;
   Beat *new_beat;
@@ -246,16 +244,21 @@ void read_track(std::string filename, Track *config)
         for (int i = 0; i < MAX_STEP_SOUNDS; i++)
         {
           Serial.println("SOUND PASSED");
-
           JsonObject sound = step["sound_list"][i];
 
           new_sound = &(new_step->sound_list[i]);
-
-          Sound temp_sound;
           new_sound->bank = sound["bank"];             // 0
           new_sound->instrument = sound["instrument"]; // 0
           new_sound->note = sound["note"];             // 0
-          new_sound->filename = std::string(sound["filename"]);
+          if (sound["filename"])
+          {
+            new_sound->filename = std::string(sound["filename"]);
+          }
+          else
+          {
+            new_sound->filename = "";
+          }
+
           new_sound->sd_cached_sound = nullptr;
           new_sound->empty = sound["empty"];
 
@@ -276,12 +279,10 @@ void read_track(std::string filename, Track *config)
           }
           Serial.print("\tE: ");
           Serial.println(new_sound->empty);
+
           if (new_sound->filename.empty() != false)
           {
             Serial.println("filename != null");
-            btp = b;
-            stp = s;
-            sp = i;
             already_cached = false;
             auto cache_file_iter = new_track->cached_sounds.begin();
             while (cache_file_iter != new_track->cached_sounds.end())
@@ -315,36 +316,19 @@ void read_track(std::string filename, Track *config)
   }
 
   file.close();
-  Serial.println("here1");
   current_track = new_track;
-  Serial.println("here2");
   current_measure = &(current_track->measure_list[current_track->current_measure_id]);
-  Serial.println("here3");
-  Serial.println("test new track stuff");
-  Serial.print("f: ");
-  Serial.print(current_track->filename.c_str());
-  Serial.print("\tcurrent: ");
-  Serial.print(current_track->current_measure_id);
-  Serial.print("\tbpm: ");
-  Serial.println(current_track->bpm);
-  Serial.println("current_measure stuff:");
-  Serial.print("id: ");
-  Serial.print(current_measure->id);
-  Serial.print("\tact: ");
-  Serial.println(current_measure->active_beats);
-
-  Serial.print("previous filename: ");
-  Serial.println(new_track->measure_list[0].beat_list[btp].step_list[stp].sound_list[sp].filename.c_str());
-  Serial.print("new filename: ");
-  Serial.println(current_track->measure_list[0].beat_list[btp].step_list[stp].sound_list[sp].filename.c_str());
 }
 
 // Saves the configuration to a file
 void save_track(std::string filename, Track *config)
 {
   std::string full_path = TRACKS_DIRECTORY + filename;
-
+  Serial.print("TRYING TO MAKE TRACK: X=");
+  Serial.print(full_path.c_str());
+  Serial.println("=X");
   SD.remove(full_path.c_str());
+
   File file = SD.open(full_path.c_str(), FILE_WRITE);
   if (!file)
   {

@@ -68,6 +68,31 @@ void stopFile(int mixer)
   rraw_a3.stop();
   rraw_a4.stop();
 }
+
+#if USING_SAFE_STRINGS == 1 // safe - new
+int free_cached_sounds(Track *track)
+{
+
+  while (track->cached_sounds.size() != 0)
+  {
+
+    Serial.println(track->cached_sounds.front().filename.c_str());
+
+    delete track->cached_sounds.front().sd_cached_sound;
+
+    track->cached_sounds.pop_front();
+  }
+
+  return 0;
+}
+newdigate::audiosample *cache_sd_sound(std::string filename)
+{
+
+  std::string full_path = CUSTOM_SOUNDS_DIRECTORY + filename;
+
+  return loader.loadSample(full_path.c_str());
+}
+#else // unsafe - old
 newdigate::audiosample *cache_sd_sound(const char *filename)
 {
   // Calculate the length of the string
@@ -89,27 +114,6 @@ newdigate::audiosample *cache_sd_sound(const char *filename)
   Serial.println(filename);
   return loader.loadSample(temp_str);
 }
-
-#if USING_SAFE_STRINGS == 1 // safe - new
-int free_cached_sounds(Track *track)
-{
-  Serial.println("enter func");
-  while (track->cached_sounds.size() != 0)
-  {
-    Serial.println("loop");
-    Serial.println(track->cached_sounds.front().filename.c_str());
-    Serial.println("loop");
-
-    delete track->cached_sounds.front().sd_cached_sound;
-    Serial.println("post free");
-    track->cached_sounds.pop_front();
-    Serial.println("pop");
-  }
-  Serial.println("end");
-
-  return 0;
-}
-#else // unsafe - old
 int free_cached_sounds(Track *track)
 {
   Serial.println("enter func");

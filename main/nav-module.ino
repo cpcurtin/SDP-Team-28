@@ -32,9 +32,10 @@ Nav *nav_selection(Nav *nav, int direction)
 
 void array_scroll(Nav *nav, int direction)
 {
-    // Serial.print(nav->name.c_str());
-    Serial.print(" S=");
-    Serial.println(nav->data_array.size());
+    if (nav->data_array.empty())
+    {
+        return;
+    }
 
     // new index changes +/- and goes from end to 0
     int new_index = (nav->index + direction + nav->data_array.size()) % nav->data_array.size();
@@ -70,11 +71,8 @@ std::string format_row(std::vector<std::string> data_array, int index, int forma
         rt_st = ">" + std::to_string(index + 1) + " " + std::string(data_array[index]);
     }
 
-    Serial.println(rt_st.c_str());
-    Serial.println("RESIZE");
     rt_st.resize(20);
     rt_st.shrink_to_fit();
-    Serial.println(rt_st.c_str());
     return rt_st;
 }
 
@@ -91,11 +89,8 @@ std::string tracks_update(void)
     {
         rt_st = "NO TRACK SELECTED";
     }
-    Serial.println(rt_st.c_str());
-    Serial.println("RESIZE");
     rt_st.resize(20);
     rt_st.shrink_to_fit();
-    Serial.println(rt_st.c_str());
     return rt_st;
 }
 
@@ -114,12 +109,6 @@ Nav *nav_init(struct nav_config *cfg)
     Nav **midi_child = new Nav *[2];
     midi_child[0] = sounds_midi_percussion_nav;
     midi_child[1] = sounds_midi_melodic_nav;
-
-    Nav **tracks_child = new Nav *[4];
-    tracks_child[0] = tracks_set_steps_nav; // set steps
-    // tracks_child[1] = SAVE TRACK
-    tracks_child[2] = tracks_load_nav; // load track
-    // tracks_child[3] = DELETE TRACK
 
     // Main presets
     std::vector<std::string> main_preset_options = {"Sounds", "Effects", "Tracks"};
@@ -163,7 +152,7 @@ Nav *nav_init(struct nav_config *cfg)
     tracks_nav->id = NAVIGATION_TRACKS;
     tracks_nav->data_array = std::move(tracks_preset_options);
     tracks_nav->parent = main_nav;
-    tracks_nav->child = tracks_child;
+    tracks_nav->child = nullptr;
     tracks_nav->index = 0;
     tracks_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(tracks_nav, 0);
@@ -180,11 +169,7 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(tracks_load_nav, 0);
 
     // Tracks Set Steps presets
-    std::vector<std::string> tracks_preset_options_steps;
-    for (int i = 0; i < MAX_MEASURE_STEPS; ++i)
-    {
-        tracks_preset_options_steps.push_back("Step");
-    }
+    std::vector<std::string> tracks_preset_options_steps = {"Step", "Step", "Step", "Step", "Step", "Step"};
 
     // tracks_set_steps_nav->name = "tracks_set_steps";
     tracks_set_steps_nav->id = NAVIGATION_SET_GLOBAL_STEPS;
@@ -218,17 +203,6 @@ Nav *nav_init(struct nav_config *cfg)
     sounds_midi_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(sounds_midi_nav, 0);
 
-    // MIDI Melodic presets
-
-    // sounds_midi_melodic_nav->name = "sounds_midi_melodic";
-    sounds_midi_melodic_nav->id = NAVIGATION_SOUNDS_MIDI_MELODIC;
-    sounds_midi_melodic_nav->data_array = cfg->sounds_midi_melodic;
-    sounds_midi_melodic_nav->parent = sounds_midi_nav;
-    sounds_midi_melodic_nav->child = nullptr;
-    sounds_midi_melodic_nav->index = 0;
-    sounds_midi_melodic_nav->lcd_state.resize(LCD_ROWS);
-    array_scroll(sounds_midi_melodic_nav, 0);
-
     // MIDI Percussion presets
 
     // sounds_midi_percussion_nav->name = "sounds_midi_percussion";
@@ -239,6 +213,17 @@ Nav *nav_init(struct nav_config *cfg)
     sounds_midi_percussion_nav->index = 0;
     sounds_midi_percussion_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(sounds_midi_percussion_nav, 0);
+
+    // MIDI Melodic presets
+
+    // sounds_midi_melodic_nav->name = "sounds_midi_melodic";
+    sounds_midi_melodic_nav->id = NAVIGATION_SOUNDS_MIDI_MELODIC;
+    sounds_midi_melodic_nav->data_array = cfg->sounds_midi_melodic;
+    sounds_midi_melodic_nav->parent = sounds_midi_nav;
+    sounds_midi_melodic_nav->child = nullptr;
+    sounds_midi_melodic_nav->index = 0;
+    sounds_midi_melodic_nav->lcd_state.resize(LCD_ROWS);
+    array_scroll(sounds_midi_melodic_nav, 0);
 
     // MIDI Octaves presets
 
@@ -310,7 +295,7 @@ void dpad_nav_routine(int dpad_pressed)
         }
         else
         {
-            Serial.print("REACHED SELECTION LEAF");
+            Serial.println("REACHED SELECTION LEAF");
             execute_leaf();
         }
 
@@ -329,12 +314,14 @@ int execute_leaf(void)
     {
     case NAVIGATION_TRACKS:
     {
+        Serial.println("NAVIGATION_TRACKS");
         track_options();
         break;
     }
     case NAVIGATION_SOUNDS_CUSTOM:
     {
-        temp_sample = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index].c_str());
+        Serial.println("NAVIGATION_SOUNDS_CUSTOM");
+        temp_sample = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index]);
         if (temp_sample != nullptr)
         {
             new_sound.bank = -1;
@@ -351,9 +338,6 @@ int execute_leaf(void)
             sprintf(str, "%p", (void *)temp_sample); // Using sprintf to format the pointer address
             Serial.println("\tEXPECTED: " + String(str));
 
-            sprintf(str, "%p", (void *)new_sound.sd_cached_sound); // Using sprintf to format the pointer address
-            Serial.println("\tACTUAL: " + String(str));
-
             current_track->cached_sounds.push_back(new_sound);
         }
         else
@@ -362,8 +346,8 @@ int execute_leaf(void)
             new_sound.instrument = -1;
             new_sound.note = -1;
             new_sound.sd_cached_sound = nullptr;
-            // memset(new_sound.filename, 0, sizeof(new_sound.filename));
             new_sound.filename = "";
+
             // NO SIZE ON PSRAM TO CACHE SOUND
             lcd_splash(lcd, nullptr, error_psram_full);
         }
@@ -372,11 +356,11 @@ int execute_leaf(void)
     }
     case NAVIGATION_SOUNDS_MIDI_PERCUSSION:
     {
+        Serial.println("NAVIGATION_SOUNDS_MIDI_PERCUSSION");
         new_sound.bank = sounds_midi_nav->index;
         new_sound.instrument = midi_percussion_values[sounds_midi_percussion_nav->index];
         new_sound.note = -1;
         new_sound.sd_cached_sound = nullptr;
-        // memset(new_sound.filename, 0, sizeof(new_sound.filename));
         new_sound.filename = "";
         new_sound_assignment = true;
 
@@ -387,6 +371,7 @@ int execute_leaf(void)
 
     case NAVIGATION_SOUNDS_MIDI_MELODIC:
     {
+        Serial.println("NAVIGATION_SOUNDS_MIDI_MELODIC");
         nav_state = sounds_midi_octaves_nav;
         lcd_display(lcd, nav_state->lcd_state);
         break;
@@ -394,6 +379,7 @@ int execute_leaf(void)
 
     case NAVIGATION_MIDI_OCTAVES:
     {
+        Serial.println("NAVIGATION_MIDI_OCTAVES");
         nav_state = sounds_midi_notes_nav;
         lcd_display(lcd, nav_state->lcd_state);
         break;
@@ -401,8 +387,9 @@ int execute_leaf(void)
 
     case NAVIGATION_MIDI_NOTES:
     {
+        Serial.println("NAVIGATION_MIDI_NOTES");
         Serial.println("MIDI SOUNDS SELECTION:");
-        Serial.print("BANK: ");
+        // Serial.print("BANK: ");
         // Serial.println(((nav_state->parent)->parent)->name.c_str());
         Serial.print("Octave: ");
         Serial.println((nav_state->parent)->data_array[(nav_state->parent)->index].c_str());
@@ -424,6 +411,7 @@ int execute_leaf(void)
     }
     case NAVIGATION_SET_GLOBAL_STEPS:
     {
+        Serial.println("NAVIGATION_SET_GLOBAL_STEPS");
         current_track->measure_steps = nav_state->index + 1;
         for (int i = 0; i < 4; i++)
         {
@@ -433,20 +421,15 @@ int execute_leaf(void)
     }
     case NAVIGATION_TRACK_LOAD:
     {
-        Serial.println("START LOAD TRACK");
-        Serial.println("free cached sounds");
+        Serial.println("NAVIGATION_TRACK_LOAD");
         free_cached_sounds(current_track);
         Serial.println("free previous track");
         delete current_track;
-        // free_track(current_track);
         Serial.println("load new track");
         read_track(nav_state->data_array[nav_state->index], current_track);
         Serial.println("RETURN LOAD TRACK");
         break;
     }
-
-        // default:
-        //     break;
     }
 
     return 0;
@@ -458,51 +441,60 @@ int track_options(void)
     {
     case LEAF_TRACKS_GLOBAL_STEPS:
     {
+        Serial.println("LEAF_TRACKS_GLOBAL_STEPS");
         nav_state = tracks_set_steps_nav;
         lcd_display(lcd, nav_state->lcd_state);
         break;
     }
     case LEAF_TRACKS_SAVE:
     {
-        std::string new_track_filename = "TRACK" + std::to_string((nav_state->child[2])->data_array.size()) + ".json";
-        current_track->id = (nav_state->child[2])->data_array.size();
-        save_track(new_track_filename.c_str(), current_track);
-        nav_state->child[2]->data_array.clear();
-        track_list = sd_fetch_tracks();
-        std::copy(track_list.begin(), track_list.end(), std::back_inserter(nav_state->child[2]->data_array));
-        (nav_state->child[2])->index = 0;
-        array_scroll(nav_state->child[2], 0);
+        Serial.println("LEAF_TRACKS_SAVE");
+        int filename_count = 0;
+        if (tracks_load_nav->data_array.empty() == false)
+        {
+            filename_count = tracks_load_nav->data_array.size();
+        }
+
+        std::string new_track_filename = "TRACK" + std::to_string(filename_count) + ".json";
+        save_track(new_track_filename, current_track);
+        tracks_load_nav->data_array.clear();
+        tracks_load_nav->data_array = std::move(sd_fetch_tracks());
+        tracks_load_nav->index = 0;
+        array_scroll(tracks_load_nav, 0);
         break;
     }
     case LEAF_TRACKS_LOAD:
     {
+        Serial.println("LEAF_TRACKS_LOAD");
         nav_state = tracks_load_nav;
         lcd_display(lcd, nav_state->lcd_state);
         break;
     }
     case LEAF_TRACKS_DELETE:
     {
-        std::string delete_track_filename = "TRACK" + std::to_string(current_track->id) + ".json";
-        if (sd_delete_track(delete_track_filename))
+        Serial.println("LEAF_TRACKS_DELETE");
+        if (tracks_load_nav->data_array.empty() == false)
         {
-            // Serial.print("FAILED TO DELETE: ");
+            break;
+        }
+        if (sd_delete_track(current_track->filename))
+        {
+            Serial.print("FAILED TO DELETE: ");
             Serial.println(current_track->filename.c_str());
         }
         else
         {
-            nav_state->child[2]->data_array.clear();
-            track_list = sd_fetch_tracks();
-            std::copy(track_list.begin(), track_list.end(), std::back_inserter(nav_state->child[2]->data_array));
-            (nav_state->child[2])->index = 0;
-            array_scroll(nav_state->child[2], 0);
-            read_track((nav_state->child[2])->data_array[(nav_state->child[2])->data_array.size() - 1], current_track);
+            tracks_load_nav->data_array.clear();
+            tracks_load_nav->data_array = std::move(sd_fetch_tracks());
+            tracks_load_nav->index = 0;
+            array_scroll(tracks_load_nav, 0);
+            if (tracks_load_nav->data_array.empty() == false)
+            {
+                read_track(tracks_load_nav->data_array[0], current_track);
+            }
         }
         break;
     }
-
-        // default:
-
-        //     break;
     }
     return 0;
 }

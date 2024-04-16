@@ -81,6 +81,7 @@ void setup()
   Serial.println(current_track->measure_steps);
 
 #else // unsafe - old
+
   /* POPULATE DYNAMIC LISTS */
   nav_cfg->sounds_custom = sd_fetch_sounds();
   nav_cfg->effects = fetch_effects(); // static TODO

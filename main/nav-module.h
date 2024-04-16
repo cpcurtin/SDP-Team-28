@@ -38,6 +38,8 @@
 #define LEAF_TRACKS_LOAD 2
 #define LEAF_TRACKS_DELETE 3
 /******************************************************************************/
+#include <vector>
+#include <string>
 
 #if USING_SAFE_STRINGS == 1 // safe - new
 
