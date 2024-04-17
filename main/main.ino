@@ -107,6 +107,7 @@ void setup()
   Serial.println("PROGRAM LOOP BEGINS");
 }
 
+
 /* Main subroutine: follow software block diagram */
 void loop()
 {
@@ -157,8 +158,8 @@ void loop()
     }
 
     // UPDATE TIMER INTERVAL
-    // step_timer.interval(step_interval_calc(current_measure));
-
+    step_timer.interval(step_interval_calc(current_measure));
+    /*
     if (effect == DOUBLE_REPEAT && current_measure->effect_mode)
     {
       step_timer.interval(step_interval_calc(current_measure) / 2);
@@ -167,6 +168,7 @@ void loop()
     {
       step_timer.interval(step_interval_calc(current_measure));
     }
+    */
   }
 
   //  LED ASSIGN NAV TO PALETTE
@@ -284,6 +286,29 @@ void loop()
       {
         current_measure->beat = 0;
         current_measure->step = 0;
+      }
+
+      else if (effect_return_state == ECHO)
+      {
+        volume = 127;
+        dac_vol = 1.0;
+        amp1.gain(dac_vol);
+        amp2.gain(dac_vol);
+      }
+
+      else if (effect_return_state == PAUSE_SOUNDS)
+      {
+        silent = 0;
+      }
+
+      else if (effect_return_state == SCRATCH)
+      {
+        evenodd = 0;
+      }
+      else if (effect_return_state == DOUBLE_REPEAT)
+      {
+        evenodd = 0;
+        effect_return_state = -1;
       }
 
       // ELSE, LEAVE STEP STATE AT LAST EFFECT

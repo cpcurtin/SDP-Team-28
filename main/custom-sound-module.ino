@@ -63,10 +63,10 @@ int playFile(newdigate::audiosample *cached_sound)
 }
 void stopFile(int mixer)
 {
-  rraw_a1.stop();
-  rraw_a2.stop();
-  rraw_a3.stop();
-  rraw_a4.stop();
+  //rraw_a1.stop();
+  //rraw_a2.stop();
+  //rraw_a3.stop();
+  //rraw_a4.stop();
 }
 
 #if USING_SAFE_STRINGS == 1 // safe - new
