@@ -536,8 +536,7 @@ int track_options(void)
     case LEAF_TRACKS_DELETE:
     {
         Serial.println("LEAF_TRACKS_DELETE");
-        // IS FUCKY, FIX
-        if (tracks_load_nav->data_array.empty() == false)
+        if (tracks_load_nav->data_array.empty())
         {
             break;
         }

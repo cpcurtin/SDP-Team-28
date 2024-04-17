@@ -157,7 +157,16 @@ void loop()
     }
 
     // UPDATE TIMER INTERVAL
-    step_timer.interval(step_interval_calc(current_measure));
+    // step_timer.interval(step_interval_calc(current_measure));
+
+    if (effect == DOUBLE_REPEAT && current_measure->effect_mode)
+    {
+      step_timer.interval(step_interval_calc(current_measure) / 2);
+    }
+    else
+    {
+      step_timer.interval(step_interval_calc(current_measure));
+    }
   }
 
   //  LED ASSIGN NAV TO PALETTE
