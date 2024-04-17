@@ -1,10 +1,13 @@
 #ifndef MAIN_H
 #define MAIN_H
-#define BATTERY_OPERATED 1 // 1 if only on battery operation, 0 if not
+#define BATTERY_OPERATED 0 // 1 if only on battery operation, 0 if not
 #define USING_MAIN_PCB 1   // 1 for integrated DAC, 0 for daughter board DAC
 #define USING_PSRAM 1      // 1 for teesny 4.1 with solder psram, 0 otherwise
 #define USING_NEW_DS 1     // 1 for new ds, 0 for old
 #define USING_CDR_PCB 1    // 1 for CDR board configuration, 0 for updated dpad logic
+#define USING_SAFE_STRINGS 1
+#define DEBUG_PRINT 1
+// #define DEBUG_INPUT 1
 /*
 
  *       MODULOOP MAIN CONFIGURATIONS
@@ -167,6 +170,7 @@ DAT3:   FLEXIO  PIN46
 /**************************
 MODULE LINKING
 **************************/
+#include <cstdlib>
 
 #include "lcd-module.h"
 #include "sd-storage-module.h"
@@ -177,7 +181,6 @@ MODULE LINKING
 #include "measure-module.h"
 #include "led-module.h"
 #include "nav-module.h"
-#include <Metro.h>
 
 /**************************
 DAC PIN ASSIGNMENTS
@@ -199,10 +202,18 @@ TEMPO WHEEL PIN ASSIGNMENTS
 /**************************
 DPAD BUTTONS PIN ASSIGNMENTS
 **************************/
+
+#if USING_CDR_PCB == 1 // CDR
 #define BUTTON_DPAD_LEFT 17
 #define BUTTON_DPAD_DOWN 16
 #define BUTTON_DPAD_UP 15
 #define BUTTON_DPAD_RIGHT 14
+#else
+#define BUTTON_DPAD_LEFT 14
+#define BUTTON_DPAD_DOWN 15
+#define BUTTON_DPAD_UP 16
+#define BUTTON_DPAD_RIGHT 17
+#endif
 
 /**************************
 MATRIX BUTTON PIN ASSIGNMENTS
@@ -277,36 +288,14 @@ HARDWARE CONFIGURATIONS
 #define NAV_UP -1
 #define NAV_DOWN 1
 
-// MISC
-
-/**************************
-PROGRAM STRUCTS
-**************************/
-
-/**************************
-PROGRAM VARIABLES
-**************************/
-
-LiquidCrystal_I2C *lcd;
-
-char **lcd_state = new char *[LCD_ROWS];
 int lcd_index = 0;
-// Nav *sounds;
-// Nav *nav_data_structure;
-// Nav *nav_state;
-// struct palette_matrix *palette;
-// struct button_maxtrix_pin_config measure_matrix_button;
-// struct button_maxtrix_pin_config measure_matrix_led;
-// struct nav_config *nav_cfg;
 
 // const struct lcd_pin_config lcd_cfg = {LCD_RS, LCD_EN, LCD_DIGITAL_4, LCD_DIGITAL_5, LCD_DIGITAL_6, LCD_DIGITAL_7, LCD_ROWS, LCD_COLUMNS};
 const struct lcd_pin_config lcd_cfg = {LCD_I2C, LCD_ROWS, LCD_COLUMNS};
 const struct dac_pin_config dac_cfg = {DAC_DIN, DAC_WS, DAC_BCK};
 
-// create 2D array of palette_cell structs
-
 // Metronome Definition
-Metro step_timer = Metro(100);
+
 int count_temp = 0;
 
 int mixer_1;

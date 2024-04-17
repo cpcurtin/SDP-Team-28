@@ -2,7 +2,7 @@
  *	example function library
  *
  *
- *
+ * double check what is happening when playing custom sound
  */
 #include "custom-sound-module.h"
 
@@ -18,7 +18,6 @@ int dac_init(void)
 }
 
 // Define a fixed-size buffer for temp_str
-char temp_str[MAX_FILENAME_LENGTH]; // Adjust MAX_FILENAME_LENGTH as needed
 
 int playFile(newdigate::audiosample *cached_sound)
 {
@@ -64,54 +63,36 @@ int playFile(newdigate::audiosample *cached_sound)
 }
 void stopFile(int mixer)
 {
-  if (mixer == 0)
-  {
-    rraw_a1.stop();
-    rraw_a2.stop();
-    rraw_a3.stop();
-    rraw_a4.stop();
-    /*
-    if (rraw_a1.isPlaying())
-    {
-      rraw_a1.stop();
-    }
-    if (rraw_a2.isPlaying())
-    {
-      rraw_a2.stop();
-    }
-    if (rraw_a3.isPlaying())
-    {
-      rraw_a3.stop();
-    }
-    if (rraw_a4.isPlaying())
-    {
-      rraw_a4.stop();
-    }
-  }
-  if (mixer == 1)
-  {
-    // Serial.println("Stopping 1");
-    rraw_a1.stop();
-  }
-  else if (mixer == 2)
-  {
-    // Serial.println("Stopping 2");
-    rraw_a2.stop();
-  }
-  else if (mixer == 3)
-  {
-    // Serial.println("Stopping 3");
-    rraw_a3.stop();
-  }
-  else if (mixer == 4)
-  {
-    // Serial.println("Stopping 4");
-    rraw_a4.stop();
-  }
-  */
-  }
-  
+  rraw_a1.stop();
+  rraw_a2.stop();
+  rraw_a3.stop();
+  rraw_a4.stop();
 }
+
+#if USING_SAFE_STRINGS == 1 // safe - new
+int free_cached_sounds(Track *track)
+{
+
+  while (track->cached_sounds.size() != 0)
+  {
+
+    Serial.println(track->cached_sounds.front().filename.c_str());
+
+    delete track->cached_sounds.front().sd_cached_sound;
+
+    track->cached_sounds.pop_front();
+  }
+
+  return 0;
+}
+newdigate::audiosample *cache_sd_sound(std::string filename)
+{
+
+  std::string full_path = CUSTOM_SOUNDS_DIRECTORY + filename;
+
+  return loader.loadSample(full_path.c_str());
+}
+#else // unsafe - old
 newdigate::audiosample *cache_sd_sound(const char *filename)
 {
   // Calculate the length of the string
@@ -133,3 +114,22 @@ newdigate::audiosample *cache_sd_sound(const char *filename)
   Serial.println(filename);
   return loader.loadSample(temp_str);
 }
+int free_cached_sounds(Track *track)
+{
+  Serial.println("enter func");
+  while (track->cached_sounds.size() != 0)
+  {
+    Serial.println("loop");
+    Serial.println(track->cached_sounds.front().filename);
+    Serial.println("loop");
+
+    delete track->cached_sounds.front().sd_cached_sound;
+    Serial.println("post free");
+    track->cached_sounds.pop_front();
+    Serial.println("pop");
+  }
+  Serial.println("end");
+
+  return 0;
+}
+#endif

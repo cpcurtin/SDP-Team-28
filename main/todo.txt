@@ -2,3 +2,15 @@ just added measure_Beats,
 
 implement adjustable beats per measure
     does it require changing tempo
+
+
+
+#ifndef USING_SAFE_STRINGS
+#define USING_SAFE_STRINGS 1
+#endif
+
+#if USING_SAFE_STRINGS == 1 // safe - new
+  
+#else // unsafe - old
+  
+#endif

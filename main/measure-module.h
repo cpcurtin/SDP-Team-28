@@ -7,6 +7,10 @@
 #ifndef MEASURE_MODULE_H
 #define MEASURE_MODULE_H
 
+#ifndef USING_SAFE_STRINGS
+#define USING_SAFE_STRINGS 1
+#endif
+
 #define PALETTE_SIZE 12
 
 #define MAX_MEASURES 10
@@ -23,6 +27,14 @@
 
 #define MIDI_NULL -1
 
+#define DEFAULT_LAST_STEP_INDEX 0
+#define DEFAULT_LAST_BEAT_INDEX 3
+#define DEFAULT_LAST_STEP 5
+
+#include <Metro.h>
+Metro step_timer = Metro(100);
+
+#if USING_SAFE_STRINGS == 1 // safe - new
 
 typedef struct Sound
 {
@@ -30,6 +42,7 @@ typedef struct Sound
     int instrument;
     int note;
     newdigate::audiosample *sd_cached_sound;
+    std::string filename;
     bool empty;
 
     // Overload the equality operator
@@ -39,9 +52,36 @@ typedef struct Sound
                instrument == other.instrument &&
                note == other.note &&
                sd_cached_sound == other.sd_cached_sound &&
+               filename == other.filename &&
                empty == other.empty;
     }
 } Sound;
+
+Sound empty_sound = {-1, -1, -1, nullptr, "", true};
+#else // unsafe - old
+
+typedef struct Sound
+{
+    int bank;
+    int instrument;
+    int note;
+    newdigate::audiosample *sd_cached_sound;
+    const char *filename;
+    bool empty;
+
+    // Overload the equality operator
+    bool operator==(const Sound &other) const
+    {
+        return bank == other.bank &&
+               instrument == other.instrument &&
+               note == other.note &&
+               sd_cached_sound == other.sd_cached_sound &&
+               strcmp(filename, other.filename) == 0 &&
+               empty == other.empty;
+    }
+} Sound;
+Sound empty_sound = {-1, -1, -1, nullptr, "", true};
+#endif
 
 typedef struct Step
 {
@@ -63,16 +103,16 @@ typedef struct Measure
 {
     int id;
     int active_beats;
-    struct Beat beat_list[4];
     int step;
     int beat;
     bool effect_mode;
     struct Step current_step;
     struct Step prior_step;
+    struct Beat beat_list[4];
 
 } Measure;
 
-Measure testing_measure;
+Measure *current_measure;
 
 Step *active_step;
 Step *last_step;
@@ -80,7 +120,6 @@ Sound temp_adding_sound;
 
 Sound testing_palette[PALETTE_SIZE];
 Sound new_sound;
-Sound empty_sound = {-1, -1, -1, nullptr, true};
 
 bool new_sound_assignment = false;
 bool measure_edit = false;
@@ -94,7 +133,8 @@ int silent = 0;
 int evenodd = 0;
 
 // functions, extern variables, structs go here
-void measure_palette_init(void);
+int measure_palette_init(void);
+Measure *measure_create(int id);
 
 Step *button_to_step(int actuated_button[]);
 Step *next_step(Measure *measure);
@@ -105,8 +145,14 @@ int stop_step(Step *step_end);
 int play_step(Step *step_play);
 float step_interval_calc(Measure *measure);
 int add_remove_measure_sound(Measure *measure);
-void print_step(Measure *measure);
+
+#if USING_SAFE_STRINGS == 1 // safe - new
+void print_step(Step *step);
 void print_palette(int palette_index);
+#else // unsafe - old
+void print_step(Step *step);
+void print_palette(int palette_index);
+#endif
 
 void populate_default_measure(void);
 
