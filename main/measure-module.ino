@@ -132,12 +132,11 @@ int play_step(Step *step_play)
 
 float step_interval_calc(Measure *measure)
 {
-    return (60000 / (current_track->bpm * measure->beat_list[beat].active_steps));
+    return (60000 / (current_track->bpm * measure->beat_list[measure->beat].active_steps));
 }
 
 int add_remove_measure_sound(Measure *measure)
 {
-
     bool sound_exists = false;
     for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
     {

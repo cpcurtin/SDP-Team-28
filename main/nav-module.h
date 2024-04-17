@@ -27,6 +27,7 @@
 #define NAVIGATION_SOUNDS_MIDI_MELODIC 10
 #define NAVIGATION_MIDI_OCTAVES 11
 #define NAVIGATION_MIDI_NOTES 12
+#define NAVIGATION_TRACK_SAVE 13
 /******************************************************************************/
 
 /*******************************************************************************
@@ -40,9 +41,13 @@
 #define LEAF_TRACKS_LOCAL_STEPS 5
 
 /******************************************************************************/
+#define TRACK_SAVE_NAME_LENGTH 3
+
 #include <vector>
 #include <string>
 
+int track_save_panel = 0;
+std::string track_save_string(TRACK_SAVE_NAME_LENGTH, ' ');
 #if USING_SAFE_STRINGS == 1 // safe - new
 
 struct nav_config
@@ -107,6 +112,7 @@ Nav *tracks_nav = new Nav;
 Nav *sounds_custom_nav = new Nav;
 Nav *sounds_midi_nav = new Nav;
 
+Nav *tracks_save_nav = new Nav;
 Nav *tracks_load_nav = new Nav;
 Nav *tracks_set_measures_nav = new Nav;
 Nav *tracks_set_beats_nav = new Nav;

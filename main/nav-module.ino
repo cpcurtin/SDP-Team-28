@@ -154,6 +154,16 @@ Nav *nav_init(struct nav_config *cfg)
     tracks_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(tracks_nav, 0);
 
+    // Tracks Save presets
+    std::vector<std::string> tracks_preset_options_save = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+    tracks_save_nav->id = NAVIGATION_TRACK_SAVE;
+    tracks_save_nav->data_array = std::move(tracks_preset_options_save);
+    tracks_save_nav->parent = tracks_nav;
+    tracks_save_nav->child = nullptr;
+    tracks_save_nav->index = 0;
+    tracks_save_nav->lcd_state.resize(LCD_ROWS);
+    array_scroll(tracks_save_nav, 0);
+
     // Tracks Load presets
     // tracks_load_nav->name = "tracks_load";
     tracks_load_nav->id = NAVIGATION_TRACK_LOAD;
@@ -258,6 +268,14 @@ void dpad_nav_routine(int dpad_pressed)
     {
         if (nav_state->parent != nullptr)
         {
+            if (track_save_panel == 0)
+            {
+                tracks_save_nav->parent = tracks_nav;
+            }
+            if (nav_state->id == NAVIGATION_TRACK_SAVE)
+            {
+                track_save_panel--;
+            }
             nav_state = nav_state->parent;
             Serial.print("MOVED TO NODE:");
             Serial.println(nav_state->id);
@@ -413,7 +431,7 @@ int execute_leaf(void)
 
         if (tracks_nav->index == LEAF_TRACKS_GLOBAL_BEATS)
         {
-            current_track->measure_beats = tracks_set_beats_nav->index + 1;
+            current_track->measure_list[0].active_beats = tracks_set_beats_nav->index + 1;
         }
         else if (tracks_nav->index == LEAF_TRACKS_LOCAL_STEPS)
         {
@@ -439,7 +457,42 @@ int execute_leaf(void)
             nav_state = tracks_set_steps_nav;
 
             // COMPLETE
-            current_measure->beat_list[tracks_set_beats_nav->index].active_steps = tracks_set_steps_nav->index;
+            current_measure->beat_list[tracks_set_beats_nav->index].active_steps = tracks_set_steps_nav->index + 1;
+        }
+        break;
+    }
+    case NAVIGATION_TRACK_SAVE:
+    {
+        Serial.println("NAVIGATION_TRACK_SAVE");
+        if (track_save_panel < TRACK_SAVE_NAME_LENGTH - 1)
+        {
+            track_save_string.replace(track_save_panel, 1, nav_state->data_array[nav_state->index]);
+            track_save_panel++;
+            tracks_save_nav->parent = tracks_save_nav;
+        }
+        else
+        {
+            track_save_string.replace(track_save_panel, 1, nav_state->data_array[nav_state->index]);
+
+            current_track->filename = "TRACK-" + track_save_string + ".json";
+            save_track(current_track->filename, current_track);
+            tracks_load_nav->data_array.clear();
+            tracks_load_nav->data_array = std::move(sd_fetch_tracks());
+            tracks_load_nav->index = 0;
+            array_scroll(tracks_load_nav, 0);
+
+            // int filename_count = 0;
+            // if (tracks_load_nav->data_array.empty() == false)
+            // {
+            //     filename_count = tracks_load_nav->data_array.size();
+            // }
+            // // std::string new_track_filename = "TRACK" + std::to_string(filename_count) + ".json";
+            // current_track->filename = "TRACK" + std::to_string(filename_count) + ".json";
+            // save_track(current_track->filename, current_track);
+            // tracks_load_nav->data_array.clear();
+            // tracks_load_nav->data_array = std::move(sd_fetch_tracks());
+            // tracks_load_nav->index = 0;
+            // array_scroll(tracks_load_nav, 0);
         }
         break;
     }
@@ -466,18 +519,11 @@ int track_options(void)
     case LEAF_TRACKS_SAVE:
     {
         Serial.println("LEAF_TRACKS_SAVE");
-        int filename_count = 0;
-        if (tracks_load_nav->data_array.empty() == false)
-        {
-            filename_count = tracks_load_nav->data_array.size();
-        }
-
-        std::string new_track_filename = "TRACK" + std::to_string(filename_count) + ".json";
-        save_track(new_track_filename, current_track);
-        tracks_load_nav->data_array.clear();
-        tracks_load_nav->data_array = std::move(sd_fetch_tracks());
-        tracks_load_nav->index = 0;
-        array_scroll(tracks_load_nav, 0);
+        track_save_panel = 0;
+        track_save_string.clear();
+        tracks_save_nav->parent = tracks_nav;
+        nav_state = tracks_save_nav;
+        lcd_display(lcd, nav_state->lcd_state);
         break;
     }
     case LEAF_TRACKS_LOAD:
@@ -490,6 +536,7 @@ int track_options(void)
     case LEAF_TRACKS_DELETE:
     {
         Serial.println("LEAF_TRACKS_DELETE");
+        // IS FUCKY, FIX
         if (tracks_load_nav->data_array.empty() == false)
         {
             break;

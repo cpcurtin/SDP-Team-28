@@ -397,6 +397,45 @@ bool matrix_pressed(int type, int held)
       }
     }
     break;
+
+#if DEBUG_INPUT == 1 // safe - new
+  case BUTTON_EFFECT:
+    if ((matrix_button.column > LAST_MEASURE_COLUMN) && (matrix_button.row == EFFECT_PALETTE_ROW) && (matrix_button.column != 8))
+    {
+      if ((held == BUTTON_NOT_HELD) && matrix_button.valid)
+      {
+        matrix_button.valid = false;
+        return true;
+      }
+      else if ((held == BUTTON_HELD) && matrix_button.waiting)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    break;
+  case BUTTON_DEBUG:
+    if ((matrix_button.column == 8) && (matrix_button.row == 3))
+    {
+      if ((held == BUTTON_NOT_HELD) && matrix_button.valid)
+      {
+        matrix_button.valid = false;
+        return true;
+      }
+      else if ((held == BUTTON_HELD) && matrix_button.waiting)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    break;
+#else // unsafe - old
   case BUTTON_EFFECT:
     if ((matrix_button.column > LAST_MEASURE_COLUMN) && (matrix_button.row == EFFECT_PALETTE_ROW))
     {
@@ -415,6 +454,8 @@ bool matrix_pressed(int type, int held)
       }
     }
     break;
+#endif
+
   default:
     return false;
     break;

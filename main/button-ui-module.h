@@ -11,7 +11,11 @@
 #define USING_CDR_PCB 1
 #endif
 
-#define TEMPO_KNOB_MIN 20
+#ifndef DEBUG_INPUT
+#define DEBUG_INPUT 1
+#endif
+
+#define TEMPO_KNOB_MIN 1
 #define TEMPO_KNOB_MAX 150
 #define SMOOTHING_SAMPLES 100
 #define DPAD_LEFT 1
@@ -43,6 +47,7 @@
 #define BUTTON_PALETTE 1
 #define BUTTON_SOUND 2
 #define BUTTON_EFFECT 3
+#define BUTTON_DEBUG 4
 
 struct button_maxtrix_pin_config
 {

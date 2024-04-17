@@ -164,13 +164,7 @@ void read_track(std::string filename, Track *config)
   Sound *new_sound;
   JsonObject track = doc["track"];
   Serial.println("TRACK MADE");
-  // strlcpy(new_track->filename, // <- destination
-  //         track["filename"],   // <- source
-  //         sizeof(new_track->filename));
   new_track->filename = std::string(track["filename"]);
-
-  Serial.println("TRACK FILENAME");
-
   new_track->id = track["id"];                           // 4
   new_track->bpm = 50;                                   // 4
   new_track->active_measures = track["active_measures"]; // 1
@@ -244,6 +238,7 @@ void read_track(std::string filename, Track *config)
           new_sound->bank = sound["bank"];             // 0
           new_sound->instrument = sound["instrument"]; // 0
           new_sound->note = sound["note"];             // 0
+
           if (sound["filename"])
           {
             new_sound->filename = std::string(sound["filename"]);
@@ -274,7 +269,7 @@ void read_track(std::string filename, Track *config)
           Serial.print("\tE: ");
           Serial.println(new_sound->empty);
 
-          if (new_sound->filename.empty() != false)
+          if (!new_sound->filename.empty())
           {
             Serial.println("filename != null");
             already_cached = false;

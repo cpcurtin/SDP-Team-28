@@ -103,17 +103,13 @@ void setup()
 #endif
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
-
-  // measure_palette_init();
-  // step_timer.interval(60000 / (4 * 10)); // TESTING STATIC TEMPO
-  // populate_default_measure();
-  // Serial.println("PROGRAM LOOP BEGINS");
+  step_timer.interval(60000 / (4 * 10));  // TESTING STATIC TEMPO
+  Serial.println("PROGRAM LOOP BEGINS");
 }
 
 /* Main subroutine: follow software block diagram */
 void loop()
 {
-#if USING_NEW_DS == 1
   if (step_timer.check() == 1)
   {
     last_step = active_step;
@@ -139,6 +135,7 @@ void loop()
 
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
     print_step(active_step);
+    // print_palette(palette_index);
 #endif
 
     stop_step(last_step);
@@ -147,7 +144,7 @@ void loop()
     if (effect_return_state != DOUBLE_REPEAT)
     {
       current_track->bpm = read_tempo();
-      Serial.println(current_track->bpm);
+      // Serial.println(current_track->bpm);
     }
     else if (evenodd == 1)
     {
@@ -160,7 +157,6 @@ void loop()
     }
 
     // UPDATE TIMER INTERVAL
-
     step_timer.interval(step_interval_calc(current_measure));
   }
 
@@ -174,6 +170,15 @@ void loop()
   if (matrix_pressed(BUTTON_SOUND, BUTTON_NOT_HELD))
   {
     Serial.println("PALETTE SOUND PRESSED");
+#if DEBUG_PRINT == 1 // VERBOSE PRINT
+    // if (!testing_palette[palette_index].filename.empty())
+    // {
+    //   Serial.print("sound selected: ");
+    //   Serial.println(testing_palette[palette_index].filename.c_str());
+    // }
+
+    print_palette(PALETTE_SIZE);
+#endif
     if (LED_mode == LED_PALETTE_SELECT)
     {
       // UNSELECT PALETTE BUTTON
@@ -196,15 +201,12 @@ void loop()
 
     if (new_sound_assignment)
     {
-
       // SAVE NEW SOUND FROM NAV TO PALETTE BUTTON
       Serial.println("NAV TO PALETTE ASSIGNED");
       testing_palette[palette_index] = new_sound;
-
       new_sound_assignment = false;
       splash_screen_active = false;
       lcd_display(lcd, nav_state->lcd_state);
-      print_palette(PALETTE_SIZE);
     }
     else
     {
@@ -225,9 +227,9 @@ void loop()
   {
     if (matrix_pressed(BUTTON_MEASURE, BUTTON_NOT_HELD))
     {
+
       // MEASURE BUTTON PRESSED
       Serial.println("PALETTE TO MEASURE ADD/REMOVE");
-      print_palette(palette_index);
 
       LED_mode = LED_DEFAULT_MODE;
       LED_Off(LED_last_row, LED_last_column);
@@ -254,7 +256,6 @@ void loop()
   }
   else
   {
-
     // SET EFFECT TOGGLE FLAG OFF
     if (current_measure->effect_mode)
     {
@@ -280,6 +281,13 @@ void loop()
     }
   }
 
+#if DEBUG_INPUT == 1 // VERBOSE PRINT
+  if (matrix_pressed(BUTTON_DEBUG, BUTTON_HELD))
+  {
+
+    current_track->bpm = read_tempo();
+    step_timer.interval(step_interval_calc(current_measure));
+  }
 #endif
 
   /*****************************************************************************
@@ -297,7 +305,15 @@ void loop()
 
     if (Pressed == 1)
     {
-      //
+#if DEBUG_PRINT == 1 // VERBOSE PRINT
+
+      Serial.print("BUTTON PRESSED\t\tROW:");
+      Serial.print(matrix_button.row);
+      Serial.print("\tCOLUMN:");
+      Serial.println(matrix_button.column);
+
+      print_palette(PALETTE_SIZE);
+#endif
       Button_Pressed(Current_Button_State, Previous_Button_State);
     }
 
@@ -308,9 +324,7 @@ void loop()
   /*****************************************************************************
    **************************     READ DPAD INPUTS     *************************
    ****************************************************************************/
-
   dpad_pressed = dpad_read();
-
   dpad_nav_routine(dpad_pressed);
 }
 
