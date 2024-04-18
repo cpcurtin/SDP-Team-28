@@ -97,10 +97,12 @@ std::string tracks_update(void)
 Nav *nav_init(struct nav_config *cfg)
 {
     // ptr arrays
-    Nav **main_child = new Nav *[3];
+    Nav **main_child = new Nav *[4];
     main_child[0] = sounds_nav;
     main_child[1] = effects_nav;
     main_child[2] = tracks_nav;
+    main_child[3] = delete_nav;
+
 
     Nav **sounds_child = new Nav *[2];
     sounds_child[0] = sounds_custom_nav;
@@ -153,6 +155,18 @@ Nav *nav_init(struct nav_config *cfg)
     tracks_nav->index = 0;
     tracks_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(tracks_nav, 0);
+
+     // Tracks presets
+    std::vector<std::string> delete_preset_options = {"Delete last sound", "Delete all sounds on step", "Delete whole measure"};
+
+    // delete_nav->name = "tracks";
+    delete_nav->id = NAVIGATION_DELETE;
+    delete_nav->data_array = std::move(delete_preset_options);
+    delete_nav->parent = main_nav;
+    delete_nav->child = nullptr;
+    delete_nav->index = 0;
+    delete_nav->lcd_state.resize(LCD_ROWS);
+    array_scroll(delete_nav, 0);
 
     // Tracks Save presets
     std::vector<std::string> tracks_preset_options_save = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};

@@ -28,6 +28,7 @@
 #define NAVIGATION_MIDI_OCTAVES 11
 #define NAVIGATION_MIDI_NOTES 12
 #define NAVIGATION_TRACK_SAVE 13
+#define NAVIGATION_DELETE 14
 /******************************************************************************/
 
 /*******************************************************************************
@@ -111,6 +112,7 @@ Nav *effects_nav = new Nav;
 Nav *tracks_nav = new Nav;
 Nav *sounds_custom_nav = new Nav;
 Nav *sounds_midi_nav = new Nav;
+Nav *delete_nav = new Nav;
 
 Nav *tracks_save_nav = new Nav;
 Nav *tracks_load_nav = new Nav;
