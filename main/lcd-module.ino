@@ -89,6 +89,13 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std
       state_splash_screen[1] = sounds_custom_nav->data_array[sounds_custom_nav->index];
     }
   }
+  else if (current_nav->id == NAVIGATION_EFFECTS)
+  {
+    if (state_splash_screen.size() >= 2)
+    {
+      state_splash_screen[1] = effects_nav->data_array[effects_nav->index];
+    }
+  }
 
   lcd->clear();
   Serial.println("XXXXXXXSPLASHXXXXXXX");

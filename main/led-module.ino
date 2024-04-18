@@ -57,3 +57,7 @@ void selectRow_LED(int Row)
     digitalWrite(SELECT_ROW_PIN_2, bitRead(Row, 1));
     digitalWrite(SELECT_ROW_PIN_3, bitRead(Row, 2));
 }
+
+void LED_routine(int mode)
+{
+}

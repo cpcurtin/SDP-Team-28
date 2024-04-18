@@ -32,4 +32,5 @@ void LED_On(int Row, int Column);
 void LED_Off(int Row, int Column);
 void selectColumn_LED(int Column);
 void selectRow_LED(int Row);
+void LED_routine(int mode);
 #endif // EXAMPLE_MODULE_H

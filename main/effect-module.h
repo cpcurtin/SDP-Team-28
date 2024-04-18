@@ -11,17 +11,17 @@
 #endif
 
 /* EFFECT CODES */
-#define EFFECT_NONE 0
-#define EFFECT_REPLAY_SAVE 1
-#define EFFECT_REPLAY_CURRENT 2
-#define EFFECT_REPLAY_RESET 3
-#define EFFECT_REVERSE_SAVE 4
-#define EFFECT_REVERSE_CURRENT 5
-#define EFFECT_REVERSE_RESET 6
-#define ECHO 7
-#define PAUSE_SOUNDS 8
-#define SCRATCH 9
-#define DOUBLE_REPEAT 10
+#define EFFECT_NULL -1
+#define EFFECT_REPLAY_SAVE 0
+#define EFFECT_REPLAY_CURRENT 1
+#define EFFECT_REPLAY_RESET 2
+#define EFFECT_REVERSE_SAVE 3
+#define EFFECT_REVERSE_CURRENT 4
+#define EFFECT_REVERSE_RESET 5
+#define ECHO 6
+#define PAUSE_SOUNDS 7
+#define SCRATCH 8
+#define DOUBLE_REPEAT 9
 
 #define EFFECT_RETURN_SAVE 0
 #define EFFECT_RETURN_CURRENT 1
@@ -45,5 +45,7 @@ array_with_size *fetch_effects(void);
 // functions, extern variables, structs go here
 
 void run_effect(int effect);
+void effect_begin(void);
+void effect_end(void);
 
 #endif // EFFECT_MODULE_H

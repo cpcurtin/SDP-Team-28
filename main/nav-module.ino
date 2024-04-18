@@ -135,7 +135,7 @@ Nav *nav_init(struct nav_config *cfg)
     // Effects presets
     // effects_nav->name = "effects";
     effects_nav->id = NAVIGATION_EFFECTS;
-    effects_nav->data_array = cfg->effects;
+    effects_nav->data_array = std::move(cfg->effects);
     effects_nav->parent = main_nav;
     effects_nav->child = nullptr;
     effects_nav->index = 0;
@@ -167,7 +167,7 @@ Nav *nav_init(struct nav_config *cfg)
     // Tracks Load presets
     // tracks_load_nav->name = "tracks_load";
     tracks_load_nav->id = NAVIGATION_TRACK_LOAD;
-    tracks_load_nav->data_array = cfg->tracks_load;
+    tracks_load_nav->data_array = std::move(cfg->tracks_load);
     tracks_load_nav->parent = tracks_nav;
     tracks_load_nav->child = nullptr;
     tracks_load_nav->index = 0;
@@ -197,7 +197,7 @@ Nav *nav_init(struct nav_config *cfg)
     // Custom Sounds presets
     // sounds_custom_nav->name = "custom_sounds";
     sounds_custom_nav->id = NAVIGATION_SOUNDS_CUSTOM;
-    sounds_custom_nav->data_array = cfg->sounds_custom;
+    sounds_custom_nav->data_array = std::move(cfg->sounds_custom);
     sounds_custom_nav->parent = sounds_nav;
     sounds_custom_nav->child = nullptr;
     sounds_custom_nav->index = 0;
@@ -218,7 +218,7 @@ Nav *nav_init(struct nav_config *cfg)
     // MIDI Percussion presets
     // sounds_midi_percussion_nav->name = "sounds_midi_percussion";
     sounds_midi_percussion_nav->id = NAVIGATION_SOUNDS_MIDI_PERCUSSION;
-    sounds_midi_percussion_nav->data_array = cfg->sounds_midi_percussion;
+    sounds_midi_percussion_nav->data_array = std::move(cfg->sounds_midi_percussion);
     sounds_midi_percussion_nav->parent = sounds_midi_nav;
     sounds_midi_percussion_nav->child = nullptr;
     sounds_midi_percussion_nav->index = 0;
@@ -228,7 +228,7 @@ Nav *nav_init(struct nav_config *cfg)
     // MIDI Melodic presets
     // sounds_midi_melodic_nav->name = "sounds_midi_melodic";
     sounds_midi_melodic_nav->id = NAVIGATION_SOUNDS_MIDI_MELODIC;
-    sounds_midi_melodic_nav->data_array = cfg->sounds_midi_melodic;
+    sounds_midi_melodic_nav->data_array = std::move(cfg->sounds_midi_melodic);
     sounds_midi_melodic_nav->parent = sounds_midi_nav;
     sounds_midi_melodic_nav->child = nullptr;
     sounds_midi_melodic_nav->index = 0;
@@ -340,21 +340,32 @@ int execute_leaf(void)
         temp_sample = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index]);
         if (temp_sample != nullptr)
         {
+
             new_sound.bank = -1;
             new_sound.instrument = -1;
             new_sound.note = -1;
-            new_sound_assignment = true;
             new_sound.sd_cached_sound = temp_sample;
-
             new_sound.filename = sounds_custom_nav->data_array[sounds_custom_nav->index];
 
+            new_palette_slot.sound.bank = -1;
+            new_palette_slot.sound.instrument = -1;
+            new_palette_slot.sound.note = -1;
+            new_palette_slot.sound.sd_cached_sound = temp_sample;
+            new_palette_slot.sound.filename = sounds_custom_nav->data_array[sounds_custom_nav->index];
+            new_palette_slot.effect = -1;
+            new_palette_slot.is_empty = false;
+
+            // new_sound_assignment = true;
+            palette_assignment = PALETTE_ASSIGNMENT_SOUND;
+            LED_mode = LED_PALETTE_SELECT;
             lcd_splash(lcd, nav_state, selected_sound);
 
             char str[20];
             sprintf(str, "%p", (void *)temp_sample); // Using sprintf to format the pointer address
             Serial.println("\tEXPECTED: " + String(str));
 
-            current_track->cached_sounds.push_back(new_sound);
+            // current_track->cached_sounds.push_back(new_sound);
+            current_track->cached_sounds.push_back(new_palette_slot.sound);
         }
         else
         {
@@ -364,9 +375,35 @@ int execute_leaf(void)
             new_sound.sd_cached_sound = nullptr;
             new_sound.filename = "";
 
+            new_palette_slot.sound.bank = -1;
+            new_palette_slot.sound.instrument = -1;
+            new_palette_slot.sound.note = -1;
+            new_palette_slot.sound.sd_cached_sound = nullptr;
+            new_palette_slot.sound.filename = "";
+            new_palette_slot.effect = -1;
+            new_palette_slot.is_empty = true;
+
             // NO SIZE ON PSRAM TO CACHE SOUND
             lcd_splash(lcd, nullptr, error_psram_full);
         }
+        nav_state = main_nav;
+        break;
+    }
+    case NAVIGATION_EFFECTS:
+    {
+        Serial.println("NAVIGATION_EFFECTS");
+        new_palette_slot.sound.bank = -1;
+        new_palette_slot.sound.instrument = -1;
+        new_palette_slot.sound.note = -1;
+        new_palette_slot.sound.sd_cached_sound = nullptr;
+        new_palette_slot.sound.filename = "";
+        new_palette_slot.effect = nav_state->index;
+        new_palette_slot.is_empty = true;
+
+        palette_assignment = PALETTE_ASSIGNMENT_EFFECT;
+        LED_mode = LED_PALETTE_SELECT;
+        lcd_splash(lcd, nav_state, selected_effect);
+
         nav_state = main_nav;
         break;
     }
@@ -378,7 +415,18 @@ int execute_leaf(void)
         new_sound.note = -1;
         new_sound.sd_cached_sound = nullptr;
         new_sound.filename = "";
-        new_sound_assignment = true;
+
+        new_palette_slot.sound.bank = sounds_midi_nav->index;
+        new_palette_slot.sound.instrument = midi_percussion_values[sounds_midi_percussion_nav->index];
+        new_palette_slot.sound.note = -1;
+        new_palette_slot.sound.sd_cached_sound = nullptr;
+        new_palette_slot.sound.filename = "";
+        new_palette_slot.effect = -1;
+        new_palette_slot.is_empty = false;
+
+        // new_sound_assignment = true;
+        palette_assignment = PALETTE_ASSIGNMENT_SOUND;
+        LED_mode = LED_PALETTE_SELECT;
 
         lcd_splash(lcd, nav_state, selected_sound);
         nav_state = main_nav;
@@ -419,7 +467,17 @@ int execute_leaf(void)
         new_sound.note = midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index];
         new_sound.sd_cached_sound = nullptr;
         new_sound.filename = "";
-        new_sound_assignment = true;
+
+        new_palette_slot.sound.bank = sounds_midi_nav->index;
+        new_palette_slot.sound.instrument = midi_melodic_values[sounds_midi_melodic_nav->index];
+        new_palette_slot.sound.note = midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index];
+        new_palette_slot.sound.sd_cached_sound = nullptr;
+        new_palette_slot.sound.filename = "";
+        new_palette_slot.effect = -1;
+        new_palette_slot.is_empty = false;
+        // new_sound_assignment = true;
+        palette_assignment = PALETTE_ASSIGNMENT_SOUND;
+        LED_mode = LED_PALETTE_SELECT;
 
         lcd_splash(lcd, nav_state, selected_sound);
         nav_state = main_nav;
@@ -480,6 +538,8 @@ int execute_leaf(void)
             tracks_load_nav->data_array = std::move(sd_fetch_tracks());
             tracks_load_nav->index = 0;
             array_scroll(tracks_load_nav, 0);
+            nav_state = tracks_nav;
+            lcd_display(lcd, nav_state->lcd_state);
 
             // int filename_count = 0;
             // if (tracks_load_nav->data_array.empty() == false)

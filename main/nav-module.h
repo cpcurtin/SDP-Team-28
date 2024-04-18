@@ -43,6 +43,10 @@
 /******************************************************************************/
 #define TRACK_SAVE_NAME_LENGTH 3
 
+#define PALETTE_ASSIGNMENT_DEFAULT 0
+#define PALETTE_ASSIGNMENT_SOUND 1
+#define PALETTE_ASSIGNMENT_EFFECT 2
+
 #include <vector>
 #include <string>
 

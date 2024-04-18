@@ -112,6 +112,15 @@ typedef struct Measure
 
 } Measure;
 
+typedef struct Palette_Slot
+{
+    struct Sound sound;
+    int effect;
+    bool is_empty;
+} Palette_Slot;
+
+std::vector<Palette_Slot> testing_palette_combined(PALETTE_SIZE);
+
 Measure *current_measure;
 
 Step *active_step;
@@ -120,8 +129,10 @@ Sound temp_adding_sound;
 
 Sound testing_palette[PALETTE_SIZE];
 Sound new_sound;
+Palette_Slot new_palette_slot;
 
 bool new_sound_assignment = false;
+int palette_assignment = 0;
 bool measure_edit = false;
 
 int beat = 0;
