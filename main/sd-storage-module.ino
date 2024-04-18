@@ -191,7 +191,6 @@ void read_track(std::string filename, Track *config)
     new_measure->active_beats = measure["active_beats"]; // 4
     new_measure->step = 0;
     new_measure->step = 0;
-    new_measure->effect_mode = false;
     new_measure->current_step = new_measure->beat_list[0].step_list[0];
     new_measure->prior_step = new_measure->beat_list[3].step_list[5];
     Serial.print("measure id: ");

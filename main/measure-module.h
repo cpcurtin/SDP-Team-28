@@ -105,7 +105,6 @@ typedef struct Measure
     int active_beats;
     int step;
     int beat;
-    bool effect_mode;
     struct Step current_step;
     struct Step prior_step;
     struct Beat beat_list[4];

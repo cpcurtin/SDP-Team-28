@@ -31,7 +31,7 @@ int effect;
 int effect_return_state;
 int saved_step;
 int saved_beat;
-
+bool effect_mode = false;
 // TEMMP
 int active_palette_effects[3] = {DOUBLE_REPEAT, EFFECT_REPLAY_RESET, EFFECT_REVERSE_CURRENT};
 // TEMMP

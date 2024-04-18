@@ -30,14 +30,14 @@ array_with_size *fetch_effects(void)
 void effect_begin(void)
 {
     Serial.println("BEGIN EFFECT");
-    current_measure->effect_mode = true;
+    effect_mode = true;
     effect = testing_palette_combined[palette_index].effect;
 }
 void effect_end(void)
 {
 
     Serial.println("END EFFECT");
-    current_measure->effect_mode = false;
+    effect_mode = false;
 
     // SET STEP STATE TO STEP WHEN EFFECT FIRST PRESSED
     if (effect_return_state == EFFECT_RETURN_SAVE)

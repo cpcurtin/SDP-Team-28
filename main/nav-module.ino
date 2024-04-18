@@ -398,7 +398,7 @@ int execute_leaf(void)
         new_palette_slot.sound.sd_cached_sound = nullptr;
         new_palette_slot.sound.filename = "";
         new_palette_slot.effect = nav_state->index;
-        new_palette_slot.is_empty = true;
+        new_palette_slot.is_empty = false;
 
         palette_assignment = PALETTE_ASSIGNMENT_EFFECT;
         LED_mode = LED_PALETTE_SELECT;

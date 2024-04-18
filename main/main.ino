@@ -117,7 +117,7 @@ void loop()
     temp_last_step = current_measure->step;
     temp_last_beat = current_measure->beat;
 
-    if (current_measure->effect_mode)
+    if (effect_mode)
     {
       run_effect(effect);
     }
@@ -162,28 +162,10 @@ void loop()
   }
   /******************************************************************************************************/
 
-  if (matrix_pressed(BUTTON_PALETTE, BUTTON_HELD)) // PALETTE BUTTON HELD
-  {
-    for (int i = 0; i < 12; i++)
-    {
-      // get palette index
-      if (Palette_LEDMatrix[i][0] == matrix_button.row && Palette_LEDMatrix[i][1] == matrix_button.column)
-      {
-        palette_index = i;
-      }
-    }
-    if (testing_palette_combined[palette_index].effect != EFFECT_NULL) // run effect if pressed
-    {
-      if (current_measure->effect_mode == false)
-      {
-        effect_begin(); // ENABLE EFFECT TOGGLE FLAG
-      }
-    }
-  }
   if (matrix_pressed(BUTTON_PALETTE, BUTTON_NOT_HELD)) // PALETTE BUTTON PRESSED
   {
     Serial.println("PALETTE PRESSED");
-    if (current_measure->effect_mode)
+    if (effect_mode)
     {
       effect_end(); // DISABLE EFFECT TOGGLE FLAG
     }
@@ -226,7 +208,6 @@ void loop()
       }
     }
   }
-
   //  MEASURE BUTTON PRESSED
   if (measure_edit)
   {
@@ -243,11 +224,27 @@ void loop()
       {
         // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
       }
-
       measure_edit = false; // chain sound assignment in future starting here
     }
   }
-
+  if (matrix_pressed(BUTTON_PALETTE, BUTTON_HELD)) // PALETTE BUTTON HELD
+  {
+    if (effect_mode == false)
+    {
+      for (int i = 0; i < 12; i++)
+      {
+        // get palette index
+        if (Palette_LEDMatrix[i][0] == matrix_button.row && Palette_LEDMatrix[i][1] == matrix_button.column)
+        {
+          palette_index = i;
+        }
+      }
+      if ((testing_palette_combined[palette_index].effect != EFFECT_NULL) && (palette_assignment == PALETTE_ASSIGNMENT_DEFAULT)) // run effect if pressed
+      {
+        effect_begin(); // ENABLE EFFECT TOGGLE FLAG
+      }
+    }
+  }
   /******************************************************************************************************/
 
   /*****************************************************************************

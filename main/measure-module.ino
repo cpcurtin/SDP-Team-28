@@ -214,7 +214,6 @@ Measure *measure_create(int id)
     temp_measure->id = id;
     temp_measure->step = 0;
     temp_measure->beat = 0;
-    temp_measure->effect_mode = false;
 
     for (int i = 0; i < MAX_BEATS; i++)
     {
