@@ -8,8 +8,14 @@
 
 int dac_init(void)
 {
-  AudioMemory(10);
+  // AudioMemory(4);
+  AudioMemory(8);
+  // AudioMemory(12);
+  // AudioMemory(16);
   rraw_a1.enableInterpolation(true);
+  rraw_a2.enableInterpolation(true);
+  rraw_a3.enableInterpolation(true);
+  rraw_a4.enableInterpolation(true);
   amp1.gain(dac_vol);
   amp2.gain(dac_vol);
 
@@ -21,7 +27,8 @@ int dac_init(void)
 
 int playFile(newdigate::audiosample *cached_sound)
 {
-
+  Serial.print("MAX MEM: ");
+  Serial.println(AudioMemoryUsageMax());
   int mixer = -1;
 
   if (rraw_a1.isPlaying() == false)
@@ -63,10 +70,27 @@ int playFile(newdigate::audiosample *cached_sound)
 }
 void stopFile(int mixer)
 {
-  rraw_a1.stop();
-  //rraw_a2.stop();
-  //rraw_a3.stop();
-  //rraw_a4.stop();
+  // rraw_a1.stop();
+  // rraw_a2.stop();
+  // rraw_a3.stop();
+  // rraw_a4.stop();
+
+  if (rraw_a1.isPlaying())
+  {
+    rraw_a1.stop();
+  }
+  if (rraw_a2.isPlaying())
+  {
+    rraw_a2.stop();
+  }
+  if (rraw_a3.isPlaying())
+  {
+    rraw_a3.stop();
+  }
+  if (rraw_a4.isPlaying())
+  {
+    rraw_a4.stop();
+  }
 }
 
 #if USING_SAFE_STRINGS == 1 // safe - new

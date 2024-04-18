@@ -141,7 +141,8 @@ int add_remove_measure_sound(Measure *measure)
     for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
     {
 
-        if (testing_palette[palette_index] == button_step_lookup(measure)->sound_list[sound])
+        // if (testing_palette[palette_index] == button_step_lookup(measure)->sound_list[sound])
+        if (testing_palette_combined[palette_index].sound == button_step_lookup(measure)->sound_list[sound])
         {
             Serial.println("MEASURE REMOVE SOUND");
             // SELECTED PALETTE SOUND EXISTS ON CURRENT STEP
@@ -161,7 +162,8 @@ int add_remove_measure_sound(Measure *measure)
             if (button_step_lookup(current_measure)->sound_list[sound].empty)
             {
                 // ASSIGN PALETTE SOUND TO FIRST AVAILABLE STEP SOUND SLOT
-                button_step_lookup(current_measure)->sound_list[sound] = testing_palette[palette_index];
+                // button_step_lookup(current_measure)->sound_list[sound] = testing_palette[palette_index];
+                button_step_lookup(current_measure)->sound_list[sound] = testing_palette_combined[palette_index].sound;
                 button_step_lookup(current_measure)->active_sounds++;
                 break;
             }
@@ -191,6 +193,9 @@ int measure_palette_init(void)
     for (int i = 0; i < PALETTE_SIZE; i++)
     {
         testing_palette[i] = {-1, -1, -1, nullptr, "", true};
+        testing_palette_combined[i].sound = {-1, -1, -1, nullptr, "", true};
+        testing_palette_combined[i].effect = -1;
+        testing_palette_combined[i].is_empty = true;
     }
 
     return 0;
@@ -209,7 +214,6 @@ Measure *measure_create(int id)
     temp_measure->id = id;
     temp_measure->step = 0;
     temp_measure->beat = 0;
-    temp_measure->effect_mode = false;
 
     for (int i = 0; i < MAX_BEATS; i++)
     {
