@@ -80,7 +80,7 @@ void setup()
   Serial.println(current_track->measure_steps);
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
-  step_timer = Metro(60000 / (4 * 10));   // starting tmepo
+  step_timer = Metro(60000 / (6 * 50));   // starting tmepo
   Serial.println("PROGRAM LOOP BEGINS");
 }
 
@@ -142,6 +142,10 @@ void loop()
   if (matrix_pressed(BUTTON_PALETTE, BUTTON_NOT_HELD)) // PALETTE BUTTON PRESSED
   {
     Serial.println("PALETTE PRESSED");
+    if (palette_assignment == PALETTE_ASSIGNMENT_DEFAULT)
+    {
+      lcd_splash_palette(lcd, testing_palette_combined[palette_index]);
+    }
     if (effect_mode)
     {
       effect_end(); // DISABLE EFFECT TOGGLE FLAG
@@ -163,7 +167,6 @@ void loop()
       {
         // SAVE NEW SOUND FROM NAV TO PALETTE BUTTON
         Serial.println("NAV TO PALETTE ASSIGNED");
-        testing_palette[palette_index] = new_sound;
         testing_palette_combined[palette_index] = new_palette_slot;
 
         // new_sound_assignment = false;
@@ -173,6 +176,7 @@ void loop()
       }
       else
       {
+
         if (LED_mode == LED_PALETTE_SELECT && testing_palette_combined[palette_index].effect == -1)
         {
           // EVOKES add/remove sounds to measure steps

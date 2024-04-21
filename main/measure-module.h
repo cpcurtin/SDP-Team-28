@@ -96,7 +96,6 @@ Step *last_step;
 Sound temp_adding_sound;
 
 Sound testing_palette[PALETTE_SIZE];
-Sound new_sound;
 Palette_Slot new_palette_slot;
 
 bool new_sound_assignment = false;

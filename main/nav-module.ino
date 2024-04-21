@@ -357,17 +357,12 @@ int execute_leaf(void)
         if (temp_sample != nullptr)
         {
 
-            new_sound.bank = -1;
-            new_sound.instrument = -1;
-            new_sound.note = -1;
-            new_sound.sd_cached_sound = temp_sample;
-            new_sound.filename = sounds_custom_nav->data_array[sounds_custom_nav->index];
-
             new_palette_slot.sound.bank = -1;
             new_palette_slot.sound.instrument = -1;
             new_palette_slot.sound.note = -1;
             new_palette_slot.sound.sd_cached_sound = temp_sample;
             new_palette_slot.sound.filename = sounds_custom_nav->data_array[sounds_custom_nav->index];
+            new_palette_slot.sound.empty = false;
             new_palette_slot.effect = -1;
             new_palette_slot.is_empty = false;
 
@@ -379,23 +374,17 @@ int execute_leaf(void)
             char str[20];
             sprintf(str, "%p", (void *)temp_sample); // Using sprintf to format the pointer address
             Serial.println("\tEXPECTED: " + String(str));
-
-            // current_track->cached_sounds.push_back(new_sound);
             current_track->cached_sounds.push_back(new_palette_slot.sound);
         }
         else
         {
-            new_sound.bank = -1;
-            new_sound.instrument = -1;
-            new_sound.note = -1;
-            new_sound.sd_cached_sound = nullptr;
-            new_sound.filename = "";
 
             new_palette_slot.sound.bank = -1;
             new_palette_slot.sound.instrument = -1;
             new_palette_slot.sound.note = -1;
             new_palette_slot.sound.sd_cached_sound = nullptr;
             new_palette_slot.sound.filename = "";
+            new_palette_slot.sound.empty = true;
             new_palette_slot.effect = -1;
             new_palette_slot.is_empty = true;
 
@@ -413,6 +402,7 @@ int execute_leaf(void)
         new_palette_slot.sound.note = -1;
         new_palette_slot.sound.sd_cached_sound = nullptr;
         new_palette_slot.sound.filename = "";
+        new_palette_slot.sound.empty = true;
         new_palette_slot.effect = nav_state->index;
         new_palette_slot.is_empty = false;
 
@@ -426,17 +416,13 @@ int execute_leaf(void)
     case NAVIGATION_SOUNDS_MIDI_PERCUSSION:
     {
         Serial.println("NAVIGATION_SOUNDS_MIDI_PERCUSSION");
-        new_sound.bank = sounds_midi_nav->index;
-        new_sound.instrument = midi_percussion_values[sounds_midi_percussion_nav->index];
-        new_sound.note = -1;
-        new_sound.sd_cached_sound = nullptr;
-        new_sound.filename = "";
 
         new_palette_slot.sound.bank = sounds_midi_nav->index;
         new_palette_slot.sound.instrument = midi_percussion_values[sounds_midi_percussion_nav->index];
         new_palette_slot.sound.note = -1;
         new_palette_slot.sound.sd_cached_sound = nullptr;
         new_palette_slot.sound.filename = "";
+        new_palette_slot.sound.empty = false;
         new_palette_slot.effect = -1;
         new_palette_slot.is_empty = false;
 
@@ -478,17 +464,12 @@ int execute_leaf(void)
         Serial.print("TEST: ");
         Serial.println(midi_mapping[nav_state->index][(nav_state->parent)->index]);
 
-        new_sound.bank = sounds_midi_nav->index;
-        new_sound.instrument = midi_melodic_values[sounds_midi_melodic_nav->index];
-        new_sound.note = midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index];
-        new_sound.sd_cached_sound = nullptr;
-        new_sound.filename = "";
-
         new_palette_slot.sound.bank = sounds_midi_nav->index;
         new_palette_slot.sound.instrument = midi_melodic_values[sounds_midi_melodic_nav->index];
         new_palette_slot.sound.note = midi_mapping[sounds_midi_notes_nav->index][sounds_midi_octaves_nav->index];
         new_palette_slot.sound.sd_cached_sound = nullptr;
         new_palette_slot.sound.filename = "";
+        new_palette_slot.sound.empty = false;
         new_palette_slot.effect = -1;
         new_palette_slot.is_empty = false;
         // new_sound_assignment = true;

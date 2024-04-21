@@ -29,15 +29,17 @@ LiquidCrystal_I2C *lcd;
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);
 
 std::vector<std::string> state_splash_screen(4, "");
-
+std::vector<std::string> empty_splash(4, "");
 std::vector<std::string> selected_sound = {"SELECTED SOUND:", "", "", "ASSIGN TO PALLETE"};
 std::vector<std::string> selected_effect = {"SELECTED EFFECT:", "", "", ""};
 std::vector<std::string> error_psram_full = {"PALETTE CACHE FULL", "YOU MUST REMOVE A", "CUSTOM SOUND FROM", "PALETTE AND MEASURE"};
 std::vector<std::string> empty_step_splash = {"", "   STEP IS EMPTY   ", "", ""};
+std::vector<std::string> empty_palette_splash = {"", " PALETTE SLOT EMPTY ", "", ""};
 
 void lcd_display(LiquidCrystal_I2C *lcd, std::vector<std::string> print_arr);
 void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std::string> print_arr);
 void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step);
+void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot);
 void update_tempo(LiquidCrystal_I2C *lcd);
 
 #endif // LCD_MODULE_H

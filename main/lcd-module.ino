@@ -72,7 +72,6 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std
     {
       state_splash_screen[2] = ("Octave:" + std::string(sounds_midi_octaves_nav->data_array[sounds_midi_octaves_nav->index]) + " Note:" + std::string(sounds_midi_notes_nav->data_array[sounds_midi_notes_nav->index])).c_str();
     }
-
     break;
   }
 
@@ -118,8 +117,8 @@ void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step)
 {
   splash_screen_timed = true;
   timed_splash_start = millis();
-
   state_splash_screen.clear();
+
   if (step->active_sounds > 0)
   {
     for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
@@ -168,6 +167,70 @@ void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step)
   for (size_t row = 0; row < state_splash_screen.size(); row++)
   {
     lcd->setCursor(0, row); // Set cursor to current row
+    Serial.println(state_splash_screen[row].c_str());
+    lcd->print(state_splash_screen[row].c_str()); // Print current row
+  }
+  Serial.println("XXXXXXXXXXXXXXXXXXXX");
+
+  lcd->home();
+}
+
+void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
+{
+  splash_screen_timed = true;
+  timed_splash_start = millis();
+  state_splash_screen.clear();
+
+  if (!slot.is_empty)
+  {
+    std::copy(empty_splash.begin(), empty_splash.end(), std::back_inserter(state_splash_screen));
+    if (!slot.sound.empty)
+    {
+      state_splash_screen[0] = "   PALETTE SOUND   ";
+      if (slot.sound.bank != MIDI_NULL)
+      {
+        if (slot.sound.note != MIDI_NULL)
+        {
+          // MELODIC
+          state_splash_screen[1] = "MIDI MELODIC SOUND:";
+          state_splash_screen[2] = midi_melodic_sounds[slot.sound.instrument];
+          state_splash_screen[3] = "Octave:" + std::to_string((slot.sound.note % NUM_OCTAVES) - 2) + " Note:" + sounds_midi_notes_nav->data_array[slot.sound.note / NUM_NOTES].substr(0, 2);
+        }
+        else
+        {
+          // PERCUSSION
+          state_splash_screen[1] = "MIDI PERCUSSION SOUND:";
+          state_splash_screen[2] = midi_percussion_sounds[slot.sound.instrument];
+        }
+      }
+      else
+      {
+        // SD
+        if (slot.sound.sd_cached_sound != nullptr)
+        {
+          state_splash_screen[1] = "CUSTOM SOUND:";
+          state_splash_screen[2] = slot.sound.filename;
+        }
+      }
+    }
+    else
+    {
+      state_splash_screen[0] = "PALETTE EFFECT";
+      state_splash_screen.push_back(effects_nav->data_array[slot.effect]);
+    }
+  }
+  else
+  {
+    std::copy(empty_palette_splash.begin(), empty_palette_splash.end(), std::back_inserter(state_splash_screen));
+  }
+
+  lcd->clear();
+  Serial.println("XXXXXXXSPLASHXXXXXXX");
+  for (size_t row = 0; row < state_splash_screen.size(); row++)
+  {
+    lcd->setCursor(0, row); // Set cursor to current row
+    state_splash_screen[row].resize(LCD_COLUMNS);
+    state_splash_screen[row].shrink_to_fit();
     Serial.println(state_splash_screen[row].c_str());
     lcd->print(state_splash_screen[row].c_str()); // Print current row
   }
