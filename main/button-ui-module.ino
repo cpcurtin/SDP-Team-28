@@ -53,6 +53,7 @@ int button_matrix_init(void)
   pinMode(selectPin1_LED, OUTPUT);
   pinMode(selectPin2_LED, OUTPUT);
   pinMode(selectPin3_LED, OUTPUT);
+  digitalWrite(ENABLE_PIN_LED, HIGH);
 
   pinMode(SELECT_ROW_PIN_1, OUTPUT);
   pinMode(SELECT_ROW_PIN_2, OUTPUT);
@@ -251,57 +252,57 @@ int read_tempo(void)
 
   // Delay for readability (adjust as needed)
 }
-#if USING_CDR_PCB == 1 // Button has external pulldown. When high, button pushed
+// #if USING_CDR_PCB == 1 // Button has external pulldown. When high, button pushed
+// int dpad_read(void)
+// {
+
+//   if (dpad_button_pressed)
+//   {
+//     if (millis() - dpad_last_pressed > 50 && digitalRead(dpad_button_pressed) == LOW)
+//     {
+//       dpad_press_return = dpad_button_pressed;
+//       dpad_button_pressed = 0;
+//       return dpad_press_return;
+//     }
+//   }
+//   else
+//   {
+//     if (digitalRead(BUTTON_DPAD_LEFT) == HIGH)
+//     {
+//       dpad_button_pressed = BUTTON_DPAD_LEFT;
+//     }
+//     if (digitalRead(BUTTON_DPAD_DOWN) == HIGH)
+//     {
+//       dpad_button_pressed = BUTTON_DPAD_DOWN;
+//     }
+//     if (digitalRead(BUTTON_DPAD_UP) == HIGH)
+//     {
+//       dpad_button_pressed = BUTTON_DPAD_UP;
+//     }
+//     if (digitalRead(BUTTON_DPAD_RIGHT) == HIGH)
+//     {
+//       dpad_button_pressed = BUTTON_DPAD_RIGHT;
+//     }
+//     dpad_last_pressed = millis();
+//   }
+
+//   /*
+// unsigned long start_time = millis();
+// unsigned long end_time = millis();
+// Calculate the difference in time unsigned long time_diff = end_time - start_time;
+//   */
+
+//   return 0;
+// }
+// #endif
+
+// #if USING_CDR_PCB == 0 // Button using input pullup. When low, button pushed
 int dpad_read(void)
 {
 
   if (dpad_button_pressed)
   {
-    if (millis() - dpad_last_pressed > 50 && digitalRead(dpad_button_pressed) == LOW)
-    {
-      dpad_press_return = dpad_button_pressed;
-      dpad_button_pressed = 0;
-      return dpad_press_return;
-    }
-  }
-  else
-  {
-    if (digitalRead(BUTTON_DPAD_LEFT) == HIGH)
-    {
-      dpad_button_pressed = BUTTON_DPAD_LEFT;
-    }
-    if (digitalRead(BUTTON_DPAD_DOWN) == HIGH)
-    {
-      dpad_button_pressed = BUTTON_DPAD_DOWN;
-    }
-    if (digitalRead(BUTTON_DPAD_UP) == HIGH)
-    {
-      dpad_button_pressed = BUTTON_DPAD_UP;
-    }
-    if (digitalRead(BUTTON_DPAD_RIGHT) == HIGH)
-    {
-      dpad_button_pressed = BUTTON_DPAD_RIGHT;
-    }
-    dpad_last_pressed = millis();
-  }
-
-  /*
-unsigned long start_time = millis();
-unsigned long end_time = millis();
-Calculate the difference in time unsigned long time_diff = end_time - start_time;
-  */
-
-  return 0;
-}
-#endif
-
-#if USING_CDR_PCB == 0 // Button using input pullup. When low, button pushed
-int dpad_read(void)
-{
-
-  if (dpad_button_pressed)
-  {
-    if (millis() - dpad_last_pressed > 50 && digitalRead(dpad_button_pressed) == LOW)
+    if (millis() - dpad_last_pressed > 50 && digitalRead(dpad_button_pressed) == HIGH)
     {
       dpad_press_return = dpad_button_pressed;
       dpad_button_pressed = 0;
@@ -337,7 +338,7 @@ Calculate the difference in time unsigned long time_diff = end_time - start_time
 
   return 0;
 }
-#endif
+// #endif
 bool matrix_pressed(int type, int held)
 {
   switch (type)

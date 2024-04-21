@@ -25,17 +25,17 @@
 
 #define MATRIX_BUTTON_DEBOUNCE 50
 
-#define BUTTON_SELECT_PIN_1 12 // select bit A
-#define BUTTON_SELECT_PIN_2 11 // select bit B
-#define BUTTON_SELECT_PIN_3 10 // select bit C
-#define ENABLE_PIN_BUTTONS 24  // enable bit
+#define BUTTON_SELECT_PIN_1 11 // select bit A
+#define BUTTON_SELECT_PIN_2 10 // select bit B
+#define BUTTON_SELECT_PIN_3 8 // select bit C
+#define ENABLE_PIN_BUTTONS 12  // enable bit
 
 #define SELECT_ROW_PIN_1 32 // select bit A
 #define SELECT_ROW_PIN_2 31 // select bit B
 #define SELECT_ROW_PIN_3 30 // select bit C
 #define ENABLE_PIN_ROWS 29
 
-#define BUTTON_COLUMN_8 8
+#define BUTTON_COLUMN_8 7
 
 #define BUTTON_HELD 1
 #define BUTTON_NOT_HELD 0

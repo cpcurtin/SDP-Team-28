@@ -4,7 +4,7 @@
 #define USING_MAIN_PCB 1   // 1 for integrated DAC, 0 for daughter board DAC
 #define USING_PSRAM 1      // 1 for teesny 4.1 with solder psram, 0 otherwise
 #define USING_NEW_DS 1     // 1 for new ds, 0 for old
-#define USING_CDR_PCB 1    // 1 for CDR board configuration, 0 for updated dpad logic
+#define USING_CDR_PCB 0    // 1 for CDR board configuration, 0 for updated dpad logic
 #define USING_SAFE_STRINGS 1
 #define DEBUG_PRINT 1
 #define DEBUG_INPUT 0
@@ -203,65 +203,18 @@ TEMPO WHEEL PIN ASSIGNMENTS
 DPAD BUTTONS PIN ASSIGNMENTS
 **************************/
 
-#if USING_CDR_PCB == 1 // CDR
 #define BUTTON_DPAD_LEFT 17
 #define BUTTON_DPAD_DOWN 16
 #define BUTTON_DPAD_UP 15
 #define BUTTON_DPAD_RIGHT 14
-#else
-#define BUTTON_DPAD_LEFT 14
-#define BUTTON_DPAD_DOWN 15
-#define BUTTON_DPAD_UP 16
-#define BUTTON_DPAD_RIGHT 17
-#endif
-
-/**************************
-MATRIX BUTTON PIN ASSIGNMENTS
-**************************/
-#define BUTTON_MATRIX_ROW_1 999
-#define BUTTON_MATRIX_ROW_2 999
-#define BUTTON_MATRIX_ROW_3 999
-#define BUTTON_MATRIX_ROW_4 999
-
-#define BUTTON_MATRIX_COLUMN_1 28
-#define BUTTON_MATRIX_COLUMN_2 29
-#define BUTTON_MATRIX_COLUMN_3 30
-#define BUTTON_MATRIX_COLUMN_4 999
-#define BUTTON_MATRIX_COLUMN_5 999
-#define BUTTON_MATRIX_COLUMN_6 999
-#define BUTTON_MATRIX_COLUMN_7 999
-#define BUTTON_MATRIX_COLUMN_8 999
-#define BUTTON_MATRIX_COLUMN_9 999
 
 /**************************
 MEASURE MATRIX BUTTON PIN ASSIGNMENTS
 **************************/
-#define BUTTON_MEASURE_MATRIX_ROW_1 32
-#define BUTTON_MEASURE_MATRIX_ROW_2 31
-#define BUTTON_MEASURE_MATRIX_ROW_3 34
-#define BUTTON_MEASURE_MATRIX_ROW_4 33
-
-#define BUTTON_MEASURE_MATRIX_COLUMN_1 23
-#define BUTTON_MEASURE_MATRIX_COLUMN_2 22
-#define BUTTON_MEASURE_MATRIX_COLUMN_3 19
-#define BUTTON_MEASURE_MATRIX_COLUMN_4 18
-#define BUTTON_MEASURE_MATRIX_COLUMN_5 17
-#define BUTTON_MEASURE_MATRIX_COLUMN_6 16
-
-/**************************
-MEASURE MATRIX LED PIN ASSIGNMENTS
-**************************/
-#define LED_MEASURE_MATRIX_ROW_1 38
-#define LED_MEASURE_MATRIX_ROW_2 37
-#define LED_MEASURE_MATRIX_ROW_3 36
-#define LED_MEASURE_MATRIX_ROW_4 35
-
-#define LED_MEASURE_MATRIX_COLUMN_1 15
-#define LED_MEASURE_MATRIX_COLUMN_2 14
-#define LED_MEASURE_MATRIX_COLUMN_3 13
-#define LED_MEASURE_MATRIX_COLUMN_4 41
-#define LED_MEASURE_MATRIX_COLUMN_5 40
-#define LED_MEASURE_MATRIX_COLUMN_6 39
+#define BUTTON_MEASURE_MATRIX_ROW_1 33
+#define BUTTON_MEASURE_MATRIX_ROW_2 34
+#define BUTTON_MEASURE_MATRIX_ROW_3 35
+#define BUTTON_MEASURE_MATRIX_ROW_4 36
 
 /**************************
 HARDWARE CONFIGURATIONS
