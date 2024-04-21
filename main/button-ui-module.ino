@@ -53,6 +53,7 @@ int button_matrix_init(void)
   pinMode(selectPin1_LED, OUTPUT);
   pinMode(selectPin2_LED, OUTPUT);
   pinMode(selectPin3_LED, OUTPUT);
+  digitalWrite(ENABLE_PIN_LED, HIGH);
 
   pinMode(SELECT_ROW_PIN_1, OUTPUT);
   pinMode(SELECT_ROW_PIN_2, OUTPUT);
