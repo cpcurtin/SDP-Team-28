@@ -6,26 +6,11 @@
  */
 #include "effect-module.h"
 
-#if USING_SAFE_STRINGS == 1 // safe - new
 std::vector<std::string> fetch_effects(void)
 {
     std::vector<std::string> nav_effects = {"REPLAY SAVE", "REPLAY CURRENT", "REPLAY RESET", "REVERSE SAVE", "REVERSE CURRENT", "REVERSE RESET", "ECHO", "PAUSE SOUNDS", "SCRATCH", "DOUBLE REPEAT"};
     return nav_effects;
 }
-
-#else // unsafe - old
-
-array_with_size *fetch_effects(void)
-{
-    const char **nav_effects = new const char *[2];
-    nav_effects[0] = strdup("effect1");
-    nav_effects[1] = strdup("effect2");
-
-    effect_list->array = nav_effects;
-    effect_list->size = 2;
-    return effect_list;
-}
-#endif
 
 void effect_begin(void)
 {

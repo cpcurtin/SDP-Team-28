@@ -7,10 +7,6 @@
 #ifndef MIDI_SOUND_MODULE_H
 #define MIDI_SOUND_MODULE_H
 
-#ifndef USING_SAFE_STRINGS
-#define USING_SAFE_STRINGS 1
-#endif
-
 // #define (x) #x
 #define NUM_NOTES 12
 #define NUM_OCTAVES 11
@@ -501,17 +497,8 @@ int midi_mapping[NUM_NOTES][NUM_OCTAVES] = {
 
 int midi_init(void);
 
-#if USING_SAFE_STRINGS == 1 // safe - new
-
 std::vector<std::string> fetch_midi_melodic_sounds(void);
 std::vector<std::string> fetch_midi_percussion_sounds(void);
-#else // unsafe - old
-
-array_with_size *midi_melodic_sound_list = new array_with_size;
-array_with_size *midi_percussion_sound_list = new array_with_size;
-array_with_size *fetch_midi_melodic_sounds(void);
-array_with_size *fetch_midi_percussion_sounds(void);
-#endif
 
 void midiSetInstrument(uint8_t chan, uint8_t inst);
 

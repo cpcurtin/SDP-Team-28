@@ -29,8 +29,6 @@ int midi_init(void)
   return 0;
 }
 
-#if USING_SAFE_STRINGS == 1 // safe - new
-
 std::vector<std::string> fetch_midi_melodic_sounds(void)
 {
   constexpr int array_size = sizeof(midi_melodic_sounds) / sizeof(midi_melodic_sounds[0]);
@@ -42,23 +40,6 @@ std::vector<std::string> fetch_midi_percussion_sounds(void)
   constexpr int array_size = sizeof(midi_percussion_sounds) / sizeof(midi_percussion_sounds[0]);
   return std::vector<std::string>(midi_percussion_sounds, midi_percussion_sounds + array_size);
 }
-
-#else // unsafe - old
-array_with_size *fetch_midi_melodic_sounds(void)
-{
-  midi_melodic_sound_list->array = midi_melodic_sounds;
-  midi_melodic_sound_list->size = sizeof(midi_melodic_sounds) / sizeof(midi_melodic_sounds[0]);
-
-  return midi_melodic_sound_list;
-}
-
-array_with_size *fetch_midi_percussion_sounds(void)
-{
-  midi_percussion_sound_list->array = midi_percussion_sounds;
-  midi_percussion_sound_list->size = sizeof(midi_percussion_sounds) / sizeof(midi_percussion_sounds[0]);
-  return midi_percussion_sound_list;
-}
-#endif
 
 void midiSetInstrument(uint8_t chan, uint8_t inst)
 {

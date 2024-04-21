@@ -62,7 +62,6 @@ void setup()
   lcd = lcd_init(&lcd_cfg);
   delay(1000); // 3 second splash strart screen
 
-#if USING_SAFE_STRINGS == 1 // safe - new
   nav_cfg->sounds_custom = sd_fetch_sounds();
   nav_cfg->effects = fetch_effects(); // static TODO
   nav_cfg->tracks_load = sd_fetch_tracks();
@@ -79,28 +78,6 @@ void setup()
   Serial.println(current_track->bpm);
   Serial.print("measure steps: ");
   Serial.println(current_track->measure_steps);
-
-#else // unsafe - old
-
-  /* POPULATE DYNAMIC LISTS */
-  nav_cfg->sounds_custom = sd_fetch_sounds();
-  nav_cfg->effects = fetch_effects(); // static TODO
-  nav_cfg->tracks_load = sd_fetch_tracks();
-  nav_cfg->sounds_midi_melodic = fetch_midi_melodic_sounds();
-  nav_cfg->sounds_midi_percussion = fetch_midi_percussion_sounds();
-  nav_state = nav_init(nav_cfg);
-
-  Serial.println("default Track stats:");
-  Serial.print("filename: ");
-  Serial.println(current_track->filename);
-  Serial.print("id: ");
-  Serial.println(current_track->id);
-  Serial.print("bpm: ");
-  Serial.println(current_track->bpm);
-  Serial.print("measure steps: ");
-  Serial.println(current_track->measure_steps);
-
-#endif
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
   step_timer.interval(60000 / (4 * 10));  // TESTING STATIC TEMPO

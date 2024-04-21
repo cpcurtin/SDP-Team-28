@@ -7,10 +7,6 @@
 #ifndef NAV_MODULE_H
 #define NAV_MODULE_H
 
-#ifndef USING_SAFE_STRINGS
-#define USING_SAFE_STRINGS 1
-#endif
-
 /*******************************************************************************
 ****************************  NAVIGATION INSTANCES  ****************************
 *******************************************************************************/
@@ -53,7 +49,6 @@
 
 int track_save_panel = 0;
 std::string track_save_string(TRACK_SAVE_NAME_LENGTH, ' ');
-#if USING_SAFE_STRINGS == 1 // safe - new
 
 struct nav_config
 {
@@ -78,35 +73,6 @@ typedef struct Nav
 
 std::vector<std::string> octaves = {"-2 LOWEST", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8 HIGHEST"};
 std::vector<std::string> note_names = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-
-#else // unsafe - old
-
-const char *octaves[] = {"-2 LOWEST", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8 HIGHEST"};
-const char *note_names[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-
-struct nav_config
-{
-    struct array_with_size *sounds_custom;
-    struct array_with_size *effects;
-    struct array_with_size *tracks_load;
-    struct array_with_size *sounds_midi_melodic;
-    struct array_with_size *sounds_midi_percussion;
-};
-
-typedef struct Nav
-{
-
-    char *name;
-    const char **data_array;
-    struct Nav *parent;
-    struct Nav **child;
-    size_t size;
-    const char **lcd_state;
-    int index;
-
-} Nav;
-
-#endif
 
 // NAV STRUCT INITIALIZATION
 Nav *nav_state = new Nav;
@@ -133,8 +99,6 @@ struct nav_config *nav_cfg = new struct nav_config;
 // functions, extern variables, structs go here
 Nav *nav_selection(Nav *nav, int direction);
 void nav_add(Nav *node);
-
-#if USING_SAFE_STRINGS == 1 // safe - new
 Nav *nav_init(struct nav_config *cfg);
 void dpad_nav_routine(int dpad_pressed);
 int execute_leaf(void);
@@ -142,13 +106,5 @@ void array_scroll(Nav *nav, int direction);
 std::string format_row(std::vector<std::string> data_array, int index, int format);
 std::string tracks_update(void);
 int track_options(void);
-#else // unsafe - old
-Nav *nav_init(struct nav_config *cfg);
-
-void array_scroll(Nav *nav, int direction);
-const char *format_row(const char **data_array, int index, int format);
-void dpad_nav_routine(int dpad_pressed);
-const char *tracks_update(void);
-#endif
 
 #endif // EXAMPLE_MODULE_H
