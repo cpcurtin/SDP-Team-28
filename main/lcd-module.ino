@@ -114,6 +114,67 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std
 
   lcd->home();
 }
+void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step)
+{
+  splash_screen_timed = true;
+  timed_splash_start = millis();
+
+  state_splash_screen.clear();
+  if (step->active_sounds > 0)
+  {
+    for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
+    {
+      if (step->sound_list[sound].empty == false)
+      {
+        if (step->sound_list[sound].bank != MIDI_NULL)
+        {
+          if (step->sound_list[sound].note != MIDI_NULL)
+          {
+            // MELODIC
+            state_splash_screen.push_back(midi_melodic_sounds[step->sound_list[sound].instrument]);
+          }
+          else
+          {
+            // PERCUSSION
+            state_splash_screen.push_back(midi_percussion_sounds[step->sound_list[sound].instrument]);
+          }
+        }
+        else
+        {
+          // SD
+          if (step->sound_list[sound].sd_cached_sound != nullptr)
+          {
+            state_splash_screen.push_back(step->sound_list[sound].filename);
+          }
+        }
+      }
+      else
+      {
+        state_splash_screen.push_back(std::string(LCD_COLUMNS, ' '));
+      }
+    }
+  }
+  else
+  {
+    std::copy(empty_step_splash.begin(), empty_step_splash.end(), std::back_inserter(state_splash_screen));
+  }
+  for (int sound = 0; sound < step->active_sounds; sound++)
+  {
+    state_splash_screen[sound] = format_row(state_splash_screen, sound, 2);
+  }
+
+  lcd->clear();
+  Serial.println("XXXXXXXSPLASHXXXXXXX");
+  for (size_t row = 0; row < state_splash_screen.size(); row++)
+  {
+    lcd->setCursor(0, row); // Set cursor to current row
+    Serial.println(state_splash_screen[row].c_str());
+    lcd->print(state_splash_screen[row].c_str()); // Print current row
+  }
+  Serial.println("XXXXXXXXXXXXXXXXXXXX");
+
+  lcd->home();
+}
 
 void update_tempo(LiquidCrystal_I2C *lcd)
 {

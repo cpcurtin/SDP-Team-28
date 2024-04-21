@@ -80,7 +80,7 @@ void setup()
   Serial.println(current_track->measure_steps);
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
-  step_timer = Metro(60000 / (4 * 10)); // starting tmepo
+  step_timer = Metro(60000 / (4 * 10));   // starting tmepo
   Serial.println("PROGRAM LOOP BEGINS");
 }
 
@@ -129,7 +129,7 @@ void loop()
       current_track->bpm = current_track->bpm * 2;
     }
 
-    if (splash_screen_active == false)
+    if (splash_screen_active == false && splash_screen_timed == false)
     {
       update_tempo(lcd);
     }
@@ -185,10 +185,10 @@ void loop()
       }
     }
   }
-  //  MEASURE BUTTON PRESSED
-  if (measure_edit)
+  if (matrix_pressed(BUTTON_MEASURE, BUTTON_NOT_HELD)) // MEASURE BUTTON PRESSED
   {
-    if (matrix_pressed(BUTTON_MEASURE, BUTTON_NOT_HELD)) // MEASURE BUTTON PRESSED
+
+    if (measure_edit)
     {
 
       // MEASURE BUTTON PRESSED
@@ -202,6 +202,10 @@ void loop()
         // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
       }
       measure_edit = false; // chain sound assignment in future starting here
+    }
+    else
+    {
+      lcd_splash_step(lcd, button_step_lookup(current_measure));
     }
   }
   if (matrix_pressed(BUTTON_PALETTE, BUTTON_HELD)) // PALETTE BUTTON HELD
@@ -260,6 +264,16 @@ void loop()
    ****************************************************************************/
   dpad_pressed = dpad_read();
   dpad_nav_routine(dpad_pressed);
+
+  if (splash_screen_timed)
+  {
+    if (millis() - timed_splash_start > TIMED_SPLASH_SCREEN_PERIOD)
+    {
+      splash_screen_timed = false;
+      lcd_display(lcd, nav_state->lcd_state);
+      update_tempo(lcd);
+    }
+  }
 }
 
 int serial_init(void)

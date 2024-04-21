@@ -51,7 +51,7 @@ void array_scroll(Nav *nav, int direction)
         }
         else
         {
-            nav->lcd_state[row] = "                    ";
+            nav->lcd_state[row] = std::string(LCD_COLUMNS, ' ');
         }
     }
 }
@@ -68,6 +68,10 @@ std::string format_row(std::vector<std::string> data_array, int index, int forma
     else if (format == 1)
     {
         rt_st = ">" + std::to_string(index + 1) + " " + std::string(data_array[index]);
+    }
+    if (format == 2)
+    {
+        rt_st = std::to_string(index + 1) + " " + std::string(data_array[index]);
     }
 
     rt_st.resize(20);
