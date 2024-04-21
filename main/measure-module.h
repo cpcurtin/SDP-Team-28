@@ -28,7 +28,6 @@
 #define DEFAULT_LAST_STEP 5
 
 #include <Metro.h>
-Metro step_timer = Metro(100);
 
 typedef struct Sound
 {
@@ -111,6 +110,8 @@ int temp_last_beat = 0;
 int volume = 127;
 int silent = 0;
 int evenodd = 0;
+
+Metro step_timer = Metro(100);
 
 // functions, extern variables, structs go here
 int measure_palette_init(void);

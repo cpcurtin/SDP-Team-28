@@ -80,7 +80,7 @@ void setup()
   Serial.println(current_track->measure_steps);
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
-  step_timer.interval(60000 / (4 * 10));  // TESTING STATIC TEMPO
+  step_timer = Metro(60000 / (4 * 10)); // starting tmepo
   Serial.println("PROGRAM LOOP BEGINS");
 }
 
@@ -135,7 +135,7 @@ void loop()
     }
 
     // UPDATE TIMER INTERVAL
-    step_timer.interval(step_interval_calc(current_measure));
+    // step_timer.interval(step_interval_calc(current_measure));
   }
   /******************************************************************************************************/
 

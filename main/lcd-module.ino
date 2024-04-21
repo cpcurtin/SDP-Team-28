@@ -54,13 +54,15 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std
   state_splash_screen.clear();
   std::copy(print_arr.begin(), print_arr.end(), std::back_inserter(state_splash_screen));
 
-  if (current_nav == nullptr)
+  // if (current_nav == nullptr)
+  // {
+  //   Serial.println("size too large");
+  //   // Maybe find out what sounds are the largest and display them
+  // }
+
+  switch (current_nav->id)
   {
-    Serial.println("size too large");
-    // Maybe find out what sounds are the largest and display them
-  }
-  // else if (current_nav->name == "sounds_midi_notes")
-  else if (current_nav->id == NAVIGATION_MIDI_NOTES)
+  case NAVIGATION_MIDI_NOTES:
   {
     if (state_splash_screen.size() >= 2)
     {
@@ -70,29 +72,34 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std
     {
       state_splash_screen[2] = ("Octave:" + std::string(sounds_midi_octaves_nav->data_array[sounds_midi_octaves_nav->index]) + " Note:" + std::string(sounds_midi_notes_nav->data_array[sounds_midi_notes_nav->index])).c_str();
     }
+
+    break;
   }
-  // else if (current_nav->name == "sounds_midi_percussion")
-  else if (current_nav->id == NAVIGATION_SOUNDS_MIDI_PERCUSSION)
+
+  case NAVIGATION_SOUNDS_MIDI_PERCUSSION:
   {
     if (state_splash_screen.size() >= 2)
     {
       state_splash_screen[1] = sounds_midi_percussion_nav->data_array[sounds_midi_percussion_nav->index];
     }
+    break;
   }
-  // else if (current_nav->name == "custom_sounds")
-  else if (current_nav->id == NAVIGATION_SOUNDS_CUSTOM)
+  case NAVIGATION_SOUNDS_CUSTOM:
   {
     if (state_splash_screen.size() >= 2)
     {
       state_splash_screen[1] = sounds_custom_nav->data_array[sounds_custom_nav->index];
     }
+    break;
   }
-  else if (current_nav->id == NAVIGATION_EFFECTS)
+  case NAVIGATION_EFFECTS:
   {
     if (state_splash_screen.size() >= 2)
     {
       state_splash_screen[1] = effects_nav->data_array[effects_nav->index];
     }
+    break;
+  }
   }
 
   lcd->clear();
