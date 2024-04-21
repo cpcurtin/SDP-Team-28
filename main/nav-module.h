@@ -41,6 +41,9 @@
 #define LEAF_TRACKS_GLOBAL_STEPS 4
 #define LEAF_TRACKS_LOCAL_STEPS 5
 
+#define LEAF_DELETE_LAST 0
+#define LEAF_DELETE_STEP 1
+#define LEAF_DELETE_MEASURE 2
 /******************************************************************************/
 #define TRACK_SAVE_NAME_LENGTH 3
 
@@ -142,6 +145,7 @@ void array_scroll(Nav *nav, int direction);
 std::string format_row(std::vector<std::string> data_array, int index, int format);
 std::string tracks_update(void);
 int track_options(void);
+int delete_options(void);
 #else // unsafe - old
 Nav *nav_init(struct nav_config *cfg);
 

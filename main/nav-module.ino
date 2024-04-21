@@ -113,7 +113,7 @@ Nav *nav_init(struct nav_config *cfg)
     midi_child[1] = sounds_midi_melodic_nav;
 
     // Main presets
-    std::vector<std::string> main_preset_options = {"Sounds", "Effects", "Tracks"};
+    std::vector<std::string> main_preset_options = {"Sounds", "Effects", "Tracks", "Delete"};
     // main_nav->name = "main";
     main_nav->id = NAVIGATION_MAIN;
     main_nav->data_array = std::move(main_preset_options);
@@ -157,7 +157,7 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(tracks_nav, 0);
 
      // Tracks presets
-    std::vector<std::string> delete_preset_options = {"Delete last sound", "Delete all sounds on step", "Delete whole measure"};
+    std::vector<std::string> delete_preset_options = {"Delete last sound", "Delete step sounds", "Delete measure"};
 
     // delete_nav->name = "tracks";
     delete_nav->id = NAVIGATION_DELETE;
@@ -346,6 +346,12 @@ int execute_leaf(void)
     {
         Serial.println("NAVIGATION_TRACKS");
         track_options();
+        break;
+    }
+    case NAVIGATION_DELETE:
+    {
+        Serial.println("NAVIGATION_DELETE");
+        delete_options();
         break;
     }
     case NAVIGATION_SOUNDS_CUSTOM:
@@ -584,6 +590,39 @@ int execute_leaf(void)
     }
     return 0;
 }
+
+int delete_options(void)
+{
+  switch (nav_state->index)
+  {
+    case LEAF_DELETE_LAST: 
+    {
+      if (matrix_button.column < 6)
+      {
+        add_remove_measure_sound(current_measure);
+      }
+      nav_state = main_nav;
+      lcd_display(lcd, nav_state->lcd_state);
+      break;
+    }
+    case LEAF_DELETE_STEP:
+    {
+      nav_state = main_nav;
+      lcd_display(lcd, nav_state->lcd_state);
+      break;
+    }
+    case LEAF_DELETE_MEASURE:
+    {
+      current_measure = measure_create(current_measure->id);
+      nav_state = main_nav;
+      lcd_display(lcd, nav_state->lcd_state);
+      break;
+    }
+
+  }
+  return 0;
+}
+
 int track_options(void)
 {
 
