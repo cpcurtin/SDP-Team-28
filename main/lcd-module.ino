@@ -239,9 +239,32 @@ void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
   lcd->home();
 }
 
-void lcd_display_banner(LiquidCrystal_I2C *lcd, int mode)
+void lcd_display_banner(LiquidCrystal_I2C *lcd, int type, int mode)
 {
-  lcd->setCursor(0, LCD_ROWS - 1); // set cursor to row 0
-  lcd->print(tracks_update().c_str());
+  if (mode == LCD_VANISH)
+  {
+    banner_screen_timed = true;
+    timed_banner_start = millis();
+  }
+  lcd_banner.clear();
+  switch (type)
+  {
+  case BANNER_DEFAULT:
+  {
+    lcd_banner = tracks_update();
+    break;
+  }
+  case BANNER_NAV_NAME:
+  {
+    lcd_banner = nav_state->name;
+    break;
+  }
+  }
+
+  lcd_banner.resize(LCD_COLUMNS);
+  lcd_banner.shrink_to_fit();
+
+  lcd->setCursor(0, LCD_ROWS - 1); // set cursor to last row, first column
+  lcd->print(lcd_banner.c_str());
   lcd->home();
 }

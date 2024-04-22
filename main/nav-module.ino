@@ -118,6 +118,7 @@ Nav *nav_init(struct nav_config *cfg)
     // MAIN
     std::vector<std::string> main_preset_options = {"Sounds", "Effects", "Measures", "Tracks", "Delete"};
     main_nav->id = NAVIGATION_MAIN;
+    main_nav->name = "Main";
     main_nav->data_array = std::move(main_preset_options);
     main_nav->parent = nullptr;
     main_nav->child = main_child;
@@ -128,6 +129,7 @@ Nav *nav_init(struct nav_config *cfg)
     // SOUNDS
     std::vector<std::string> sounds_preset_options = {"Custom Sounds", "MIDI Sounds"};
     sounds_nav->id = NAVIGATION_SOUNDS;
+    sounds_nav->name = "Sounds";
     sounds_nav->data_array = std::move(sounds_preset_options);
     sounds_nav->parent = main_nav;
     sounds_nav->child = sounds_child;
@@ -137,6 +139,7 @@ Nav *nav_init(struct nav_config *cfg)
 
     // EFFECTS
     effects_nav->id = NAVIGATION_EFFECTS;
+    effects_nav->name = "Effects";
     effects_nav->data_array = std::move(cfg->effects);
     effects_nav->parent = main_nav;
     effects_nav->child = nullptr;
@@ -147,6 +150,7 @@ Nav *nav_init(struct nav_config *cfg)
     // MEASURES
     std::vector<std::string> measure_preset_options = {"Edit Measure", "Add Measure", "Delete Measure", "Swap Measure"};
     measure_nav->id = NAVIGATION_MEASURE;
+    measure_nav->name = "Measures";
     measure_nav->data_array = std::move(measure_preset_options);
     measure_nav->parent = main_nav;
     measure_nav->child = nullptr;
@@ -157,6 +161,7 @@ Nav *nav_init(struct nav_config *cfg)
     // TRACKS
     std::vector<std::string> tracks_preset_options = {"Save Track", "Load Track", "Delete Track", "Set # beats", "Set # global steps", "Set # local steps"};
     tracks_nav->id = NAVIGATION_TRACKS;
+    tracks_nav->name = "Tracks";
     tracks_nav->data_array = std::move(tracks_preset_options);
     tracks_nav->parent = main_nav;
     tracks_nav->child = nullptr;
@@ -167,6 +172,7 @@ Nav *nav_init(struct nav_config *cfg)
     // DELETE
     std::vector<std::string> delete_preset_options = {"Delete last sound", "Delete all sounds on step", "Delete whole measure"};
     delete_nav->id = NAVIGATION_DELETE;
+    delete_nav->name = "Delete";
     delete_nav->data_array = std::move(delete_preset_options);
     delete_nav->parent = main_nav;
     delete_nav->child = nullptr;
@@ -177,6 +183,7 @@ Nav *nav_init(struct nav_config *cfg)
     // Tracks Save presets
     std::vector<std::string> tracks_preset_options_save = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
     tracks_save_nav->id = NAVIGATION_TRACK_SAVE;
+    tracks_save_nav->name = "Tracks Save";
     tracks_save_nav->data_array = std::move(tracks_preset_options_save);
     tracks_save_nav->parent = tracks_nav;
     tracks_save_nav->child = nullptr;
@@ -186,6 +193,7 @@ Nav *nav_init(struct nav_config *cfg)
 
     // Tracks Load presets
     tracks_load_nav->id = NAVIGATION_TRACK_LOAD;
+    tracks_load_nav->name = "Tracks Load";
     tracks_load_nav->data_array = std::move(cfg->tracks_load);
     tracks_load_nav->parent = tracks_nav;
     tracks_load_nav->child = nullptr;
@@ -196,6 +204,7 @@ Nav *nav_init(struct nav_config *cfg)
     // Tracks Beats
     std::vector<std::string> tracks_preset_options_beats = {" Beat", " Beat", " Beat", " Beat"};
     tracks_set_beats_nav->id = NAVIGATION_SET_BEATS;
+    tracks_set_beats_nav->name = "Tracks Beats";
     tracks_set_beats_nav->data_array = std::move(tracks_preset_options_beats);
     tracks_set_beats_nav->parent = tracks_nav;
     tracks_set_beats_nav->child = nullptr;
@@ -206,6 +215,7 @@ Nav *nav_init(struct nav_config *cfg)
     // Tracks Steps
     std::vector<std::string> tracks_preset_options_steps = {"Step", "Step", "Step", "Step", "Step", "Step"};
     tracks_set_steps_nav->id = NAVIGATION_SET_STEPS;
+    tracks_set_steps_nav->name = "Tracks Steps";
     tracks_set_steps_nav->data_array = std::move(tracks_preset_options_steps);
     tracks_set_steps_nav->parent = tracks_nav;
     tracks_set_steps_nav->child = nullptr;
@@ -216,6 +226,7 @@ Nav *nav_init(struct nav_config *cfg)
     // Measures Select
     std::vector<std::string> measure_select_preset_options = {"Measure"};
     measure_select_nav->id = NAVIGATION_MEASURE_SELECT;
+    measure_select_nav->name = "Measures Select";
     measure_select_nav->data_array = std::move(measure_select_preset_options);
     measure_select_nav->parent = measure_nav;
     measure_select_nav->child = nullptr;
@@ -225,6 +236,7 @@ Nav *nav_init(struct nav_config *cfg)
 
     // Custom Sounds
     sounds_custom_nav->id = NAVIGATION_SOUNDS_CUSTOM;
+    sounds_custom_nav->name = "Custom Sounds";
     sounds_custom_nav->data_array = std::move(cfg->sounds_custom);
     sounds_custom_nav->parent = sounds_nav;
     sounds_custom_nav->child = nullptr;
@@ -235,6 +247,7 @@ Nav *nav_init(struct nav_config *cfg)
     // MIDI Sounds presets
     std::vector<std::string> midi_preset_options = {"Percussion Instruments", "Melodic Instruments"};
     sounds_midi_nav->id = NAVIGATION_SOUNDS_MIDI;
+    sounds_midi_nav->name = "MIDI Sounds";
     sounds_midi_nav->data_array = std::move(midi_preset_options);
     sounds_midi_nav->parent = sounds_nav;
     sounds_midi_nav->child = midi_child;
@@ -244,6 +257,7 @@ Nav *nav_init(struct nav_config *cfg)
 
     // MIDI Percussion presets
     sounds_midi_percussion_nav->id = NAVIGATION_SOUNDS_MIDI_PERCUSSION;
+    sounds_midi_percussion_nav->name = "MIDI Percussion Instruments";
     sounds_midi_percussion_nav->data_array = std::move(cfg->sounds_midi_percussion);
     sounds_midi_percussion_nav->parent = sounds_midi_nav;
     sounds_midi_percussion_nav->child = nullptr;
@@ -253,6 +267,7 @@ Nav *nav_init(struct nav_config *cfg)
 
     // MIDI Melodic presets
     sounds_midi_melodic_nav->id = NAVIGATION_SOUNDS_MIDI_MELODIC;
+    sounds_midi_melodic_nav->name = "MIDI Melodic Instruments";
     sounds_midi_melodic_nav->data_array = std::move(cfg->sounds_midi_melodic);
     sounds_midi_melodic_nav->parent = sounds_midi_nav;
     sounds_midi_melodic_nav->child = nullptr;
@@ -262,6 +277,7 @@ Nav *nav_init(struct nav_config *cfg)
 
     // MIDI Octaves presets
     sounds_midi_octaves_nav->id = NAVIGATION_MIDI_OCTAVES;
+    sounds_midi_octaves_nav->name = "MIDI Octaves";
     sounds_midi_octaves_nav->data_array = std::move(octaves);
     sounds_midi_octaves_nav->parent = sounds_midi_melodic_nav;
     sounds_midi_octaves_nav->child = nullptr;
@@ -271,6 +287,7 @@ Nav *nav_init(struct nav_config *cfg)
 
     // MIDI Notes presets
     sounds_midi_notes_nav->id = NAVIGATION_MIDI_NOTES;
+    sounds_midi_notes_nav->name = "MIDI Notes";
     sounds_midi_notes_nav->data_array = std::move(note_names);
     sounds_midi_notes_nav->parent = sounds_midi_octaves_nav;
     sounds_midi_notes_nav->child = nullptr;
@@ -339,6 +356,7 @@ void dpad_nav_routine(int dpad_pressed)
             Serial.print("MOVED TO NODE:");
             Serial.println(nav_state->id);
             lcd_display(lcd, nav_state->lcd_state);
+            lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         }
         else
         {
@@ -664,6 +682,7 @@ int execute_leaf(void)
         break;
     }
     }
+    lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
     return 0;
 }
 

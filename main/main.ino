@@ -131,7 +131,7 @@ void loop()
 
     if (splash_screen_active == false && splash_screen_timed == false)
     {
-      lcd_display_banner(lcd, LCD_BANNER_DEFAULT);
+      lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
     }
 
     // UPDATE TIMER INTERVAL
@@ -269,11 +269,19 @@ void loop()
 
   if (splash_screen_timed)
   {
-    if (millis() - timed_splash_start > TIMED_SPLASH_SCREEN_PERIOD)
+    if (millis() - timed_splash_start > VANISH_PERIOD)
     {
       splash_screen_timed = false;
       lcd_display(lcd, nav_state->lcd_state);
-      lcd_display_banner(lcd, LCD_BANNER_DEFAULT);
+      lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
+    }
+  }
+  if (banner_screen_timed)
+  {
+    if (millis() - timed_banner_start > VANISH_PERIOD)
+    {
+      banner_screen_timed = false;
+      lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
     }
   }
 }

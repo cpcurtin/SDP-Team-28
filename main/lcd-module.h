@@ -14,11 +14,16 @@
 /*******************************************************************************
 ******************************  LCD BANNER MODES  ******************************
 *******************************************************************************/
-#define LCD_BANNER_DEFAULT 0
+#define BANNER_DEFAULT 0
+#define BANNER_NAV_NAME 1
 
+#define LCD_PERSIST 0
+#define LCD_VANISH 1
+
+/******************************************************************************/
 #define MAX_MEASURE_STEPS 6
-#define TIMED_SPLASH_SCREEN_PERIOD 2000
-
+#define VANISH_PERIOD 2000
+/******************************************************************************/
 struct lcd_pin_config
 {
     const int i2c;
@@ -27,12 +32,17 @@ struct lcd_pin_config
 };
 
 bool splash_screen_active = false;
+
 bool splash_screen_timed = false;
 unsigned long timed_splash_start = 0;
+
+bool banner_screen_timed = false;
+unsigned long timed_banner_start = 0;
 
 LiquidCrystal_I2C *lcd;
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);
 
+std::string lcd_banner;
 std::vector<std::string> state_splash_screen(4, "");
 std::vector<std::string> empty_splash(4, "");
 std::vector<std::string> selected_sound = {"SELECTED SOUND:", "", "", "ASSIGN TO PALLETE"};
@@ -45,6 +55,7 @@ void lcd_display(LiquidCrystal_I2C *lcd, std::vector<std::string> print_arr);
 void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std::string> print_arr);
 void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step);
 void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot);
-void lcd_display_banner(LiquidCrystal_I2C *lcd, int mode);
+
+void lcd_display_banner(LiquidCrystal_I2C *lcd, int type, int mode);
 
 #endif // LCD_MODULE_H

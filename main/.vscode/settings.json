@@ -72,7 +72,8 @@
     "istream": "cpp",
     "shared_mutex": "cpp",
     "stop_token": "cpp",
-    "thread": "cpp"
+    "thread": "cpp",
+    "charconv": "cpp"
   },
   "C_Cpp.errorSquiggles": "enabled"
 }

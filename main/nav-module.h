@@ -75,7 +75,7 @@ struct nav_config
 
 typedef struct Nav
 {
-    // std::string name;
+    std::string name;
     int id;
     std::vector<std::string> data_array;
     struct Nav *parent;
