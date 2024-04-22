@@ -194,7 +194,7 @@ void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
           // MELODIC
           state_splash_screen[1] = "MIDI MELODIC SOUND:";
           state_splash_screen[2] = midi_melodic_sounds[slot.sound.instrument];
-          state_splash_screen[3] = "Octave:" + std::to_string((slot.sound.note % NUM_OCTAVES) - 2) + " Note:" + sounds_midi_notes_nav->data_array[slot.sound.note / NUM_NOTES].substr(0, 2);
+          state_splash_screen[3] = "Octave:" + std::to_string((slot.sound.note % NUM_OCTAVES) - 2) + " Note:" + sounds_midi_notes_nav->data_array[slot.sound.note / NUM_NOTES];
         }
         else
         {
@@ -239,7 +239,7 @@ void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
   lcd->home();
 }
 
-void update_tempo(LiquidCrystal_I2C *lcd)
+void lcd_display_banner(LiquidCrystal_I2C *lcd, int mode)
 {
   lcd->setCursor(0, LCD_ROWS - 1); // set cursor to row 0
   lcd->print(tracks_update().c_str());

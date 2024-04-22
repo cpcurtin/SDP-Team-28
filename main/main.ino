@@ -131,7 +131,7 @@ void loop()
 
     if (splash_screen_active == false && splash_screen_timed == false)
     {
-      update_tempo(lcd);
+      lcd_display_banner(lcd, LCD_BANNER_DEFAULT);
     }
 
     // UPDATE TIMER INTERVAL
@@ -194,14 +194,12 @@ void loop()
 
     if (measure_edit)
     {
-
       // MEASURE BUTTON PRESSED
       Serial.println("PALETTE TO MEASURE ADD/REMOVE");
-
       LED_mode = LED_DEFAULT_MODE;
       LED_Off(LED_last_row, LED_last_column);
 
-      if (add_remove_measure_sound(current_measure))
+      if (add_remove_measure_sound(edit_measure))
       {
         // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
       }
@@ -275,7 +273,7 @@ void loop()
     {
       splash_screen_timed = false;
       lcd_display(lcd, nav_state->lcd_state);
-      update_tempo(lcd);
+      lcd_display_banner(lcd, LCD_BANNER_DEFAULT);
     }
   }
 }
@@ -323,7 +321,7 @@ int serial_init(void)
 
 void print_ptr(void *ptr)
 {
-  char str[20];
+  char str[LCD_COLUMNS];
   sprintf(str, "%p", ptr); // Using sprintf to format the pointer address
   Serial.print(String(str));
 }

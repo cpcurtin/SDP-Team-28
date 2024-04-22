@@ -32,6 +32,14 @@
 /*******************************************************************************
 ***************************  LEAF SELECTION INDICES  ***************************
 *******************************************************************************/
+
+/* MEASURE LEAF*/
+#define LEAF_MEASURES_EDIT 0
+#define LEAF_MEASURES_ADD 1
+#define LEAF_MEASURES_REMOVE 2
+#define LEAF_MEASURES_SWAP 3
+
+/* TRACK LEAF*/
 #define LEAF_TRACKS_SAVE 0
 #define LEAF_TRACKS_LOAD 1
 #define LEAF_TRACKS_DELETE 2
@@ -39,13 +47,11 @@
 #define LEAF_TRACKS_GLOBAL_STEPS 4
 #define LEAF_TRACKS_LOCAL_STEPS 5
 
-#define LEAF_MEASURES_EDIT 0
-#define LEAF_MEASURES_ADD 1
-#define LEAF_MEASURES_REMOVE 2
-
+/* DELETE LEAF*/
 #define LEAF_DELETE_LAST 0
 #define LEAF_DELETE_STEP 1
 #define LEAF_DELETE_MEASURE 2
+
 /******************************************************************************/
 #define TRACK_SAVE_NAME_LENGTH 3
 
@@ -56,7 +62,6 @@
 #include <vector>
 #include <string>
 
-int track_save_panel = 0;
 std::string track_save_string(TRACK_SAVE_NAME_LENGTH, ' ');
 
 struct nav_config
@@ -106,6 +111,10 @@ Nav *sounds_midi_octaves_nav = new Nav;
 Nav *sounds_midi_notes_nav = new Nav;
 
 Nav *measure_select_nav = new Nav;
+
+int track_save_panel = 0;
+int measure_swap_panel = 0;
+int measure_swap_id;
 
 struct nav_config *nav_cfg = new struct nav_config;
 // functions, extern variables, structs go here

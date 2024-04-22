@@ -74,7 +74,7 @@ std::string format_row(std::vector<std::string> data_array, int index, int forma
         rt_st = std::to_string(index + 1) + " " + std::string(data_array[index]);
     }
 
-    rt_st.resize(20);
+    rt_st.resize(LCD_COLUMNS);
     rt_st.shrink_to_fit();
     return rt_st;
 }
@@ -86,13 +86,13 @@ std::string tracks_update(void)
     // spacing, enumerated
     if (current_track->bpm != 0)
     {
-        rt_st = "BPM:" + std::to_string(current_track->bpm) + " STEPS:" + std::to_string(current_track->measure_steps) + " ID:" + std::to_string(current_track->id) + " ";
+        rt_st = "BPM:" + std::to_string(current_track->bpm) + " M:" + std::to_string(current_measure->id) + " ID:" + current_track->filename.substr(6, 3);
     }
     else
     {
         rt_st = "NO TRACK SELECTED";
     }
-    rt_st.resize(20);
+    rt_st.resize(LCD_COLUMNS);
     rt_st.shrink_to_fit();
     return rt_st;
 }
@@ -115,9 +115,8 @@ Nav *nav_init(struct nav_config *cfg)
     midi_child[0] = sounds_midi_percussion_nav;
     midi_child[1] = sounds_midi_melodic_nav;
 
-    // Main presets
+    // MAIN
     std::vector<std::string> main_preset_options = {"Sounds", "Effects", "Measures", "Tracks", "Delete"};
-    // main_nav->name = "main";
     main_nav->id = NAVIGATION_MAIN;
     main_nav->data_array = std::move(main_preset_options);
     main_nav->parent = nullptr;
@@ -126,9 +125,8 @@ Nav *nav_init(struct nav_config *cfg)
     main_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(main_nav, 0);
 
-    // Sounds presets
+    // SOUNDS
     std::vector<std::string> sounds_preset_options = {"Custom Sounds", "MIDI Sounds"};
-    // sounds_nav->name = "sounds";
     sounds_nav->id = NAVIGATION_SOUNDS;
     sounds_nav->data_array = std::move(sounds_preset_options);
     sounds_nav->parent = main_nav;
@@ -137,8 +135,7 @@ Nav *nav_init(struct nav_config *cfg)
     sounds_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(sounds_nav, 0);
 
-    // Effects presets
-    // effects_nav->name = "effects";
+    // EFFECTS
     effects_nav->id = NAVIGATION_EFFECTS;
     effects_nav->data_array = std::move(cfg->effects);
     effects_nav->parent = main_nav;
@@ -147,19 +144,8 @@ Nav *nav_init(struct nav_config *cfg)
     effects_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(effects_nav, 0);
 
-    // Tracks presets
-    std::vector<std::string> tracks_preset_options = {"Save Track", "Load Track", "Delete Track", "Set # beats", "Set # global steps", "Set # local steps"};
-
-    // tracks_nav->name = "tracks";
-    tracks_nav->id = NAVIGATION_TRACKS;
-    tracks_nav->data_array = std::move(tracks_preset_options);
-    tracks_nav->parent = main_nav;
-    tracks_nav->child = nullptr;
-    tracks_nav->index = 0;
-    tracks_nav->lcd_state.resize(LCD_ROWS);
-    array_scroll(tracks_nav, 0);
-
-    std::vector<std::string> measure_preset_options = {"Edit Measure", "Add Measure", "Delete Measure"};
+    // MEASURES
+    std::vector<std::string> measure_preset_options = {"Edit Measure", "Add Measure", "Delete Measure", "Swap Measure"};
     measure_nav->id = NAVIGATION_MEASURE;
     measure_nav->data_array = std::move(measure_preset_options);
     measure_nav->parent = main_nav;
@@ -168,9 +154,18 @@ Nav *nav_init(struct nav_config *cfg)
     measure_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(measure_nav, 0);
 
-    std::vector<std::string> delete_preset_options = {"Delete last sound", "Delete all sounds on step", "Delete whole measure"};
+    // TRACKS
+    std::vector<std::string> tracks_preset_options = {"Save Track", "Load Track", "Delete Track", "Set # beats", "Set # global steps", "Set # local steps"};
+    tracks_nav->id = NAVIGATION_TRACKS;
+    tracks_nav->data_array = std::move(tracks_preset_options);
+    tracks_nav->parent = main_nav;
+    tracks_nav->child = nullptr;
+    tracks_nav->index = 0;
+    tracks_nav->lcd_state.resize(LCD_ROWS);
+    array_scroll(tracks_nav, 0);
 
-    // delete_nav->name = "tracks";
+    // DELETE
+    std::vector<std::string> delete_preset_options = {"Delete last sound", "Delete all sounds on step", "Delete whole measure"};
     delete_nav->id = NAVIGATION_DELETE;
     delete_nav->data_array = std::move(delete_preset_options);
     delete_nav->parent = main_nav;
@@ -190,7 +185,6 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(tracks_save_nav, 0);
 
     // Tracks Load presets
-    // tracks_load_nav->name = "tracks_load";
     tracks_load_nav->id = NAVIGATION_TRACK_LOAD;
     tracks_load_nav->data_array = std::move(cfg->tracks_load);
     tracks_load_nav->parent = tracks_nav;
@@ -199,7 +193,7 @@ Nav *nav_init(struct nav_config *cfg)
     tracks_load_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(tracks_load_nav, 0);
 
-    // Tracks Set Global Beats presets
+    // Tracks Beats
     std::vector<std::string> tracks_preset_options_beats = {" Beat", " Beat", " Beat", " Beat"};
     tracks_set_beats_nav->id = NAVIGATION_SET_BEATS;
     tracks_set_beats_nav->data_array = std::move(tracks_preset_options_beats);
@@ -209,7 +203,7 @@ Nav *nav_init(struct nav_config *cfg)
     tracks_set_beats_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(tracks_set_beats_nav, 0);
 
-    // Tracks Set Global Steps presets
+    // Tracks Steps
     std::vector<std::string> tracks_preset_options_steps = {"Step", "Step", "Step", "Step", "Step", "Step"};
     tracks_set_steps_nav->id = NAVIGATION_SET_STEPS;
     tracks_set_steps_nav->data_array = std::move(tracks_preset_options_steps);
@@ -229,8 +223,7 @@ Nav *nav_init(struct nav_config *cfg)
     measure_select_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(measure_select_nav, 0);
 
-    // Custom Sounds presets
-    // sounds_custom_nav->name = "custom_sounds";
+    // Custom Sounds
     sounds_custom_nav->id = NAVIGATION_SOUNDS_CUSTOM;
     sounds_custom_nav->data_array = std::move(cfg->sounds_custom);
     sounds_custom_nav->parent = sounds_nav;
@@ -241,7 +234,6 @@ Nav *nav_init(struct nav_config *cfg)
 
     // MIDI Sounds presets
     std::vector<std::string> midi_preset_options = {"Percussion Instruments", "Melodic Instruments"};
-    // sounds_midi_nav->name = "sounds_midi";
     sounds_midi_nav->id = NAVIGATION_SOUNDS_MIDI;
     sounds_midi_nav->data_array = std::move(midi_preset_options);
     sounds_midi_nav->parent = sounds_nav;
@@ -251,7 +243,6 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(sounds_midi_nav, 0);
 
     // MIDI Percussion presets
-    // sounds_midi_percussion_nav->name = "sounds_midi_percussion";
     sounds_midi_percussion_nav->id = NAVIGATION_SOUNDS_MIDI_PERCUSSION;
     sounds_midi_percussion_nav->data_array = std::move(cfg->sounds_midi_percussion);
     sounds_midi_percussion_nav->parent = sounds_midi_nav;
@@ -261,7 +252,6 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(sounds_midi_percussion_nav, 0);
 
     // MIDI Melodic presets
-    // sounds_midi_melodic_nav->name = "sounds_midi_melodic";
     sounds_midi_melodic_nav->id = NAVIGATION_SOUNDS_MIDI_MELODIC;
     sounds_midi_melodic_nav->data_array = std::move(cfg->sounds_midi_melodic);
     sounds_midi_melodic_nav->parent = sounds_midi_nav;
@@ -271,7 +261,6 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(sounds_midi_melodic_nav, 0);
 
     // MIDI Octaves presets
-    // sounds_midi_octaves_nav->name = "sounds_midi_octaves";
     sounds_midi_octaves_nav->id = NAVIGATION_MIDI_OCTAVES;
     sounds_midi_octaves_nav->data_array = std::move(octaves);
     sounds_midi_octaves_nav->parent = sounds_midi_melodic_nav;
@@ -281,7 +270,6 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(sounds_midi_octaves_nav, 0);
 
     // MIDI Notes presets
-    // sounds_midi_notes_nav->name = "sounds_midi_notes";
     sounds_midi_notes_nav->id = NAVIGATION_MIDI_NOTES;
     sounds_midi_notes_nav->data_array = std::move(note_names);
     sounds_midi_notes_nav->parent = sounds_midi_octaves_nav;
@@ -310,6 +298,14 @@ void dpad_nav_routine(int dpad_pressed)
             if (nav_state->id == NAVIGATION_TRACK_SAVE)
             {
                 track_save_panel--;
+            }
+            if (nav_state->id == NAVIGATION_MEASURE_SELECT)
+            {
+                if (measure_swap_panel == 1)
+                {
+                    measure_swap_panel = 0;
+                    break;
+                }
             }
             nav_state = nav_state->parent;
             Serial.print("MOVED TO NODE:");
@@ -403,7 +399,7 @@ int execute_leaf(void)
             LED_mode = LED_PALETTE_SELECT;
             lcd_splash(lcd, nav_state, selected_sound);
 
-            char str[20];
+            char str[LCD_COLUMNS];
             sprintf(str, "%p", (void *)temp_sample); // Using sprintf to format the pointer address
             Serial.println("\tEXPECTED: " + String(str));
             current_track->cached_sounds.push_back(new_palette_slot.sound);
@@ -602,12 +598,67 @@ int execute_leaf(void)
         Serial.println("NAVIGATION_MEASURE_SELECT");
         if (measure_nav->index == LEAF_MEASURES_EDIT)
         {
-                }
+            edit_measure = current_track->measure_list[measure_select_nav->index];
+            nav_state = measure_nav;
+            lcd_display(lcd, nav_state->lcd_state);
+        }
         else if (measure_nav->index == LEAF_MEASURES_ADD)
         {
+            current_track->measure_list.push_back(measure_create(current_track->measure_list.size()));
+            nav_state = measure_nav;
+            lcd_display(lcd, nav_state->lcd_state);
         }
         else if (measure_nav->index == LEAF_MEASURES_REMOVE)
         {
+            if (current_track->measure_list.size() > 1)
+            {
+                if (edit_measure->id == measure_select_nav->index)
+                {
+                    current_track->measure_list.erase(current_track->measure_list.begin() + measure_select_nav->index);
+                    measure_select_nav->data_array.assign(current_track->measure_list.size(), "Measure");
+                    edit_measure = current_track->measure_list.front();
+                }
+                else
+                {
+                    current_track->measure_list.erase(current_track->measure_list.begin() + measure_select_nav->index);
+                    measure_select_nav->data_array.assign(current_track->measure_list.size(), "Measure");
+                }
+                for (int i = 0; i < current_track->measure_list.size(); i++)
+                {
+                    // reassign ids
+                    current_track->measure_list[i]->id = i;
+                }
+            }
+            else
+            {
+                current_track->measure_list[0] = measure_create(0);
+                current_track->current_measure = current_measure;
+                edit_measure = current_measure;
+            }
+            nav_state = measure_nav;
+            lcd_display(lcd, nav_state->lcd_state);
+        }
+        else if (measure_nav->index == LEAF_MEASURES_SWAP)
+        {
+            if (measure_swap_panel == 0)
+            {
+                measure_swap_id = nav_state->index;
+
+                measure_swap_panel++;
+            }
+            else if (measure_swap_panel == 1)
+            {
+                swap(current_track->measure_list[measure_swap_id], current_track->measure_list[nav_state->index]);
+                measure_swap_panel = 0;
+                for (int i = 0; i < current_track->measure_list.size(); i++)
+                {
+                    // reassign ids
+                    current_track->measure_list[i]->id = i;
+                }
+
+                nav_state = measure_nav;
+                lcd_display(lcd, nav_state->lcd_state);
+            }
         }
 
         break;
@@ -618,34 +669,33 @@ int execute_leaf(void)
 
 int delete_options(void)
 {
-  switch (nav_state->index)
-  {
-    case LEAF_DELETE_LAST: 
+    switch (nav_state->index)
     {
-      if (matrix_button.column < 6)
-      {
-        add_remove_measure_sound(current_measure);
-      }
-      nav_state = main_nav;
-      lcd_display(lcd, nav_state->lcd_state);
-      break;
+    case LEAF_DELETE_LAST:
+    {
+        if (matrix_button.column < 6)
+        {
+            add_remove_measure_sound(current_measure);
+        }
+        nav_state = main_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        break;
     }
     case LEAF_DELETE_STEP:
     {
-      nav_state = main_nav;
-      lcd_display(lcd, nav_state->lcd_state);
-      break;
+        nav_state = main_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        break;
     }
     case LEAF_DELETE_MEASURE:
     {
-      current_measure = measure_create(current_measure->id);
-      nav_state = main_nav;
-      lcd_display(lcd, nav_state->lcd_state);
-      break;
+        current_measure = measure_create(current_measure->id);
+        nav_state = main_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        break;
     }
-
-  }
-  return 0;
+    }
+    return 0;
 }
 
 int measure_options(void)

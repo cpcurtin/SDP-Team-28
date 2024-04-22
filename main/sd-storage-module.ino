@@ -55,9 +55,9 @@ int track_init(void)
     // new_track->measure_list[i] = *measure_create(i);
   }
   current_measure = new_track->measure_list[new_track->current_measure_id];
-  // current_measure = &(new_track->measure_list[new_track->current_measure_id]);
   current_track = new_track;
   current_track->current_measure = current_measure;
+  edit_measure = current_measure;
 
   return 0; // Indicate success
 }
@@ -294,6 +294,11 @@ void read_track(std::string filename, Track *config)
               }
               else
               {
+                new_sound->bank = -1;
+                new_sound->instrument = -1;
+                new_sound->note = -1;
+                new_sound->sd_cached_sound = nullptr;
+                new_sound->filename = "";
                 new_sound->empty = true;
               }
             }
@@ -307,6 +312,7 @@ void read_track(std::string filename, Track *config)
   current_track = new_track;
   // current_measure = &(current_track->measure_list[current_track->current_measure_id]);
   current_measure = current_track->measure_list[current_track->current_measure_id];
+  edit_measure = current_measure;
 }
 
 // Saves the configuration to a file

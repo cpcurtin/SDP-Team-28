@@ -11,6 +11,11 @@
 #include <LiquidCrystal_I2C.h>
 #include <string>
 
+/*******************************************************************************
+******************************  LCD BANNER MODES  ******************************
+*******************************************************************************/
+#define LCD_BANNER_DEFAULT 0
+
 #define MAX_MEASURE_STEPS 6
 #define TIMED_SPLASH_SCREEN_PERIOD 2000
 
@@ -40,6 +45,6 @@ void lcd_display(LiquidCrystal_I2C *lcd, std::vector<std::string> print_arr);
 void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std::string> print_arr);
 void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step);
 void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot);
-void update_tempo(LiquidCrystal_I2C *lcd);
+void lcd_display_banner(LiquidCrystal_I2C *lcd, int mode);
 
 #endif // LCD_MODULE_H

@@ -30,7 +30,12 @@ Step *next_step(Measure *measure)
             measure->beat = 0;
         }
     }
-    return &(measure->beat_list[measure->beat].step_list[measure->step]);
+    if ((current_track->active_measures > 1) && (measure->beat == 0) && (measure->step == 0))
+    {
+        current_measure = current_track->measure_list[(current_track->measure_list.size() + measure->id + 1) % current_track->measure_list.size()];
+    }
+
+    return &(current_measure->beat_list[measure->beat].step_list[measure->step]);
 }
 Step *previous_step(Measure *measure)
 {
@@ -42,15 +47,16 @@ Step *previous_step(Measure *measure)
         if ((measure->beat < 0) || (measure->step >= measure->active_beats))
         {
             measure->beat = measure->active_beats - 1;
-            // if (current_track->active_measures > 1)
-            // {
-            //     // current_measure =
-            // }
         }
         measure->step = measure->beat_list[measure->beat].active_steps - 1;
     }
 
-    return &(measure->beat_list[measure->beat].step_list[measure->step]);
+    if ((current_track->active_measures > 1) && (measure->beat == measure->active_beats - 1) && (measure->step == measure->beat_list[measure->beat].active_steps - 1))
+    {
+        current_measure = current_track->measure_list[(current_track->measure_list.size() + measure->id - 1) % current_track->measure_list.size()];
+    }
+
+    return &(current_measure->beat_list[measure->beat].step_list[measure->step]);
 }
 
 Step *button_step_lookup(Measure *measure)
@@ -144,30 +150,28 @@ int add_remove_measure_sound(Measure *measure)
     for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
     {
 
-        // if (testing_palette[palette_index] == button_step_lookup(measure)->sound_list[sound])
         if (testing_palette_combined[palette_index].sound == button_step_lookup(measure)->sound_list[sound])
         {
             Serial.println("MEASURE REMOVE SOUND");
             // SELECTED PALETTE SOUND EXISTS ON CURRENT STEP
             // REMOVE FROM MEASURE STEP
-            button_step_lookup(current_measure)->sound_list[sound] = empty_sound;
-            button_step_lookup(current_measure)->active_sounds--;
+            button_step_lookup(measure)->sound_list[sound] = empty_sound;
+            button_step_lookup(measure)->active_sounds--;
             sound_exists = true;
             break;
         }
     }
-    if (sound_exists == false && button_step_lookup(current_measure)->active_sounds < MAX_STEP_SOUNDS)
+    if (sound_exists == false && button_step_lookup(measure)->active_sounds < MAX_STEP_SOUNDS)
     {
         Serial.println("MEASURE ADD SOUND");
         // SELECTED STEP HAS AVAILABLE SOUND SLOTS
         for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
         {
-            if (button_step_lookup(current_measure)->sound_list[sound].empty)
+            if (button_step_lookup(measure)->sound_list[sound].empty)
             {
                 // ASSIGN PALETTE SOUND TO FIRST AVAILABLE STEP SOUND SLOT
-                // button_step_lookup(current_measure)->sound_list[sound] = testing_palette[palette_index];
-                button_step_lookup(current_measure)->sound_list[sound] = testing_palette_combined[palette_index].sound;
-                button_step_lookup(current_measure)->active_sounds++;
+                button_step_lookup(measure)->sound_list[sound] = testing_palette_combined[palette_index].sound;
+                button_step_lookup(measure)->active_sounds++;
                 break;
             }
         }
@@ -183,7 +187,6 @@ int add_remove_measure_sound(Measure *measure)
 // Function to initialize measure palette
 int measure_palette_init(void)
 {
-
     // SET DEFAULT LAST STEP
     active_step = &(current_measure->beat_list[0].step_list[0]);
     last_step = &(current_measure->beat_list[3].step_list[5]);
@@ -275,7 +278,7 @@ void print_step(Step *step)
         Serial.print("\tE: ");
         Serial.print(step->sound_list[i].empty);
 
-        char str[20];
+        char str[LCD_COLUMNS];
         sprintf(str, "%p", (void *)step->sound_list[i].sd_cached_sound); // Using sprintf to format the pointer address
         Serial.println("\tSD: " + String(str));
     }
@@ -321,14 +324,11 @@ void print_palette(int palette_index)
 
 void populate_default_measure(void)
 {
-
     int temp_populate_step = 0;
     for (int b = 0; b < MAX_BEATS; b++)
     {
-
         for (int s = 0; s < MAX_STEPS; s++)
         {
-
             for (int i = 0; i < MAX_STEP_SOUNDS; i++)
             {
                 temp_adding_sound.bank = meMat[temp_populate_step][(i * 3) + 0];

@@ -68,7 +68,11 @@
     "system_error": "cpp",
     "type_traits": "cpp",
     "utility": "cpp",
-    "cinttypes": "cpp"
+    "cinttypes": "cpp",
+    "istream": "cpp",
+    "shared_mutex": "cpp",
+    "stop_token": "cpp",
+    "thread": "cpp"
   },
   "C_Cpp.errorSquiggles": "enabled"
 }
