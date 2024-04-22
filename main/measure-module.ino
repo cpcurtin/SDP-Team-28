@@ -41,8 +41,11 @@ Step *previous_step(Measure *measure)
 
         if ((measure->beat < 0) || (measure->step >= measure->active_beats))
         {
-
             measure->beat = measure->active_beats - 1;
+            // if (current_track->active_measures > 1)
+            // {
+            //     // current_measure =
+            // }
         }
         measure->step = measure->beat_list[measure->beat].active_steps - 1;
     }

@@ -28,7 +28,8 @@ typedef struct Track
     int measure_steps;
     int current_measure_id;
     struct Measure *current_measure;
-    struct Measure *measure_list;
+    std::vector<struct Measure *> measure_list;
+    // struct Measure *measure_list;
     std::deque<struct Sound> cached_sounds;
 } Track;
 

@@ -40,22 +40,22 @@ int track_init(void)
   new_track->current_measure_id = 0;
 
   // Allocate memory for the measure_list
-  new_track->measure_list = new (std::nothrow) Measure[new_track->active_measures];
-  if (!new_track->measure_list)
-  {
-    Serial.println("Error: Memory allocation failed for Measure list.");
-    delete new_track; // Free allocated memory
-    return -1;
-  }
+  // new_track->measure_list = new (std::nothrow) Measure[new_track->active_measures];
+  // if (!new_track->measure_list)
+  // {
+  //   Serial.println("Error: Memory allocation failed for Measure list.");
+  //   delete new_track; // Free allocated memory
+  //   return -1;
+  // }
 
   // Create measures and add them to the measure_list
   for (int i = 0; i < new_track->active_measures; i++)
   {
-
-    new_track->measure_list[i] = *measure_create(i);
+    new_track->measure_list.push_back(measure_create(i));
+    // new_track->measure_list[i] = *measure_create(i);
   }
-
-  current_measure = &(new_track->measure_list[new_track->current_measure_id]);
+  current_measure = new_track->measure_list[new_track->current_measure_id];
+  // current_measure = &(new_track->measure_list[new_track->current_measure_id]);
   current_track = new_track;
   current_track->current_measure = current_measure;
 
@@ -176,12 +176,14 @@ void read_track(std::string filename, Track *config)
   Serial.print("\tf: ");
   Serial.println(new_track->filename.c_str());
 
-  new_track->measure_list = new Measure[new_track->active_measures];
+  // new_track->measure_list = new Measure[new_track->active_measures];
   Serial.println("TRACK ARRAY PASSED");
   for (int m = 0; m < new_track->active_measures; m++)
   {
-    new_track->measure_list[m] = *measure_create(m);
-    new_measure = &(new_track->measure_list[m]);
+    // new_track->measure_list[m] = *measure_create(m);
+    new_track->measure_list.push_back(measure_create(m));
+    // new_measure = &(new_track->measure_list[m]);
+    new_measure = new_track->measure_list[m];
     JsonObject measure = track["measure_list"][m];
 
     Serial.println("MEASURE PASSED");
@@ -303,7 +305,8 @@ void read_track(std::string filename, Track *config)
 
   file.close();
   current_track = new_track;
-  current_measure = &(current_track->measure_list[current_track->current_measure_id]);
+  // current_measure = &(current_track->measure_list[current_track->current_measure_id]);
+  current_measure = current_track->measure_list[current_track->current_measure_id];
 }
 
 // Saves the configuration to a file
@@ -335,32 +338,32 @@ void save_track(std::string filename, Track *config)
   for (int m = 0; m < config->active_measures; m++)
   {
     JsonObject measure = measure_list.add<JsonObject>();
-    measure["id"] = config->measure_list[m].id;
-    measure["active_beats"] = config->measure_list[m].active_beats;
+    measure["id"] = config->measure_list[m]->id;
+    measure["active_beats"] = config->measure_list[m]->active_beats;
 
     JsonArray beat_list = measure["beat_list"].to<JsonArray>();
     for (int b = 0; b < MAX_BEATS; b++)
     {
       JsonObject beat = beat_list.add<JsonObject>();
-      beat["id"] = config->measure_list[m].beat_list[b].id;
-      beat["active_steps"] = config->measure_list[m].beat_list[b].active_steps;
+      beat["id"] = config->measure_list[m]->beat_list[b].id;
+      beat["active_steps"] = config->measure_list[m]->beat_list[b].active_steps;
 
       JsonArray step_list = beat["step_list"].to<JsonArray>();
       for (int s = 0; s < MAX_STEPS; s++)
       {
         JsonObject step = step_list.add<JsonObject>();
-        step["id"] = config->measure_list[m].beat_list[b].step_list[s].id;
-        step["active_sounds"] = config->measure_list[m].beat_list[b].step_list[s].active_sounds;
+        step["id"] = config->measure_list[m]->beat_list[b].step_list[s].id;
+        step["active_sounds"] = config->measure_list[m]->beat_list[b].step_list[s].active_sounds;
 
         JsonArray sound_list = step["sound_list"].to<JsonArray>();
         for (int i = 0; i < MAX_STEP_SOUNDS; i++)
         {
           JsonObject sound = sound_list.add<JsonObject>();
-          sound["bank"] = config->measure_list[m].beat_list[b].step_list[s].sound_list[i].bank;
-          sound["instrument"] = config->measure_list[m].beat_list[b].step_list[s].sound_list[i].instrument;
-          sound["note"] = config->measure_list[m].beat_list[b].step_list[s].sound_list[i].note;
-          sound["filename"] = config->measure_list[m].beat_list[b].step_list[s].sound_list[i].filename;
-          sound["empty"] = config->measure_list[m].beat_list[b].step_list[s].sound_list[i].empty;
+          sound["bank"] = config->measure_list[m]->beat_list[b].step_list[s].sound_list[i].bank;
+          sound["instrument"] = config->measure_list[m]->beat_list[b].step_list[s].sound_list[i].instrument;
+          sound["note"] = config->measure_list[m]->beat_list[b].step_list[s].sound_list[i].note;
+          sound["filename"] = config->measure_list[m]->beat_list[b].step_list[s].sound_list[i].filename;
+          sound["empty"] = config->measure_list[m]->beat_list[b].step_list[s].sound_list[i].empty;
         }
       }
     }
@@ -587,20 +590,20 @@ int free_track(Track *track)
         {
           Serial.print("deleting: i=");
           Serial.println(i);
-          delete &(track->measure_list[m].beat_list[b].step_list[s].sound_list[i]);
+          delete &(track->measure_list[m]->beat_list[b].step_list[s].sound_list[i]);
         }
         Serial.print("deleting: s=");
         Serial.println(s);
 
-        delete &(track->measure_list[m].beat_list[b].step_list[s]);
+        delete &(track->measure_list[m]->beat_list[b].step_list[s]);
       }
       Serial.print("deleting: b=");
       Serial.println(b);
-      delete &(track->measure_list[m].beat_list[b]);
+      delete &(track->measure_list[m]->beat_list[b]);
     }
     Serial.print("deleting: m=");
     Serial.println(m);
-    delete &(track->measure_list[m]);
+    delete track->measure_list[m];
   }
 
   return 0;

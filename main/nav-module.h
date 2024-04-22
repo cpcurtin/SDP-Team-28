@@ -25,6 +25,8 @@
 #define NAVIGATION_MIDI_NOTES 12
 #define NAVIGATION_TRACK_SAVE 13
 #define NAVIGATION_DELETE 14
+#define NAVIGATION_MEASURE 15
+#define NAVIGATION_MEASURE_SELECT 16
 /******************************************************************************/
 
 /*******************************************************************************
@@ -36,6 +38,10 @@
 #define LEAF_TRACKS_GLOBAL_BEATS 3
 #define LEAF_TRACKS_GLOBAL_STEPS 4
 #define LEAF_TRACKS_LOCAL_STEPS 5
+
+#define LEAF_MEASURES_EDIT 0
+#define LEAF_MEASURES_ADD 1
+#define LEAF_MEASURES_REMOVE 2
 
 /******************************************************************************/
 #define TRACK_SAVE_NAME_LENGTH 3
@@ -82,6 +88,7 @@ Nav *effects_nav = new Nav;
 Nav *tracks_nav = new Nav;
 Nav *sounds_custom_nav = new Nav;
 Nav *sounds_midi_nav = new Nav;
+Nav *measure_nav = new Nav;
 Nav *delete_nav = new Nav;
 
 Nav *tracks_save_nav = new Nav;
@@ -95,6 +102,8 @@ Nav *sounds_midi_percussion_nav = new Nav;
 Nav *sounds_midi_octaves_nav = new Nav;
 Nav *sounds_midi_notes_nav = new Nav;
 
+Nav *measure_select_nav = new Nav;
+
 struct nav_config *nav_cfg = new struct nav_config;
 // functions, extern variables, structs go here
 Nav *nav_selection(Nav *nav, int direction);
@@ -105,6 +114,7 @@ int execute_leaf(void);
 void array_scroll(Nav *nav, int direction);
 std::string format_row(std::vector<std::string> data_array, int index, int format);
 std::string tracks_update(void);
+int measure_options(void);
 int track_options(void);
 
 #endif // EXAMPLE_MODULE_H
