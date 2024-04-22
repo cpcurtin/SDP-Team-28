@@ -376,6 +376,12 @@ int execute_leaf(void)
         track_options();
         break;
     }
+    case NAVIGATION_DELETE:
+    {
+        Serial.println("NAVIGATION_DELETE");
+        delete_options();
+        break;
+    }
     case NAVIGATION_SOUNDS_CUSTOM:
     {
         Serial.println("NAVIGATION_SOUNDS_CUSTOM");
@@ -609,6 +615,39 @@ int execute_leaf(void)
     }
     return 0;
 }
+
+int delete_options(void)
+{
+  switch (nav_state->index)
+  {
+    case LEAF_DELETE_LAST: 
+    {
+      if (matrix_button.column < 6)
+      {
+        add_remove_measure_sound(current_measure);
+      }
+      nav_state = main_nav;
+      lcd_display(lcd, nav_state->lcd_state);
+      break;
+    }
+    case LEAF_DELETE_STEP:
+    {
+      nav_state = main_nav;
+      lcd_display(lcd, nav_state->lcd_state);
+      break;
+    }
+    case LEAF_DELETE_MEASURE:
+    {
+      current_measure = measure_create(current_measure->id);
+      nav_state = main_nav;
+      lcd_display(lcd, nav_state->lcd_state);
+      break;
+    }
+
+  }
+  return 0;
+}
+
 int measure_options(void)
 {
     switch (nav_state->index)

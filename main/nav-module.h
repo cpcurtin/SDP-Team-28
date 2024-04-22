@@ -43,6 +43,9 @@
 #define LEAF_MEASURES_ADD 1
 #define LEAF_MEASURES_REMOVE 2
 
+#define LEAF_DELETE_LAST 0
+#define LEAF_DELETE_STEP 1
+#define LEAF_DELETE_MEASURE 2
 /******************************************************************************/
 #define TRACK_SAVE_NAME_LENGTH 3
 
@@ -116,5 +119,6 @@ std::string format_row(std::vector<std::string> data_array, int index, int forma
 std::string tracks_update(void);
 int measure_options(void);
 int track_options(void);
+int delete_options(void);
 
 #endif // EXAMPLE_MODULE_H
