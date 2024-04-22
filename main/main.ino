@@ -156,6 +156,7 @@ void loop()
       {
         // UNSELECT PALETTE BUTTON
         LED_mode = LED_DEFAULT_MODE;
+        measure_edit = false;
       }
       else
       {
@@ -196,18 +197,15 @@ void loop()
     {
       // MEASURE BUTTON PRESSED
       Serial.println("PALETTE TO MEASURE ADD/REMOVE");
-      LED_mode = LED_DEFAULT_MODE;
-      LED_Off(LED_last_row, LED_last_column);
+
+      //LED_mode = LED_DEFAULT_MODE;
+      //LED_Off(LED_last_row, LED_last_column);
 
       if (add_remove_measure_sound(edit_measure))
       {
         // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
       }
       measure_edit = false; // chain sound assignment in future starting here
-    }
-    else
-    {
-      lcd_splash_step(lcd, button_step_lookup(current_measure));
     }
   }
   if (matrix_pressed(BUTTON_PALETTE, BUTTON_HELD)) // PALETTE BUTTON HELD
