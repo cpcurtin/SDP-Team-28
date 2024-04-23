@@ -198,14 +198,14 @@ void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
         {
           // MELODIC
           state_splash_screen[1] = "MIDI MELODIC SOUND:";
-          state_splash_screen[2] = midi_melodic_sounds[slot.sound.instrument];
+          state_splash_screen[2] = midi_melodic_sounds[slot.sound.instrument - 1];
           state_splash_screen[3] = "Octave:" + std::to_string((slot.sound.note % NUM_OCTAVES) - 2) + " Note:" + sounds_midi_notes_nav->data_array[slot.sound.note / NUM_NOTES];
         }
         else
         {
           // PERCUSSION
           state_splash_screen[1] = "MIDI PERCUSSION SOUND:";
-          state_splash_screen[2] = midi_percussion_sounds[slot.sound.instrument];
+          state_splash_screen[2] = midi_percussion_sounds[slot.sound.instrument - 27];
         }
       }
       else
