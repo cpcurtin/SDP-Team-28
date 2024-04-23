@@ -58,6 +58,7 @@ typedef struct Sound
 } Sound;
 
 Sound empty_sound = {-1, -1, -1, nullptr, "", true};
+
 #else // unsafe - old
 
 typedef struct Sound
@@ -90,6 +91,7 @@ typedef struct Step
     struct Sound sound_list[4];
 
 } Step;
+Step *placeholder;
 
 typedef struct Beat
 {
@@ -141,6 +143,7 @@ int temp_last_beat = 0;
 int volume = 127;
 int silent = 0;
 int evenodd = 0;
+int placeholder_sound = 0;
 
 // functions, extern variables, structs go here
 int measure_palette_init(void);

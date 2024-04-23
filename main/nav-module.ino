@@ -597,10 +597,23 @@ int delete_options(void)
   {
     case LEAF_DELETE_LAST: 
     {
-      if (matrix_button.column < 6)
+      /*
+      for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
       {
-        add_remove_measure_sound(current_measure);
+
+          // if (testing_palette[palette_index] == button_step_lookup(measure)->sound_list[sound])
+          if (testing_palette_combined[palette_index].sound == placeholder->sound_list[sound])
+          {
+              Serial.println("MEASURE REMOVE SOUND");
+              // SELECTED PALETTE SOUND EXISTS ON CURRENT STEP
+              // REMOVE FROM MEASURE STEP
+              placeholder->sound_list[sound] = empty_sound;
+              placeholder->active_sounds--;
+          }
       }
+      */
+      placeholder->sound_list[placeholder_sound] = empty_sound;
+      placeholder->active_sounds--;
       nav_state = main_nav;
       lcd_display(lcd, nav_state->lcd_state);
       break;

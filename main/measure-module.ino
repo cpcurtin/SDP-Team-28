@@ -165,6 +165,8 @@ int add_remove_measure_sound(Measure *measure)
                 // button_step_lookup(current_measure)->sound_list[sound] = testing_palette[palette_index];
                 button_step_lookup(current_measure)->sound_list[sound] = testing_palette_combined[palette_index].sound;
                 button_step_lookup(current_measure)->active_sounds++;
+                placeholder = button_step_lookup(current_measure);
+                placeholder_sound = sound;
                 break;
             }
         }

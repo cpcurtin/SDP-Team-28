@@ -225,6 +225,12 @@ void loop()
       {
         // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
       }
+      /*
+      else
+      {
+        placeholder = button_step_lookup(current_measure);
+      }
+      */
       //measure_edit = false; // chain sound assignment in future starting here
     }
   }
