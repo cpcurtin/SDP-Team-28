@@ -548,7 +548,8 @@ int execute_leaf(void)
 
         if (tracks_nav->index == LEAF_TRACKS_GLOBAL_BEATS)
         {
-            current_track->measure_list[0]->active_beats = tracks_set_beats_nav->index + 1;
+            edit_measure->active_beats = tracks_set_beats_nav->index + 1;
+            // current_track->measure_list[0]->active_beats = tracks_set_beats_nav->index + 1;
         }
         else if (tracks_nav->index == LEAF_TRACKS_LOCAL_STEPS)
         {
@@ -567,7 +568,8 @@ int execute_leaf(void)
             current_track->measure_steps = nav_state->index + 1;
             for (int i = 0; i < 4; i++)
             {
-                current_measure->beat_list[i].active_steps = current_track->measure_steps;
+                edit_measure->beat_list[i].active_steps = current_track->measure_steps;
+                // current_measure->beat_list[i].active_steps = current_track->measure_steps;
             }
         }
         else if (tracks_nav->index == LEAF_TRACKS_LOCAL_STEPS)
@@ -575,7 +577,8 @@ int execute_leaf(void)
             nav_state = tracks_set_steps_nav;
 
             // COMPLETE
-            current_measure->beat_list[tracks_set_beats_nav->index].active_steps = tracks_set_steps_nav->index + 1;
+            edit_measure->beat_list[tracks_set_beats_nav->index].active_steps = tracks_set_steps_nav->index + 1;
+            // current_measure->beat_list[tracks_set_beats_nav->index].active_steps = tracks_set_steps_nav->index + 1;
         }
         break;
     }
