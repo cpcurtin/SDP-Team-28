@@ -31,9 +31,9 @@ int track_init(void)
   }
 
   // Initialize the Track members
-  new_track->filename = "DEFAULT.json";
+  new_track->filename = "TRACK-000.json";
   new_track->id = 0;
-  new_track->bpm = 120;
+  new_track->bpm = 10;
   new_track->active_measures = 1;
   new_track->measure_beats = 4;
   new_track->measure_steps = 6;
@@ -374,6 +374,20 @@ void save_track(std::string filename, Track *config)
       }
     }
   }
+  JsonArray palette_list = doc["palette_list"].to<JsonArray>();
+  for (int i = 0; i < PALETTE_SIZE; i++)
+  {
+    JsonObject palette_slot = palette_list.add<JsonObject>();
+    palette_slot["is_empty"] = testing_palette_combined[i].is_empty;
+    palette_slot["effect"] = testing_palette_combined[i].effect;
+    JsonObject palette_sound = palette_slot.createNestedObject("sound");
+    palette_sound["bank"] = testing_palette_combined[i].sound.bank;
+    palette_sound["instrument"] = testing_palette_combined[i].sound.instrument;
+    palette_sound["note"] = testing_palette_combined[i].sound.note;
+    palette_sound["filename"] = testing_palette_combined[i].sound.filename;
+    palette_sound["empty"] = testing_palette_combined[i].sound.empty;
+  }
+
   // Serialize JSON to file
   if (serializeJsonPretty(doc, file) == 0)
   // if (serializeJson(doc, file) == 0)

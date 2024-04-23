@@ -16,13 +16,20 @@
 *******************************************************************************/
 #define BANNER_DEFAULT 0
 #define BANNER_NAV_NAME 1
+#define BANNER_TRACK_SAVE 2
+#define BANNER_MEASURE_SWAP 3
 
 #define LCD_PERSIST 0
 #define LCD_VANISH 1
 
+#define LCD_DEFAULT 0
+#define LCD_SPLASH_TIMED 1
+#define LCD_BANNER_TIMED 2
+#define LCD_SPLASH 3
+
 /******************************************************************************/
 #define MAX_MEASURE_STEPS 6
-#define VANISH_PERIOD 2000
+#define VANISH_PERIOD 1500
 /******************************************************************************/
 struct lcd_pin_config
 {
@@ -31,13 +38,10 @@ struct lcd_pin_config
     const int columns;
 };
 
-bool splash_screen_active = false;
-
-bool splash_screen_timed = false;
 unsigned long timed_splash_start = 0;
-
-bool banner_screen_timed = false;
 unsigned long timed_banner_start = 0;
+
+int lcd_mode = 0;
 
 LiquidCrystal_I2C *lcd;
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);

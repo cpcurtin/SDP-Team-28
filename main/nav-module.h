@@ -62,7 +62,7 @@
 #include <vector>
 #include <string>
 
-std::string track_save_string(TRACK_SAVE_NAME_LENGTH, ' ');
+std::string track_save_string(TRACK_SAVE_NAME_LENGTH, '_');
 
 struct nav_config
 {
@@ -115,6 +115,8 @@ Nav *measure_select_nav = new Nav;
 int track_save_panel = 0;
 int measure_swap_panel = 0;
 int measure_swap_id;
+
+bool run_nav_name = true;
 
 struct nav_config *nav_cfg = new struct nav_config;
 // functions, extern variables, structs go here

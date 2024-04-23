@@ -5,6 +5,7 @@
 #define USING_PSRAM 1      // 1 for teesny 4.1 with solder psram, 0 otherwise
 #define USING_NEW_DS 1     // 1 for new ds, 0 for old
 #define USING_CDR_PCB 0    // 1 for CDR board configuration, 0 for updated dpad logic
+#define DYNAMIC_TEMPO 0
 #define DEBUG_PRINT 1
 #define DEBUG_INPUT 0
 /*
@@ -281,6 +282,8 @@ int palette[][3] = {{0, AcousticBassDrum, -1}, {-1, -1, -1}, {-1, -1, -1}, {0, A
 int palette_index = -1;
 int stop = 1;
 int stopSD = 1;
+
+unsigned long banner_refresh_start = 0;
 
 int serial_init(void);
 // void printMemory(void);

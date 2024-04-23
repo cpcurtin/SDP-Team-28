@@ -35,7 +35,6 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 void lcd_display(LiquidCrystal_I2C *lcd, std::vector<std::string> print_arr)
 {
   lcd->clear();
-
   Serial.println("XXXXLCD DISPLAYXXXXX");
   for (int row = 0; row < LCD_ROWS - 1; row++)
   {
@@ -43,6 +42,9 @@ void lcd_display(LiquidCrystal_I2C *lcd, std::vector<std::string> print_arr)
     Serial.println(print_arr[row].c_str());
     lcd->print(print_arr[row].c_str()); // print to row 0
   }
+  // lcd->setCursor(0, LCD_ROWS - 1); // set cursor to row 0
+  // Serial.println(lcd_banner.c_str());
+  // lcd->print(lcd_banner.c_str()); // print to row 0
   Serial.println("XXXXXXXXXXXXXXXXXXXX");
 
   lcd->home();
@@ -50,7 +52,8 @@ void lcd_display(LiquidCrystal_I2C *lcd, std::vector<std::string> print_arr)
 
 void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std::string> print_arr)
 {
-  splash_screen_active = true;
+
+  lcd_mode = LCD_SPLASH;
   state_splash_screen.clear();
   std::copy(print_arr.begin(), print_arr.end(), std::back_inserter(state_splash_screen));
 
@@ -115,7 +118,8 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std
 }
 void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step)
 {
-  splash_screen_timed = true;
+
+  lcd_mode = LCD_SPLASH_TIMED;
   timed_splash_start = millis();
   state_splash_screen.clear();
 
@@ -177,7 +181,8 @@ void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step)
 
 void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
 {
-  splash_screen_timed = true;
+
+  lcd_mode = LCD_SPLASH_TIMED;
   timed_splash_start = millis();
   state_splash_screen.clear();
 
@@ -243,7 +248,8 @@ void lcd_display_banner(LiquidCrystal_I2C *lcd, int type, int mode)
 {
   if (mode == LCD_VANISH)
   {
-    banner_screen_timed = true;
+
+    lcd_mode = LCD_BANNER_TIMED;
     timed_banner_start = millis();
   }
   lcd_banner.clear();
@@ -257,6 +263,16 @@ void lcd_display_banner(LiquidCrystal_I2C *lcd, int type, int mode)
   case BANNER_NAV_NAME:
   {
     lcd_banner = nav_state->name;
+    break;
+  }
+  case BANNER_TRACK_SAVE:
+  {
+    lcd_banner = "SAVE:TRACK-" + track_save_string + ".json";
+    break;
+  }
+  case BANNER_MEASURE_SWAP:
+  {
+    lcd_banner = "SELECT MEASURE SWAP:" + std::to_string(measure_swap_panel + 1);
     break;
   }
   }

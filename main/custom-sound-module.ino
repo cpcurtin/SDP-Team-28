@@ -95,7 +95,6 @@ void stopFile(int mixer)
 
 int free_cached_sounds(Track *track)
 {
-
   while (track->cached_sounds.size() != 0)
   {
 

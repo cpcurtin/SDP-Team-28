@@ -80,7 +80,8 @@ void setup()
   Serial.println(current_track->measure_steps);
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
-  step_timer = Metro(60000 / (6 * 50));   // starting tmepo
+  lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
+  step_timer = Metro(step_interval_calc(current_measure)); // starting tmepo
   Serial.println("PROGRAM LOOP BEGINS");
 }
 
@@ -121,21 +122,19 @@ void loop()
 
     if (effect_return_state != DOUBLE_REPEAT)
     {
+#if DYNAMIC_TEMPO == 1 // STATIC
       current_track->bpm = read_tempo();
-      // Serial.println(current_track->bpm);
+      Serial.print("CURRENT BMP:");
+      Serial.println(current_track->bpm);
+#endif
     }
     else if (evenodd == 1)
     {
       current_track->bpm = current_track->bpm * 2;
     }
 
-    if (splash_screen_active == false && splash_screen_timed == false)
-    {
-      lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
-    }
-
     // UPDATE TIMER INTERVAL
-    // step_timer.interval(step_interval_calc(current_measure));
+    step_timer.interval(step_interval_calc(current_measure));
   }
   /******************************************************************************************************/
 
@@ -172,7 +171,7 @@ void loop()
 
         // new_sound_assignment = false;
         palette_assignment = PALETTE_ASSIGNMENT_DEFAULT;
-        splash_screen_active = false;
+        lcd_mode = LCD_DEFAULT;
         lcd_display(lcd, nav_state->lcd_state); // refresh LCD from splash screen
       }
       else
@@ -198,14 +197,18 @@ void loop()
       // MEASURE BUTTON PRESSED
       Serial.println("PALETTE TO MEASURE ADD/REMOVE");
 
-      //LED_mode = LED_DEFAULT_MODE;
-      //LED_Off(LED_last_row, LED_last_column);
+      // LED_mode = LED_DEFAULT_MODE;
+      // LED_Off(LED_last_row, LED_last_column);
 
       if (add_remove_measure_sound(edit_measure))
       {
         // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
       }
-      measure_edit = false; // chain sound assignment in future starting here
+      // measure_edit = false; // chain sound assignment in future starting here
+    }
+    else
+    {
+      lcd_splash_step(lcd, button_step_lookup(current_measure));
     }
   }
   if (matrix_pressed(BUTTON_PALETTE, BUTTON_HELD)) // PALETTE BUTTON HELD
@@ -265,22 +268,36 @@ void loop()
   dpad_pressed = dpad_read();
   dpad_nav_routine(dpad_pressed);
 
-  if (splash_screen_timed)
+  switch (lcd_mode)
+  {
+  case LCD_DEFAULT:
+  {
+    // banner stats: bpm, measure id, track id
+    if (millis() - banner_refresh_start > 100)
+    {
+      banner_refresh_start = millis();
+      lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
+    }
+    break;
+  }
+
+  case LCD_SPLASH_TIMED:
   {
     if (millis() - timed_splash_start > VANISH_PERIOD)
     {
-      splash_screen_timed = false;
+      lcd_mode = LCD_DEFAULT;
       lcd_display(lcd, nav_state->lcd_state);
-      lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
     }
+    break;
   }
-  if (banner_screen_timed)
+  case LCD_BANNER_TIMED:
   {
     if (millis() - timed_banner_start > VANISH_PERIOD)
     {
-      banner_screen_timed = false;
-      lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
+      lcd_mode = LCD_DEFAULT;
     }
+    break;
+  }
   }
 }
 

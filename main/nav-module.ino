@@ -86,7 +86,7 @@ std::string tracks_update(void)
     // spacing, enumerated
     if (current_track->bpm != 0)
     {
-        rt_st = "BPM:" + std::to_string(current_track->bpm) + " M:" + std::to_string(current_measure->id) + " ID:" + current_track->filename.substr(6, 3);
+        rt_st = "BPM:" + std::to_string(current_track->bpm) + " M:" + std::to_string(current_measure->id + 1) + " ID:" + current_track->filename.substr(6, 3);
     }
     else
     {
@@ -308,18 +308,25 @@ void dpad_nav_routine(int dpad_pressed)
     {
         if (nav_state->parent != nullptr)
         {
-            if (track_save_panel == 0)
-            {
-                tracks_save_nav->parent = tracks_nav;
-            }
             if (nav_state->id == NAVIGATION_TRACK_SAVE)
             {
-                track_save_panel--;
+                if (track_save_panel == 0)
+                {
+                    lcd_mode = LCD_DEFAULT;
+                    tracks_save_nav->parent = tracks_nav;
+                }
+                else
+                {
+                    track_save_panel--;
+                    track_save_string.replace(track_save_panel, 1, "_");
+                    lcd_display_banner(lcd, BANNER_TRACK_SAVE, LCD_PERSIST);
+                }
             }
             if (nav_state->id == NAVIGATION_MEASURE_SELECT)
             {
                 if (measure_swap_panel == 1)
                 {
+
                     measure_swap_panel = 0;
                     break;
                 }
@@ -333,18 +340,29 @@ void dpad_nav_routine(int dpad_pressed)
             Serial.print("ALREADY AT ROOT");
         }
         lcd_display(lcd, nav_state->lcd_state);
+        if (nav_state->id == NAVIGATION_TRACK_SAVE)
+        {
+            lcd_display_banner(lcd, BANNER_TRACK_SAVE, LCD_PERSIST);
+        }
+        else
+        {
+            lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
+        }
+
         break;
     }
     case BUTTON_DPAD_DOWN:
     {
         array_scroll(nav_state, NAV_DOWN);
         lcd_display(lcd, nav_state->lcd_state);
+        lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
         break;
     }
     case BUTTON_DPAD_UP:
     {
         array_scroll(nav_state, NAV_UP);
         lcd_display(lcd, nav_state->lcd_state);
+        lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
         break;
     }
 
@@ -366,10 +384,6 @@ void dpad_nav_routine(int dpad_pressed)
 
         break;
     }
-
-    default:
-        // lcd_display(lcd, nav_state->lcd_state);
-        break;
     }
 }
 
@@ -402,7 +416,6 @@ int execute_leaf(void)
         temp_sample = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index]);
         if (temp_sample != nullptr)
         {
-
             new_palette_slot.sound.bank = -1;
             new_palette_slot.sound.instrument = -1;
             new_palette_slot.sound.note = -1;
@@ -486,6 +499,7 @@ int execute_leaf(void)
         Serial.println("NAVIGATION_SOUNDS_MIDI_MELODIC");
         nav_state = sounds_midi_octaves_nav;
         lcd_display(lcd, nav_state->lcd_state);
+        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         break;
     }
 
@@ -494,6 +508,7 @@ int execute_leaf(void)
         Serial.println("NAVIGATION_MIDI_OCTAVES");
         nav_state = sounds_midi_notes_nav;
         lcd_display(lcd, nav_state->lcd_state);
+        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         break;
     }
 
@@ -523,6 +538,7 @@ int execute_leaf(void)
         LED_mode = LED_PALETTE_SELECT;
 
         lcd_splash(lcd, nav_state, selected_sound);
+        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         nav_state = main_nav;
         break;
     }
@@ -538,6 +554,7 @@ int execute_leaf(void)
         {
             nav_state = tracks_set_steps_nav;
             lcd_display(lcd, nav_state->lcd_state);
+            // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         }
 
         break;
@@ -570,11 +587,12 @@ int execute_leaf(void)
             track_save_string.replace(track_save_panel, 1, nav_state->data_array[nav_state->index]);
             track_save_panel++;
             tracks_save_nav->parent = tracks_save_nav;
+            run_nav_name = false;
+            lcd_display_banner(lcd, BANNER_TRACK_SAVE, LCD_PERSIST);
         }
         else
         {
             track_save_string.replace(track_save_panel, 1, nav_state->data_array[nav_state->index]);
-
             current_track->filename = "TRACK-" + track_save_string + ".json";
             save_track(current_track->filename, current_track);
             tracks_load_nav->data_array.clear();
@@ -582,20 +600,8 @@ int execute_leaf(void)
             tracks_load_nav->index = 0;
             array_scroll(tracks_load_nav, 0);
             nav_state = tracks_nav;
+            lcd_mode = LCD_DEFAULT;
             lcd_display(lcd, nav_state->lcd_state);
-
-            // int filename_count = 0;
-            // if (tracks_load_nav->data_array.empty() == false)
-            // {
-            //     filename_count = tracks_load_nav->data_array.size();
-            // }
-            // // std::string new_track_filename = "TRACK" + std::to_string(filename_count) + ".json";
-            // current_track->filename = "TRACK" + std::to_string(filename_count) + ".json";
-            // save_track(current_track->filename, current_track);
-            // tracks_load_nav->data_array.clear();
-            // tracks_load_nav->data_array = std::move(sd_fetch_tracks());
-            // tracks_load_nav->index = 0;
-            // array_scroll(tracks_load_nav, 0);
         }
         break;
     }
@@ -608,38 +614,39 @@ int execute_leaf(void)
         Serial.println("load new track");
         read_track(nav_state->data_array[nav_state->index], current_track);
         Serial.println("RETURN LOAD TRACK");
+        nav_state = tracks_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         break;
     }
-
     case NAVIGATION_MEASURE_SELECT:
     {
         Serial.println("NAVIGATION_MEASURE_SELECT");
         if (measure_nav->index == LEAF_MEASURES_EDIT)
         {
-            edit_measure = current_track->measure_list[measure_select_nav->index];
+            Serial.println("NAVIGATION_MEASURE_SELECT");
+            edit_measure = current_track->measure_list[nav_state->index];
             nav_state = measure_nav;
             lcd_display(lcd, nav_state->lcd_state);
-        }
-        else if (measure_nav->index == LEAF_MEASURES_ADD)
-        {
-            current_track->measure_list.push_back(measure_create(current_track->measure_list.size()));
-            nav_state = measure_nav;
-            lcd_display(lcd, nav_state->lcd_state);
+            // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         }
         else if (measure_nav->index == LEAF_MEASURES_REMOVE)
         {
+            Serial.println("LEAF_MEASURES_REMOVE");
             if (current_track->measure_list.size() > 1)
             {
                 if (edit_measure->id == measure_select_nav->index)
                 {
                     current_track->measure_list.erase(current_track->measure_list.begin() + measure_select_nav->index);
-                    measure_select_nav->data_array.assign(current_track->measure_list.size(), "Measure");
+                    measure_select_nav->index = 0;
+                    array_scroll(measure_select_nav, 0);
                     edit_measure = current_track->measure_list.front();
                 }
                 else
                 {
                     current_track->measure_list.erase(current_track->measure_list.begin() + measure_select_nav->index);
-                    measure_select_nav->data_array.assign(current_track->measure_list.size(), "Measure");
+                    measure_select_nav->index = 0;
+                    array_scroll(measure_select_nav, 0);
                 }
                 for (int i = 0; i < current_track->measure_list.size(); i++)
                 {
@@ -653,16 +660,21 @@ int execute_leaf(void)
                 current_track->current_measure = current_measure;
                 edit_measure = current_measure;
             }
+            current_track->active_measures = current_track->measure_list.size();
             nav_state = measure_nav;
             lcd_display(lcd, nav_state->lcd_state);
+            // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         }
         else if (measure_nav->index == LEAF_MEASURES_SWAP)
         {
+            Serial.println("LEAF_MEASURES_SWAP");
             if (measure_swap_panel == 0)
             {
                 measure_swap_id = nav_state->index;
 
                 measure_swap_panel++;
+                run_nav_name = false;
+                lcd_display_banner(lcd, BANNER_MEASURE_SWAP, LCD_VANISH);
             }
             else if (measure_swap_panel == 1)
             {
@@ -676,44 +688,23 @@ int execute_leaf(void)
 
                 nav_state = measure_nav;
                 lcd_display(lcd, nav_state->lcd_state);
+                // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
             }
         }
 
         break;
     }
     }
-    lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
-    return 0;
-}
 
-int delete_options(void)
-{
-    switch (nav_state->index)
+    if (run_nav_name)
     {
-    case LEAF_DELETE_LAST:
+        lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
+    }
+    else
     {
-        if (matrix_button.column < 6)
-        {
-            add_remove_measure_sound(current_measure);
-        }
-        nav_state = main_nav;
-        lcd_display(lcd, nav_state->lcd_state);
-        break;
+        run_nav_name = true;
     }
-    case LEAF_DELETE_STEP:
-    {
-        nav_state = main_nav;
-        lcd_display(lcd, nav_state->lcd_state);
-        break;
-    }
-    case LEAF_DELETE_MEASURE:
-    {
-        current_measure = measure_create(current_measure->id);
-        nav_state = main_nav;
-        lcd_display(lcd, nav_state->lcd_state);
-        break;
-    }
-    }
+
     return 0;
 }
 
@@ -728,13 +719,18 @@ int measure_options(void)
         // select which to edit
         nav_state = measure_select_nav;
         lcd_display(lcd, nav_state->lcd_state);
+        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         break;
     }
     case LEAF_MEASURES_ADD:
     {
         Serial.println("LEAF_MEASURES_ADD");
-        // select where to add?
-        nav_state = measure_select_nav;
+
+        current_track->measure_list.push_back(measure_create(current_track->measure_list.size()));
+        measure_select_nav->data_array.push_back("Measure");
+        current_track->active_measures = current_track->measure_list.size();
+        measure_select_nav->index = 0;
+        array_scroll(measure_select_nav, 0);
         lcd_display(lcd, nav_state->lcd_state);
         break;
     }
@@ -744,6 +740,17 @@ int measure_options(void)
         // select which to delete
         nav_state = measure_select_nav;
         lcd_display(lcd, nav_state->lcd_state);
+        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
+        break;
+    }
+    case LEAF_MEASURES_SWAP:
+    {
+        Serial.println("LEAF_MEASURES_SWAP");
+        // select which to delete
+        nav_state = measure_select_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        run_nav_name = false;
+        lcd_display_banner(lcd, BANNER_MEASURE_SWAP, LCD_VANISH);
         break;
     }
     }
@@ -762,9 +769,13 @@ int track_options(void)
         Serial.println("LEAF_TRACKS_SAVE");
         track_save_panel = 0;
         track_save_string.clear();
+        track_save_string.assign(TRACK_SAVE_NAME_LENGTH, '_');
         tracks_save_nav->parent = tracks_nav;
         nav_state = tracks_save_nav;
+        lcd_mode = LCD_SPLASH;
         lcd_display(lcd, nav_state->lcd_state);
+        lcd_display_banner(lcd, BANNER_TRACK_SAVE, LCD_PERSIST);
+        run_nav_name = false;
         break;
     }
     case LEAF_TRACKS_LOAD:
@@ -772,6 +783,7 @@ int track_options(void)
         Serial.println("LEAF_TRACKS_LOAD");
         nav_state = tracks_load_nav;
         lcd_display(lcd, nav_state->lcd_state);
+        // lcd_display_banner(lcd, BANNER_MEASURE_SWAP, LCD_VANISH);
         break;
     }
     case LEAF_TRACKS_DELETE:
@@ -823,5 +835,37 @@ int track_options(void)
         break;
     }
     }
+    return 0;
+}
+
+int delete_options(void)
+{
+    switch (nav_state->index)
+    {
+    case LEAF_DELETE_LAST:
+    {
+        if (matrix_button.column < 6)
+        {
+            add_remove_measure_sound(current_measure);
+        }
+        nav_state = main_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        break;
+    }
+    case LEAF_DELETE_STEP:
+    {
+        nav_state = main_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        break;
+    }
+    case LEAF_DELETE_MEASURE:
+    {
+        current_measure = measure_create(current_measure->id);
+        nav_state = main_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        break;
+    }
+    }
+
     return 0;
 }

@@ -149,7 +149,6 @@ int add_remove_measure_sound(Measure *measure)
     bool sound_exists = false;
     for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
     {
-
         if (testing_palette_combined[palette_index].sound == button_step_lookup(measure)->sound_list[sound])
         {
             Serial.println("MEASURE REMOVE SOUND");
