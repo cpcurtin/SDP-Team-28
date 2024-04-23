@@ -15,8 +15,8 @@
 #define DEBUG_INPUT 1
 #endif
 
-#define TEMPO_KNOB_MIN 1
-#define TEMPO_KNOB_MAX 150
+#define TEMPO_KNOB_MIN 20
+#define TEMPO_KNOB_MAX 200
 #define SMOOTHING_SAMPLES 100
 #define DPAD_LEFT 1
 #define DPAD_RIGHT 2

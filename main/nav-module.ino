@@ -844,10 +844,9 @@ int delete_options(void)
     {
     case LEAF_DELETE_LAST:
     {
-        if (matrix_button.column < 6)
-        {
-            add_remove_measure_sound(current_measure);
-        }
+
+        placeholder->sound_list[placeholder_sound] = empty_sound;
+        placeholder->active_sounds--;
         nav_state = main_nav;
         lcd_display(lcd, nav_state->lcd_state);
         break;

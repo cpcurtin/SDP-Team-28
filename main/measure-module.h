@@ -59,6 +59,7 @@ typedef struct Step
     struct Sound sound_list[4];
 
 } Step;
+Step *placeholder;
 
 typedef struct Beat
 {
@@ -112,6 +113,7 @@ int silent = 0;
 int evenodd = 0;
 
 Metro step_timer = Metro(100);
+int placeholder_sound = 0;
 
 // functions, extern variables, structs go here
 int measure_palette_init(void);
