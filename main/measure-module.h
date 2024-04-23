@@ -7,10 +7,6 @@
 #ifndef MEASURE_MODULE_H
 #define MEASURE_MODULE_H
 
-#ifndef USING_SAFE_STRINGS
-#define USING_SAFE_STRINGS 1
-#endif
-
 #define PALETTE_SIZE 12
 
 #define MAX_MEASURES 10
@@ -32,9 +28,6 @@
 #define DEFAULT_LAST_STEP 5
 
 #include <Metro.h>
-Metro step_timer = Metro(100);
-
-#if USING_SAFE_STRINGS == 1 // safe - new
 
 typedef struct Sound
 {
@@ -58,31 +51,6 @@ typedef struct Sound
 } Sound;
 
 Sound empty_sound = {-1, -1, -1, nullptr, "", true};
-
-#else // unsafe - old
-
-typedef struct Sound
-{
-    int bank;
-    int instrument;
-    int note;
-    newdigate::audiosample *sd_cached_sound;
-    const char *filename;
-    bool empty;
-
-    // Overload the equality operator
-    bool operator==(const Sound &other) const
-    {
-        return bank == other.bank &&
-               instrument == other.instrument &&
-               note == other.note &&
-               sd_cached_sound == other.sd_cached_sound &&
-               strcmp(filename, other.filename) == 0 &&
-               empty == other.empty;
-    }
-} Sound;
-Sound empty_sound = {-1, -1, -1, nullptr, "", true};
-#endif
 
 typedef struct Step
 {
@@ -123,13 +91,13 @@ typedef struct Palette_Slot
 std::vector<Palette_Slot> testing_palette_combined(PALETTE_SIZE);
 
 Measure *current_measure;
+Measure *edit_measure;
 
 Step *active_step;
 Step *last_step;
 Sound temp_adding_sound;
 
 Sound testing_palette[PALETTE_SIZE];
-Sound new_sound;
 Palette_Slot new_palette_slot;
 
 bool new_sound_assignment = false;
@@ -143,6 +111,8 @@ int temp_last_beat = 0;
 int volume = 127;
 int silent = 0;
 int evenodd = 0;
+
+Metro step_timer = Metro(100);
 int placeholder_sound = 0;
 
 // functions, extern variables, structs go here
@@ -159,13 +129,8 @@ int play_step(Step *step_play);
 float step_interval_calc(Measure *measure);
 int add_remove_measure_sound(Measure *measure);
 
-#if USING_SAFE_STRINGS == 1 // safe - new
 void print_step(Step *step);
 void print_palette(int palette_index);
-#else // unsafe - old
-void print_step(Step *step);
-void print_palette(int palette_index);
-#endif
 
 void populate_default_measure(void);
 

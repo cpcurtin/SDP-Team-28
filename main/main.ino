@@ -62,7 +62,6 @@ void setup()
   lcd = lcd_init(&lcd_cfg);
   delay(1000); // 3 second splash strart screen
 
-#if USING_SAFE_STRINGS == 1 // safe - new
   nav_cfg->sounds_custom = sd_fetch_sounds();
   nav_cfg->effects = fetch_effects(); // static TODO
   nav_cfg->tracks_load = sd_fetch_tracks();
@@ -80,30 +79,9 @@ void setup()
   Serial.print("measure steps: ");
   Serial.println(current_track->measure_steps);
 
-#else // unsafe - old
-
-  /* POPULATE DYNAMIC LISTS */
-  nav_cfg->sounds_custom = sd_fetch_sounds();
-  nav_cfg->effects = fetch_effects(); // static TODO
-  nav_cfg->tracks_load = sd_fetch_tracks();
-  nav_cfg->sounds_midi_melodic = fetch_midi_melodic_sounds();
-  nav_cfg->sounds_midi_percussion = fetch_midi_percussion_sounds();
-  nav_state = nav_init(nav_cfg);
-
-  Serial.println("default Track stats:");
-  Serial.print("filename: ");
-  Serial.println(current_track->filename);
-  Serial.print("id: ");
-  Serial.println(current_track->id);
-  Serial.print("bpm: ");
-  Serial.println(current_track->bpm);
-  Serial.print("measure steps: ");
-  Serial.println(current_track->measure_steps);
-
-#endif
-
   lcd_display(lcd, nav_state->lcd_state); // move to start nav
-  step_timer.interval(60000 / (4 * 10));  // TESTING STATIC TEMPO
+  lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
+  step_timer = Metro(step_interval_calc(current_measure)); // starting tmepo
   Serial.println("PROGRAM LOOP BEGINS");
 }
 
@@ -144,17 +122,15 @@ void loop()
 
     if (effect_return_state != DOUBLE_REPEAT)
     {
+#if DYNAMIC_TEMPO == 1 // STATIC
       current_track->bpm = read_tempo();
-      // Serial.println(current_track->bpm);
+      Serial.print("CURRENT BMP:");
+      Serial.println(current_track->bpm);
+#endif
     }
     else if (evenodd == 1)
     {
       current_track->bpm = current_track->bpm * 2;
-    }
-
-    if (splash_screen_active == false)
-    {
-      update_tempo(lcd);
     }
 
     // UPDATE TIMER INTERVAL
@@ -165,6 +141,10 @@ void loop()
   if (matrix_pressed(BUTTON_PALETTE, BUTTON_NOT_HELD)) // PALETTE BUTTON PRESSED
   {
     Serial.println("PALETTE PRESSED");
+    if (palette_assignment == PALETTE_ASSIGNMENT_DEFAULT)
+    {
+      lcd_splash_palette(lcd, testing_palette_combined[palette_index]);
+    }
     if (effect_mode)
     {
       effect_end(); // DISABLE EFFECT TOGGLE FLAG
@@ -187,16 +167,16 @@ void loop()
       {
         // SAVE NEW SOUND FROM NAV TO PALETTE BUTTON
         Serial.println("NAV TO PALETTE ASSIGNED");
-        testing_palette[palette_index] = new_sound;
         testing_palette_combined[palette_index] = new_palette_slot;
 
         // new_sound_assignment = false;
         palette_assignment = PALETTE_ASSIGNMENT_DEFAULT;
-        splash_screen_active = false;
+        lcd_mode = LCD_DEFAULT;
         lcd_display(lcd, nav_state->lcd_state); // refresh LCD from splash screen
       }
       else
       {
+
         if (LED_mode == LED_PALETTE_SELECT && testing_palette_combined[palette_index].effect == -1)
         {
           // EVOKES add/remove sounds to measure steps
@@ -209,29 +189,26 @@ void loop()
       }
     }
   }
-  //  MEASURE BUTTON PRESSED
-  if (measure_edit)
+  if (matrix_pressed(BUTTON_MEASURE, BUTTON_NOT_HELD)) // MEASURE BUTTON PRESSED
   {
-    if (matrix_pressed(BUTTON_MEASURE, BUTTON_NOT_HELD)) // MEASURE BUTTON PRESSED
-    {
 
+    if (measure_edit)
+    {
       // MEASURE BUTTON PRESSED
       Serial.println("PALETTE TO MEASURE ADD/REMOVE");
 
-      //LED_mode = LED_DEFAULT_MODE;
-      //LED_Off(LED_last_row, LED_last_column);
+      // LED_mode = LED_DEFAULT_MODE;
+      // LED_Off(LED_last_row, LED_last_column);
 
-      if (add_remove_measure_sound(current_measure))
+      if (add_remove_measure_sound(edit_measure))
       {
         // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
       }
-      /*
-      else
-      {
-        placeholder = button_step_lookup(current_measure);
-      }
-      */
-      //measure_edit = false; // chain sound assignment in future starting here
+      // measure_edit = false; // chain sound assignment in future starting here
+    }
+    else
+    {
+      lcd_splash_step(lcd, button_step_lookup(current_measure));
     }
   }
   if (matrix_pressed(BUTTON_PALETTE, BUTTON_HELD)) // PALETTE BUTTON HELD
@@ -290,6 +267,38 @@ void loop()
    ****************************************************************************/
   dpad_pressed = dpad_read();
   dpad_nav_routine(dpad_pressed);
+
+  switch (lcd_mode)
+  {
+  case LCD_DEFAULT:
+  {
+    // banner stats: bpm, measure id, track id
+    if (millis() - banner_refresh_start > 100)
+    {
+      banner_refresh_start = millis();
+      lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
+    }
+    break;
+  }
+
+  case LCD_SPLASH_TIMED:
+  {
+    if (millis() - timed_splash_start > VANISH_PERIOD)
+    {
+      lcd_mode = LCD_DEFAULT;
+      lcd_display(lcd, nav_state->lcd_state);
+    }
+    break;
+  }
+  case LCD_BANNER_TIMED:
+  {
+    if (millis() - timed_banner_start > VANISH_PERIOD)
+    {
+      lcd_mode = LCD_DEFAULT;
+    }
+    break;
+  }
+  }
 }
 
 int serial_init(void)
@@ -335,7 +344,7 @@ int serial_init(void)
 
 void print_ptr(void *ptr)
 {
-  char str[20];
+  char str[LCD_COLUMNS];
   sprintf(str, "%p", ptr); // Using sprintf to format the pointer address
   Serial.print(String(str));
 }

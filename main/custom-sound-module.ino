@@ -93,10 +93,8 @@ void stopFile(int mixer)
   }
 }
 
-#if USING_SAFE_STRINGS == 1 // safe - new
 int free_cached_sounds(Track *track)
 {
-
   while (track->cached_sounds.size() != 0)
   {
 
@@ -116,44 +114,3 @@ newdigate::audiosample *cache_sd_sound(std::string filename)
 
   return loader.loadSample(full_path.c_str());
 }
-#else // unsafe - old
-newdigate::audiosample *cache_sd_sound(const char *filename)
-{
-  // Calculate the length of the string
-  size_t filename_len = strlen(filename);
-
-  // Check if the filename length exceeds the buffer size
-  if (filename_len >= MAX_FILENAME_LENGTH - 8)
-  {
-    Serial.println("Filename is too long for buffer");
-  }
-
-  // Copy CUSTOM_SOUNDS_DIRECTORY prefix into temp_str
-  strcpy(temp_str, CUSTOM_SOUNDS_DIRECTORY);
-
-  // Concatenate filename to temp_str
-  strcat(temp_str, filename);
-
-  // Serial.print("Playing file: ");
-  Serial.println(filename);
-  return loader.loadSample(temp_str);
-}
-int free_cached_sounds(Track *track)
-{
-  Serial.println("enter func");
-  while (track->cached_sounds.size() != 0)
-  {
-    Serial.println("loop");
-    Serial.println(track->cached_sounds.front().filename);
-    Serial.println("loop");
-
-    delete track->cached_sounds.front().sd_cached_sound;
-    Serial.println("post free");
-    track->cached_sounds.pop_front();
-    Serial.println("pop");
-  }
-  Serial.println("end");
-
-  return 0;
-}
-#endif
