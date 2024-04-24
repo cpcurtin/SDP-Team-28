@@ -129,6 +129,12 @@ void loop()
         last_beat_mat = current_measure->beat;
         last_step_mat = current_measure->step;
       }
+      else 
+      {
+        LED_On(LED_last_row, LED_last_column);
+        last_beat_mat = LED_last_row;
+        last_step_mat = LED_last_column;
+      }
     }
 
 
@@ -203,10 +209,14 @@ void loop()
         {
           // EVOKES add/remove sounds to measure steps
           measure_edit = true;
+          Serial.println("COLUMN");
+          Serial.println("ROW");
+          Serial.println(matrix_button.column);
           LED_last_row = matrix_button.row;
           LED_last_column = matrix_button.column;
+
           LED_Off(temp_last_beat, temp_last_step);
-          LED_On(matrix_button.row, matrix_button.column);
+          //LED_On(matrix_button.row, matrix_button.column);
         }
       }
     }
