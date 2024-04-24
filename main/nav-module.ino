@@ -116,7 +116,7 @@ Nav *nav_init(struct nav_config *cfg)
     midi_child[1] = sounds_midi_melodic_nav;
 
     // MAIN
-    std::vector<std::string> main_preset_options = {"Sounds", "Effects", "Measures", "Tracks", "Delete"};
+    std::vector<std::string> main_preset_options = {"Sounds", "Effects", "Measures", "Tracks", "Delete", "(PAUSE)"};
     main_nav->id = NAVIGATION_MAIN;
     main_nav->name = "Main";
     main_nav->data_array = std::move(main_preset_options);
@@ -397,11 +397,28 @@ void dpad_nav_routine(int dpad_pressed)
     {
         if (nav_state->child != nullptr)
         {
-            nav_state = nav_state->child[nav_state->index];
-            Serial.print("MOVED TO NODE:");
-            Serial.println(nav_state->id);
-            lcd_display(lcd, nav_state->lcd_state);
-            lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
+            if (nav_state->id == NAVIGATION_MAIN && nav_state->index == nav_state->data_array.size() - 1)
+            {
+                play_pause_toggle ^= 1;
+                if (play_pause_toggle)
+                {
+                    main_nav->data_array[main_nav->data_array.size() - 1] = "(PAUSE)";
+                }
+                else
+                {
+                    main_nav->data_array[main_nav->data_array.size() - 1] = "(PLAY)";
+                }
+                array_scroll(nav_state, 0);
+                lcd_display(lcd, nav_state->lcd_state);
+            }
+            else
+            {
+                nav_state = nav_state->child[nav_state->index];
+                Serial.print("MOVED TO NODE:");
+                Serial.println(nav_state->id);
+                lcd_display(lcd, nav_state->lcd_state);
+                lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
+            }
         }
         else
         {

@@ -89,79 +89,82 @@ void setup()
 void loop()
 {
   /******************************************************************************************************/
-  if (step_timer.check() == 1)
+  if (step_timer.check())
   {
-    last_step = active_step;
-    temp_last_step = current_measure->step;
-    temp_last_beat = current_measure->beat;
+    if (play_pause_toggle)
+    {
+      last_step = active_step;
+      temp_last_step = current_measure->step;
+      temp_last_beat = current_measure->beat;
 
-    if (one_time_only == 0)
-    {
-      last_beat_mat = temp_last_beat;
-      last_step_mat = temp_last_step;
-    }
-
-    if (effect_mode)
-    {
-      run_effect(effect);
-    }
-    else
-    {
-      // DEFAULT BEHAVIOR
-      active_step = next_step(current_measure);
-    }
-
-    if (LED_mode == LED_DEFAULT_MODE)
-    {
-      // ON STEP, PLAY SOUNDS AND FLASH LED
-      LED_Off(temp_last_beat, temp_last_step);
-      LED_On(current_measure->beat, current_measure->step);
-      one_time_only = 0;
-    }
-    else
-    {
-      LED_Off(last_beat_mat, last_step_mat);
-      one_time_only = 1;
-      if (check_palette_sound(active_step) == 1)
+      if (one_time_only == 0)
       {
-        Serial.println("Here");
-        LED_On(current_measure->beat, current_measure->step);
-        last_beat_mat = current_measure->beat;
-        last_step_mat = current_measure->step;
+        last_beat_mat = temp_last_beat;
+        last_step_mat = temp_last_step;
+      }
+
+      if (effect_mode)
+      {
+        run_effect(effect);
       }
       else
       {
-        LED_On(LED_last_row, LED_last_column);
-        last_beat_mat = LED_last_row;
-        last_step_mat = LED_last_column;
+        // DEFAULT BEHAVIOR
+        active_step = next_step(current_measure);
       }
-    }
+
+      if (LED_mode == LED_DEFAULT_MODE)
+      {
+        // ON STEP, PLAY SOUNDS AND FLASH LED
+        LED_Off(temp_last_beat, temp_last_step);
+        LED_On(current_measure->beat, current_measure->step);
+        one_time_only = 0;
+      }
+      else
+      {
+        LED_Off(last_beat_mat, last_step_mat);
+        one_time_only = 1;
+        if (check_palette_sound(active_step) == 1)
+        {
+          Serial.println("Here");
+          LED_On(current_measure->beat, current_measure->step);
+          last_beat_mat = current_measure->beat;
+          last_step_mat = current_measure->step;
+        }
+        else
+        {
+          LED_On(LED_last_row, LED_last_column);
+          last_beat_mat = LED_last_row;
+          last_step_mat = LED_last_column;
+        }
+      }
 
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
-                     // print_step(active_step);
-                     //  print_palette(palette_index);
+      print_step(active_step);
+      //   print_palette(palette_index);
 #endif
 
-    stop_step(last_step);
-    play_step(active_step);
+      stop_step(last_step);
+      play_step(active_step);
 
-    if (effect_return_state != DOUBLE_REPEAT)
-    {
+      if (effect_return_state != DOUBLE_REPEAT)
+      {
 #if DYNAMIC_TEMPO == 1 // STATIC
 
-      current_track->bpm = read_tempo();
-      // Serial.print("CURRENT BMP:");
-      // Serial.println(current_track->bpm);
+        current_track->bpm = read_tempo();
+        // Serial.print("CURRENT BMP:");
+        // Serial.println(current_track->bpm);
 
 #endif
-    }
-    else if (evenodd == 1)
-    {
-      current_track->bpm = current_track->bpm * 2;
-    }
+      }
+      else if (evenodd == 1)
+      {
+        current_track->bpm = current_track->bpm * 2;
+      }
 
-    // UPDATE TIMER INTERVAL
-    step_timer.interval(step_interval_calc(current_measure));
+      // UPDATE TIMER INTERVAL
+      step_timer.interval(step_interval_calc(current_measure));
+    }
   }
   /******************************************************************************************************/
 

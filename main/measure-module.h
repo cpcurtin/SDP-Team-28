@@ -111,6 +111,7 @@ int temp_last_beat = 0;
 int volume = 127;
 int silent = 0;
 int evenodd = 0;
+int play_pause_toggle = 1;
 
 Metro step_timer = Metro(100);
 int placeholder_sound = 0;
