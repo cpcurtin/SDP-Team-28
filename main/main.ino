@@ -94,7 +94,7 @@ void loop()
     last_step = active_step;
     temp_last_step = current_measure->step;
     temp_last_beat = current_measure->beat;
-    
+
     if (one_time_only == 0)
     {
       last_beat_mat = temp_last_beat;
@@ -129,7 +129,7 @@ void loop()
         last_beat_mat = current_measure->beat;
         last_step_mat = current_measure->step;
       }
-      else 
+      else
       {
         LED_On(LED_last_row, LED_last_column);
         last_beat_mat = LED_last_row;
@@ -137,10 +137,9 @@ void loop()
       }
     }
 
-
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
-    //print_step(active_step);
-    // print_palette(palette_index);
+                     // print_step(active_step);
+                     //  print_palette(palette_index);
 #endif
 
     stop_step(last_step);
@@ -151,9 +150,9 @@ void loop()
 #if DYNAMIC_TEMPO == 1 // STATIC
 
       current_track->bpm = read_tempo();
-      //Serial.print("CURRENT BMP:");
-      //Serial.println(current_track->bpm);
-      
+      // Serial.print("CURRENT BMP:");
+      // Serial.println(current_track->bpm);
+
 #endif
     }
     else if (evenodd == 1)
@@ -216,7 +215,7 @@ void loop()
           LED_last_column = matrix_button.column;
 
           LED_Off(temp_last_beat, temp_last_step);
-          //LED_On(matrix_button.row, matrix_button.column);
+          // LED_On(matrix_button.row, matrix_button.column);
         }
       }
     }

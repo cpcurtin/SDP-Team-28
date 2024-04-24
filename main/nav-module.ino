@@ -340,6 +340,7 @@ void dpad_nav_routine(int dpad_pressed)
             Serial.print("ALREADY AT ROOT");
             if (lcd_mode == LCD_SPLASH)
             {
+                palette_assignment = PALETTE_ASSIGNMENT_DEFAULT;
                 LED_mode = LED_DEFAULT_MODE;
                 new_palette_slot.sound.bank = -1;
                 new_palette_slot.sound.instrument = -1;
@@ -672,6 +673,7 @@ int execute_leaf(void)
                 if (edit_measure->id == measure_select_nav->index)
                 {
                     current_track->measure_list.erase(current_track->measure_list.begin() + measure_select_nav->index);
+                    measure_select_nav->data_array.pop_back();
                     measure_select_nav->index = 0;
                     array_scroll(measure_select_nav, 0);
                     edit_measure = current_track->measure_list.front();
@@ -679,6 +681,7 @@ int execute_leaf(void)
                 else
                 {
                     current_track->measure_list.erase(current_track->measure_list.begin() + measure_select_nav->index);
+                    measure_select_nav->data_array.pop_back();
                     measure_select_nav->index = 0;
                     array_scroll(measure_select_nav, 0);
                 }
