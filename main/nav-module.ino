@@ -338,6 +338,18 @@ void dpad_nav_routine(int dpad_pressed)
         else
         {
             Serial.print("ALREADY AT ROOT");
+            if (lcd_mode == LCD_SPLASH)
+            {
+                LED_mode = LED_DEFAULT_MODE;
+                new_palette_slot.sound.bank = -1;
+                new_palette_slot.sound.instrument = -1;
+                new_palette_slot.sound.note = -1;
+                new_palette_slot.sound.sd_cached_sound = nullptr;
+                new_palette_slot.sound.filename = "";
+                new_palette_slot.sound.empty = true;
+                new_palette_slot.effect = -1;
+                new_palette_slot.is_empty = true;
+            }
         }
         lcd_display(lcd, nav_state->lcd_state);
         if (nav_state->id == NAVIGATION_TRACK_SAVE)
@@ -443,6 +455,7 @@ int execute_leaf(void)
             palette_assignment = PALETTE_ASSIGNMENT_SOUND;
             LED_mode = LED_PALETTE_SELECT;
             lcd_splash(lcd, nav_state, selected_sound);
+            run_nav_name = false;
 
             char str[LCD_COLUMNS];
             sprintf(str, "%p", (void *)temp_sample); // Using sprintf to format the pointer address
@@ -463,6 +476,7 @@ int execute_leaf(void)
 
             // NO SIZE ON PSRAM TO CACHE SOUND
             lcd_splash(lcd, nullptr, error_psram_full);
+            run_nav_name = false;
         }
         nav_state = main_nav;
         break;
@@ -482,6 +496,7 @@ int execute_leaf(void)
         palette_assignment = PALETTE_ASSIGNMENT_EFFECT;
         LED_mode = LED_PALETTE_SELECT;
         lcd_splash(lcd, nav_state, selected_effect);
+        run_nav_name = false;
 
         nav_state = main_nav;
         break;
@@ -504,6 +519,7 @@ int execute_leaf(void)
         LED_mode = LED_PALETTE_SELECT;
 
         lcd_splash(lcd, nav_state, selected_sound);
+        run_nav_name = false;
         nav_state = main_nav;
         break;
     }
@@ -552,6 +568,7 @@ int execute_leaf(void)
         LED_mode = LED_PALETTE_SELECT;
 
         lcd_splash(lcd, nav_state, selected_sound);
+        run_nav_name = false;
         // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         nav_state = main_nav;
         break;
