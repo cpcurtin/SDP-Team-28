@@ -165,17 +165,17 @@ void loop()
       Serial.print("LED_MODE=");
       Serial.println(LED_mode);
 
-      if (!testing_palette_combined[palette_index].is_empty && testing_palette_combined[palette_index].effect == -1)
+      if (measure_edit)
       {
-        if (measure_edit)
-        {
-          LED_mode = LED_DEFAULT_MODE; // UNSELECT PALETTE BUTTON
-          measure_edit = false;
-          LED_routine(current_measure->beat, current_measure->step);
-          lcd_mode = LCD_DEFAULT;                 // end splash screen
-          lcd_display(lcd, nav_state->lcd_state); // refresh LCD from splash screen
-        }
-        else
+        LED_mode = LED_DEFAULT_MODE; // UNSELECT PALETTE BUTTON
+        measure_edit = false;
+        LED_routine(current_measure->beat, current_measure->step);
+        lcd_mode = LCD_DEFAULT;                 // end splash screen
+        lcd_display(lcd, nav_state->lcd_state); // refresh LCD from splash screen
+      }
+      else
+      {
+        if (!testing_palette_combined[palette_index].is_empty && testing_palette_combined[palette_index].effect == -1)
         {
           measure_edit = true;
           // LED_mode = LED_PALETTE_SELECT; // SELECT PALETTE BUTTON
