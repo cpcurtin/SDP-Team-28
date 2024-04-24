@@ -355,14 +355,28 @@ void dpad_nav_routine(int dpad_pressed)
     {
         array_scroll(nav_state, NAV_DOWN);
         lcd_display(lcd, nav_state->lcd_state);
-        lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
+        if (nav_state->id == NAVIGATION_TRACK_SAVE)
+        {
+            lcd_display_banner(lcd, BANNER_TRACK_SAVE, LCD_PERSIST);
+        }
+        else
+        {
+            lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
+        }
         break;
     }
     case BUTTON_DPAD_UP:
     {
         array_scroll(nav_state, NAV_UP);
         lcd_display(lcd, nav_state->lcd_state);
-        lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
+        if (nav_state->id == NAVIGATION_TRACK_SAVE)
+        {
+            lcd_display_banner(lcd, BANNER_TRACK_SAVE, LCD_PERSIST);
+        }
+        else
+        {
+            lcd_display_banner(lcd, BANNER_DEFAULT, LCD_PERSIST);
+        }
         break;
     }
 
