@@ -403,10 +403,13 @@ void dpad_nav_routine(int dpad_pressed)
                 if (play_pause_toggle)
                 {
                     main_nav->data_array[main_nav->data_array.size() - 1] = "(PAUSE)";
+                    LED_Off(current_measure->beat, current_measure->step);
                 }
                 else
                 {
                     main_nav->data_array[main_nav->data_array.size() - 1] = "(PLAY)";
+                    LED_On(current_measure->beat, current_measure->step);
+                    step_timer.reset();
                 }
                 array_scroll(nav_state, 0);
                 lcd_display(lcd, nav_state->lcd_state);
