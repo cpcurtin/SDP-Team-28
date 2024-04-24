@@ -362,3 +362,19 @@ void populate_default_measure(void)
     temp_last_step = 5;
     temp_last_beat = 3;
 }
+
+int check_palette_sound(Step *step_LED)
+{
+  for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
+  {
+    if (testing_palette_combined[palette_index].sound == step_LED->sound_list[sound] && (step_LED->sound_list[sound].empty == false) && testing_palette_combined[palette_index].sound.empty == 0);
+    {
+      //Serial.println(palette_index);
+      //print_step(step_LED);
+      //print_palette(palette_index);
+
+      return 1;
+    }
+  }
+  return 0;
+}

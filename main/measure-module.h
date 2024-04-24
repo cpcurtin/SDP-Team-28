@@ -128,6 +128,7 @@ int stop_step(Step *step_end);
 int play_step(Step *step_play);
 float step_interval_calc(Measure *measure);
 int add_remove_measure_sound(Measure *measure);
+int check_palette_sound(Step *step_LED);
 
 void print_step(Step *step);
 void print_palette(int palette_index);

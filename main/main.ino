@@ -94,6 +94,12 @@ void loop()
     last_step = active_step;
     temp_last_step = current_measure->step;
     temp_last_beat = current_measure->beat;
+    
+    if (one_time_only == 0)
+    {
+      last_beat_mat = temp_last_beat;
+      last_step_mat = temp_last_step;
+    }
 
     if (effect_mode)
     {
@@ -110,10 +116,24 @@ void loop()
       // ON STEP, PLAY SOUNDS AND FLASH LED
       LED_Off(temp_last_beat, temp_last_step);
       LED_On(current_measure->beat, current_measure->step);
+      one_time_only = 0;
+    }
+    else
+    {
+      LED_Off(last_beat_mat, last_step_mat);
+      one_time_only = 1;
+      if (check_palette_sound(active_step) == 1)
+      {
+        Serial.println("Here");
+        LED_On(current_measure->beat, current_measure->step);
+        last_beat_mat = current_measure->beat;
+        last_step_mat = current_measure->step;
+      }
     }
 
+
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
-    print_step(active_step);
+    //print_step(active_step);
     // print_palette(palette_index);
 #endif
 
@@ -123,9 +143,11 @@ void loop()
     if (effect_return_state != DOUBLE_REPEAT)
     {
 #if DYNAMIC_TEMPO == 1 // STATIC
+
       current_track->bpm = read_tempo();
-      Serial.print("CURRENT BMP:");
-      Serial.println(current_track->bpm);
+      //Serial.print("CURRENT BMP:");
+      //Serial.println(current_track->bpm);
+      
 #endif
     }
     else if (evenodd == 1)
@@ -253,7 +275,7 @@ void loop()
       Serial.print("\tCOLUMN:");
       Serial.println(matrix_button.column);
 
-      // print_palette(PALETTE_SIZE);
+      print_palette(PALETTE_SIZE);
 #endif
       Button_Pressed(Current_Button_State, Previous_Button_State);
     }
