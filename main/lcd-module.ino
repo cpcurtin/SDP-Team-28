@@ -73,7 +73,7 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std
     }
     if (state_splash_screen.size() >= 3)
     {
-      state_splash_screen[2] = ("Octave:" + std::string(sounds_midi_octaves_nav->data_array[sounds_midi_octaves_nav->index]) + " Note:" + std::string(sounds_midi_notes_nav->data_array[sounds_midi_notes_nav->index])).c_str();
+      state_splash_screen[2] = "Octave:" + std::to_string(sounds_midi_octaves_nav->index - 2) + " Note:" + std::string(sounds_midi_notes_nav->data_array[sounds_midi_notes_nav->index]);
     }
     break;
   }
@@ -197,14 +197,15 @@ void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
         {
           // MELODIC
           state_splash_screen[1] = "MIDI MELODIC SOUND:";
-          state_splash_screen[2] = midi_melodic_sounds[slot.sound.instrument - 1];
-          state_splash_screen[3] = "Octave:" + std::to_string((slot.sound.note % NUM_OCTAVES) - 2) + " Note:" + sounds_midi_notes_nav->data_array[slot.sound.note / NUM_NOTES];
+          state_splash_screen[2] = midi_melodic_sounds[slot.sound.instrument - midi_melodic_values[0]];
+          state_splash_screen[3] = "Octave:" + std::to_string((slot.sound.note / NUM_OCTAVES) - 2) + " Note:" + sounds_midi_notes_nav->data_array[slot.sound.note % NUM_NOTES];
         }
         else
         {
           // PERCUSSION
           state_splash_screen[1] = "MIDI PERCUSSION SOUND:";
-          state_splash_screen[2] = midi_percussion_sounds[slot.sound.instrument - 27];
+          state_splash_screen[2] = midi_percussion_sounds[slot.sound.instrument - midi_percussion_values[0]];
+          state_splash_screen[3] = std::string(LCD_COLUMNS, ' ');
         }
       }
       else
@@ -214,6 +215,7 @@ void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
         {
           state_splash_screen[1] = "CUSTOM SOUND:";
           state_splash_screen[2] = slot.sound.filename;
+          state_splash_screen[3] = std::string(LCD_COLUMNS, ' ');
         }
       }
     }
@@ -222,7 +224,9 @@ void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
       lcd_mode = LCD_SPLASH_TIMED;
       timed_splash_start = millis();
       state_splash_screen[0] = "PALETTE EFFECT";
-      state_splash_screen.push_back(effects_nav->data_array[slot.effect]);
+      state_splash_screen[1] = effects_nav->data_array[slot.effect];
+      state_splash_screen[2] = std::string(LCD_COLUMNS, ' ');
+      state_splash_screen[3] = std::string(LCD_COLUMNS, ' ');
     }
   }
   else
