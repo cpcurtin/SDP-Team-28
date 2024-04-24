@@ -178,7 +178,8 @@ void loop()
         else
         {
           measure_edit = true;
-          LED_mode = LED_PALETTE_SELECT; // SELECT PALETTE BUTTON
+          // LED_mode = LED_PALETTE_SELECT; // SELECT PALETTE BUTTON
+          LED_mode = LED_DEFAULT_MODE; // UNSELECT PALETTE BUTTON
           LED_routine(matrix_button.row, matrix_button.column);
         }
       }

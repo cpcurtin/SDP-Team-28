@@ -17,10 +17,12 @@ void effect_begin(void)
     Serial.println("BEGIN EFFECT");
     effect_mode = true;
     effect = testing_palette_combined[palette_index].effect;
+
     if (!testing_palette_combined[palette_index].sound.empty)
     {
         LED_mode = LED_SOUND_SWEEP;
     }
+    LED_routine(matrix_button.row, matrix_button.column);
 }
 void effect_end(void)
 {
