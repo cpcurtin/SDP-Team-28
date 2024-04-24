@@ -246,6 +246,7 @@ void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
 
 void lcd_display_banner(LiquidCrystal_I2C *lcd, int type, int mode)
 {
+  lcd->noBlink();
   if (mode == LCD_VANISH)
   {
 
@@ -283,4 +284,9 @@ void lcd_display_banner(LiquidCrystal_I2C *lcd, int type, int mode)
   lcd->setCursor(0, LCD_ROWS - 1); // set cursor to last row, first column
   lcd->print(lcd_banner.c_str());
   lcd->home();
+  if (type == BANNER_TRACK_SAVE)
+  {
+    lcd->setCursor(11 + track_save_panel, LCD_ROWS - 1);
+    lcd->blink();
+  }
 }
