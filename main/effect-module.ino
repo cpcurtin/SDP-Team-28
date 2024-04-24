@@ -29,46 +29,49 @@ void effect_end(void)
 
     Serial.println("END EFFECT");
     effect_mode = false;
-
-    // SET STEP STATE TO STEP WHEN EFFECT FIRST PRESSED
-    if (effect_return_state == EFFECT_RETURN_SAVE)
+    switch (effect_return_state)
     {
+    case EFFECT_RETURN_SAVE:
+    {
+        // SET STEP STATE TO STEP WHEN EFFECT FIRST PRESSED
         current_measure->beat = saved_beat;
         current_measure->step = saved_step;
         active_step = &(current_measure->beat_list[saved_beat].step_list[saved_step]);
+        break;
     }
-
-    // SET STEP STATE TO BEAT=0 STEP=0
-    else if (effect_return_state == EFFECT_RETURN_RESET)
+    case EFFECT_RETURN_RESET:
     {
+        // SET STEP STATE TO BEAT=0 STEP=0
         current_measure->beat = 0;
         current_measure->step = 0;
+        break;
     }
-
-    else if (effect_return_state == ECHO)
+    case ECHO:
     {
         volume = 127;
         dac_vol = 1.0;
         amp1.gain(dac_vol);
         amp2.gain(dac_vol);
+        break;
     }
-
-    else if (effect_return_state == PAUSE_SOUNDS)
+    case PAUSE_SOUNDS:
     {
         silent = 0;
+        break;
     }
-
-    else if (effect_return_state == SCRATCH)
+    case SCRATCH:
     {
         evenodd = 0;
+        break;
     }
-    else if (effect_return_state == DOUBLE_REPEAT)
+    case DOUBLE_REPEAT:
     {
         evenodd = 0;
         effect_return_state = -1;
+        break;
     }
-
-    // ELSE, LEAVE STEP STATE AT LAST EFFECT
+        // ELSE, LEAVE STEP STATE AT LAST EFFECT
+    }
 }
 void run_effect(int effect)
 {
