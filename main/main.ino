@@ -172,6 +172,8 @@ void loop()
           LED_mode = LED_DEFAULT_MODE; // UNSELECT PALETTE BUTTON
           measure_edit = false;
           LED_routine(current_measure->beat, current_measure->step);
+          lcd_mode = LCD_DEFAULT;                 // end splash screen
+          lcd_display(lcd, nav_state->lcd_state); // refresh LCD from splash screen
         }
         else
         {

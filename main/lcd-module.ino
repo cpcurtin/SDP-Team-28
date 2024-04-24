@@ -182,8 +182,6 @@ void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step)
 void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
 {
 
-  lcd_mode = LCD_SPLASH_TIMED;
-  timed_splash_start = millis();
   state_splash_screen.clear();
 
   if (!slot.is_empty)
@@ -191,6 +189,7 @@ void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
     std::copy(empty_splash.begin(), empty_splash.end(), std::back_inserter(state_splash_screen));
     if (!slot.sound.empty)
     {
+      lcd_mode = LCD_SPLASH;
       state_splash_screen[0] = "   PALETTE SOUND   ";
       if (slot.sound.bank != MIDI_NULL)
       {
@@ -220,6 +219,8 @@ void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
     }
     else
     {
+      lcd_mode = LCD_SPLASH_TIMED;
+      timed_splash_start = millis();
       state_splash_screen[0] = "PALETTE EFFECT";
       state_splash_screen.push_back(effects_nav->data_array[slot.effect]);
     }
