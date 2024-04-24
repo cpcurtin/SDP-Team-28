@@ -93,14 +93,8 @@ void loop()
   {
 
     last_step = active_step;
-    temp_last_step = current_measure->step;
-    temp_last_beat = current_measure->beat;
-
-    if (one_time_only == 0)
-    {
-      last_beat_mat = temp_last_beat;
-      last_step_mat = temp_last_step;
-    }
+    // temp_last_step = current_measure->step;
+    // temp_last_beat = current_measure->beat;
 
     if (effect_mode)
     {
@@ -108,39 +102,32 @@ void loop()
     }
     else
     {
-      // DEFAULT BEHAVIOR
-      active_step = next_step(current_measure);
+      active_step = next_step(current_measure); // DEFAULT BEHAVIOR
     }
+
+    Serial.print("LED_MODE=");
+    Serial.println(LED_mode);
 
     if (LED_mode == LED_DEFAULT_MODE)
     {
       // ON STEP, PLAY SOUNDS AND FLASH LED
-      LED_Off(temp_last_beat, temp_last_step);
-      LED_On(current_measure->beat, current_measure->step);
-      one_time_only = 0;
+      // LED_Off(temp_last_beat, temp_last_step);
+      // LED_On(current_measure->beat, current_measure->step);
+      LED_routine(current_measure->beat, current_measure->step);
     }
-    else
+    else if (LED_mode == LED_SOUND_SWEEP)
     {
-      LED_Off(last_beat_mat, last_step_mat);
-      one_time_only = 1;
-      if (check_palette_sound(active_step) == 1)
+      if (check_palette_sound(active_step))
       {
-        Serial.println("Here");
-        LED_On(current_measure->beat, current_measure->step);
-        last_beat_mat = current_measure->beat;
-        last_step_mat = current_measure->step;
-      }
-      else
-      {
-        LED_On(LED_last_row, LED_last_column);
-        last_beat_mat = LED_last_row;
-        last_step_mat = LED_last_column;
+        // LED_Off(last_beat_mat, last_step_mat);
+        // LED_On(current_measure->beat, current_measure->step);
+        // last_beat_mat = current_measure->beat;
+        // last_step_mat = current_measure->step;
+        LED_routine(current_measure->beat, current_measure->step);
       }
     }
-
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
     print_step(active_step);
-    //   print_palette(palette_index);
 #endif
 
     stop_step(last_step);
@@ -151,9 +138,6 @@ void loop()
 #if DYNAMIC_TEMPO == 1 // STATIC
 
       current_track->bpm = read_tempo();
-      // Serial.print("CURRENT BMP:");
-      // Serial.println(current_track->bpm);
-
 #endif
     }
     else if (evenodd == 1)
@@ -166,64 +150,60 @@ void loop()
   }
   /******************************************************************************************************/
 
+  /**************************     PALETTE PRESSED     *************************/
   if (matrix_pressed(BUTTON_PALETTE, BUTTON_NOT_HELD)) // PALETTE BUTTON PRESSED
   {
     Serial.println("PALETTE PRESSED");
-    if (palette_assignment == PALETTE_ASSIGNMENT_DEFAULT)
-    {
-      lcd_splash_palette(lcd, testing_palette_combined[palette_index]);
-    }
+
     if (effect_mode)
     {
       effect_end(); // DISABLE EFFECT TOGGLE FLAG
     }
-    else
+    if (palette_assignment == PALETTE_ASSIGNMENT_DEFAULT)
     {
-      if (LED_mode == LED_PALETTE_SELECT)
-      {
-        // UNSELECT PALETTE BUTTON
-        LED_mode = LED_DEFAULT_MODE;
-        measure_edit = false;
-      }
-      else
-      {
-        // SELECT PALETTE BUTTON
-        LED_mode = LED_PALETTE_SELECT;
-      }
+      lcd_splash_palette(lcd, testing_palette_combined[palette_index]); // avoid clearing select splash
+      Serial.print("LED_MODE=");
+      Serial.println(LED_mode);
 
-      if (palette_assignment != PALETTE_ASSIGNMENT_DEFAULT)
+      if (!testing_palette_combined[palette_index].is_empty && testing_palette_combined[palette_index].effect == -1)
       {
-        // SAVE NEW SOUND FROM NAV TO PALETTE BUTTON
-        Serial.println("NAV TO PALETTE ASSIGNED");
-        testing_palette_combined[palette_index] = new_palette_slot;
-
-        // new_sound_assignment = false;
-        palette_assignment = PALETTE_ASSIGNMENT_DEFAULT;
-        lcd_mode = LCD_DEFAULT;
-        lcd_display(lcd, nav_state->lcd_state); // refresh LCD from splash screen
-      }
-      else
-      {
-
-        if (LED_mode == LED_PALETTE_SELECT && testing_palette_combined[palette_index].effect == -1)
+        if (measure_edit)
         {
-          // EVOKES add/remove sounds to measure steps
+          LED_mode = LED_DEFAULT_MODE; // UNSELECT PALETTE BUTTON
+          measure_edit = false;
+          LED_routine(current_measure->beat, current_measure->step);
+        }
+        else
+        {
           measure_edit = true;
-          Serial.println("COLUMN");
-          Serial.println("ROW");
-          Serial.println(matrix_button.column);
-          LED_last_row = matrix_button.row;
-          LED_last_column = matrix_button.column;
-
-          LED_Off(temp_last_beat, temp_last_step);
-          // LED_On(matrix_button.row, matrix_button.column);
+          LED_mode = LED_PALETTE_SELECT; // SELECT PALETTE BUTTON
+          LED_routine(matrix_button.row, matrix_button.column);
         }
       }
     }
+    else
+    {
+      // SAVE NEW SOUND FROM NAV TO PALETTE BUTTON
+      Serial.println("NAV TO PALETTE ASSIGNED");
+      testing_palette_combined[palette_index] = new_palette_slot;
+      palette_assignment = PALETTE_ASSIGNMENT_DEFAULT;
+      lcd_mode = LCD_DEFAULT;                 // end splash screen
+      lcd_display(lcd, nav_state->lcd_state); // refresh LCD from splash screen
+    }
+    // if (!testing_palette_combined[palette_index].is_empty)
+    // {
+    //   if (LED_mode == LED_PALETTE_SELECT && testing_palette_combined[palette_index].effect == -1)
+    //   {
+    //     measure_edit = true; // EVOKES add/remove sounds to measure steps
+    //                          // LED_Off(temp_last_beat, temp_last_step);
+    //                          // LED_On(matrix_button.row, matrix_button.column);
+    //   }
+    // }
   }
+
+  /**************************     MEASURE PRESSED     *************************/
   if (matrix_pressed(BUTTON_MEASURE, BUTTON_NOT_HELD)) // MEASURE BUTTON PRESSED
   {
-
     if (measure_edit)
     {
       // MEASURE BUTTON PRESSED
@@ -243,6 +223,8 @@ void loop()
       lcd_splash_step(lcd, button_step_lookup(current_measure));
     }
   }
+
+  /**************************     PALETTE HELD        *************************/
   if (matrix_pressed(BUTTON_PALETTE, BUTTON_HELD)) // PALETTE BUTTON HELD
   {
     if (effect_mode == false)
@@ -255,7 +237,7 @@ void loop()
           palette_index = i;
         }
       }
-      if ((testing_palette_combined[palette_index].effect != EFFECT_NULL) && (palette_assignment == PALETTE_ASSIGNMENT_DEFAULT)) // run effect if pressed
+      if (!testing_palette_combined[palette_index].is_empty)
       {
         effect_begin(); // ENABLE EFFECT TOGGLE FLAG
       }
@@ -280,12 +262,12 @@ void loop()
     {
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
 
-      Serial.print("BUTTON PRESSED\t\tROW:");
-      Serial.print(matrix_button.row);
-      Serial.print("\tCOLUMN:");
-      Serial.println(matrix_button.column);
+      // Serial.print("BUTTON PRESSED\t\tROW:");
+      // Serial.print(matrix_button.row);
+      // Serial.print("\tCOLUMN:");
+      // Serial.println(matrix_button.column);
 
-      print_palette(PALETTE_SIZE);
+      // print_palette(PALETTE_SIZE);
 #endif
       Button_Pressed(Current_Button_State, Previous_Button_State);
     }

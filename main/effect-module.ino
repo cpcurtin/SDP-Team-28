@@ -17,6 +17,10 @@ void effect_begin(void)
     Serial.println("BEGIN EFFECT");
     effect_mode = true;
     effect = testing_palette_combined[palette_index].effect;
+    if (!testing_palette_combined[palette_index].sound.empty)
+    {
+        LED_mode = LED_SOUND_SWEEP;
+    }
 }
 void effect_end(void)
 {
@@ -169,6 +173,13 @@ void run_effect(int effect)
             active_step = next_step(current_measure);
         }
         evenodd++;
+        break;
+    }
+    default:
+    {
+        Serial.println("DEFAULT EFFECT");
+        active_step = next_step(current_measure);
+        effect_return_state = EFFECT_RETURN_CURRENT;
         break;
     }
     }

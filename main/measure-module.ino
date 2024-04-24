@@ -365,19 +365,19 @@ void populate_default_measure(void)
 
 int check_palette_sound(Step *step_LED)
 {
-  if (step_LED->active_sounds > 0)
-  {
-    for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
+    if (step_LED->active_sounds > 0)
     {
-      if (testing_palette_combined[palette_index].sound == step_LED->sound_list[sound]&&testing_palette_combined[palette_index].effect==-1)
-      {
-        //Serial.println(palette_index);
-        //print_step(step_LED);
-        //print_palette(palette_index);
+        for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
+        {
+            if (testing_palette_combined[palette_index].sound == step_LED->sound_list[sound] && testing_palette_combined[palette_index].effect == -1)
+            {
+                Serial.println(palette_index);
+                // print_step(step_LED);
+                // print_palette(palette_index);
 
-        return 1;
-      }
+                return 1;
+            }
+        }
     }
-  }
-  return 0;
+    return 0;
 }

@@ -9,6 +9,7 @@
 
 #define LED_DEFAULT_MODE 0
 #define LED_PALETTE_SELECT 1
+#define LED_SOUND_SWEEP 2
 
 // functions, extern variables, structs go here
 
@@ -32,5 +33,6 @@ void LED_On(int Row, int Column);
 void LED_Off(int Row, int Column);
 void selectColumn_LED(int Column);
 void selectRow_LED(int Row);
-void LED_routine(int mode);
+void LED_routine(int row, int column);
+
 #endif // EXAMPLE_MODULE_H

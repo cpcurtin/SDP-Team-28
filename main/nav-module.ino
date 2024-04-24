@@ -403,12 +403,14 @@ void dpad_nav_routine(int dpad_pressed)
                 if (play_pause_toggle)
                 {
                     main_nav->data_array[main_nav->data_array.size() - 1] = "(PAUSE)";
-                    LED_Off(current_measure->beat, current_measure->step);
+                    // LED_Off(current_measure->beat, current_measure->step);
+                    LED_routine(current_measure->beat, current_measure->step);
                 }
                 else
                 {
                     main_nav->data_array[main_nav->data_array.size() - 1] = "(PLAY)";
-                    LED_On(current_measure->beat, current_measure->step);
+                    // LED_On(current_measure->beat, current_measure->step);
+                    LED_routine(current_measure->beat, current_measure->step);
                     step_timer.reset();
                 }
                 array_scroll(nav_state, 0);
@@ -474,7 +476,7 @@ int execute_leaf(void)
 
             // new_sound_assignment = true;
             palette_assignment = PALETTE_ASSIGNMENT_SOUND;
-            LED_mode = LED_PALETTE_SELECT;
+            // LED_mode = LED_PALETTE_SELECT;
             lcd_splash(lcd, nav_state, selected_sound);
             run_nav_name = false;
 
@@ -515,7 +517,7 @@ int execute_leaf(void)
         new_palette_slot.is_empty = false;
 
         palette_assignment = PALETTE_ASSIGNMENT_EFFECT;
-        LED_mode = LED_PALETTE_SELECT;
+        // LED_mode = LED_PALETTE_SELECT;
         lcd_splash(lcd, nav_state, selected_effect);
         run_nav_name = false;
 
@@ -537,7 +539,7 @@ int execute_leaf(void)
 
         // new_sound_assignment = true;
         palette_assignment = PALETTE_ASSIGNMENT_SOUND;
-        LED_mode = LED_PALETTE_SELECT;
+        // LED_mode = LED_PALETTE_SELECT;
 
         lcd_splash(lcd, nav_state, selected_sound);
         run_nav_name = false;
@@ -586,7 +588,7 @@ int execute_leaf(void)
         new_palette_slot.is_empty = false;
         // new_sound_assignment = true;
         palette_assignment = PALETTE_ASSIGNMENT_SOUND;
-        LED_mode = LED_PALETTE_SELECT;
+        // LED_mode = LED_PALETTE_SELECT;
 
         lcd_splash(lcd, nav_state, selected_sound);
         run_nav_name = false;

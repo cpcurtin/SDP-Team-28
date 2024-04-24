@@ -285,7 +285,6 @@ int stopSD = 1;
 
 int last_step_mat = 0;
 int last_beat_mat = 0;
-int one_time_only = 0;
 
 unsigned long banner_refresh_start = 0;
 

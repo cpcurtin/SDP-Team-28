@@ -58,6 +58,31 @@ void selectRow_LED(int Row)
     digitalWrite(SELECT_ROW_PIN_3, bitRead(Row, 2));
 }
 
-void LED_routine(int mode)
+void LED_routine(int row, int column)
 {
+    LED_Off(LED_last_row, LED_last_column);
+    LED_On(row, column);
+    LED_last_row = row;
+    LED_last_column = column;
+    // switch (LED_mode)
+    // {
+    // case LED_DEFAULT_MODE:
+    // {
+    //     LED_Off(LED_last_row, LED_last_column);
+    //     LED_On(row, column);
+    //     break;
+    // }
+    // case LED_PALETTE_SELECT:
+    // {
+    //     LED_Off(LED_last_row, LED_last_column);
+    //     LED_On(row, column);
+    //     break;
+    // }
+    // case LED_SOUND_SWEEP:
+    // {
+    //     LED_Off(LED_last_row, LED_last_column);
+    //     LED_On(row, column);
+    //     break;
+    // }
+    // }
 }
