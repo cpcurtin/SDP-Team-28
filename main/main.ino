@@ -127,7 +127,7 @@ void loop()
       }
     }
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
-    print_step(active_step);
+    //print_step(active_step);
 #endif
 
     stop_step(last_step);

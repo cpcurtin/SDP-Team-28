@@ -8,7 +8,7 @@
 
 std::vector<std::string> fetch_effects(void)
 {
-    std::vector<std::string> nav_effects = {"REPLAY SAVE", "REPLAY CURRENT", "REPLAY RESET", "REVERSE SAVE", "REVERSE CURRENT", "REVERSE RESET", "ECHO", "PAUSE SOUNDS", "SCRATCH", "DOUBLE REPEAT"};
+    std::vector<std::string> nav_effects = {"REPEAT RETURN", "REPEAT CONTINUE", "REVERSE", "ECHO", "MUTE", "SCRATCH", "DOUBLE STEP"};
     return nav_effects;
 }
 
@@ -49,7 +49,7 @@ void effect_end(void)
     case ECHO:
     {
         volume = 127;
-        dac_vol = 1.0;
+        dac_vol = 0.6;
         amp1.gain(dac_vol);
         amp2.gain(dac_vol);
         break;
@@ -136,13 +136,14 @@ void run_effect(int effect)
         {
             volume = 0;
         }
-        if (dac_vol != 0)
+        if (dac_vol > 0.1)
         {
             dac_vol = dac_vol - 0.1;
         }
 
         amp1.gain(dac_vol);
         amp2.gain(dac_vol);
+        Serial.println(dac_vol);
         break;
     }
 
