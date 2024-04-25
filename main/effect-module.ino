@@ -51,7 +51,7 @@ void effect_end(void)
         volume = 127;
         dac_vol = 0.6;
         amp1.gain(dac_vol);
-        amp2.gain(dac_vol);
+        // amp2.gain(dac_vol);
         break;
     }
     case PAUSE_SOUNDS:
@@ -142,7 +142,7 @@ void run_effect(int effect)
         }
 
         amp1.gain(dac_vol);
-        amp2.gain(dac_vol);
+        // amp2.gain(dac_vol);
         Serial.println(dac_vol);
         break;
     }

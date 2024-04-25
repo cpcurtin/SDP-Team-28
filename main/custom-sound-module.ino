@@ -17,7 +17,7 @@ int dac_init(void)
   rraw_a3.enableInterpolation(true);
   rraw_a4.enableInterpolation(true);
   amp1.gain(dac_vol);
-  amp2.gain(dac_vol);
+  // amp2.gain(dac_vol);
 
   Serial.println("onboard dac initialized");
   return 0;

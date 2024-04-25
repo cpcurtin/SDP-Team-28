@@ -217,6 +217,7 @@ void loop()
     {
       delete_step = false;
       wipe_step(button_step_lookup(current_measure));
+      lcd_display(lcd, nav_state->lcd_state); // refresh LCD from splash screen
     }
   }
 

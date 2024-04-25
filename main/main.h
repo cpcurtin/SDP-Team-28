@@ -1,11 +1,11 @@
 #ifndef MAIN_H
 #define MAIN_H
-#define BATTERY_OPERATED 0 // 1 if only on battery operation, 0 if not
+#define BATTERY_OPERATED 1 // 1 if only on battery operation, 0 if not
 #define USING_MAIN_PCB 1   // 1 for integrated DAC, 0 for daughter board DAC
 #define USING_PSRAM 1      // 1 for teesny 4.1 with solder psram, 0 otherwise
 #define USING_NEW_DS 1     // 1 for new ds, 0 for old
 #define USING_CDR_PCB 0    // 1 for CDR board configuration, 0 for updated dpad logic
-#define DYNAMIC_TEMPO 0
+#define DYNAMIC_TEMPO 1
 #define DEBUG_PRINT 1
 #define DEBUG_INPUT 0
 /*

@@ -652,9 +652,9 @@ int execute_leaf(void)
             tracks_load_nav->data_array = std::move(sd_fetch_tracks());
             tracks_load_nav->index = 0;
             array_scroll(tracks_load_nav, 0);
+            lcd_splash(lcd, nav_state, track_saved_splash);
             nav_state = tracks_nav;
-            lcd_mode = LCD_DEFAULT;
-            lcd_display(lcd, nav_state->lcd_state);
+            run_nav_name = false;
         }
         break;
     }

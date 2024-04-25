@@ -55,6 +55,7 @@ std::vector<std::string> selected_effect = {"SELECTED EFFECT:", "", "", ""};
 std::vector<std::string> error_psram_full = {"PALETTE CACHE FULL", "YOU MUST REMOVE A", "CUSTOM SOUND FROM", "PALETTE AND MEASURE"};
 std::vector<std::string> empty_step_splash = {"", "   STEP IS EMPTY   ", "", ""};
 std::vector<std::string> empty_palette_splash = {"", " PALETTE SLOT EMPTY ", "", ""};
+std::vector<std::string> track_saved_splash = {"    TRACK SAVED:    ", "", "", ""};
 
 void lcd_display(LiquidCrystal_I2C *lcd, std::vector<std::string> print_arr);
 void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std::string> print_arr);

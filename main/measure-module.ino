@@ -389,5 +389,6 @@ int wipe_step(Step *step)
     {
         step->sound_list[sound] = empty_sound;
     }
+    step->active_sounds = 0;
     return 0;
 }
