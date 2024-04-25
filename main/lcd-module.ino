@@ -134,12 +134,12 @@ void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step)
           if (step->sound_list[sound].note != MIDI_NULL)
           {
             // MELODIC
-            state_splash_screen.push_back(midi_melodic_sounds[step->sound_list[sound].instrument]);
+            state_splash_screen.push_back(midi_melodic_sounds[step->sound_list[sound].instrument - midi_melodic_values[0]]);
           }
           else
           {
             // PERCUSSION
-            state_splash_screen.push_back(midi_percussion_sounds[step->sound_list[sound].instrument]);
+            state_splash_screen.push_back(midi_percussion_sounds[step->sound_list[sound].instrument - midi_percussion_values[0]]);
           }
         }
         else
