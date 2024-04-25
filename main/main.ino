@@ -127,7 +127,7 @@ void loop()
       }
     }
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
-    //print_step(active_step);
+                     // print_step(active_step);
 #endif
 
     stop_step(last_step);
@@ -207,23 +207,25 @@ void loop()
   /**************************     MEASURE PRESSED     *************************/
   if (matrix_pressed(BUTTON_MEASURE, BUTTON_NOT_HELD)) // MEASURE BUTTON PRESSED
   {
-    if (measure_edit)
+    if (!delete_step)
     {
-      // MEASURE BUTTON PRESSED
-      Serial.println("PALETTE TO MEASURE ADD/REMOVE");
-
-      // LED_mode = LED_DEFAULT_MODE;
-      // LED_Off(LED_last_row, LED_last_column);
-
-      if (add_remove_measure_sound(edit_measure))
+      if (measure_edit)
       {
-        // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
+        // MEASURE BUTTON PRESSED
+        Serial.println("PALETTE TO MEASURE ADD/REMOVE");
+        if (add_remove_measure_sound(edit_measure))
+        {
+          // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
+        }
       }
-      // measure_edit = false; // chain sound assignment in future starting here
+      else
+      {
+        lcd_splash_step(lcd, button_step_lookup(current_measure));
+      }
     }
     else
     {
-      lcd_splash_step(lcd, button_step_lookup(current_measure));
+      wipe_step(button_step_lookup(current_measure));
     }
   }
 

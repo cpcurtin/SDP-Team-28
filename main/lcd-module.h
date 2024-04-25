@@ -49,6 +49,7 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg);
 std::string lcd_banner;
 std::vector<std::string> state_splash_screen(4, "");
 std::vector<std::string> empty_splash(4, "");
+std::vector<std::string> delete_step_splash = {"SELECT MEASURE STEP", "TO DELETE SOUNDS", "FROM", ""};
 std::vector<std::string> selected_sound = {"SELECTED SOUND:", "", "", "ASSIGN TO PALLETE"};
 std::vector<std::string> selected_effect = {"SELECTED EFFECT:", "", "", ""};
 std::vector<std::string> error_psram_full = {"PALETTE CACHE FULL", "YOU MUST REMOVE A", "CUSTOM SOUND FROM", "PALETTE AND MEASURE"};

@@ -381,3 +381,11 @@ int check_palette_sound(Step *step_LED)
     }
     return 0;
 }
+int wipe_step(Step *step)
+{
+    for (int sound = 0; sound < MAX_STEP_SOUNDS; sound++)
+    {
+        step->sound_list[sound] = empty_sound;
+    }
+    return 0;
+}

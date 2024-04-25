@@ -118,6 +118,7 @@ int track_save_panel = 0;
 int measure_swap_panel = 0;
 int measure_swap_id;
 
+bool delete_step = false;
 bool run_nav_name = true;
 
 struct nav_config *nav_cfg = new struct nav_config;

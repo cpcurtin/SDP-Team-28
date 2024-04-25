@@ -57,12 +57,6 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std
   state_splash_screen.clear();
   std::copy(print_arr.begin(), print_arr.end(), std::back_inserter(state_splash_screen));
 
-  // if (current_nav == nullptr)
-  // {
-  //   Serial.println("size too large");
-  //   // Maybe find out what sounds are the largest and display them
-  // }
-
   switch (current_nav->id)
   {
   case NAVIGATION_MIDI_NOTES:
@@ -118,7 +112,6 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std
 }
 void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step)
 {
-
   lcd_mode = LCD_SPLASH_TIMED;
   timed_splash_start = millis();
   state_splash_screen.clear();

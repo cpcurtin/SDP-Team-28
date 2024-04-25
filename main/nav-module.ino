@@ -828,7 +828,6 @@ int delete_options(void)
     {
     case LEAF_DELETE_LAST:
     {
-
         placeholder->sound_list[placeholder_sound] = empty_sound;
         placeholder->active_sounds--;
         nav_state = main_nav;
@@ -837,8 +836,10 @@ int delete_options(void)
     }
     case LEAF_DELETE_STEP:
     {
+        lcd_splash(lcd, nav_state, delete_step_splash);
         nav_state = main_nav;
-        lcd_display(lcd, nav_state->lcd_state);
+        delete_step = true;
+
         break;
     }
     case LEAF_DELETE_MEASURE:

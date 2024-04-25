@@ -124,6 +124,7 @@ Step *button_to_step(int actuated_button[]);
 Step *next_step(Measure *measure);
 Step *previous_step(Measure *measure);
 Step *button_step_lookup(Measure *measure);
+int wipe_step(Step *step);
 
 int stop_step(Step *step_end);
 int play_step(Step *step_play);
