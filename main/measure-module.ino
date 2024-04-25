@@ -261,10 +261,12 @@ void print_step(Step *step)
 {
 
     Serial.println("\n\n");
-    Serial.print("Beat: ");
-    Serial.print(current_measure->beat);
-    Serial.print("\tStep: ");
-    Serial.println(current_measure->step);
+    Serial.print("M: ");
+    Serial.print(current_measure->id + 1);
+    Serial.print("\tB: ");
+    Serial.print(current_measure->beat + 1);
+    Serial.print("\tS: ");
+    Serial.println(current_measure->step + 1);
 
     for (int i = 0; i < MAX_STEP_SOUNDS; i++)
     {

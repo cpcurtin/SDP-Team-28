@@ -148,7 +148,7 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(effects_nav, 0);
 
     // MEASURES
-    std::vector<std::string> measure_preset_options = {"Edit Measure", "Add Measure", "Delete Measure", "Swap Measure", "Set # beats", "Set # global steps", "Set # local steps"};
+    std::vector<std::string> measure_preset_options = {"Add Measure", "Delete Measure", "Swap Measure", "Set # beats", "Set # global steps", "Set # local steps"};
     measure_nav->id = NAVIGATION_MEASURE;
     measure_nav->name = "Measures";
     measure_nav->data_array = std::move(measure_preset_options);
@@ -602,6 +602,8 @@ int execute_leaf(void)
         if (measure_nav->index == LEAF_MEASURES_GLOBAL_BEATS)
         {
             current_track->measure_list[measure_select_nav->index]->active_beats = measures_set_beats_nav->index + 1;
+            nav_state = measure_nav;
+            lcd_display(lcd, nav_state->lcd_state);
         }
         else if (measure_nav->index == LEAF_MEASURES_LOCAL_STEPS)
         {
@@ -623,9 +625,11 @@ int execute_leaf(void)
         }
         else if (measure_nav->index == LEAF_MEASURES_LOCAL_STEPS)
         {
-            nav_state = measures_set_steps_nav;
             current_track->measure_list[measure_select_nav->index]->beat_list[measures_set_beats_nav->index].active_steps = measures_set_steps_nav->index + 1;
         }
+
+        nav_state = measure_nav;
+        lcd_display(lcd, nav_state->lcd_state);
         break;
     }
     case NAVIGATION_TRACK_SAVE:
@@ -693,16 +697,6 @@ int measure_options(void)
 {
     switch (nav_state->index)
     {
-
-    case LEAF_MEASURES_EDIT:
-    {
-        Serial.println("LEAF_MEASURES_EDIT");
-        // select which to edit
-        nav_state = measure_select_nav;
-        lcd_display(lcd, nav_state->lcd_state);
-        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
-        break;
-    }
     case LEAF_MEASURES_ADD:
     {
         Serial.println("LEAF_MEASURES_ADD");
@@ -815,6 +809,7 @@ int track_options(void)
             {
                 read_track(tracks_load_nav->data_array[0], current_track);
             }
+            lcd_display(lcd, nav_state->lcd_state);
         }
         break;
     }

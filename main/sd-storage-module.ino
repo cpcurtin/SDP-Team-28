@@ -309,7 +309,6 @@ void read_track(std::string filename, Track *config)
 
   file.close();
   current_track = new_track;
-  // current_measure = &(current_track->measure_list[current_track->current_measure_id]);
   current_measure = current_track->measure_list[current_track->current_measure_id];
 }
 

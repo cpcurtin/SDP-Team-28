@@ -105,29 +105,19 @@ void loop()
       active_step = next_step(current_measure); // DEFAULT BEHAVIOR
     }
 
-    Serial.print("LED_MODE=");
-    Serial.println(LED_mode);
-
     if (LED_mode == LED_DEFAULT_MODE)
     {
-      // ON STEP, PLAY SOUNDS AND FLASH LED
-      // LED_Off(temp_last_beat, temp_last_step);
-      // LED_On(current_measure->beat, current_measure->step);
       LED_routine(current_measure->beat, current_measure->step);
     }
     else if (LED_mode == LED_SOUND_SWEEP)
     {
       if (check_palette_sound(active_step))
       {
-        // LED_Off(last_beat_mat, last_step_mat);
-        // LED_On(current_measure->beat, current_measure->step);
-        // last_beat_mat = current_measure->beat;
-        // last_step_mat = current_measure->step;
         LED_routine(current_measure->beat, current_measure->step);
       }
     }
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
-                     // print_step(active_step);
+    print_step(active_step);
 #endif
 
     stop_step(last_step);
@@ -225,6 +215,7 @@ void loop()
     }
     else
     {
+      delete_step = false;
       wipe_step(button_step_lookup(current_measure));
     }
   }
