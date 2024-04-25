@@ -38,6 +38,9 @@
 #define LEAF_MEASURES_ADD 1
 #define LEAF_MEASURES_REMOVE 2
 #define LEAF_MEASURES_SWAP 3
+#define LEAF_MEASURES_GLOBAL_BEATS 4
+#define LEAF_MEASURES_GLOBAL_STEPS 5
+#define LEAF_MEASURES_LOCAL_STEPS 6
 
 /* TRACK LEAF*/
 #define LEAF_TRACKS_SAVE 0
@@ -99,18 +102,17 @@ Nav *sounds_midi_nav = new Nav;
 Nav *measure_nav = new Nav;
 Nav *delete_nav = new Nav;
 
+Nav *measure_select_nav = new Nav;
+Nav *measures_set_beats_nav = new Nav;
+Nav *measures_set_steps_nav = new Nav;
+
 Nav *tracks_save_nav = new Nav;
 Nav *tracks_load_nav = new Nav;
-Nav *tracks_set_measures_nav = new Nav;
-Nav *tracks_set_beats_nav = new Nav;
-Nav *tracks_set_steps_nav = new Nav;
 
 Nav *sounds_midi_melodic_nav = new Nav;
 Nav *sounds_midi_percussion_nav = new Nav;
 Nav *sounds_midi_octaves_nav = new Nav;
 Nav *sounds_midi_notes_nav = new Nav;
-
-Nav *measure_select_nav = new Nav;
 
 int track_save_panel = 0;
 int measure_swap_panel = 0;
@@ -131,5 +133,6 @@ std::string tracks_update(void);
 int measure_options(void);
 int track_options(void);
 int delete_options(void);
+int measure_select_options(void);
 
 #endif // EXAMPLE_MODULE_H
