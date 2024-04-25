@@ -139,7 +139,7 @@ void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step)
           else
           {
             // PERCUSSION
-            state_splash_screen.push_back(midi_percussion_sounds[step->sound_list[sound].instrument - midi_percussion_values[0]]]);
+            state_splash_screen.push_back(midi_percussion_sounds[step->sound_list[sound].instrument - midi_percussion_values[0]]);
           }
         }
         else
