@@ -858,35 +858,15 @@ int measure_select_options(void)
 {
     switch (measure_nav->index)
     {
-    case LEAF_MEASURES_EDIT:
-    {
-        Serial.println("NAVIGATION_MEASURE_SELECT");
-        edit_measure = current_track->measure_list[nav_state->index];
-        nav_state = measure_nav;
-        lcd_display(lcd, nav_state->lcd_state);
-        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
-        break;
-    }
     case LEAF_MEASURES_REMOVE:
     {
         Serial.println("LEAF_MEASURES_REMOVE");
         if (current_track->measure_list.size() > 1)
         {
-            if (edit_measure->id == measure_select_nav->index)
-            {
-                current_track->measure_list.erase(current_track->measure_list.begin() + measure_select_nav->index);
-                measure_select_nav->data_array.pop_back();
-                measure_select_nav->index = 0;
-                array_scroll(measure_select_nav, 0);
-                edit_measure = current_track->measure_list.front();
-            }
-            else
-            {
-                current_track->measure_list.erase(current_track->measure_list.begin() + measure_select_nav->index);
-                measure_select_nav->data_array.pop_back();
-                measure_select_nav->index = 0;
-                array_scroll(measure_select_nav, 0);
-            }
+            current_track->measure_list.erase(current_track->measure_list.begin() + measure_select_nav->index);
+            measure_select_nav->data_array.pop_back();
+            measure_select_nav->index = 0;
+            array_scroll(measure_select_nav, 0);
             for (int i = 0; i < current_track->measure_list.size(); i++)
             {
                 // reassign ids
@@ -897,7 +877,6 @@ int measure_select_options(void)
         {
             current_track->measure_list[0] = measure_create(0);
             current_track->current_measure = current_measure;
-            edit_measure = current_measure;
         }
         current_track->active_measures = current_track->measure_list.size();
         nav_state = measure_nav;

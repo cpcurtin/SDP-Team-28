@@ -57,7 +57,6 @@ int track_init(void)
   current_measure = new_track->measure_list[new_track->current_measure_id];
   current_track = new_track;
   current_track->current_measure = current_measure;
-  edit_measure = current_measure;
 
   return 0; // Indicate success
 }
@@ -312,7 +311,6 @@ void read_track(std::string filename, Track *config)
   current_track = new_track;
   // current_measure = &(current_track->measure_list[current_track->current_measure_id]);
   current_measure = current_track->measure_list[current_track->current_measure_id];
-  edit_measure = current_measure;
 }
 
 // Saves the configuration to a file

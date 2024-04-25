@@ -91,7 +91,6 @@ typedef struct Palette_Slot
 std::vector<Palette_Slot> testing_palette_combined(PALETTE_SIZE);
 
 Measure *current_measure;
-Measure *edit_measure;
 
 Step *active_step;
 Step *last_step;

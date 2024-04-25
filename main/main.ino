@@ -213,7 +213,7 @@ void loop()
       {
         // MEASURE BUTTON PRESSED
         Serial.println("PALETTE TO MEASURE ADD/REMOVE");
-        if (add_remove_measure_sound(edit_measure))
+        if (add_remove_measure_sound(current_measure))
         {
           // ALLOCATED STEP SOUNDS FULL, CANNOT ADD PALETTE SOUND
         }
