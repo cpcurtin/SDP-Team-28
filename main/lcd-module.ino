@@ -165,7 +165,7 @@ void lcd_splash_step(LiquidCrystal_I2C *lcd, struct Step *step)
   }
   for (int sound = 0; sound < step->active_sounds; sound++)
   {
-    state_splash_screen[sound] = format_row(state_splash_screen, sound, 2);
+    state_splash_screen[sound] = format_row(state_splash_screen, sound, FORMAT_ROW_INDEX_NONE);
   }
 
   lcd->clear();

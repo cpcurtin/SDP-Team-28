@@ -39,7 +39,7 @@ void array_scroll(Nav *nav, int direction)
     // new index changes +/- and goes from end to 0
     int new_index = (nav->index + direction + nav->data_array.size()) % nav->data_array.size();
     nav->index = new_index;
-    nav->lcd_state[0] = format_row(nav->data_array, new_index, 1).c_str();
+    nav->lcd_state[0] = format_row(nav->data_array, new_index, FORMAT_ROW_INDEX_SELECT);
 
     // THIS IS WHERE IT REPEATS
     for (size_t row = 1; row < LCD_ROWS - 1; row++)
@@ -47,7 +47,7 @@ void array_scroll(Nav *nav, int direction)
         if (row < nav->data_array.size())
         {
             int temp_index = (new_index + row) % nav->data_array.size();
-            nav->lcd_state[row] = format_row(nav->data_array, temp_index, 0).c_str();
+            nav->lcd_state[row] = format_row(nav->data_array, temp_index, FORMAT_ROW_INDEX_SPACED);
         }
         else
         {
@@ -60,18 +60,23 @@ std::string format_row(std::vector<std::string> data_array, int index, int forma
 {
     std::string rt_st;
 
-    // spacing, enumerated
-    if (format == 0)
+    switch (format)
+    {
+    case FORMAT_ROW_INDEX_SPACED:
     {
         rt_st = " " + std::to_string(index + 1) + " " + std::string(data_array[index]);
+        break;
     }
-    else if (format == 1)
+    case FORMAT_ROW_INDEX_SELECT:
     {
         rt_st = ">" + std::to_string(index + 1) + " " + std::string(data_array[index]);
+        break;
     }
-    if (format == 2)
+    case FORMAT_ROW_INDEX_NONE:
     {
         rt_st = std::to_string(index + 1) + " " + std::string(data_array[index]);
+        break;
+    }
     }
 
     rt_st.resize(LCD_COLUMNS);
@@ -893,6 +898,7 @@ int measure_select_options(void)
         {
             swap(current_track->measure_list[measure_swap_id], current_track->measure_list[nav_state->index]);
             measure_swap_panel = 0;
+
             for (int i = 0; i < current_track->measure_list.size(); i++)
             {
                 // reassign ids

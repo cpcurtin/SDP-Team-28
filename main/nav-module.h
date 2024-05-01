@@ -61,6 +61,14 @@
 #define PALETTE_ASSIGNMENT_SOUND 1
 #define PALETTE_ASSIGNMENT_EFFECT 2
 
+/******************************************************************************/
+#define FORMAT_ROW_INDEX_SPACED 0
+#define FORMAT_ROW_INDEX_SELECT 1
+#define FORMAT_ROW_INDEX_NONE 2
+#define FORMAT_ROW_CENTER 3
+#define FORMAT_ROW_FILL 4
+/******************************************************************************/
+
 #include <vector>
 #include <string>
 
