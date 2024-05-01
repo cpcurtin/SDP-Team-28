@@ -42,8 +42,8 @@ void effect_end(void)
     case EFFECT_RETURN_RESET:
     {
         // SET STEP STATE TO BEAT=0 STEP=0
-        current_measure->beat = -1;
-        current_measure->step = -1;
+        current_measure->beat = 0;
+        current_measure->step = 0;
         break;
     }
     case ECHO:

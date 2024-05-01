@@ -59,28 +59,38 @@ void array_scroll(Nav *nav, int direction)
 std::string format_row(std::vector<std::string> data_array, int index, int format)
 {
     std::string rt_st;
+    if (!data_array[index].empty())
+    {
 
-    switch (format)
-    {
-    case FORMAT_ROW_INDEX_SPACED:
-    {
-        rt_st = " " + std::to_string(index + 1) + " " + std::string(data_array[index]);
-        break;
+        switch (format)
+        {
+        case FORMAT_ROW_INDEX_SPACED:
+        {
+            rt_st = " " + std::to_string(index + 1) + " " + std::string(data_array[index]);
+            break;
+        }
+        case FORMAT_ROW_INDEX_SELECT:
+        {
+            rt_st = ">" + std::to_string(index + 1) + " " + std::string(data_array[index]);
+            break;
+        }
+        case FORMAT_ROW_INDEX_NONE:
+        {
+            rt_st = std::to_string(index + 1) + " " + std::string(data_array[index]);
+            break;
+        }
+        case FORMAT_ROW_CENTER:
+        {
+            if (data_array[index].size() < LCD_COLUMNS)
+            {
+                rt_st.assign((LCD_COLUMNS - data_array[index].size()) / 2, ' ');
+                rt_st.append(data_array[index]);
+            }
+            break;
+        }
+        }
     }
-    case FORMAT_ROW_INDEX_SELECT:
-    {
-        rt_st = ">" + std::to_string(index + 1) + " " + std::string(data_array[index]);
-        break;
-    }
-    case FORMAT_ROW_INDEX_NONE:
-    {
-        rt_st = std::to_string(index + 1) + " " + std::string(data_array[index]);
-        break;
-    }
-    }
-
-    rt_st.resize(LCD_COLUMNS);
-    rt_st.shrink_to_fit();
+    rt_st.resize(LCD_COLUMNS, ' ');
     return rt_st;
 }
 

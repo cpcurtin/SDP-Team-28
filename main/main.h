@@ -164,7 +164,6 @@ DAT1:   FLEXIO  PIN42
 DAT2:   FLEXIO  PIN47
 DAT3:   FLEXIO  PIN46
 
-
 */
 
 /**************************

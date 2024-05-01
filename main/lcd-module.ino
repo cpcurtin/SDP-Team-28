@@ -9,11 +9,11 @@
 LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
 {
   // welcome message
-  const char *lcd_init_message[] = {
-      "     Welcome to     ",
-      "      Moduloop      ",
-      "                    ",
-      "    SDP team 28    "};
+  // const char *lcd_init_message[] = {
+  //     "     Welcome to     ",
+  //     "      Moduloop      ",
+  //     "                    ",
+  //     "    SDP team 28    "};
 
   LiquidCrystal_I2C *lcd = new LiquidCrystal_I2C(cfg->i2c, cfg->columns, cfg->rows);
 
@@ -24,8 +24,9 @@ LiquidCrystal_I2C *lcd_init(const struct lcd_pin_config *cfg)
   for (int row = 0; row < LCD_ROWS; row++)
   {
     lcd->setCursor(0, row); // set cursor to row 0
-
-    lcd->print(lcd_init_message[row]); // print to row 0
+                            // init_splash
+    // lcd->print(lcd_init_message[row]); // print to row 0
+    lcd->print(format_row(init_splash, row, FORMAT_ROW_CENTER).c_str()); // print to row 0
   }
   lcd->home();
 
