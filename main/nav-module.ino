@@ -671,9 +671,10 @@ int execute_leaf(void)
         Serial.println("load new track");
         read_track(nav_state->data_array[nav_state->index], current_track);
         Serial.println("RETURN LOAD TRACK");
+
+        lcd_splash(lcd, nav_state, track_loaded_splash);
         nav_state = tracks_nav;
-        lcd_display(lcd, nav_state->lcd_state);
-        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
+        run_nav_name = false;
         break;
     }
     case NAVIGATION_MEASURE_SELECT:

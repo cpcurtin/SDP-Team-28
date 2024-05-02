@@ -94,8 +94,8 @@ void loop()
       }
     }
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
-    print_step(active_step, true);
-    print_cached_sounds();
+                     // print_step(active_step, true);
+                     // print_cached_sounds();
 #endif
 
     stop_step(last_step);
@@ -215,11 +215,12 @@ void loop()
       }
     }
   }
-  /******************************************************************************************************/
+/******************************************************************************************************/
 
-  /*****************************************************************************
-   ************************     READ MATRIX BUTTONS     ************************
-   ****************************************************************************/
+/*****************************************************************************
+ ************************     READ MATRIX BUTTONS     ************************
+ ****************************************************************************/
+#if DYNAMIC_TEMPO == 1 // full matrix
   currentMillis_matrix = millis();
   if (currentMillis_matrix - previousMillis >= interval)
   {
@@ -238,6 +239,63 @@ void loop()
     Previous_Button_State[0] = Current_Button_State[0];
     Previous_Button_State[1] = Current_Button_State[1];
   }
+
+#else // partial system
+  if (Serial.available() > 0)
+  {
+    // Read the incoming byte
+    char incomingByte = Serial.read();
+    switch (incomingByte)
+    {
+    case 'd':
+    {
+      Serial.println("d: measure button press");
+      matrix_button.row = 0;
+      matrix_button.column = 0;
+      matrix_button.waiting = false;
+      matrix_button.valid = true;
+      break;
+    }
+    case 'f':
+    {
+      Serial.println("f: measure button held");
+      matrix_button.row = 0;
+      matrix_button.column = 0;
+      matrix_button.waiting = true;
+      matrix_button.valid = false;
+      break;
+    }
+    case 'j':
+    {
+      Serial.println("j: palette button held");
+      matrix_button.row = 0;
+      matrix_button.column = 7;
+      matrix_button.waiting = true;
+      matrix_button.valid = false;
+      break;
+    }
+    case 'k':
+    {
+      Serial.println("k: palette button press");
+      matrix_button.row = 0;
+      matrix_button.column = 7;
+      matrix_button.waiting = false;
+      matrix_button.valid = true;
+      break;
+    }
+    }
+    if (incomingByte == 'f')
+    {
+      Serial.println("f: measure button");
+    }
+    if (incomingByte = 'j')
+    {
+      Serial.println("f: palette button");
+
+      matrix_button.valid = true;
+    }
+  }
+#endif
 
   /*****************************************************************************
    **************************     READ DPAD INPUTS     *************************
