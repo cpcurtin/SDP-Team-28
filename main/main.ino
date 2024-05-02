@@ -94,8 +94,8 @@ void loop()
       }
     }
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
-                     // print_step(active_step, true);
-                     // print_cached_sounds();
+    print_step(active_step, true);
+    print_cached_sounds();
 #endif
 
     stop_step(last_step);
@@ -247,52 +247,42 @@ void loop()
     char incomingByte = Serial.read();
     switch (incomingByte)
     {
-    case 'd':
+    case 'f':
     {
-      Serial.println("d: measure button press");
+      Serial.println("f: measure button press");
       matrix_button.row = 0;
       matrix_button.column = 0;
       matrix_button.waiting = false;
       matrix_button.valid = true;
       break;
     }
-    case 'f':
+    case 'd':
     {
-      Serial.println("f: measure button held");
+      Serial.println("d: measure button held");
       matrix_button.row = 0;
       matrix_button.column = 0;
-      matrix_button.waiting = true;
-      matrix_button.valid = false;
-      break;
-    }
-    case 'j':
-    {
-      Serial.println("j: palette button held");
-      matrix_button.row = 0;
-      matrix_button.column = 7;
       matrix_button.waiting = true;
       matrix_button.valid = false;
       break;
     }
     case 'k':
     {
-      Serial.println("k: palette button press");
+      Serial.println("k: palette button held");
+      matrix_button.row = 0;
+      matrix_button.column = 7;
+      matrix_button.waiting = true;
+      matrix_button.valid = false;
+      break;
+    }
+    case 'j':
+    {
+      Serial.println("j: palette button press");
       matrix_button.row = 0;
       matrix_button.column = 7;
       matrix_button.waiting = false;
       matrix_button.valid = true;
       break;
     }
-    }
-    if (incomingByte == 'f')
-    {
-      Serial.println("f: measure button");
-    }
-    if (incomingByte = 'j')
-    {
-      Serial.println("f: palette button");
-
-      matrix_button.valid = true;
     }
   }
 #endif
