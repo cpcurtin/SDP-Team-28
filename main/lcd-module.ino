@@ -224,12 +224,23 @@ void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
     }
     else
     {
-      lcd_mode = LCD_SPLASH_TIMED;
-      timed_splash_start = millis();
-      state_splash_screen[0] = "  PALETTE EFFECT   ";
-      state_splash_screen[1] = effects_nav->data_array[slot.effect];
-      state_splash_screen[2] = std::string(LCD_COLUMNS, ' ');
-      state_splash_screen[3] = std::string(LCD_COLUMNS, ' ');
+      if (effect_mode)
+      {
+        lcd_mode = LCD_SPLASH;
+        state_splash_screen[0] = "  RUNNING EFFECT   ";
+        state_splash_screen[1] = effects_nav->data_array[slot.effect];
+        state_splash_screen[2] = std::string(LCD_COLUMNS, ' ');
+        state_splash_screen[3] = std::string(LCD_COLUMNS, ' ');
+      }
+      else
+      {
+        lcd_mode = LCD_SPLASH_TIMED;
+        timed_splash_start = millis();
+        state_splash_screen[0] = "  PALETTE EFFECT   ";
+        state_splash_screen[1] = effects_nav->data_array[slot.effect];
+        state_splash_screen[2] = std::string(LCD_COLUMNS, ' ');
+        state_splash_screen[3] = std::string(LCD_COLUMNS, ' ');
+      }
     }
   }
   else
