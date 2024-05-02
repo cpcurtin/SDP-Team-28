@@ -664,6 +664,8 @@ int execute_leaf(void)
 
         Serial.println("load new track");
         read_track(nav_state->data_array[nav_state->index], current_track);
+        read_palette(nav_state->data_array[nav_state->index], testing_palette_combined);
+
         measure_select_nav->data_array.assign(current_track->active_measures, "Measure");
         measure_select_nav->index = 0;
         array_scroll(measure_select_nav, 0);

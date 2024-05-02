@@ -9,9 +9,6 @@
 
 #define CUSTOM_SOUNDS_DIRECTORY "/sounds/"
 #define TRACKS_DIRECTORY "/tracks/"
-#define FILENAME_MAX_SIZE 64
-
-std::vector<std::string> track_list;
 
 typedef struct array_with_size
 {
@@ -40,7 +37,7 @@ bool find_sd_sound(std::string filename);
 int sd_delete_track(std::string filename);
 void read_track(std::string filename, Track *config);
 void save_track(std::string filename, Track *config);
-
+void read_palette(std::string filename, std::vector<Palette_Slot> &palette);
 Track *current_track;
 
 int sd_init(void);

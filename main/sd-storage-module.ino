@@ -287,6 +287,95 @@ void read_track(std::string filename, Track *config)
   current_measure = current_track->measure_list[current_track->current_measure_id];
 }
 
+void read_palette(std::string filename, std::vector<Palette_Slot> &palette)
+{
+  Serial.println("ENTER READ PALETTE");
+  std::string full_path = TRACKS_DIRECTORY + filename;
+  File file = SD.open(full_path.c_str());
+
+  // Allocate a temporary JsonDocument
+  JsonDocument doc;
+
+  // Deserialize the JSON document
+
+  DeserializationError error = deserializeJson(doc, file);
+  if (error)
+  {
+    Serial.print("deserializeJson() failed: ");
+    Serial.println(error.c_str());
+    return;
+  }
+  else
+  {
+    Serial.println("DESERIALIZE PASSED READ PALETTE");
+  }
+  Sound *new_sound;
+  for (int i = 0; i < PALETTE_SIZE; i++)
+  {
+    JsonObject palette_slot = doc["palette_list"][i];
+    palette[i].is_empty = palette_slot["is_empty"];
+    palette[i].effect = palette_slot["effect"];
+    JsonObject palette_sound = palette_slot["sound"];
+    palette[i].sound.bank = palette_sound["bank"];
+    palette[i].sound.instrument = palette_sound["instrument"];
+    palette[i].sound.note = palette_sound["note"];
+
+    if (palette_sound["filename"])
+    {
+      palette[i].sound.filename = std::string(palette_sound["filename"]);
+    }
+    else
+    {
+      palette[i].sound.filename = "";
+    }
+
+    palette[i].sound.sd_cached_sound = nullptr;
+    palette[i].sound.empty = palette_sound["empty"];
+
+    Serial.print("B: ");
+    Serial.print(palette[i].sound.bank);
+    Serial.print("\tI: ");
+    Serial.print(palette[i].sound.instrument);
+    Serial.print("\tN: ");
+    Serial.print(palette[i].sound.note);
+    Serial.print("\tf: ");
+    if (!palette[i].sound.filename.empty())
+    {
+      Serial.print(palette[i].sound.filename.c_str());
+    }
+    else
+    {
+      Serial.print("x");
+    }
+    Serial.print("\tE: ");
+    Serial.println(palette[i].sound.empty);
+
+    if (!palette[i].sound.filename.empty())
+    {
+      Serial.println("filename != null");
+      Sound *new_csound;
+      new_csound = cache_sd_sound(palette[i].sound.filename);
+
+      /*  CHECK IF SOUND ALREADY CACHED    */
+      if (new_csound == nullptr) // not cachable
+      {
+        Serial.println("SOUND NOT FOUND IN CACHE AND UNABLE TO BE CACHED");
+        palette[i].sound.bank = -1;
+        palette[i].sound.instrument = -1;
+        palette[i].sound.note = -1;
+        palette[i].sound.sd_cached_sound = nullptr;
+        palette[i].sound.filename = "";
+        palette[i].sound.empty = true;
+      }
+      else
+      {
+        palette[i].sound = *new_csound;
+      }
+    }
+  }
+  file.close();
+}
+
 // Saves the configuration to a file
 void save_track(std::string filename, Track *config)
 {
