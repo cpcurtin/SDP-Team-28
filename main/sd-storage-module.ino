@@ -598,30 +598,11 @@ int free_track(Track *track)
 {
   for (int m = 0; m < track->active_measures; m++)
   {
-    for (int b = 0; b < MAX_BEATS; b++)
-    {
-      for (int s = 0; s < MAX_STEPS; s++)
-      {
-
-        for (int i = 0; i < MAX_STEP_SOUNDS; i++)
-        {
-          Serial.print("deleting: i=");
-          Serial.println(i);
-          delete &(track->measure_list[m]->beat_list[b].step_list[s].sound_list[i]);
-        }
-        Serial.print("deleting: s=");
-        Serial.println(s);
-
-        delete &(track->measure_list[m]->beat_list[b].step_list[s]);
-      }
-      Serial.print("deleting: b=");
-      Serial.println(b);
-      delete &(track->measure_list[m]->beat_list[b]);
-    }
     Serial.print("deleting: m=");
     Serial.println(m);
     delete track->measure_list[m];
   }
 
+  delete track;
   return 0;
 }

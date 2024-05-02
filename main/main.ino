@@ -93,8 +93,6 @@ void loop()
   {
 
     last_step = active_step;
-    // temp_last_step = current_measure->step;
-    // temp_last_beat = current_measure->beat;
 
     if (effect_mode)
     {
@@ -117,13 +115,14 @@ void loop()
       }
     }
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
-    print_step(active_step);
+    print_step(active_step, false);
+    // print_step(active_step);
 #endif
 
     stop_step(last_step);
     play_step(active_step);
 
-    if (effect_return_state != DOUBLE_REPEAT)
+    if (effect_return_state != EFFECT_DOUBLE_REPEAT)
     {
 #if DYNAMIC_TEMPO == 1 // STATIC
 

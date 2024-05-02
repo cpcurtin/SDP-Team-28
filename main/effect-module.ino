@@ -8,7 +8,7 @@
 
 std::vector<std::string> fetch_effects(void)
 {
-    std::vector<std::string> nav_effects = {"REPEAT RETURN", "REPEAT CONTINUE", "REVERSE", "ECHO", "MUTE", "SCRATCH", "DOUBLE STEP"};
+    std::vector<std::string> nav_effects = {"REPEAT RETURN", "REPEAT CONTINUE", "REVERSE", "EFFECT_ECHO", "MUTE", "EFFECT_SCRATCH", "DOUBLE STEP"};
     return nav_effects;
 }
 
@@ -22,6 +22,17 @@ void effect_begin(void)
     {
         LED_mode = LED_SOUND_SWEEP;
     }
+    else if (effect == EFFECT_REVERSE_CURRENT) // set chained measure as repeat
+    {
+        for (int i = 0; i < current_track->active_measures; i++)
+        {
+            if (current_track->measure_list[i]->id != current_measure->id)
+            {
+                current_track->measure_list[i]->beat = current_track->measure_list[i]->active_beats - 1;
+                current_track->measure_list[i]->step = current_track->measure_list[i]->beat_list[current_track->measure_list[i]->beat].active_steps - 1;
+            }
+        }
+    }
     LED_routine(matrix_button.row, matrix_button.column);
 }
 void effect_end(void)
@@ -34,6 +45,7 @@ void effect_end(void)
     case EFFECT_RETURN_SAVE:
     {
         // SET STEP STATE TO STEP WHEN EFFECT FIRST PRESSED
+        current_measure = current_track->measure_list[saved_measure];
         current_measure->beat = saved_beat;
         current_measure->step = saved_step;
         active_step = &(current_measure->beat_list[saved_beat].step_list[saved_step]);
@@ -46,7 +58,7 @@ void effect_end(void)
         current_measure->step = 0;
         break;
     }
-    case ECHO:
+    case EFFECT_ECHO:
     {
         volume = 127;
         dac_vol = 0.6;
@@ -54,36 +66,41 @@ void effect_end(void)
         // amp2.gain(dac_vol);
         break;
     }
-    case PAUSE_SOUNDS:
+    case EFFECT_PAUSE_SOUNDS:
     {
         silent = 0;
         break;
     }
-    case SCRATCH:
+    case EFFECT_SCRATCH:
     {
         evenodd = 0;
         break;
     }
-    case DOUBLE_REPEAT:
+    case EFFECT_DOUBLE_REPEAT:
     {
         evenodd = 0;
         effect_return_state = -1;
         break;
     }
+    default:
+    {
         // ELSE, LEAVE STEP STATE AT LAST EFFECT
+        for (int i = 0; i < current_track->active_measures; i++)
+        {
+            if (current_track->measure_list[i]->id != current_measure->id)
+            {
+                current_track->measure_list[i]->beat = 0;
+                current_track->measure_list[i]->step = 0;
+            }
+        }
+        break;
+    }
     }
 }
 void run_effect(int effect)
 {
     switch (effect)
     {
-    case EFFECT_REPLAY_SAVE:
-    {
-        Serial.println("EFFECT_REPLAY_SAVE");
-        effect_return_state = EFFECT_RETURN_SAVE;
-        break;
-    }
-
     case EFFECT_REPLAY_CURRENT:
     {
         Serial.println("EFFECT_REPLAY_CURRENT");
@@ -98,16 +115,6 @@ void run_effect(int effect)
         break;
     }
 
-    case EFFECT_REVERSE_SAVE:
-    {
-        Serial.println("EFFECT_REVERSE_SAVE");
-        effect_return_state = EFFECT_RETURN_SAVE;
-        saved_step = current_measure->step;
-        saved_beat = current_measure->beat;
-        active_step = previous_step(current_measure);
-        break;
-    }
-
     case EFFECT_REVERSE_CURRENT:
     {
         Serial.println("EFFECT_REVERSE_CURRENT");
@@ -116,18 +123,10 @@ void run_effect(int effect)
         break;
     }
 
-    case EFFECT_REVERSE_RESET:
+    case EFFECT_ECHO:
     {
-        Serial.println("EFFECT_REVERSE_RESET");
-        effect_return_state = EFFECT_RETURN_RESET;
-        active_step = previous_step(current_measure);
-        break;
-    }
-
-    case ECHO:
-    {
-        Serial.println("ECHO");
-        effect_return_state = ECHO;
+        Serial.println("EFFECT_ECHO");
+        effect_return_state = EFFECT_ECHO;
         if (volume != 7 && volume != 0)
         {
             volume = volume - 10;
@@ -147,18 +146,18 @@ void run_effect(int effect)
         break;
     }
 
-    case PAUSE_SOUNDS:
+    case EFFECT_PAUSE_SOUNDS:
     {
-        Serial.println("PAUSE_SOUNDS");
-        effect_return_state = PAUSE_SOUNDS;
+        Serial.println("EFFECT_PAUSE_SOUNDS");
+        effect_return_state = EFFECT_PAUSE_SOUNDS;
         silent = 1;
         active_step = next_step(current_measure);
         break;
     }
-    case SCRATCH:
+    case EFFECT_SCRATCH:
     {
-        Serial.println("SCRATCH");
-        effect_return_state = SCRATCH;
+        Serial.println("EFFECT_SCRATCH");
+        effect_return_state = EFFECT_SCRATCH;
         if ((evenodd % 2) == 0)
         {
             active_step = previous_step(current_measure);
@@ -170,10 +169,10 @@ void run_effect(int effect)
         evenodd++;
         break;
     }
-    case DOUBLE_REPEAT:
+    case EFFECT_DOUBLE_REPEAT:
     {
-        Serial.println("DOUBLE_REPEAT");
-        effect_return_state = DOUBLE_REPEAT;
+        Serial.println("EFFECT_DOUBLE_REPEAT");
+        effect_return_state = EFFECT_DOUBLE_REPEAT;
         if ((evenodd % 2) == 1)
         {
             active_step = next_step(current_measure);

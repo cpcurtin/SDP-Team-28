@@ -601,9 +601,7 @@ int execute_leaf(void)
         new_palette_slot.sound.empty = false;
         new_palette_slot.effect = -1;
         new_palette_slot.is_empty = false;
-        // new_sound_assignment = true;
         palette_assignment = PALETTE_ASSIGNMENT_SOUND;
-        // LED_mode = LED_PALETTE_SELECT;
 
         lcd_splash(lcd, nav_state, selected_sound);
         run_nav_name = false;
@@ -678,7 +676,7 @@ int execute_leaf(void)
         Serial.println("NAVIGATION_TRACK_LOAD");
         free_cached_sounds(current_track);
         Serial.println("free previous track");
-        delete current_track;
+        free_track(current_track);
         Serial.println("load new track");
         read_track(nav_state->data_array[nav_state->index], current_track);
         Serial.println("RETURN LOAD TRACK");
@@ -820,8 +818,9 @@ int track_options(void)
             tracks_load_nav->data_array = std::move(sd_fetch_tracks());
             tracks_load_nav->index = 0;
             array_scroll(tracks_load_nav, 0);
-            if (tracks_load_nav->data_array.empty() == false)
+            if (!tracks_load_nav->data_array.empty())
             {
+                free_track(current_track);
                 read_track(tracks_load_nav->data_array[0], current_track);
             }
             lcd_display(lcd, nav_state->lcd_state);

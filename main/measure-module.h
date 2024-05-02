@@ -119,7 +119,6 @@ int placeholder_sound = 0;
 int measure_palette_init(void);
 Measure *measure_create(int id);
 
-Step *button_to_step(int actuated_button[]);
 Step *next_step(Measure *measure);
 Step *previous_step(Measure *measure);
 Step *button_step_lookup(Measure *measure);
@@ -131,9 +130,7 @@ float step_interval_calc(Measure *measure);
 int add_remove_measure_sound(Measure *measure);
 int check_palette_sound(Step *step_LED);
 
-void print_step(Step *step);
+void print_step(Step *step, bool display_sounds);
 void print_palette(int palette_index);
-
-void populate_default_measure(void);
 
 #endif // EXAMPLE_MODULE_H

@@ -138,7 +138,7 @@ Melodic Sounds
 #define Atmosphere 100
 #define Brightness 101
 #define Goblins 102
-#define Echoes 103
+#define EFFECT_ECHOes 103
 #define SciFi 104
 #define Sitar 105
 #define Banjo 106
@@ -170,8 +170,8 @@ Percussive Sounds
 **************************/
 #define HighQ 27
 #define Slap 28
-#define ScratchPush 29
-#define ScratchPull 30
+#define EFFECT_PAUSE_SOUNDSPush 29
+#define EFFECT_PAUSE_SOUNDSPull 30
 #define Sticks 31
 #define SquareClick 32
 #define MetClick 33
@@ -232,8 +232,8 @@ Percussive Sounds
 
 const char *midi_percussion_sounds[] = {"HighQ",
                                         "Slap",
-                                        "ScratchPush",
-                                        "ScratchPull", "Sticks", "SquareClick",
+                                        "EFFECT_PAUSE_SOUNDSPush",
+                                        "EFFECT_PAUSE_SOUNDSPull", "Sticks", "SquareClick",
                                         "MetClick", "MetBell", "AcousticBassDrum",
                                         "BassDrum", "SideStick", "AcousticSnare",
                                         "Clap", "ElectricSnare", "LowFloorTom",
@@ -317,7 +317,7 @@ const char *midi_melodic_sounds[] = {"AcousticGrandPiano",
                                      "Rain",
                                      "SoundTrack", "Crystal", "Atmosphere", "Brightness",
                                      "Goblins",
-                                     "Echoes",
+                                     "EFFECT_ECHOes",
                                      "SciFi",
                                      "Sitar", "Banjo", "Shamisen",
                                      "Koto",
@@ -336,7 +336,7 @@ const char *midi_melodic_sounds[] = {"AcousticGrandPiano",
                                      "Gunshot"};
 
 // functions, extern variables, structs go here
-const int midi_percussion_values[] = {HighQ, Slap, ScratchPush, ScratchPull, Sticks,
+const int midi_percussion_values[] = {HighQ, Slap, EFFECT_PAUSE_SOUNDSPush, EFFECT_PAUSE_SOUNDSPull, Sticks,
                                       SquareClick, MetClick, MetBell, AcousticBassDrum, BassDrum,
                                       SideStick, AcousticSnare, Clap, ElectricSnare, LowFloorTom,
                                       ClosedHiHat, HighFloorTom, PedalHiHat, LowTom, OpenHiHat,
@@ -452,7 +452,7 @@ const int midi_melodic_values[] = {AcousticGrandPiano,
                                    Atmosphere,
                                    Brightness,
                                    Goblins,
-                                   Echoes,
+                                   EFFECT_ECHOes,
                                    SciFi,
                                    Sitar,
                                    Banjo,
