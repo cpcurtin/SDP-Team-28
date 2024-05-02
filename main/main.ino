@@ -207,11 +207,7 @@ void loop()
       }
       if (!testing_palette_combined[palette_index].is_empty)
       {
-        if (testing_palette_combined[palette_index].effect != EFFECT_NULL)
-        {
-          effect_begin(); // ENABLE EFFECT TOGGLE FLAG
-        }
-        LED_routine(matrix_button.row, matrix_button.column); // light up pressed palette button
+        effect_begin(); // ENABLE EFFECT TOGGLE FLAG
       }
     }
   }

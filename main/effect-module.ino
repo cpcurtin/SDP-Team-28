@@ -17,10 +17,10 @@ void effect_begin(void)
     Serial.println("BEGIN EFFECT");
     effect_mode = true;
     effect = testing_palette_combined[palette_index].effect;
-    lcd_splash_palette(lcd, testing_palette_combined[palette_index]); // avoid clearing select splash
 
     if (!testing_palette_combined[palette_index].sound.empty)
     {
+        lcd_splash_palette(lcd, testing_palette_combined[palette_index]); // avoid clearing select splash
         LED_mode = LED_SOUND_SWEEP;
     }
     else if (effect == EFFECT_REVERSE_CURRENT) // set chained measure as repeat
@@ -34,6 +34,7 @@ void effect_begin(void)
             }
         }
     }
+    LED_routine(matrix_button.row, matrix_button.column); // light up pressed palette button
 }
 void effect_end(void)
 {
