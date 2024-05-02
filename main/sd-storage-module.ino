@@ -33,20 +33,11 @@ int track_init(void)
   // Initialize the Track members
   new_track->filename = "TRACK-000.json";
   new_track->id = 0;
-  new_track->bpm = 10;
+  new_track->bpm = 5;
   new_track->active_measures = 1;
   new_track->measure_beats = 4;
   new_track->measure_steps = 6;
   new_track->current_measure_id = 0;
-
-  // Allocate memory for the measure_list
-  // new_track->measure_list = new (std::nothrow) Measure[new_track->active_measures];
-  // if (!new_track->measure_list)
-  // {
-  //   Serial.println("Error: Memory allocation failed for Measure list.");
-  //   delete new_track; // Free allocated memory
-  //   return -1;
-  // }
 
   // Create measures and add them to the measure_list
   for (int i = 0; i < new_track->active_measures; i++)
@@ -175,13 +166,10 @@ void read_track(std::string filename, Track *config)
   Serial.print("\tf: ");
   Serial.println(new_track->filename.c_str());
 
-  // new_track->measure_list = new Measure[new_track->active_measures];
   Serial.println("TRACK ARRAY PASSED");
   for (int m = 0; m < new_track->active_measures; m++)
   {
-    // new_track->measure_list[m] = *measure_create(m);
     new_track->measure_list.push_back(measure_create(m));
-    // new_measure = &(new_track->measure_list[m]);
     new_measure = new_track->measure_list[m];
     JsonObject measure = track["measure_list"][m];
 

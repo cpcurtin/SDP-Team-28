@@ -525,7 +525,6 @@ int execute_leaf(void)
         new_palette_slot.is_empty = false;
 
         palette_assignment = PALETTE_ASSIGNMENT_EFFECT;
-        // LED_mode = LED_PALETTE_SELECT;
         lcd_splash(lcd, nav_state, selected_effect);
         run_nav_name = false;
 
@@ -545,9 +544,7 @@ int execute_leaf(void)
         new_palette_slot.effect = -1;
         new_palette_slot.is_empty = false;
 
-        // new_sound_assignment = true;
         palette_assignment = PALETTE_ASSIGNMENT_SOUND;
-        // LED_mode = LED_PALETTE_SELECT;
 
         lcd_splash(lcd, nav_state, selected_sound);
         run_nav_name = false;
@@ -560,7 +557,6 @@ int execute_leaf(void)
         Serial.println("NAVIGATION_SOUNDS_MIDI_MELODIC");
         nav_state = sounds_midi_octaves_nav;
         lcd_display(lcd, nav_state->lcd_state);
-        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         break;
     }
 
@@ -569,16 +565,12 @@ int execute_leaf(void)
         Serial.println("NAVIGATION_MIDI_OCTAVES");
         nav_state = sounds_midi_notes_nav;
         lcd_display(lcd, nav_state->lcd_state);
-        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         break;
     }
 
     case NAVIGATION_MIDI_NOTES:
     {
         Serial.println("NAVIGATION_MIDI_NOTES");
-        Serial.println("MIDI SOUNDS SELECTION:");
-        // Serial.print("BANK: ");
-        // Serial.println(((nav_state->parent)->parent)->name.c_str());
         Serial.print("Octave: ");
         Serial.println((nav_state->parent)->data_array[(nav_state->parent)->index].c_str());
         Serial.print("Note: ");
@@ -598,7 +590,6 @@ int execute_leaf(void)
 
         lcd_splash(lcd, nav_state, selected_sound);
         run_nav_name = false;
-        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         nav_state = main_nav;
         break;
     }
@@ -667,11 +658,12 @@ int execute_leaf(void)
     case NAVIGATION_TRACK_LOAD:
     {
         Serial.println("NAVIGATION_TRACK_LOAD");
+
         Serial.println("free previous track");
         free_track(current_track);
+
         Serial.println("load new track");
         read_track(nav_state->data_array[nav_state->index], current_track);
-        Serial.println("RETURN LOAD TRACK");
 
         lcd_splash(lcd, nav_state, track_loaded_splash);
         nav_state = tracks_nav;
@@ -718,26 +710,24 @@ int measure_options(void)
     case LEAF_MEASURES_REMOVE:
     {
         Serial.println("LEAF_MEASURES_REMOVE");
-        // select which to delete
+
         nav_state = measure_select_nav;
         lcd_display(lcd, nav_state->lcd_state);
-        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         break;
     }
     case LEAF_MEASURES_SWAP:
     {
         Serial.println("LEAF_MEASURES_SWAP");
-        // select which to delete
+
         nav_state = measure_select_nav;
         lcd_display(lcd, nav_state->lcd_state);
-        run_nav_name = false;
         lcd_display_banner(lcd, BANNER_MEASURE_SWAP, LCD_VANISH);
+        run_nav_name = false;
         break;
     }
     case LEAF_MEASURES_GLOBAL_BEATS:
     {
         Serial.println("LEAF_MEASURES_GLOBAL_BEATS");
-        // nav_state = measures_set_beats_nav;
         nav_state = measure_select_nav;
         lcd_display(lcd, nav_state->lcd_state);
         break;
@@ -746,8 +736,6 @@ int measure_options(void)
     {
         Serial.println("LEAF_MEASURES_GLOBAL_STEPS");
         nav_state = measure_select_nav;
-        // measures_set_steps_nav->parent = tracks_nav;
-        // nav_state = measures_set_steps_nav;
         lcd_display(lcd, nav_state->lcd_state);
         break;
     }
@@ -755,8 +743,6 @@ int measure_options(void)
     {
         Serial.println("LEAF_MEASURES_LOCAL_STEPS");
         nav_state = measure_select_nav;
-        // measures_set_steps_nav->parent = measures_set_beats_nav;
-        // nav_state = measures_set_beats_nav;
         lcd_display(lcd, nav_state->lcd_state);
         break;
     }
@@ -790,7 +776,6 @@ int track_options(void)
         Serial.println("LEAF_TRACKS_LOAD");
         nav_state = tracks_load_nav;
         lcd_display(lcd, nav_state->lcd_state);
-        // lcd_display_banner(lcd, BANNER_MEASURE_SWAP, LCD_VANISH);
         break;
     }
     case LEAF_TRACKS_DELETE:
@@ -846,7 +831,11 @@ int delete_options(void)
     }
     case LEAF_DELETE_MEASURE:
     {
-        current_measure = measure_create(current_measure->id);
+        Measure *new_measure = measure_create(current_measure->id);
+        delete current_track->measure_list[current_measure->id];
+
+        current_track->measure_list[new_measure->id] = new_measure;
+        current_measure = current_track->measure_list[new_measure->id];
         nav_state = main_nav;
         lcd_display(lcd, nav_state->lcd_state);
         break;
@@ -863,27 +852,31 @@ int measure_select_options(void)
     case LEAF_MEASURES_REMOVE:
     {
         Serial.println("LEAF_MEASURES_REMOVE");
-        if (current_track->measure_list.size() > 1)
+
+        delete current_track->measure_list[measure_select_nav->index];
+        current_track->measure_list.erase(current_track->measure_list.begin() + measure_select_nav->index);
+
+        if (current_track->measure_list.size() == 0)
         {
-            current_track->measure_list.erase(current_track->measure_list.begin() + measure_select_nav->index);
-            measure_select_nav->data_array.pop_back();
-            measure_select_nav->index = 0;
-            array_scroll(measure_select_nav, 0);
-            for (int i = 0; i < current_track->measure_list.size(); i++)
-            {
-                // reassign ids
-                current_track->measure_list[i]->id = i;
-            }
+            current_track->measure_list.push_back(measure_create(0));
         }
         else
         {
-            current_track->measure_list[0] = measure_create(0);
-            current_track->current_measure = current_measure;
+            measure_select_nav->data_array.pop_back();
         }
+
+        for (int i = 0; i < current_track->measure_list.size(); i++)
+        {
+            current_track->measure_list[i]->id = i; // reassign ids
+        }
+
         current_track->active_measures = current_track->measure_list.size();
+        current_track->current_measure = current_track->measure_list[0];
+        current_measure = current_track->measure_list[0];
+        measure_select_nav->index = 0;
+        array_scroll(measure_select_nav, 0);
         nav_state = measure_nav;
         lcd_display(lcd, nav_state->lcd_state);
-        // lcd_display_banner(lcd, BANNER_NAV_NAME, LCD_VANISH);
         break;
     }
     case LEAF_MEASURES_SWAP:
