@@ -91,6 +91,7 @@ std::string format_row(std::vector<std::string> data_array, int index, int forma
         }
     }
     rt_st.resize(LCD_COLUMNS, ' ');
+    rt_st.shrink_to_fit();
     return rt_st;
 }
 
