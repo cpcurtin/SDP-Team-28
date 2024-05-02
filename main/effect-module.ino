@@ -17,10 +17,12 @@ void effect_begin(void)
     Serial.println("BEGIN EFFECT");
     effect_mode = true;
     effect = testing_palette_combined[palette_index].effect;
-
-    if (!testing_palette_combined[palette_index].sound.empty)
+    if (effect != EFFECT_NULL)
     {
         lcd_splash_palette(lcd, testing_palette_combined[palette_index]); // avoid clearing select splash
+    }
+    else if (!testing_palette_combined[palette_index].sound.empty)
+    {
         LED_mode = LED_SOUND_SWEEP;
     }
     else if (effect == EFFECT_REVERSE_CURRENT) // set chained measure as repeat

@@ -130,7 +130,6 @@ void loop()
     }
     if (palette_assignment == PALETTE_ASSIGNMENT_DEFAULT)
     {
-
       lcd_splash_palette(lcd, testing_palette_combined[palette_index]); // avoid clearing select splash
 
       Serial.print("LED_MODE=");

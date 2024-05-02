@@ -237,19 +237,16 @@ void lcd_splash_palette(LiquidCrystal_I2C *lcd, struct Palette_Slot &slot)
       {
         lcd_mode = LCD_SPLASH;
         state_splash_screen[0] = "  RUNNING EFFECT   ";
-        state_splash_screen[1] = effects_nav->data_array[slot.effect];
-        state_splash_screen[2] = std::string(LCD_COLUMNS, ' ');
-        state_splash_screen[3] = std::string(LCD_COLUMNS, ' ');
       }
       else
       {
         lcd_mode = LCD_SPLASH_TIMED;
         timed_splash_start = millis();
         state_splash_screen[0] = "  PALETTE EFFECT   ";
-        state_splash_screen[1] = effects_nav->data_array[slot.effect];
-        state_splash_screen[2] = std::string(LCD_COLUMNS, ' ');
-        state_splash_screen[3] = std::string(LCD_COLUMNS, ' ');
       }
+      state_splash_screen[1] = effects_nav->data_array[slot.effect];
+      state_splash_screen[2] = std::string(LCD_COLUMNS, ' ');
+      state_splash_screen[3] = std::string(LCD_COLUMNS, ' ');
     }
   }
   else
@@ -308,7 +305,7 @@ void lcd_display_banner(LiquidCrystal_I2C *lcd, int type, int mode)
   }
   }
 
-  lcd_banner.resize(LCD_COLUMNS);
+  lcd_banner.resize(LCD_COLUMNS, ' ');
   lcd_banner.shrink_to_fit();
 
   lcd->setCursor(0, LCD_ROWS - 1); // set cursor to last row, first column

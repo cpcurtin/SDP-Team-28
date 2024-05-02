@@ -186,7 +186,7 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(tracks_nav, 0);
 
     // DELETE
-    std::vector<std::string> delete_preset_options = {"Delete last sound", "Delete all sounds on step", "Delete whole measure"};
+    std::vector<std::string> delete_preset_options = {"Clear last sound", "Clear all sounds on step", "Clear whole measure"};
     delete_nav->id = NAVIGATION_DELETE;
     delete_nav->name = "Delete";
     delete_nav->data_array = std::move(delete_preset_options);
@@ -664,7 +664,9 @@ int execute_leaf(void)
 
         Serial.println("load new track");
         read_track(nav_state->data_array[nav_state->index], current_track);
-
+        measure_select_nav->data_array.assign(current_track->active_measures, "Measure");
+        measure_select_nav->index = 0;
+        array_scroll(measure_select_nav, 0);
         lcd_splash(lcd, nav_state, track_loaded_splash);
         nav_state = tracks_nav;
         run_nav_name = false;
