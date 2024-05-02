@@ -94,7 +94,8 @@ void loop()
       }
     }
 #if DEBUG_PRINT == 1 // VERBOSE PRINT
-    print_step(active_step, false);
+    print_step(active_step, true);
+    print_cached_sounds();
 #endif
 
     stop_step(last_step);

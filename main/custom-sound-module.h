@@ -28,13 +28,13 @@ struct dac_pin_config
 
 #if USING_MAIN_PCB == 1
 // GUItool: begin automatically generated code
-AudioPlayArrayResmp rraw_a3;    // xy=321,513
-AudioPlayArrayResmp rraw_a4;    // xy=321,513
-AudioPlayArrayResmp rraw_a2;    // xy=321,513
-AudioPlayArrayResmp rraw_a1;    // xy=321,513
-AudioMixer4 mixer1;             // xy=426,173
+AudioPlayArrayResmp rraw_a3; // xy=321,513
+AudioPlayArrayResmp rraw_a4; // xy=321,513
+AudioPlayArrayResmp rraw_a2; // xy=321,513
+AudioPlayArrayResmp rraw_a1; // xy=321,513
+AudioMixer4 mixer1;          // xy=426,173
 // AudioMixer4 mixer2;             // xy=429,300
-AudioAmplifier amp1;            // xy=605,194
+AudioAmplifier amp1; // xy=605,194
 // AudioAmplifier amp2;            // xy=606,289
 AudioOutputPT8211_2 pt8211_2_1; // xy=803,236
 AudioConnection patchCord1(rraw_a3, 0, mixer1, 2);
@@ -49,8 +49,6 @@ AudioConnection patchCord9(mixer1, amp1);
 // AudioConnection patchCord10(mixer2, amp2);
 AudioConnection patchCord11(amp1, 0, pt8211_2_1, 0);
 // AudioConnection patchCord12(amp2, 0, pt8211_2_1, 1);
-
-
 
 // GUItool: end automatically generated code
 
@@ -112,8 +110,8 @@ int dac_init(void);
 int playFile(newdigate::audiosample *cached_sound);
 
 void stopFile(int mixer);
-
-int free_cached_sounds(Track *track);
-newdigate::audiosample *cache_sd_sound(std::string filename);
+Sound *cache_sd_sound(std::string filename);
+Sound *find_cached_sounds(std::string filename);
+void print_cached_sounds(void);
 
 #endif // CUSTOM_SOUND_MODULE_H

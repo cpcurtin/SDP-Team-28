@@ -477,32 +477,13 @@ int execute_leaf(void)
     case NAVIGATION_SOUNDS_CUSTOM:
     {
         Serial.println("NAVIGATION_SOUNDS_CUSTOM");
-        temp_sample = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index]);
-        if (temp_sample != nullptr)
-        {
-            new_palette_slot.sound.bank = -1;
-            new_palette_slot.sound.instrument = -1;
-            new_palette_slot.sound.note = -1;
-            new_palette_slot.sound.sd_cached_sound = temp_sample;
-            new_palette_slot.sound.filename = sounds_custom_nav->data_array[sounds_custom_nav->index];
-            new_palette_slot.sound.empty = false;
-            new_palette_slot.effect = -1;
-            new_palette_slot.is_empty = false;
+        Sound *new_csound = cache_sd_sound(sounds_custom_nav->data_array[sounds_custom_nav->index]);
 
-            // new_sound_assignment = true;
-            palette_assignment = PALETTE_ASSIGNMENT_SOUND;
-            // LED_mode = LED_PALETTE_SELECT;
-            lcd_splash(lcd, nav_state, selected_sound);
-            run_nav_name = false;
-
-            char str[LCD_COLUMNS];
-            sprintf(str, "%p", (void *)temp_sample); // Using sprintf to format the pointer address
-            Serial.println("\tEXPECTED: " + String(str));
-            current_track->cached_sounds.push_back(new_palette_slot.sound);
-        }
-        else
+        /*  CHECK IF SOUND ALREADY CACHED    */
+        if (new_csound == nullptr) // not cachable
         {
 
+            Serial.println("SOUND NOT FOUND IN CACHE AND UNABLE TO BE CACHED");
             new_palette_slot.sound.bank = -1;
             new_palette_slot.sound.instrument = -1;
             new_palette_slot.sound.note = -1;
@@ -515,7 +496,18 @@ int execute_leaf(void)
             // NO SIZE ON PSRAM TO CACHE SOUND
             lcd_splash(lcd, nullptr, error_psram_full);
             run_nav_name = false;
+            nav_state = main_nav;
+            break;
         }
+        Serial.println("SOUND FOUND IN CACHE");
+        new_palette_slot.sound = *new_csound;
+
+        new_palette_slot.effect = EFFECT_NULL;
+        new_palette_slot.is_empty = false;
+
+        palette_assignment = PALETTE_ASSIGNMENT_SOUND;
+        lcd_splash(lcd, nav_state, selected_sound);
+        run_nav_name = false;
         nav_state = main_nav;
         break;
     }
@@ -674,7 +666,6 @@ int execute_leaf(void)
     case NAVIGATION_TRACK_LOAD:
     {
         Serial.println("NAVIGATION_TRACK_LOAD");
-        free_cached_sounds(current_track);
         Serial.println("free previous track");
         free_track(current_track);
         Serial.println("load new track");

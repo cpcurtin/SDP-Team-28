@@ -270,36 +270,23 @@ void read_track(std::string filename, Track *config)
           if (!new_sound->filename.empty())
           {
             Serial.println("filename != null");
-            already_cached = false;
-            auto cache_file_iter = new_track->cached_sounds.begin();
-            while (cache_file_iter != new_track->cached_sounds.end())
-            {
-              Sound cache_file = *cache_file_iter;
-              if (new_sound->filename == cache_file.filename)
-              {
-                already_cached = true;
-                Serial.println("filename found in cache");
-                new_sound->sd_cached_sound = cache_file.sd_cached_sound;
-              }
-              cache_file_iter++;
-            }
+            Sound *new_csound;
+            new_csound = cache_sd_sound(new_sound->filename);
 
-            if (already_cached == false)
+            /*  CHECK IF SOUND ALREADY CACHED    */
+            if (new_csound == nullptr) // not cachable
             {
-              if (find_sd_sound(new_sound->filename))
-              {
-                new_sound->sd_cached_sound = cache_sd_sound(new_sound->filename.c_str());
-                new_track->cached_sounds.push_back(*new_sound);
-              }
-              else
-              {
-                new_sound->bank = -1;
-                new_sound->instrument = -1;
-                new_sound->note = -1;
-                new_sound->sd_cached_sound = nullptr;
-                new_sound->filename = "";
-                new_sound->empty = true;
-              }
+              Serial.println("SOUND NOT FOUND IN CACHE AND UNABLE TO BE CACHED");
+              new_sound->bank = -1;
+              new_sound->instrument = -1;
+              new_sound->note = -1;
+              new_sound->sd_cached_sound = nullptr;
+              new_sound->filename = "";
+              new_sound->empty = true;
+            }
+            else
+            {
+              *new_sound = *new_csound;
             }
           }
         }

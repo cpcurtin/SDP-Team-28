@@ -29,12 +29,13 @@ typedef struct Track
     int current_measure_id;
     struct Measure *current_measure;
     std::vector<struct Measure *> measure_list;
-    // struct Measure *measure_list;
-    std::deque<struct Sound> cached_sounds;
 } Track;
+
+std::deque<struct Sound *> cached_sounds;
 
 std::vector<std::string> sd_fetch_sounds(void);
 std::vector<std::string> sd_fetch_tracks(void);
+
 bool find_sd_sound(std::string filename);
 int sd_delete_track(std::string filename);
 void read_track(std::string filename, Track *config);

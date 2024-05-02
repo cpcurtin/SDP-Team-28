@@ -76,44 +76,100 @@ void stopFile(int mixer)
   rraw_a3.stop();
   rraw_a4.stop();
   */
-/*
-  if (rraw_a1.isPlaying())
-  {
-    rraw_a1.stop();
-  }
-  if (rraw_a2.isPlaying())
-  {
-    rraw_a2.stop();
-  }
-  if (rraw_a3.isPlaying())
-  {
-    rraw_a3.stop();
-  }
-  if (rraw_a4.isPlaying())
-  {
-    rraw_a4.stop();
-  }
-  */
+  /*
+    if (rraw_a1.isPlaying())
+    {
+      rraw_a1.stop();
+    }
+    if (rraw_a2.isPlaying())
+    {
+      rraw_a2.stop();
+    }
+    if (rraw_a3.isPlaying())
+    {
+      rraw_a3.stop();
+    }
+    if (rraw_a4.isPlaying())
+    {
+      rraw_a4.stop();
+    }
+    */
 }
 
-int free_cached_sounds(Track *track)
+Sound *cache_sd_sound(std::string filename)
 {
-  while (track->cached_sounds.size() != 0)
+  Sound *cached_sound = find_cached_sounds(filename);
+  /*  CHECK IF SOUND ALREADY CACHED    */
+  if (cached_sound == nullptr)
   {
+    Serial.println("SOUND NOT ALREADY IN CACHE");
+    std::string full_path = CUSTOM_SOUNDS_DIRECTORY + filename;
+    Sound *new_csound = new Sound;
+    new_csound->bank = -1;
+    new_csound->instrument = -1;
+    new_csound->note = -1;
+    new_csound->sd_cached_sound = loader.loadSample(full_path.c_str());
+    new_csound->filename = filename;
+    new_csound->empty = false;
 
-    Serial.println(track->cached_sounds.front().filename.c_str());
-
-    delete track->cached_sounds.front().sd_cached_sound;
-
-    track->cached_sounds.pop_front();
+    /*  CHECK IF SOUND CACHED SUCCESSFULLY    */
+    if (new_csound->sd_cached_sound == nullptr)
+    {
+      /*  UNSUCCESSFULLY CACHED   */
+      Serial.println("CACHING FAILED");
+      delete new_csound;
+      return nullptr;
+    }
+    else
+    {
+      /*  SUCCESSFULLY CACHED   */
+      Serial.println("CACHING SUCCESSFUL");
+      cached_sounds.push_back(new_csound); // add to already cached sounds
+      return new_csound;
+    }
   }
-
-  return 0;
+  else
+  {
+    Serial.println("SOUND ALREADY IN CACHE");
+  }
+  return cached_sound;
 }
-newdigate::audiosample *cache_sd_sound(std::string filename)
+
+Sound *find_cached_sounds(std::string filename)
 {
+  if (!cached_sounds.empty())
+  {
+    auto cached_sound_iter = cached_sounds.begin();
+    while (cached_sound_iter != cached_sounds.end())
+    {
+      if ((*cached_sound_iter)->filename == filename)
+      {
+        Serial.print("check filename:");
+        Serial.println(filename.c_str());
+        Serial.print("found filename:");
+        Serial.println((*cached_sound_iter)->filename.c_str());
 
-  std::string full_path = CUSTOM_SOUNDS_DIRECTORY + filename;
+        return (*cached_sound_iter);
+      }
+      cached_sound_iter++;
+    }
+  }
+  return nullptr;
+}
 
-  return loader.loadSample(full_path.c_str());
+void print_cached_sounds(void)
+{
+  auto cached_sound_iter = cached_sounds.begin();
+  int i = 0;
+  Serial.print("\n");
+  while (cached_sound_iter != cached_sounds.end())
+  {
+    Sound *cached_sound = *cached_sound_iter;
+    Serial.print(i);
+    Serial.print(". ");
+    Serial.println(cached_sound->filename.c_str());
+    i++;
+
+    cached_sound_iter++;
+  }
 }
