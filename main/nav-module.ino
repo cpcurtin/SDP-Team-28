@@ -164,7 +164,7 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(effects_nav, 0);
 
     // MEASURES
-    std::vector<std::string> measure_preset_options = {"Add Measure", "Delete Measure", "Swap Measure", "Set # beats", "Set # global steps", "Set # local steps"};
+    std::vector<std::string> measure_preset_options = {"Add Measure", "Delete Measure", "Swap Measure", "Set # beats", "Set # global steps", "Set # local steps", "Load Measure"};
     measure_nav->id = NAVIGATION_MEASURE;
     measure_nav->name = "Measures";
     measure_nav->data_array = std::move(measure_preset_options);
@@ -175,7 +175,7 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(measure_nav, 0);
 
     // TRACKS
-    std::vector<std::string> tracks_preset_options = {"Save Track", "Load Track", "Delete Track"};
+    std::vector<std::string> tracks_preset_options = {"Save Track", "Load Track", "Delete Track", "Load Palette"};
     tracks_nav->id = NAVIGATION_TRACKS;
     tracks_nav->name = "Tracks";
     tracks_nav->data_array = std::move(tracks_preset_options);
@@ -186,7 +186,7 @@ Nav *nav_init(struct nav_config *cfg)
     array_scroll(tracks_nav, 0);
 
     // DELETE
-    std::vector<std::string> delete_preset_options = {"Clear last sound", "Clear all sounds on step", "Clear whole measure"};
+    std::vector<std::string> delete_preset_options = {"Clear last sound", "Clear step", "Clear measure"};
     delete_nav->id = NAVIGATION_DELETE;
     delete_nav->name = "Delete";
     delete_nav->data_array = std::move(delete_preset_options);
@@ -249,6 +249,16 @@ Nav *nav_init(struct nav_config *cfg)
     measures_set_steps_nav->index = 0;
     measures_set_steps_nav->lcd_state.resize(LCD_ROWS);
     array_scroll(measures_set_steps_nav, 0);
+
+    // Measure Load
+    measures_load_nav->id = NAVIGATION_MEASURE_LOAD;
+    measures_load_nav->name = "Measure Load";
+    measures_load_nav->data_array = std::move(cfg->measures_load);
+    measures_load_nav->parent = measure_select_nav;
+    measures_load_nav->child = nullptr;
+    measures_load_nav->index = 0;
+    measures_load_nav->lcd_state.resize(LCD_ROWS);
+    array_scroll(measures_load_nav, 0);
 
     // Custom Sounds
     sounds_custom_nav->id = NAVIGATION_SOUNDS_CUSTOM;
@@ -629,6 +639,34 @@ int execute_leaf(void)
         lcd_display(lcd, nav_state->lcd_state);
         break;
     }
+    case NAVIGATION_MEASURE_LOAD:
+    {
+        Serial.println("NAVIGATION_MEASURE_LOAD");
+        std::string measure_load_filename = "TRACK-" + measures_load_nav->data_array[measures_load_nav->index].substr(0, 3) + ".json";
+        int measure_load_id = stoi(measures_load_nav->data_array[measures_load_nav->index].substr(4));
+        Serial.print("trying to load F:");
+        Serial.print(measure_load_filename.c_str());
+        Serial.print("\tM:");
+        Serial.println(measure_load_id);
+        Measure *loaded_measure = read_measure(measure_load_filename, measure_load_id);
+        if (loaded_measure != nullptr)
+        {
+            delete current_track->measure_list[measure_select_nav->index];
+            current_track->measure_list[measure_select_nav->index] = loaded_measure;
+        }
+
+        for (int i = 0; i < current_track->active_measures; i++)
+        {
+            current_track->measure_list[i]->id = i; // reassign ids
+        }
+        measure_select_nav->index = 0;
+        array_scroll(measure_select_nav, 0);
+
+        lcd_splash(lcd, nav_state, measure_loaded_palette_splash);
+        nav_state = measure_nav;
+        run_nav_name = false;
+        break;
+    }
     case NAVIGATION_TRACK_SAVE:
     {
         Serial.println("NAVIGATION_TRACK_SAVE");
@@ -658,18 +696,27 @@ int execute_leaf(void)
     case NAVIGATION_TRACK_LOAD:
     {
         Serial.println("NAVIGATION_TRACK_LOAD");
+        if (tracks_nav->index == LEAF_TRACKS_LOAD)
+        {
 
-        Serial.println("free previous track");
-        free_track(current_track);
+            Serial.println("free previous track");
+            free_track(current_track);
 
-        Serial.println("load new track");
-        read_track(nav_state->data_array[nav_state->index], current_track);
-        read_palette(nav_state->data_array[nav_state->index], testing_palette_combined);
+            Serial.println("load new track");
+            read_track(nav_state->data_array[nav_state->index], current_track);
+            read_palette(nav_state->data_array[nav_state->index], testing_palette_combined);
 
-        measure_select_nav->data_array.assign(current_track->active_measures, "Measure");
-        measure_select_nav->index = 0;
-        array_scroll(measure_select_nav, 0);
-        lcd_splash(lcd, nav_state, track_loaded_splash);
+            measure_select_nav->data_array.assign(current_track->active_measures, "Measure");
+            measure_select_nav->index = 0;
+            array_scroll(measure_select_nav, 0);
+            lcd_splash(lcd, nav_state, track_loaded_splash);
+        }
+        else if (tracks_nav->index == LEAF_TRACKS_LOAD_PALETTE)
+        {
+            read_palette(nav_state->data_array[nav_state->index], testing_palette_combined);
+            lcd_splash(lcd, nav_state, track_loaded_palette_splash);
+        }
+
         nav_state = tracks_nav;
         run_nav_name = false;
         break;
@@ -750,6 +797,18 @@ int measure_options(void)
         lcd_display(lcd, nav_state->lcd_state);
         break;
     }
+    case LEAF_MEASURES_LOAD:
+    {
+        Serial.println("LEAF_MEASURES_LOAD");
+        measures_load_nav->data_array.clear();
+        measures_load_nav->data_array = std::move(sd_fetch_measures());
+        measures_load_nav->index = 0;
+        array_scroll(measures_load_nav, 0);
+
+        nav_state = measure_select_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        break;
+    }
     }
 
     return 0;
@@ -807,6 +866,14 @@ int track_options(void)
             }
             lcd_display(lcd, nav_state->lcd_state);
         }
+        break;
+    }
+    case LEAF_TRACKS_LOAD_PALETTE:
+    {
+        Serial.println("LEAF_TRACKS_LOAD_PALETTE");
+        nav_state = tracks_load_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        break;
         break;
     }
     }
@@ -930,6 +997,13 @@ int measure_select_options(void)
         Serial.println("LEAF_MEASURES_LOCAL_STEPS");
         measures_set_steps_nav->parent = measures_set_beats_nav;
         nav_state = measures_set_beats_nav;
+        lcd_display(lcd, nav_state->lcd_state);
+        break;
+    }
+    case LEAF_MEASURES_LOAD:
+    {
+        Serial.println("LEAF_MEASURES_LOAD");
+        nav_state = measures_load_nav;
         lcd_display(lcd, nav_state->lcd_state);
         break;
     }

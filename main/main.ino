@@ -56,6 +56,7 @@ void setup()
   nav_cfg->tracks_load = sd_fetch_tracks();
   nav_cfg->sounds_midi_melodic = fetch_midi_melodic_sounds();
   nav_cfg->sounds_midi_percussion = fetch_midi_percussion_sounds();
+  nav_cfg->measures_load = sd_fetch_measures();
   nav_state = nav_init(nav_cfg);
 
   lcd_display(lcd, nav_state->lcd_state); // move to start nav

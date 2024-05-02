@@ -27,6 +27,7 @@
 #define NAVIGATION_DELETE 14
 #define NAVIGATION_MEASURE 15
 #define NAVIGATION_MEASURE_SELECT 16
+#define NAVIGATION_MEASURE_LOAD 17
 /******************************************************************************/
 
 /*******************************************************************************
@@ -40,14 +41,13 @@
 #define LEAF_MEASURES_GLOBAL_BEATS 3
 #define LEAF_MEASURES_GLOBAL_STEPS 4
 #define LEAF_MEASURES_LOCAL_STEPS 5
+#define LEAF_MEASURES_LOAD 6
 
 /* TRACK LEAF*/
 #define LEAF_TRACKS_SAVE 0
 #define LEAF_TRACKS_LOAD 1
 #define LEAF_TRACKS_DELETE 2
-#define LEAF_TRACKS_GLOBAL_BEATS 3
-#define LEAF_TRACKS_GLOBAL_STEPS 4
-#define LEAF_TRACKS_LOCAL_STEPS 5
+#define LEAF_TRACKS_LOAD_PALETTE 3
 
 /* DELETE LEAF*/
 #define LEAF_DELETE_LAST 0
@@ -80,6 +80,7 @@ struct nav_config
     std::vector<std::string> tracks_load;
     std::vector<std::string> sounds_midi_melodic;
     std::vector<std::string> sounds_midi_percussion;
+    std::vector<std::string> measures_load;
 };
 
 typedef struct Nav
@@ -111,6 +112,7 @@ Nav *delete_nav = new Nav;
 Nav *measure_select_nav = new Nav;
 Nav *measures_set_beats_nav = new Nav;
 Nav *measures_set_steps_nav = new Nav;
+Nav *measures_load_nav = new Nav;
 
 Nav *tracks_save_nav = new Nav;
 Nav *tracks_load_nav = new Nav;

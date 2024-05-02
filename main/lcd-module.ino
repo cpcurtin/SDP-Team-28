@@ -115,6 +115,15 @@ void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std
 
     break;
   }
+  case NAVIGATION_MEASURE_LOAD:
+  {
+    lcd->noBlink();
+    lcd_mode = LCD_SPLASH_TIMED;
+    timed_splash_start = millis();
+    state_splash_screen[1] = measures_load_nav->data_array[measures_load_nav->index];
+
+    break;
+  }
   }
 
   lcd->clear();

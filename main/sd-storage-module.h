@@ -32,11 +32,13 @@ std::deque<struct Sound *> cached_sounds;
 
 std::vector<std::string> sd_fetch_sounds(void);
 std::vector<std::string> sd_fetch_tracks(void);
+std::vector<std::string> sd_fetch_measures(void);
 
 bool find_sd_sound(std::string filename);
 int sd_delete_track(std::string filename);
 void read_track(std::string filename, Track *config);
 void save_track(std::string filename, Track *config);
+Measure *read_measure(std::string filename, int measure_id);
 void read_palette(std::string filename, std::vector<Palette_Slot> &palette);
 Track *current_track;
 

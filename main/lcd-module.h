@@ -61,6 +61,8 @@ std::vector<std::string> empty_step_splash = {"", "   STEP IS EMPTY   ", "", ""}
 std::vector<std::string> empty_palette_splash = {"", " PALETTE SLOT EMPTY ", "", ""};
 std::vector<std::string> track_saved_splash = {"    TRACK SAVED:    ", "", "", ""};
 std::vector<std::string> track_loaded_splash = {"    TRACK LOADED:    ", "", "", ""};
+std::vector<std::string> track_loaded_palette_splash = {"TRACK PALETTE LOADED", "", "", ""};
+std::vector<std::string> measure_loaded_palette_splash = {"   MEASURE LOADED:  ", "", "", ""};
 
 void lcd_display(LiquidCrystal_I2C *lcd, std::vector<std::string> print_arr);
 void lcd_splash(LiquidCrystal_I2C *lcd, struct Nav *current_nav, std::vector<std::string> print_arr);

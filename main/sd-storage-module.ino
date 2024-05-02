@@ -119,6 +119,71 @@ std::vector<std::string> sd_fetch_tracks(void)
 
   return filenames;
 }
+std::vector<std::string> sd_fetch_measures(void)
+{
+  std::vector<std::string> filenames;
+  std::vector<std::string> measures;
+  File root = SD.open(TRACKS_DIRECTORY);
+  if (!root)
+  {
+    // Error handling if the directory couldn't be opened
+    return filenames;
+  }
+
+  // Iterate through the files in the directory
+  while (true)
+  {
+    File entry = root.openNextFile();
+    if (!entry)
+    {
+      break; // No more files
+    }
+    // Skip system files
+    if (strncmp(entry.name(), "._", 2) == 0)
+    {
+      continue;
+    }
+    // Store the filename in the vector
+    filenames.push_back(strdup(entry.name()));
+    entry.close();
+  }
+
+  // Close the "tracks" directory
+  root.close();
+
+  for (int i = 0; i < filenames.size(); i++)
+  {
+    std::string full_path = TRACKS_DIRECTORY + filenames[i];
+    File file = SD.open(full_path.c_str());
+
+    // Allocate a temporary JsonDocument
+    JsonDocument doc;
+
+    // Deserialize the JSON document
+    DeserializationError error = deserializeJson(doc, file);
+    if (error)
+    {
+      Serial.print("deserializeJson() failed: ");
+      Serial.println(error.c_str());
+      return;
+    }
+    else
+    {
+      Serial.println("DESERIALIZE PASSED TRACK");
+    }
+
+    JsonObject track = doc["track"];
+    for (int m = 0; m < track["active_measures"]; m++)
+    {
+      std::string new_measure = filenames[i].substr(6, 3) + "-" + std::to_string(m);
+      Serial.println(new_measure.c_str());
+      measures.push_back(new_measure);
+    }
+
+    file.close();
+  }
+  return measures;
+}
 
 void read_track(std::string filename, Track *config)
 {
@@ -374,6 +439,154 @@ void read_palette(std::string filename, std::vector<Palette_Slot> &palette)
     }
   }
   file.close();
+}
+
+Measure *read_measure(std::string filename, int measure_id)
+{
+  bool already_cached = false;
+
+  std::string full_path = TRACKS_DIRECTORY + filename;
+  File file = SD.open(full_path.c_str());
+
+  // Allocate a temporary JsonDocument
+  JsonDocument doc;
+
+  // Deserialize the JSON document
+
+  DeserializationError error = deserializeJson(doc, file);
+  if (error)
+  {
+    Serial.print("deserializeJson() failed: ");
+    Serial.println(error.c_str());
+    return;
+  }
+  else
+  {
+    Serial.println("DESERIALIZE PASSED TRACK");
+  }
+
+  Beat *new_beat;
+  Step *new_step;
+  Sound *new_sound;
+  JsonObject track = doc["track"];
+  int active_measures = track["active_measures"]; // 1
+  if (active_measures >= measure_id)
+  {
+    return nullptr;
+  }
+  Measure *new_measure = measure_create(measure_id);
+  JsonObject measure = track["measure_list"][measure_id];
+
+  Serial.println("MEASURE PASSED");
+  new_measure->id = measure["id"];                     // 0
+  new_measure->active_beats = measure["active_beats"]; // 4
+  new_measure->step = 0;
+  new_measure->step = 0;
+  new_measure->current_step = new_measure->beat_list[0].step_list[0];
+  new_measure->prior_step = new_measure->beat_list[3].step_list[5];
+  Serial.print("measure id: ");
+  Serial.println(new_measure->id);
+  Serial.print("measure active_beats: ");
+  Serial.println(new_measure->active_beats);
+  Serial.println("MEASURE ARRAY PASSED");
+
+  for (int b = 0; b < MAX_BEATS; b++)
+  {
+    Serial.println("BEAT PASSED");
+    JsonObject beat = measure["beat_list"][b];
+
+    new_beat = &(new_measure->beat_list[b]);
+
+    new_beat->id = beat["id"];                     // 0
+    new_beat->active_steps = beat["active_steps"]; // 4
+
+    Serial.print("beat id: ");
+    Serial.println(new_beat->id);
+    Serial.print("beat active_steps: ");
+    Serial.println(new_beat->active_steps);
+    Serial.println("BEAT ARRAY PASSED");
+    for (int s = 0; s < MAX_STEPS; s++)
+    {
+      Serial.println("STEP PASSED");
+      JsonObject step = beat["step_list"][s];
+      new_step = &(new_beat->step_list[s]);
+
+      new_step->id = step["id"];                       // 0
+      new_step->active_sounds = step["active_sounds"]; // 0
+
+      Serial.print("step id: ");
+      Serial.println(new_step->id);
+      Serial.print("step active_sounds: ");
+      Serial.println(new_step->active_sounds);
+      Serial.println("STEP ARRAY PASSED");
+      for (int i = 0; i < MAX_STEP_SOUNDS; i++)
+      {
+        Serial.println("SOUND PASSED");
+        JsonObject sound = step["sound_list"][i];
+
+        new_sound = &(new_step->sound_list[i]);
+        new_sound->bank = sound["bank"];             // 0
+        new_sound->instrument = sound["instrument"]; // 0
+        new_sound->note = sound["note"];             // 0
+
+        if (sound["filename"])
+        {
+          new_sound->filename = std::string(sound["filename"]);
+        }
+        else
+        {
+          new_sound->filename = "";
+        }
+
+        new_sound->sd_cached_sound = nullptr;
+        new_sound->empty = sound["empty"];
+
+        Serial.print("B: ");
+        Serial.print(new_sound->bank);
+        Serial.print("\tI: ");
+        Serial.print(new_sound->instrument);
+        Serial.print("\tN: ");
+        Serial.print(new_sound->note);
+        Serial.print("\tf: ");
+        if (!new_sound->filename.empty())
+        {
+          Serial.print(new_sound->filename.c_str());
+        }
+        else
+        {
+          Serial.print("x");
+        }
+        Serial.print("\tE: ");
+        Serial.println(new_sound->empty);
+
+        if (!new_sound->filename.empty())
+        {
+          Serial.println("filename != null");
+          Sound *new_csound;
+          new_csound = cache_sd_sound(new_sound->filename);
+
+          /*  CHECK IF SOUND ALREADY CACHED    */
+          if (new_csound == nullptr) // not cachable
+          {
+            Serial.println("SOUND NOT FOUND IN CACHE AND UNABLE TO BE CACHED");
+            new_sound->bank = -1;
+            new_sound->instrument = -1;
+            new_sound->note = -1;
+            new_sound->sd_cached_sound = nullptr;
+            new_sound->filename = "";
+            new_sound->empty = true;
+          }
+          else
+          {
+            *new_sound = *new_csound;
+          }
+        }
+      }
+    }
+  }
+
+  file.close();
+  return new_measure;
 }
 
 // Saves the configuration to a file
