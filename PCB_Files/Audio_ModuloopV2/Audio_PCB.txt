@@ -1,0 +1,259 @@
+Board Information Report
+Filename     : C:\Users\Public\Documents\Altium\Audio_Moduloop_V2\Audio_PCB.PcbDoc
+Date         : 4/3/2024
+Time         : 5:06:24 PM
+Time Elapsed : 00:00:01
+
+General
+    Board Size, 165.1mmx127mm
+    Components on board, 140
+count : 2
+
+Routing Information
+    Routing completion, 100.00%
+    Connections, 361
+    Connections routed, 361
+    Connections remaining, 0
+count : 4
+
+Layer, Arcs, Pads, Vias, Tracks, Texts, Fills, Regions, ComponentBodies
+    Top Layerr(SIG), 0, 229, 0, 762, 0, 0, 6, 0
+    Layer 2(GND), 0, 0, 0, 0, 0, 0, 1, 0
+    Layer 3(GND), 0, 0, 0, 0, 0, 0, 1, 0
+    Bottom Layer(SIG), 0, 8, 0, 232, 0, 0, 1, 0
+    Mechanical 1, 0, 0, 0, 0, 7, 0, 0, 0
+    Top Component Center, 0, 0, 0, 94, 0, 0, 0, 0
+    Top Designator, 0, 0, 0, 19, 3, 0, 0, 0
+    Bottom Designator, 0, 0, 0, 0, 0, 0, 0, 0
+    Top Assembly, 0, 0, 0, 172, 47, 0, 0, 0
+    Dimensions, 4, 0, 0, 4, 0, 0, 0, 0
+    Mechanical 7, 0, 0, 0, 14, 1, 0, 0, 0
+    Top Component Outline, 0, 0, 0, 40, 0, 0, 0, 0
+    Bottom Component Outline, 0, 0, 0, 0, 0, 0, 0, 0
+    Top 3D Body, 21, 0, 0, 512, 0, 0, 0, 482
+    Bottom 3D Body, 0, 0, 0, 16, 0, 0, 0, 4
+    Top Courtyard, 8, 0, 0, 686, 0, 0, 0, 0
+    Bottom Courtyard, 0, 0, 0, 24, 0, 0, 0, 0
+    Bottom Assembly, 0, 0, 0, 0, 0, 0, 0, 0
+    Bottom Component Center, 0, 0, 0, 0, 0, 0, 0, 0
+    Multi-Layer, 0, 321, 168, 0, 0, 0, 1, 0
+    Top Paste, 0, 0, 0, 0, 0, 4, 0, 0
+    Top Overlay, 47, 0, 0, 329, 280, 0, 0, 0
+    Top Solder, 0, 0, 0, 0, 0, 0, 0, 0
+    Bottom Solder, 0, 0, 0, 0, 0, 0, 0, 0
+    Bottom Overlay, 0, 0, 0, 8, 8, 0, 0, 0
+    Bottom Paste, 0, 0, 0, 0, 0, 0, 0, 0
+    Drill Guide, 0, 0, 0, 0, 0, 0, 0, 0
+    Keep-Out Layer, 0, 0, 0, 0, 0, 0, 0, 0
+    Drill Drawing, 0, 0, 0, 0, 0, 0, 0, 0
+count : 29
+
+Drill Pairs, Vias
+    Top Layerr(SIG) - Bottom Layer(SIG), 168
+count : 1
+
+Layer, Sq.In., Sq.MM., Percent of layer
+    Top Layerr(SIG), 29.007, 18714.353, 89%
+    Layer 2(GND), 31.14, 20090.411, 96%
+    Layer 3(GND), 31.14, 20090.411, 96%
+    Bottom Layer(SIG), 29.795, 19222.676, 92%
+count : 4
+
+Non-Plated Hole Size, Pads, Vias
+    1.5001mm, 3, 0
+    2.54mm, 2, 0
+count : 2
+
+Plated Hole Size, Pads, Vias
+    0mm, 237, 0
+    0.2mm, 0, 5
+    0.6mm, 0, 90
+    0.7mm, 44, 0
+    0.7112mm, 0, 73
+    0.75mm, 2, 0
+    0.8mm, 6, 0
+    0.85mm, 10, 0
+    0.9mm, 92, 0
+    1mm, 32, 0
+    1mm, 20, 0
+    1.02mm, 51, 0
+    1.1mm, 43, 0
+    1.18mm, 3, 0
+    1.5001mm, 5, 0
+    2.5mm, 2, 0
+    2.5001mm, 2, 0
+    3.048mm, 4, 0
+count : 18
+
+Non-Plated Slot Size / Length, Pads
+count : 0
+
+Plated Slot Size / Length, Pads
+count : 0
+
+Non-Plated Square Hole Size, Pads
+count : 0
+
+Plated Square Hole Size, Pads
+count : 0
+
+Top Layer Annular Ring Size, Count
+    0mm, 9
+    0.3mm, 5
+    0.4mm, 90
+    0.5mm, 129
+    0.508mm, 8
+    0.53mm, 3
+    0.55mm, 52
+    0.5588mm, 73
+    0.59mm, 3
+    0.6mm, 76
+    0.7501mm, 4
+    0.778mm, 32
+    1.016mm, 2
+    1.0399mm, 1
+    1.3099mm, 2
+count : 15
+
+Mid Layer Annular Ring Size, Count
+    0mm, 9
+    0.3mm, 5
+    0.4mm, 90
+    0.5mm, 129
+    0.508mm, 8
+    0.524mm, 2
+    0.53mm, 3
+    0.55mm, 52
+    0.5588mm, 73
+    0.59mm, 3
+    0.6mm, 76
+    0.7501mm, 4
+    0.778mm, 30
+    1.016mm, 2
+    1.0399mm, 1
+    1.3099mm, 2
+count : 16
+
+Bottom Layer Annular Ring Size, Count
+    0mm, 9
+    0.3mm, 5
+    0.4mm, 90
+    0.5mm, 129
+    0.508mm, 8
+    0.53mm, 3
+    0.55mm, 52
+    0.5588mm, 73
+    0.59mm, 3
+    0.6mm, 76
+    0.7501mm, 4
+    0.778mm, 32
+    1.016mm, 2
+    1.0399mm, 1
+    1.3099mm, 2
+count : 15
+
+Pad Solder Mask, Count
+    0mm, 148
+    0.1016mm, 410
+count : 2
+
+Pad Paste Mask, Count
+    -1000mm, 16
+    -1.4mm, 1
+    0mm, 541
+count : 3
+
+Pad Pwr/Gnd Expansion, Count
+    0.508mm, 558
+count : 1
+
+Pad Relief Conductor Width, Count
+    0.254mm, 558
+count : 1
+
+Pad Relief Air Gap, Count
+    0.254mm, 558
+count : 1
+
+Pad Relief Entries, Count
+    4, 558
+count : 1
+
+Via Solder Mask, Count
+    0.1016mm, 168
+count : 1
+
+Via Pwr/Gnd Expansion, Count
+    0.508mm, 168
+count : 1
+
+Track Width, Count
+    0mm, 4
+    0.05mm, 384
+    0.1mm, 632
+    0.127mm, 22
+    0.1524mm, 33
+    0.17mm, 6
+    0.2mm, 897
+    0.254mm, 676
+    0.5mm, 50
+    0.75mm, 208
+count : 10
+
+Arc Line Width, Count
+    0mm, 4
+    0.1mm, 14
+    0.15mm, 8
+    0.2mm, 17
+    0.25mm, 23
+    0.3mm, 2
+    0.6mm, 12
+count : 7
+
+Arc Radius, Count
+    0.1mm, 6
+    0.125mm, 2
+    0.125mm, 21
+    0.3mm, 12
+    0.35mm, 1
+    0.5mm, 13
+    0.635mm, 5
+    2.54mm, 4
+    3.4mm, 2
+    3.5mm, 2
+    5.25mm, 6
+    5.35mm, 6
+count : 12
+
+Arc Degrees, Count
+    90, 4
+    180, 13
+    360, 63
+count : 3
+
+Text Height, Count
+    0.6mm, 2
+    1mm, 47
+    1.016mm, 6
+    1.2mm, 5
+    1.5mm, 3
+    1.524mm, 281
+    1.9685mm, 1
+    2mm, 1
+count : 8
+
+Text Width, Count
+    0.1mm, 49
+    0.15mm, 8
+    0.1524mm, 6
+    0.254mm, 282
+    0.5mm, 1
+count : 5
+
+Net Track Width, Count
+    0.2mm, 126
+count : 1
+
+Net Via Size, Count
+    1.27mm, 126
+count : 1
